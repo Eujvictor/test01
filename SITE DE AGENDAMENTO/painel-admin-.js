@@ -3451,4 +3451,4 @@ document.querySelectorAll(".day-option input").forEach(checkbox => {
     checkbox.addEventListener("change", previewScheduleSettings);
 
 });
-loadScheduleSettings();
+loadScheduleSettings();git pull origin main --allow-unrelated-histories
