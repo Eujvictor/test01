@@ -1,0 +1,755 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Agendar horário — Navalha de Ouro</title>
+
+    <meta
+        name="description"
+        content="Agende seu horário na Navalha de Ouro."
+    >
+
+    <link rel="stylesheet" href="css/agendar.css">
+</head>
+
+<body>
+
+    <header class="header">
+
+        <div class="container header-content">
+
+            <a href="index.html" class="logo">
+                NAVALHA DE OURO
+            </a>
+
+            <a href="index.html" class="back-link">
+                ← Voltar
+            </a>
+
+        </div>
+
+    </header>
+
+
+    <main>
+
+        <section class="booking-section">
+
+            <div class="container">
+
+                <div class="booking-header">
+
+                    <span class="eyebrow">
+                        AGENDAMENTO
+                    </span>
+
+                    <h1>
+                        Escolha seu horário
+                    </h1>
+
+                    <p>
+                        Selecione o serviço, barbeiro, data e horário
+                        que funcionam melhor para você.
+                    </p>
+
+                </div>
+
+
+                <div class="booking-layout">
+
+                    <!-- RESUMO -->
+
+                    <aside class="booking-summary">
+
+                        <div class="summary-logo">
+                            NO
+                        </div>
+
+                        <h2>
+                            Navalha de Ouro
+                        </h2>
+
+                        <p class="summary-address">
+                            Rua Augusta, 1024 — Consolação
+                        </p>
+
+                        <div class="summary-divider"></div>
+
+                        <div class="summary-item">
+
+                            <span>Serviço</span>
+
+                            <strong id="summaryService">
+                                Não selecionado
+                            </strong>
+
+                        </div>
+
+                        <div class="summary-item">
+
+                            <span>Barbeiro</span>
+
+                            <strong id="summaryBarber">
+                                Não selecionado
+                            </strong>
+
+                        </div>
+
+                        <div class="summary-item">
+
+                            <span>Data</span>
+
+                            <strong id="summaryDate">
+                                Não selecionada
+                            </strong>
+
+                        </div>
+
+                        <div class="summary-item">
+
+                            <span>Horário</span>
+
+                            <strong id="summaryTime">
+                                Não selecionado
+                            </strong>
+
+                        </div>
+
+                        <div class="summary-total">
+
+                            <span>Total</span>
+
+                            <strong id="summaryPrice">
+                                R$ 0,00
+                            </strong>
+
+                        </div>
+
+                    </aside>
+
+
+                    <!-- FORMULÁRIO -->
+
+                    <div class="booking-card">
+
+
+                        <!--ETAPA 1 -->
+
+                        <div class="step">
+
+                            <div class="step-title">
+
+                                <span class="step-number">
+                                    1
+                                </span>
+
+                                <div>
+
+                                    <h2>
+                                        Escolha o serviço
+                                    </h2>
+
+                                    <p>
+                                        Selecione o serviço desejado.
+                                    </p>
+
+                                </div>
+
+                            </div>
+
+
+                            <div
+                                class="options-grid"
+                                id="servicesContainer"
+                            >
+
+                                <button
+                                    type="button"
+                                    class="option service-option"
+                                    data-service="Corte Masculino"
+                                    data-price="60"
+                                >
+
+                                    <div>
+
+                                        <strong>
+                                            Corte Masculino
+                                        </strong>
+
+                                        <small>
+                                            40 min
+                                        </small>
+
+                                    </div>
+
+                                    <span>
+                                        R$ 60,00
+                                    </span>
+
+                                </button>
+
+
+                                <button
+                                    type="button"
+                                    class="option service-option"
+                                    data-service="Corte + Barba"
+                                    data-price="95"
+                                >
+
+                                    <div>
+
+                                        <strong>
+                                            Corte + Barba
+                                        </strong>
+
+                                        <small>
+                                            70 min
+                                        </small>
+
+                                    </div>
+
+                                    <span>
+                                        R$ 95,00
+                                    </span>
+
+                                </button>
+
+
+                                <button
+                                    type="button"
+                                    class="option service-option"
+                                    data-service="Barba"
+                                    data-price="45"
+                                >
+
+                                    <div>
+
+                                        <strong>
+                                            Barba
+                                        </strong>
+
+                                        <small>
+                                            30 min
+                                        </small>
+
+                                    </div>
+
+                                    <span>
+                                        R$ 45,00
+                                    </span>
+
+                                </button>
+
+
+                                <button
+                                    type="button"
+                                    class="option service-option"
+                                    data-service="Sobrancelha"
+                                    data-price="25"
+                                >
+
+                                    <div>
+
+                                        <strong>
+                                            Sobrancelha
+                                        </strong>
+
+                                        <small>
+                                            15 min
+                                        </small>
+
+                                    </div>
+
+                                    <span>
+                                        R$ 25,00
+                                    </span>
+
+                                </button>
+
+
+                                <button
+                                    type="button"
+                                    class="option service-option"
+                                    data-service="Pigmentação"
+                                    data-price="70"
+                                >
+
+                                    <div>
+
+                                        <strong>
+                                            Pigmentação
+                                        </strong>
+
+                                        <small>
+                                            45 min
+                                        </small>
+
+                                    </div>
+
+                                    <span>
+                                        R$ 70,00
+                                    </span>
+
+                                </button>
+
+
+                                <button
+                                    type="button"
+                                    class="option service-option"
+                                    data-service="Corte Infantil"
+                                    data-price="50"
+                                >
+
+                                    <div>
+
+                                        <strong>
+                                            Corte Infantil
+                                        </strong>
+
+                                        <small>
+                                            35 min
+                                        </small>
+
+                                    </div>
+
+                                    <span>
+                                        R$ 50,00
+                                    </span>
+
+                                </button>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- ETAPA 2 -->
+
+                        <div class="step">
+
+                            <div class="step-title">
+
+                                <span class="step-number">
+                                    2
+                                </span>
+
+                                <div>
+
+                                    <h2>
+                                        Escolha o barbeiro
+                                    </h2>
+
+                                    <p>
+                                        Quem você prefere?
+                                    </p>
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="barbers-grid">
+
+
+                                <button
+                                    type="button"
+                                    class="barber-option"
+                                    data-barber="João"
+                                >
+
+                                    <div class="barber-avatar">
+                                        J
+                                    </div>
+
+                                    <div>
+
+                                        <strong>
+                                            João
+                                        </strong>
+
+                                        <small>
+                                            Fade e degradê
+                                        </small>
+
+                                    </div>
+
+                                </button>
+
+
+                                <button
+                                    type="button"
+                                    class="barber-option"
+                                    data-barber="Carlos"
+                                >
+
+                                    <div class="barber-avatar">
+                                        C
+                                    </div>
+
+                                    <div>
+
+                                        <strong>
+                                            Carlos
+                                        </strong>
+
+                                        <small>
+                                            Barba e navalha
+                                        </small>
+
+                                    </div>
+
+                                </button>
+
+
+                                <button
+                                    type="button"
+                                    class="barber-option"
+                                    data-barber="Pedro"
+                                >
+
+                                    <div class="barber-avatar">
+                                        P
+                                    </div>
+
+                                    <div>
+
+                                        <strong>
+                                            Pedro
+                                        </strong>
+
+                                        <small>
+                                            Corte clássico
+                                        </small>
+
+                                    </div>
+
+                                </button>
+
+                            </div>
+
+                        </div>
+
+
+                        <!ETAPA 3 -->
+
+                        <div class="step">
+
+                            <div class="step-title">
+
+                                <span class="step-number">
+                                    4
+                                </span>
+
+                                <div>
+
+                                    <h2>
+                                        Escolha o horário
+                                    </h2>
+
+                                    <p>
+                                        Horários disponíveis.
+                                    </p>
+
+                                </div>
+
+                            </div>
+
+
+                            <div
+                                class="times-grid"
+                                id="timesContainer"
+                            >
+
+                                <button
+                                    type="button"
+                                    class="time-option"
+                                >
+                                    09:00
+                                </button>
+
+                                <button
+                                    type="button"
+                                    class="time-option"
+                                >
+                                    09:30
+                                </button>
+
+                                <button
+                                    type="button"
+                                    class="time-option"
+                                >
+                                    10:00
+                                </button>
+
+                                <button
+                                    type="button"
+                                    class="time-option"
+                                >
+                                    10:30
+                                </button>
+
+                                <button
+                                    type="button"
+                                    class="time-option"
+                                >
+                                    11:00
+                                </button>
+
+                                <button
+                                    type="button"
+                                    class="time-option"
+                                >
+                                    11:30
+                                </button>
+
+                                <button
+                                    type="button"
+                                    class="time-option"
+                                >
+                                    14:00
+                                </button>
+
+                                <button
+                                    type="button"
+                                    class="time-option"
+                                >
+                                    14:30
+                                </button>
+
+                                <button
+                                    type="button"
+                                    class="time-option"
+                                >
+                                    15:00
+                                </button>
+
+                                <button
+                                    type="button"
+                                    class="time-option"
+                                >
+                                    15:30
+                                </button>
+
+                                <button
+                                    type="button"
+                                    class="time-option"
+                                >
+                                    16:00
+                                </button>
+
+                                <button
+                                    type="button"
+                                    class="time-option"
+                                >
+                                    17:00
+                                </button>
+
+                                <button
+                                    type="button"
+                                    class="time-option"
+                                >
+                                    18:00
+                                </button>
+
+                                <button
+                                    type="button"
+                                    class="time-option"
+                                >
+                                    18:30
+                                </button>
+
+                                <button
+                                    type="button"
+                                    class="time-option"
+                                >
+                                    19:00
+                                </button>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- ETAPA 4 -->
+
+                        <div class="step">
+
+                            <div class="step-title">
+
+                                <span class="step-number">
+                                    3
+                                </span>
+
+                                <div>
+
+                                    <h2>
+                                        Escolha a data
+                                    </h2>
+
+                                    <p>
+                                        Selecione um dia disponível.
+                                    </p>
+
+                                </div>
+
+                            </div>
+
+
+                            <!-- CALENDÁRIO -->
+
+                            <div class="calendar">
+
+                                <div class="calendar-header">
+
+                                    <button
+                                        type="button"
+                                        id="prevMonth"
+                                        class="calendar-nav"
+                                        aria-label="Mês anterior"
+                                    >
+                                        ‹
+                                    </button>
+
+                                    <strong id="calendarMonth">
+                                        Agosto 2026
+                                    </strong>
+
+                                    <button
+                                        type="button"
+                                        id="nextMonth"
+                                        class="calendar-nav"
+                                        aria-label="Próximo mês"
+                                    >
+                                        ›
+                                    </button>
+
+                                </div>
+<div class="calendar-days" id="calenderDays">
+    
+</div>
+
+                                <div class="calendar-weekdays">
+
+                                    <span>DOM</span>
+                                    <span>SEG</span>
+                                    <span>TER</span>
+                                    <span>QUA</span>
+                                    <span>QUI</span>
+                                    <span>SEX</span>
+                                    <span>SÁB</span>
+
+                                </div>
+
+
+                                <div
+                                    class="calendar-days"
+                                    id="calendarDays"
+                                ></div>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- ETAPA 5 -->
+
+                        <div class="step">
+
+                            <div class="step-title">
+
+                                <span class="step-number">
+                                    5
+                                </span>
+
+                                <div>
+
+                                    <h2>
+                                        Seus dados
+                                    </h2>
+
+                                    <p>
+                                        Precisamos dessas informações
+                                        para confirmar o agendamento.
+                                    </p>
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="form-grid">
+
+                                <div class="form-group">
+
+                                    <label for="name">
+                                        Nome
+                                    </label>
+
+                                    <input
+                                        type="text"
+                                        id="name"
+                                        placeholder="Seu nome"
+                                    >
+
+                                </div>
+
+
+                                <div class="form-group">
+
+                                    <label for="phone">
+                                        WhatsApp
+                                    </label>
+
+                                    <input
+                                        type="tel"
+                                        id="phone"
+                                        placeholder="(00) 00000-0000"
+                                    >
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- CONFIRMAÇÃO -->
+
+                        <div class="confirm-area">
+
+                            <button
+                                type="button"
+                                class="confirm-button"
+                                id="confirmButton"
+                            >
+                                Confirmar agendamento
+                            </button>
+
+                            <p id="bookingMessage"></p>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+
+<script src="supabese.js"></script>
+
+    <script src="agendar.js"></script>
+
+</body>
+
+</html>

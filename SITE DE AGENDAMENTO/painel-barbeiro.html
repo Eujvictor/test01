@@ -1,0 +1,931 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        Painel do Barbeiro | Navalha de Ouro
+    </title>
+
+    <link
+        rel="stylesheet"
+        href="painel-barbeiro.css"
+    >
+
+</head>
+
+<body>
+
+    <!-- ==========================================
+         ESTRUTURA PRINCIPAL
+         ========================================== -->
+
+    <div class="app">
+
+
+        <!-- ======================================
+             MENU LATERAL
+             ====================================== -->
+
+        <aside
+            class="sidebar"
+            id="sidebar"
+        >
+
+            <div class="sidebar-top">
+
+                <!-- LOGO -->
+
+                <div class="brand">
+
+                    <div class="brand-symbol">
+                        NO
+                    </div>
+
+                    <div class="brand-text">
+
+                        <strong>
+                            NAVALHA
+                        </strong>
+
+                        <span>
+                            DE OURO
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <!-- PERFIL -->
+
+                <div class="profile-card">
+
+                    <div class="profile-avatar">
+                        JV
+                    </div>
+
+                    <div class="profile-info">
+
+                        <strong>
+                            João
+                        </strong>
+
+                        <span>
+                            Barbeiro
+                        </span>
+
+                    </div>
+
+                    <span class="online-dot"></span>
+
+                </div>
+
+
+                <!-- MENU -->
+
+                <nav class="navigation">
+
+                    <a
+                        href="#dashboard"
+                        class="nav-item active"
+                        data-section="dashboard"
+                    >
+
+                        <span class="nav-icon">
+                            ▦
+                        </span>
+
+                        <span>
+                            Visão geral
+                        </span>
+
+                    </a>
+
+
+                    <a
+                        href="#agenda"
+                        class="nav-item"
+                        data-section="agenda"
+                    >
+
+                        <span class="nav-icon">
+                            ◫
+                        </span>
+
+                        <span>
+                            Minha agenda
+                        </span>
+
+                    </a>
+
+
+                    <a
+                        href="#clientes"
+                        class="nav-item"
+                        data-section="clientes"
+                    >
+
+                        <span class="nav-icon">
+                            ◎
+                        </span>
+
+                        <span>
+                            Meus clientes
+                        </span>
+
+                    </a>
+
+
+                    <a
+                        href="#horarios"
+                        class="nav-item"
+                        data-section="horarios"
+                    >
+
+                        <span class="nav-icon">
+                            ◷
+                        </span>
+
+                        <span>
+                            Meus horários
+                        </span>
+
+                    </a>
+
+
+                    <a
+                        href="#perfil"
+                        class="nav-item"
+                        data-section="perfil"
+                    >
+
+                        <span class="nav-icon">
+                            ○
+                        </span>
+
+                        <span>
+                            Meu perfil
+                        </span>
+
+                    </a>
+
+                </nav>
+
+            </div>
+
+
+            <!-- RODAPÉ DO MENU -->
+
+            <div class="sidebar-bottom">
+
+                <button
+                    class="logout-button"
+                    id="logoutButton"
+                >
+
+                    <span>
+                        ↪
+                    </span>
+
+                    Sair
+
+                </button>
+
+            </div>
+
+        </aside>
+
+
+        <!-- ======================================
+             CONTEÚDO
+             ====================================== -->
+
+        <main class="main-content">
+
+
+            <!-- HEADER MOBILE -->
+
+            <header class="mobile-header">
+
+                <button
+                    class="menu-button"
+                    id="menuButton"
+                >
+                    ☰
+                </button>
+
+                <div class="mobile-brand">
+                    NAVALHA DE OURO
+                </div>
+
+                <div class="mobile-avatar">
+                    JV
+                </div>
+
+            </header>
+
+
+            <!-- ==================================
+                 DASHBOARD
+                 ================================== -->
+
+            <section
+                class="page-section active"
+                id="dashboard"
+            >
+
+                <div class="page-header">
+
+                    <div>
+
+                        <span class="eyebrow">
+                            PAINEL DO BARBEIRO
+                        </span>
+
+                        <h1>
+                            Olá, João.
+                        </h1>
+
+                        <p id="currentDate">
+                            Hoje
+                        </p>
+
+                    </div>
+
+                    <div class="header-status">
+
+                        <span class="status-dot"></span>
+
+                        <span>
+                            Online
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <!-- RESUMO -->
+
+                <div class="stats-grid">
+
+                    <div class="stat-card">
+
+                        <span class="stat-label">
+                            Hoje
+                        </span>
+
+                        <strong id="todayCount">
+                            5
+                        </strong>
+
+                        <span class="stat-description">
+                            agendamentos
+                        </span>
+
+                    </div>
+
+
+                    <div class="stat-card">
+
+                        <span class="stat-label">
+                            Concluídos
+                        </span>
+
+                        <strong id="completedCount">
+                            2
+                        </strong>
+
+                        <span class="stat-description">
+                            atendimentos
+                        </span>
+
+                    </div>
+
+
+                    <div class="stat-card">
+
+                        <span class="stat-label">
+                            Próximo
+                        </span>
+
+                        <strong id="nextAppointment">
+                            15:30
+                        </strong>
+
+                        <span class="stat-description">
+                            próximo cliente
+                        </span>
+
+                    </div>
+
+
+                    <div class="stat-card">
+
+                        <span class="stat-label">
+                            Faturamento
+                        </span>
+
+                        <strong id="todayRevenue">
+                            R$ 275
+                        </strong>
+
+                        <span class="stat-description">
+                            hoje
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <!-- PRÓXIMO ATENDIMENTO -->
+
+                <div class="highlight-card">
+
+                    <div class="highlight-content">
+
+                        <span class="eyebrow">
+                            PRÓXIMO ATENDIMENTO
+                        </span>
+
+                        <h2>
+                            João Victor
+                        </h2>
+
+                        <p>
+                            Corte + Barba
+                        </p>
+
+                        <div class="highlight-meta">
+
+                            <span>
+                                ◷ 15:30
+                            </span>
+
+                            <span>
+                                R$ 95
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                    <button
+                        class="primary-button"
+                        id="nextClientButton"
+                    >
+                        Ver atendimento
+                    </button>
+
+                </div>
+
+
+                <!-- AGENDA DE HOJE -->
+
+                <div class="content-card">
+
+                    <div class="card-header">
+
+                        <div>
+
+                            <span class="eyebrow">
+                                AGENDA
+                            </span>
+
+                            <h2>
+                                Seus atendimentos
+                            </h2>
+
+                        </div>
+
+                        <button
+                            class="text-button"
+                            data-go="agenda"
+                        >
+                            Ver agenda →
+                        </button>
+
+                    </div>
+
+
+                    <div
+                        class="appointment-list"
+                        id="dashboardAppointments"
+                    >
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- ==================================
+                 AGENDA
+                 ================================== -->
+
+            <section
+                class="page-section"
+                id="agenda"
+            >
+
+                <div class="page-header">
+
+                    <div>
+
+                        <span class="eyebrow">
+                            AGENDA
+                        </span>
+
+                        <h1>
+                            Minha agenda
+                        </h1>
+
+                        <p>
+                            Gerencie seus atendimentos.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="date-navigation">
+
+                    <button
+                        id="previousDay"
+                        class="date-arrow"
+                    >
+                        ←
+                    </button>
+
+                    <div class="selected-day">
+
+                        <span>
+                            DATA
+                        </span>
+
+                        <strong id="selectedDate">
+                            Hoje
+                        </strong>
+
+                    </div>
+
+                    <button
+                        id="nextDay"
+                        class="date-arrow"
+                    >
+                        →
+                    </button>
+
+                </div>
+
+
+                <div class="content-card">
+
+                    <div
+                        class="appointment-list large-list"
+                        id="fullAppointments"
+                    >
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- ==================================
+                 CLIENTES
+                 ================================== -->
+
+            <section
+                class="page-section"
+                id="clientes"
+            >
+
+                <div class="page-header">
+
+                    <div>
+
+                        <span class="eyebrow">
+                            CLIENTES
+                        </span>
+
+                        <h1>
+                            Meus clientes
+                        </h1>
+
+                        <p>
+                            Clientes atendidos por você.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="search-box">
+
+                    <span>
+                        ⌕
+                    </span>
+
+                    <input
+                        type="text"
+                        id="clientSearch"
+                        placeholder="Buscar cliente..."
+                    >
+
+                </div>
+
+
+                <div
+                    class="clients-grid"
+                    id="clientsGrid"
+                >
+                </div>
+
+            </section>
+
+
+            <!-- ==================================
+                 HORÁRIOS
+                 ================================== -->
+
+            <section
+                class="page-section"
+                id="horarios"
+            >
+
+                <div class="page-header">
+
+                    <div>
+
+                        <span class="eyebrow">
+                            DISPONIBILIDADE
+                        </span>
+
+                        <h1>
+                            Meus horários
+                        </h1>
+
+                        <p>
+                            Visualize sua disponibilidade.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="content-card">
+
+                    <div class="schedule-list">
+
+                        <div class="schedule-row">
+
+                            <span>
+                                Segunda-feira
+                            </span>
+
+                            <strong>
+                                09:00 — 19:00
+                            </strong>
+
+                            <span class="schedule-active">
+                                Ativo
+                            </span>
+
+                        </div>
+
+
+                        <div class="schedule-row">
+
+                            <span>
+                                Terça-feira
+                            </span>
+
+                            <strong>
+                                09:00 — 19:00
+                            </strong>
+
+                            <span class="schedule-active">
+                                Ativo
+                            </span>
+
+                        </div>
+
+
+                        <div class="schedule-row">
+
+                            <span>
+                                Quarta-feira
+                            </span>
+
+                            <strong>
+                                09:00 — 19:00
+                            </strong>
+
+                            <span class="schedule-active">
+                                Ativo
+                            </span>
+
+                        </div>
+
+
+                        <div class="schedule-row">
+
+                            <span>
+                                Quinta-feira
+                            </span>
+
+                            <strong>
+                                09:00 — 19:00
+                            </strong>
+
+                            <span class="schedule-active">
+                                Ativo
+                            </span>
+
+                        </div>
+
+
+                        <div class="schedule-row">
+
+                            <span>
+                                Sexta-feira
+                            </span>
+
+                            <strong>
+                                09:00 — 19:00
+                            </strong>
+
+                            <span class="schedule-active">
+                                Ativo
+                            </span>
+
+                        </div>
+
+
+                        <div class="schedule-row">
+
+                            <span>
+                                Sábado
+                            </span>
+
+                            <strong>
+                                09:00 — 17:00
+                            </strong>
+
+                            <span class="schedule-active">
+                                Ativo
+                            </span>
+
+                        </div>
+
+
+                        <div class="schedule-row disabled">
+
+                            <span>
+                                Domingo
+                            </span>
+
+                            <strong>
+                                Fechado
+                            </strong>
+
+                            <span>
+                                Folga
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- ==================================
+                 PERFIL
+                 ================================== -->
+
+            <section
+                class="page-section"
+                id="perfil"
+            >
+
+                <div class="page-header">
+
+                    <div>
+
+                        <span class="eyebrow">
+                            PERFIL
+                        </span>
+
+                        <h1>
+                            Meu perfil
+                        </h1>
+
+                        <p>
+                            Informações profissionais.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="profile-edit-card">
+
+                    <div class="large-avatar">
+                        JV
+                    </div>
+
+                    <div class="profile-edit-content">
+
+                        <h2>
+                            João
+                        </h2>
+
+                        <p>
+                            Barbeiro
+                        </p>
+
+                        <div class="profile-details">
+
+                            <div>
+
+                                <span>
+                                    Especialidade
+                                </span>
+
+                                <strong>
+                                    Corte masculino
+                                </strong>
+
+                            </div>
+
+
+                            <div>
+
+                                <span>
+                                    Experiência
+                                </span>
+
+                                <strong>
+                                    8 anos
+                                </strong>
+
+                            </div>
+
+
+                            <div>
+
+                                <span>
+                                    Status
+                                </span>
+
+                                <strong class="profile-online">
+                                    Ativo
+                                </strong>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+        </main>
+
+    </div>
+
+
+    <!-- ==========================================
+         MODAL DO AGENDAMENTO
+         ========================================== -->
+
+    <div
+        class="modal-overlay"
+        id="appointmentModal"
+    >
+
+        <div class="appointment-modal">
+
+            <button
+                class="modal-close"
+                id="closeModal"
+            >
+                ×
+            </button>
+
+            <span class="eyebrow">
+                ATENDIMENTO
+            </span>
+
+            <h2 id="modalClientName">
+                João Victor
+            </h2>
+
+            <div class="modal-service">
+                Corte + Barba
+            </div>
+
+
+            <div class="modal-details">
+
+                <div>
+
+                    <span>
+                        Data
+                    </span>
+
+                    <strong id="modalDate">
+                        Hoje
+                    </strong>
+
+                </div>
+
+
+                <div>
+
+                    <span>
+                        Horário
+                    </span>
+
+                    <strong id="modalTime">
+                        15:30
+                    </strong>
+
+                </div>
+
+
+                <div>
+
+                    <span>
+                        Valor
+                    </span>
+
+                    <strong id="modalPrice">
+                        R$ 95
+                    </strong>
+
+                </div>
+
+
+                <div>
+
+                    <span>
+                        WhatsApp
+                    </span>
+
+                    <strong id="modalPhone">
+                        (62) 99999-9999
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+            <div class="modal-actions">
+
+                <button
+                    class="secondary-button"
+                    id="modalCancel"
+                >
+                    Cancelar
+                </button>
+
+                <button
+                    class="primary-button"
+                    id="modalConfirm"
+                >
+                    Confirmar
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <script src="painel-barbeiro.js"></script>
+
+</body>
+
+</html>
