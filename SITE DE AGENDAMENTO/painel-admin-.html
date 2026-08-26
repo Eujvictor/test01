@@ -233,7 +233,7 @@
         <section id="agenda"
                  class="page-section">
 
-            <div class="page-header">
+            <div class="page-header agenda-page-header">
 
                 <div>
                     <span class="eyebrow">
@@ -243,19 +243,84 @@
                     <h1>Agenda geral</h1>
 
                     <p>
-                        Todos os agendamentos da barbearia.
+                        Visualize, filtre e acompanhe todos os agendamentos da barbearia.
                     </p>
+                </div>
+
+                <a
+                    class="primary-button agenda-new-button"
+                    href="agendar.html">
+                    + Novo agendamento
+                </a>
+
+            </div>
+
+            <div class="agenda-toolbar-card">
+
+                <div class="agenda-period-tabs" role="group" aria-label="Período da agenda">
+                    <button type="button" class="agenda-period-button active" data-agenda-view="today">
+                        Hoje
+                    </button>
+                    <button type="button" class="agenda-period-button" data-agenda-view="tomorrow">
+                        Amanhã
+                    </button>
+                    <button type="button" class="agenda-period-button" data-agenda-view="week">
+                        Esta semana
+                    </button>
+                </div>
+
+                <div class="agenda-filters">
+
+                    <div class="agenda-filter-group agenda-date-filter">
+                        <label for="agendaDateFilter">Data</label>
+                        <input type="date" id="agendaDateFilter">
+                    </div>
+
+                    <div class="agenda-filter-group">
+                        <label for="agendaBarberFilter">Barbeiro</label>
+                        <select id="agendaBarberFilter">
+                            <option value="">Todos os barbeiros</option>
+                        </select>
+                    </div>
+
+                    <div class="agenda-filter-group">
+                        <label for="agendaStatusFilter">Status</label>
+                        <select id="agendaStatusFilter">
+                            <option value="">Todos os status</option>
+                            <option value="agendado">Agendado</option>
+                            <option value="pendente">Pendente</option>
+                            <option value="confirmado">Confirmado</option>
+                            <option value="finalizado">Finalizado</option>
+                            <option value="cancelado">Cancelado</option>
+                        </select>
+                    </div>
+
+                    <div class="agenda-filter-group agenda-search-filter">
+                        <label for="agendaSearchInput">Pesquisar</label>
+                        <input
+                            type="search"
+                            id="agendaSearchInput"
+                            placeholder="Cliente, serviço ou barbeiro...">
+                    </div>
+
                 </div>
 
             </div>
 
-            <div class="content-card">
+            <div class="agenda-results-header">
+                <div>
+                    <span class="eyebrow">AGENDA</span>
+                    <h2 id="agendaPeriodTitle">Agendamentos de hoje</h2>
+                </div>
+                <span class="agenda-count" id="agendaFilteredCount">0 agendamentos</span>
+            </div>
 
+            <div class="agenda-list-card">
                 <div id="adminAppointments"></div>
-
             </div>
 
         </section>
+
 
 
         <!-- =========================
@@ -1225,6 +1290,28 @@
 
     </main>
 
+</div>
+
+
+<!-- =========================
+     MODAL DETALHES DO AGENDAMENTO
+     ========================= -->
+
+<div class="modal-overlay" id="appointmentDetailsModal">
+    <div class="modal appointment-details-modal">
+        <button type="button" class="modal-close" id="closeAppointmentDetailsModal">×</button>
+
+        <span class="eyebrow">AGENDA</span>
+        <h2>Detalhes do agendamento</h2>
+
+        <div id="appointmentDetailsContent" class="appointment-details-content"></div>
+
+        <div class="modal-actions">
+            <button type="button" class="secondary-button" id="closeAppointmentDetailsButton">
+                Fechar
+            </button>
+        </div>
+    </div>
 </div>
 
 

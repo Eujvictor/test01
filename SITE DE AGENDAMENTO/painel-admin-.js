@@ -1080,65 +1080,365 @@ function renderDashboardAppointments() {
 // RENDERIZAR AGENDA COMPLETA
 // ==========================================
 
-function renderAdminAppointments() {
+let agendaViewMode = "today";
+let agendaSelectedDate = formatToday();
+let agendaFiltersInitialized = false;
 
-    const container =
-        document.getElementById(
-            "adminAppointments"
-        );
-
-
-    if (!container) {
-        return;
-    }
-
-
-    if (
-        appointments.length === 0
-    ) {
-
-        container.innerHTML = `
-            <p>
-                Nenhum agendamento encontrado.
-            </p>
-        `;
-
-        return;
-
-    }
-
-
-    container.innerHTML =
-        appointments.map(
-            appointment => `
-
-                <div class="simple-list">
-
-                    <div>
-
-                        <strong>
-                            ${appointment.date}
-                            ·
-                            ${appointment.time}
-                        </strong>
-
-                        <span>
-                            ${appointment.client}
-                            ·
-                            ${appointment.service}
-                            ·
-                            ${appointment.barber}
-                        </span>
-
-                    </div>
-
-                </div>
-
-            `
-        ).join("");
-
+function getLocalDateKey(date) {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
 }
 
+function getTomorrowKey() {
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    return getLocalDateKey(tomorrow);
+}
+
+function getWeekRange() {
+    const start = new Date();
+    start.setHours(0, 0, 0, 0);
+
+    const day = start.getDay();
+    const distanceToMonday = day === 0 ? 6 : day - 1;
+    start.setDate(start.getDate() - distanceToMonday);
+
+    const end = new Date(start);
+    end.setDate(start.getDate() + 6);
+
+    return {
+        start: getLocalDateKey(start),
+        end: getLocalDateKey(end)
+    };
+}
+
+function formatAgendaDate(date) {
+    if (!date) return "Data não informada";
+
+    const [year, month, day] = String(date).split("-");
+
+    if (!year || !month || !day) return date;
+
+    const localDate = new Date(Number(year), Number(month) - 1, Number(day));
+
+    return localDate.toLocaleDateString("pt-BR", {
+        weekday: "long",
+        day: "2-digit",
+        month: "long",
+        year: "numeric"
+    });
+}
+
+function normalizeStatus(status) {
+    return String(status || "agendado")
+        .trim()
+        .toLowerCase();
+}
+
+function formatStatus(status) {
+    const labels = {
+        agendado: "AGENDADO",
+        pendente: "PENDENTE",
+        confirmado: "CONFIRMADO",
+        finalizado: "FINALIZADO",
+        cancelado: "CANCELADO"
+    };
+
+    const normalized = normalizeStatus(status);
+
+    return labels[normalized] || normalized.toUpperCase();
+}
+
+function getStatusClass(status) {
+    const normalized = normalizeStatus(status);
+
+    if (["pendente", "confirmado", "finalizado", "cancelado", "agendado"].includes(normalized)) {
+        return normalized;
+    }
+
+    return "agendado";
+}
+
+function getAgendaPeriodTitle() {
+    if (agendaViewMode === "tomorrow") return "Agendamentos de amanhã";
+    if (agendaViewMode === "week") return "Agendamentos desta semana";
+    if (agendaViewMode === "date") return `Agenda de ${formatAgendaDate(agendaSelectedDate)}`;
+    return "Agendamentos de hoje";
+}
+
+function getFilteredAppointments() {
+    const barberFilter = document.getElementById("agendaBarberFilter")?.value || "";
+    const statusFilter = document.getElementById("agendaStatusFilter")?.value || "";
+    const search = (document.getElementById("agendaSearchInput")?.value || "")
+        .trim()
+        .toLowerCase();
+
+    const week = getWeekRange();
+
+    return appointments.filter(appointment => {
+        const appointmentDate = appointment.date;
+
+        if (agendaViewMode === "today" && appointmentDate !== formatToday()) return false;
+        if (agendaViewMode === "tomorrow" && appointmentDate !== getTomorrowKey()) return false;
+        if (agendaViewMode === "date" && appointmentDate !== agendaSelectedDate) return false;
+        if (agendaViewMode === "week" && (appointmentDate < week.start || appointmentDate > week.end)) return false;
+
+        if (barberFilter && String(appointment.barberId) !== String(barberFilter)) return false;
+        if (statusFilter && normalizeStatus(appointment.status) !== normalizeStatus(statusFilter)) return false;
+
+        if (search) {
+            const searchable = [
+                appointment.client,
+                appointment.barber,
+                appointment.service,
+                appointment.time,
+                formatAgendaDate(appointment.date)
+            ].join(" ").toLowerCase();
+
+            if (!searchable.includes(search)) return false;
+        }
+
+        return true;
+    });
+}
+
+function populateAgendaBarberFilter() {
+    const select = document.getElementById("agendaBarberFilter");
+
+    if (!select) return;
+
+    const currentValue = select.value;
+    const activeBarbers = [...new Map(
+        appointments
+            .filter(appointment => appointment.barberId)
+            .map(appointment => [String(appointment.barberId), appointment.barber])
+    )];
+
+    select.innerHTML = '<option value="">Todos os barbeiros</option>' +
+        activeBarbers.map(([id, name]) =>
+            `<option value="${escapeHTML(id)}">${escapeHTML(name || "Barbeiro")}</option>`
+        ).join("");
+
+    if ([...select.options].some(option => option.value === currentValue)) {
+        select.value = currentValue;
+    }
+}
+
+function renderAdminAppointments() {
+    const container = document.getElementById("adminAppointments");
+    const countElement = document.getElementById("agendaFilteredCount");
+    const titleElement = document.getElementById("agendaPeriodTitle");
+
+    if (!container) return;
+
+    if (titleElement) titleElement.textContent = getAgendaPeriodTitle();
+
+    const filteredAppointments = getFilteredAppointments();
+
+    if (countElement) {
+        countElement.textContent = `${filteredAppointments.length} ${filteredAppointments.length === 1 ? "agendamento" : "agendamentos"}`;
+    }
+
+    if (filteredAppointments.length === 0) {
+        container.innerHTML = `
+            <div class="agenda-empty-state">
+                <strong>Nenhum agendamento encontrado.</strong>
+                <span>Altere os filtros ou escolha outro período para visualizar os atendimentos.</span>
+            </div>
+        `;
+        return;
+    }
+
+    const grouped = filteredAppointments.reduce((groups, appointment) => {
+        if (!groups[appointment.date]) groups[appointment.date] = [];
+        groups[appointment.date].push(appointment);
+        return groups;
+    }, {});
+
+    container.innerHTML = Object.entries(grouped).map(([date, items]) => `
+        <div class="agenda-day-group">
+            <div class="agenda-day-header">
+                <span>${escapeHTML(formatAgendaDate(date))}</span>
+                <small>${items.length} ${items.length === 1 ? "agendamento" : "agendamentos"}</small>
+            </div>
+
+            <div class="agenda-table-header">
+                <span>Horário</span>
+                <span>Cliente</span>
+                <span>Serviço</span>
+                <span>Barbeiro</span>
+                <span>Status</span>
+                <span>Ações</span>
+            </div>
+
+            <div class="agenda-rows">
+                ${items.map(appointment => `
+                    <div class="agenda-row" data-appointment-id="${escapeHTML(String(appointment.id))}">
+                        <div class="agenda-time-cell">${escapeHTML(appointment.time || "—")}</div>
+
+                        <div class="agenda-client-cell">
+                            <span class="agenda-client-avatar">${escapeHTML(getInitials(appointment.client || "Cliente"))}</span>
+                            <div>
+                                <strong>${escapeHTML(appointment.client || "Cliente")}</strong>
+                                <small>${escapeHTML(appointment.clientPhone || "Sem telefone")}</small>
+                            </div>
+                        </div>
+
+                        <div class="agenda-service-cell">
+                            <strong>${escapeHTML(appointment.service || "Serviço")}</strong>
+                            <small>R$ ${formatMoney(appointment.price || 0)}</small>
+                        </div>
+
+                        <div class="agenda-barber-cell">${escapeHTML(appointment.barber || "Barbeiro")}</div>
+
+                        <div>
+                            <span class="agenda-status-badge ${getStatusClass(appointment.status)}">
+                                ${formatStatus(appointment.status)}
+                            </span>
+                        </div>
+
+                        <div class="agenda-actions-cell">
+                            <button type="button" class="agenda-details-button" data-action="details" data-id="${escapeHTML(String(appointment.id))}">
+                                Ver detalhes
+                            </button>
+                            <select class="agenda-status-select" data-action="status" data-id="${escapeHTML(String(appointment.id))}" aria-label="Alterar status do agendamento">
+                                ${["agendado", "pendente", "confirmado", "finalizado", "cancelado"].map(status => `
+                                    <option value="${status}" ${normalizeStatus(appointment.status) === status ? "selected" : ""}>
+                                        ${formatStatus(status)}
+                                    </option>
+                                `).join("")}
+                            </select>
+                        </div>
+                    </div>
+                `).join("")}
+            </div>
+        </div>
+    `).join("");
+}
+
+function openAppointmentDetails(id) {
+    const appointment = appointments.find(item => String(item.id) === String(id));
+    const modal = document.getElementById("appointmentDetailsModal");
+    const content = document.getElementById("appointmentDetailsContent");
+
+    if (!appointment || !modal || !content) return;
+
+    content.innerHTML = `
+        <div class="appointment-details-status">
+            <span class="agenda-status-badge ${getStatusClass(appointment.status)}">${formatStatus(appointment.status)}</span>
+        </div>
+
+        <div class="appointment-details-grid">
+            <div><span>Data</span><strong>${escapeHTML(formatAgendaDate(appointment.date))}</strong></div>
+            <div><span>Horário</span><strong>${escapeHTML(appointment.time || "—")}</strong></div>
+            <div><span>Cliente</span><strong>${escapeHTML(appointment.client || "Cliente")}</strong></div>
+            <div><span>Telefone</span><strong>${escapeHTML(appointment.clientPhone || "Não informado")}</strong></div>
+            <div><span>Serviço</span><strong>${escapeHTML(appointment.service || "Serviço")}</strong></div>
+            <div><span>Valor</span><strong>R$ ${formatMoney(appointment.price || 0)}</strong></div>
+            <div><span>Barbeiro</span><strong>${escapeHTML(appointment.barber || "Barbeiro")}</strong></div>
+            <div><span>Status</span><strong>${escapeHTML(formatStatus(appointment.status))}</strong></div>
+        </div>
+    `;
+
+    modal.classList.add("active");
+}
+
+async function updateAppointmentStatus(id, status) {
+    if (!window.supabaseClient) {
+        alert("Supabase não foi carregado.");
+        return;
+    }
+
+    const normalizedStatus = normalizeStatus(status);
+
+    const { error } = await window.supabaseClient
+        .from("agendamentos")
+        .update({ status: normalizedStatus })
+        .eq("id", id);
+
+    if (error) {
+        console.error("Erro ao atualizar status do agendamento:", error);
+        alert("Não foi possível atualizar o status do agendamento.");
+        renderAdminAppointments();
+        return;
+    }
+
+    await loadDashboardAndAgenda();
+    await loadAdminClients();
+}
+
+function setupAgendaFilters() {
+    if (agendaFiltersInitialized) return;
+    agendaFiltersInitialized = true;
+
+    const dateInput = document.getElementById("agendaDateFilter");
+    const barberFilter = document.getElementById("agendaBarberFilter");
+    const statusFilter = document.getElementById("agendaStatusFilter");
+    const searchInput = document.getElementById("agendaSearchInput");
+    const periodButtons = document.querySelectorAll(".agenda-period-button");
+    const container = document.getElementById("adminAppointments");
+    const detailsModal = document.getElementById("appointmentDetailsModal");
+
+    if (dateInput) {
+        dateInput.value = agendaSelectedDate;
+        dateInput.addEventListener("change", () => {
+            if (!dateInput.value) return;
+            agendaSelectedDate = dateInput.value;
+            agendaViewMode = "date";
+            periodButtons.forEach(button => button.classList.remove("active"));
+            renderAdminAppointments();
+        });
+    }
+
+    periodButtons.forEach(button => {
+        button.addEventListener("click", () => {
+            agendaViewMode = button.dataset.agendaView || "today";
+
+            if (agendaViewMode === "today") agendaSelectedDate = formatToday();
+            if (agendaViewMode === "tomorrow") agendaSelectedDate = getTomorrowKey();
+
+            if (dateInput && agendaViewMode !== "week") dateInput.value = agendaSelectedDate;
+
+            periodButtons.forEach(item => item.classList.toggle("active", item === button));
+            renderAdminAppointments();
+        });
+    });
+
+    [barberFilter, statusFilter].filter(Boolean).forEach(element => {
+        element.addEventListener("change", renderAdminAppointments);
+    });
+
+    if (searchInput) searchInput.addEventListener("input", renderAdminAppointments);
+
+    if (container) {
+        container.addEventListener("click", event => {
+            const button = event.target.closest("button[data-action='details']");
+            if (button) openAppointmentDetails(button.dataset.id);
+        });
+
+        container.addEventListener("change", event => {
+            const select = event.target.closest("select[data-action='status']");
+            if (select) updateAppointmentStatus(select.dataset.id, select.value);
+        });
+    }
+
+    ["closeAppointmentDetailsModal", "closeAppointmentDetailsButton"].forEach(id => {
+        const button = document.getElementById(id);
+        if (button) button.addEventListener("click", () => detailsModal?.classList.remove("active"));
+    });
+
+    if (detailsModal) {
+        detailsModal.addEventListener("click", event => {
+            if (event.target === detailsModal) detailsModal.classList.remove("active");
+        });
+    }
+}
+
+// ==========================================
+// RENDERIZAR AGENDA COMPLETA
+// ==========================================
 
 // ==========================================
 // CARREGAR AGENDA DO SUPABASE
@@ -1212,9 +1512,10 @@ async function loadDashboardAndAgenda() {
                         client.id
                     ),
 
-                    client.nome ??
-                    client.name ??
-                    "Cliente"
+                    {
+                        nome: client.nome ?? client.name ?? "Cliente",
+                        telefone: client.telefone ?? client.phone ?? client.whatsapp ?? ""
+                    }
 
                 ]
             )
@@ -1292,13 +1593,30 @@ async function loadDashboardAndAgenda() {
                        appointment.status ??
                                "agendado",
 
+                clientId:
+                    appointment.cliente_id ?? null,
+
+                barberId:
+                    appointment.barbeiro_id ?? null,
+
+                serviceId:
+                    appointment.servico_id ?? null,
+
                 client:
                     clientsMap.get(
                         String(
                             appointment.cliente_id
                         )
-                    ) ??
+                    )?.nome ??
                     "Cliente",
+
+                clientPhone:
+                    clientsMap.get(
+                        String(
+                            appointment.cliente_id
+                        )
+                    )?.telefone ??
+                    "",
 
                 barber:
                     barbersMap.get(
@@ -1345,6 +1663,8 @@ price:
         }
     );
 
+
+    populateAgendaBarberFilter();
 
     renderDashboardAppointments();
 
@@ -1808,6 +2128,8 @@ loadAdminClients();
     // ==========================================
     // INICIALIZAÇÃO
     // ==========================================
+
+setupAgendaFilters();
 
 loadBarbers();
 
