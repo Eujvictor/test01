@@ -3734,3 +3734,1267 @@ document.querySelectorAll(".day-option input").forEach(checkbox => {
 
 });
 loadScheduleSettings();
+
+
+/* =========================================================
+   DASHBOARD NOVO — INTEGRAÇÃO ISOLADA COM SUPABASE
+   NÃO ALTERA AS FUNÇÕES DOS OUTROS MÓDULOS
+   ========================================================= */
+
+(function () {
+
+    "use strict";
+
+
+    function dashV3NormalizeStatus(value) {
+
+        return String(
+            value || "agendado"
+        )
+            .toLowerCase()
+            .trim()
+            .normalize("NFD")
+            .replace(
+                /[\u0300-\u036f]/g,
+                ""
+            )
+            .replace(
+                /\s+/g,
+                "_"
+            );
+
+    }
+
+
+    function dashV3Today() {
+
+        const now =
+            new Date();
+
+        const year =
+            now.getFullYear();
+
+        const month =
+            String(
+                now.getMonth() + 1
+            ).padStart(2, "0");
+
+        const day =
+            String(
+                now.getDate()
+            ).padStart(2, "0");
+
+        return `${year}-${month}-${day}`;
+
+    }
+
+
+    function dashV3Money(value) {
+
+        return Number(
+            value || 0
+        ).toLocaleString(
+            "pt-BR",
+            {
+                style: "currency",
+                currency: "BRL"
+            }
+        );
+
+    }
+
+
+    function dashV3Set(
+        id,
+        value
+    ) {
+
+        const element =
+            document.getElementById(id);
+
+        if (element) {
+
+            element.textContent =
+                value;
+
+        }
+
+    }
+
+
+    function dashV3Initials(
+        name
+    ) {
+
+        return String(
+            name || "Barbeiro"
+        )
+            .trim()
+            .split(/\s+/)
+            .slice(0, 2)
+            .map(
+                word =>
+                    word
+                        .charAt(0)
+                        .toUpperCase()
+            )
+            .join("");
+
+    }
+
+
+    function dashV3PeriodStart(
+        period
+    ) {
+
+        if (
+            period === "all"
+        ) {
+
+            return null;
+
+        }
+
+
+        if (
+            period === "today"
+        ) {
+
+            return dashV3Today();
+
+        }
+
+
+        const days =
+            Number(
+                period
+            ) || 30;
+
+
+        const date =
+            new Date();
+
+
+        date.setHours(
+            0,
+            0,
+            0,
+            0
+        );
+
+
+        date.setDate(
+            date.getDate() -
+            (days - 1)
+        );
+
+
+        const year =
+            date.getFullYear();
+
+        const month =
+            String(
+                date.getMonth() + 1
+            ).padStart(2, "0");
+
+        const day =
+            String(
+                date.getDate()
+            ).padStart(2, "0");
+
+
+        return `${year}-${month}-${day}`;
+
+    }
+
+
+    async function dashV3Load() {
+
+        if (
+            !window.supabaseClient
+        ) {
+
+            console.error(
+                "Dashboard: Supabase não foi carregado."
+            );
+
+            return;
+
+        }
+
+
+        const dashboard =
+            document.getElementById(
+                "dashboard"
+            );
+
+
+        if (!dashboard) {
+
+            return;
+
+        }
+
+
+        const periodSelect =
+            document.getElementById(
+                "dashv3Period"
+            );
+
+
+        const period =
+            periodSelect
+                ? periodSelect.value
+                : "30";
+
+
+        const startDate =
+            dashV3PeriodStart(
+                period
+            );
+
+
+        const today =
+            dashV3Today();
+
+
+        try {
+
+            const [
+                appointmentsResponse,
+                clientsResponse,
+                barbersResponse,
+                servicesResponse
+            ] =
+                await Promise.all([
+
+                    window.supabaseClient
+                        .from("agendamentos")
+                        .select("*")
+                        .order(
+                            "data",
+                            {
+                                ascending: true
+                            }
+                        )
+                        .order(
+                            "horario",
+                            {
+                                ascending: true
+                            }
+                        ),
+
+                    window.supabaseClient
+                        .from("clientes")
+                        .select("*"),
+
+                    window.supabaseClient
+                        .from("BARBEIROS")
+                        .select("*")
+                        .order(
+                            "nome",
+                            {
+                                ascending: true
+                            }
+                        ),
+
+                    window.supabaseClient
+                        .from("SERVIÇOS")
+                        .select("*")
+
+                ]);
+
+
+            if (
+                appointmentsResponse.error
+            ) {
+
+                console.error(
+                    "Dashboard - erro nos agendamentos:",
+                    appointmentsResponse.error
+                );
+
+                return;
+
+            }
+
+
+            if (
+                clientsResponse.error
+            ) {
+
+                console.error(
+                    "Dashboard - erro nos clientes:",
+                    clientsResponse.error
+                );
+
+            }
+
+
+            if (
+                barbersResponse.error
+            ) {
+
+                console.error(
+                    "Dashboard - erro nos barbeiros:",
+                    barbersResponse.error
+                );
+
+            }
+
+
+            if (
+                servicesResponse.error
+            ) {
+
+                console.error(
+                    "Dashboard - erro nos serviços:",
+                    servicesResponse.error
+                );
+
+            }
+
+
+            const rawAppointments =
+                appointmentsResponse.data || [];
+
+            const clients =
+                clientsResponse.data || [];
+
+            const barbers =
+                barbersResponse.data || [];
+
+            const services =
+                servicesResponse.data || [];
+
+
+            /*
+             * MAPA DE CLIENTES
+             */
+
+            const clientMap =
+                new Map(
+                    clients.map(
+                        client => [
+
+                            String(
+                                client.id
+                            ),
+
+                            client
+
+                        ]
+                    )
+                );
+
+
+            /*
+             * MAPA DE BARBEIROS
+             */
+
+            const barberMap =
+                new Map(
+                    barbers.map(
+                        barber => [
+
+                            String(
+                                barber.id
+                            ),
+
+                            barber
+
+                        ]
+                    )
+                );
+
+
+            /*
+             * MAPA DE SERVIÇOS
+             */
+
+            const serviceMap =
+                new Map(
+                    services.map(
+                        service => [
+
+                            String(
+                                service.id
+                            ),
+
+                            service
+
+                        ]
+                    )
+                );
+
+
+            /*
+             * NORMALIZA OS AGENDAMENTOS
+             */
+
+            const appointments =
+                rawAppointments.map(
+                    appointment => {
+
+                        const date =
+                            String(
+                                appointment.data || ""
+                            ).substring(
+                                0,
+                                10
+                            );
+
+
+                        const time =
+                            String(
+                                appointment.horario || ""
+                            ).substring(
+                                0,
+                                5
+                            );
+
+
+                        const client =
+                            clientMap.get(
+                                String(
+                                    appointment.cliente_id
+                                )
+                            );
+
+
+                        const barber =
+                            barberMap.get(
+                                String(
+                                    appointment.barbeiro_id
+                                )
+                            );
+
+
+                        const service =
+                            serviceMap.get(
+                                String(
+                                    appointment.servico_id
+                                )
+                            );
+
+
+                        const price =
+                            Number(
+
+                                appointment.valor ??
+                                appointment.preco ??
+                                service?.["preço"] ??
+                                service?.preco ??
+                                0
+
+                            );
+
+
+                        return {
+
+                            id:
+                                appointment.id,
+
+                            date:
+
+                                date,
+
+                            time:
+
+                                time,
+
+                            status:
+
+                                dashV3NormalizeStatus(
+                                    appointment.status
+                                ),
+
+                            client:
+
+                                client?.nome ??
+                                client?.name ??
+                                "Cliente",
+
+                            barber:
+
+                                barber?.nome ??
+                                barber?.name ??
+                                "Barbeiro",
+
+                            service:
+
+                                service?.nome ??
+                                service?.name ??
+                                "Serviço",
+
+                            barberId:
+
+                                appointment.barbeiro_id,
+
+                            serviceId:
+
+                                appointment.servico_id,
+
+                            price:
+
+                                price
+
+                        };
+
+                    }
+                );
+
+
+            /*
+             * ORDENA
+             */
+
+            appointments.sort(
+                (
+                    first,
+                    second
+                ) => {
+
+                    const firstDate =
+                        `${first.date}T${first.time}`;
+
+                    const secondDate =
+                        `${second.date}T${second.time}`;
+
+                    return (
+                        new Date(firstDate) -
+                        new Date(secondDate)
+                    );
+
+                }
+            );
+
+
+            /*
+             * FILTRO DO PERÍODO
+             */
+
+            const periodAppointments =
+                appointments.filter(
+                    appointment => {
+
+                        if (
+                            !startDate
+                        ) {
+
+                            return true;
+
+                        }
+
+                        return (
+                            appointment.date >=
+                            startDate
+                        );
+
+                    }
+                );
+
+
+            /*
+             * AGENDA DE HOJE
+             */
+
+            const todayAppointments =
+                appointments.filter(
+                    appointment =>
+                        appointment.date ===
+                        today
+                );
+
+
+            /*
+             * FINALIZADOS
+             */
+
+            const finalized =
+                periodAppointments.filter(
+                    appointment =>
+                        appointment.status ===
+                        "finalizado"
+                );
+
+
+            /*
+             * FATURAMENTO
+             */
+
+            const revenue =
+                finalized.reduce(
+                    (
+                        total,
+                        appointment
+                    ) => {
+
+                        return (
+                            total +
+                            Number(
+                                appointment.price ||
+                                0
+                            )
+                        );
+
+                    },
+                    0
+                );
+
+
+            /*
+             * STATUS
+             */
+
+            const pending =
+                periodAppointments.filter(
+                    appointment =>
+                        appointment.status ===
+                        "pendente" ||
+                        appointment.status ===
+                        "agendado"
+                ).length;
+
+
+            const confirmed =
+                periodAppointments.filter(
+                    appointment =>
+                        appointment.status ===
+                        "confirmado"
+                ).length;
+
+
+            const canceled =
+                periodAppointments.filter(
+                    appointment =>
+                        appointment.status ===
+                        "cancelado" ||
+                        appointment.status ===
+                        "nao_compareceu"
+                ).length;
+
+
+            /*
+             * CARDS
+             */
+
+            dashV3Set(
+                "dashv3TodayTotal",
+                todayAppointments.length
+            );
+
+
+            dashV3Set(
+                "dashv3TodayMeta",
+                todayAppointments.length === 1
+                    ? "1 atendimento hoje"
+                    : `${todayAppointments.length} atendimentos hoje`
+            );
+
+
+            dashV3Set(
+                "dashv3Finalized",
+                finalized.length
+            );
+
+
+            dashV3Set(
+                "dashv3FinalizedMeta",
+                startDate
+                    ? "No período selecionado"
+                    : "Todo o período"
+            );
+
+
+            dashV3Set(
+                "dashv3Clients",
+                clients.length
+            );
+
+
+            dashV3Set(
+                "dashv3Revenue",
+                dashV3Money(
+                    revenue
+                )
+            );
+
+
+            dashV3Set(
+                "dashv3RevenueMeta",
+                finalized.length === 1
+                    ? "1 atendimento finalizado"
+                    : `${finalized.length} atendimentos finalizados`
+            );
+
+
+            /*
+             * STATUS NA TELA
+             */
+
+            dashV3Set(
+                "dashv3Pending",
+                pending
+            );
+
+
+            dashV3Set(
+                "dashv3Confirmed",
+                confirmed
+            );
+
+
+            dashV3Set(
+                "dashv3StatusFinalized",
+                finalized.length
+            );
+
+
+            dashV3Set(
+                "dashv3Canceled",
+                canceled
+            );
+
+
+            /*
+             * BARBEIROS ATIVOS
+             */
+
+            const activeBarbers =
+                barbers.filter(
+                    barber =>
+                        barber.ativo !== false
+                );
+
+
+            dashV3Set(
+                "dashv3ActiveBarbers",
+                `${activeBarbers.length} ativos`
+            );
+
+
+            /*
+             * PRÓXIMOS AGENDAMENTOS
+             */
+
+            const upcomingContainer =
+                document.getElementById(
+                    "dashv3Upcoming"
+                );
+
+
+            if (
+                upcomingContainer
+            ) {
+
+                const futureToday =
+                    todayAppointments.filter(
+                        appointment =>
+                            appointment.time >=
+                            new Date()
+                                .toTimeString()
+                                .substring(
+                                    0,
+                                    5
+                                )
+                    );
+
+
+                const nextAppointments =
+                    (
+                        futureToday.length
+                            ? futureToday
+                            : appointments.filter(
+                                appointment =>
+                                    appointment.date >
+                                    today
+                            )
+                    ).slice(
+                        0,
+                        6
+                    );
+
+
+                if (
+                    nextAppointments.length === 0
+                ) {
+
+                    upcomingContainer.innerHTML = `
+                        <div class="dashv3-empty">
+                            Nenhum próximo agendamento.
+                        </div>
+                    `;
+
+                } else {
+
+                    upcomingContainer.innerHTML =
+                        nextAppointments
+                            .map(
+                                appointment => `
+
+                                    <div
+                                        class="dashv3-appointment">
+
+                                        <div class="dashv3-time">
+                                            ${escapeHTML(
+                                                appointment.time ||
+                                                "--:--"
+                                            )}
+                                        </div>
+
+                                        <div
+                                            class="dashv3-person">
+
+                                            <strong>
+                                                ${escapeHTML(
+                                                    appointment.client
+                                                )}
+                                            </strong>
+
+                                            <span>
+                                                ${escapeHTML(
+                                                    appointment.service
+                                                )}
+                                            </span>
+
+                                        </div>
+
+                                        <div
+                                            class="dashv3-barber">
+
+                                            ${escapeHTML(
+                                                appointment.barber
+                                            )}
+
+                                        </div>
+
+                                        <div
+                                            class="dashv3-badge">
+
+                                            ${escapeHTML(
+                                                appointment.status
+                                            )}
+
+                                        </div>
+
+                                    </div>
+
+                                `
+                            )
+                            .join("");
+
+                }
+
+            }
+
+
+            /*
+             * DESEMPENHO DOS BARBEIROS
+             */
+
+            const barberContainer =
+                document.getElementById(
+                    "dashv3Barbers"
+                );
+
+
+            if (
+                barberContainer
+            ) {
+
+                const barberStats =
+                    activeBarbers.map(
+                        barber => {
+
+                            const barberAppointments =
+                                periodAppointments.filter(
+                                    appointment =>
+                                        String(
+                                            appointment.barberId
+                                        ) ===
+                                        String(
+                                            barber.id
+                                        ) &&
+                                        appointment.status ===
+                                        "finalizado"
+                                );
+
+
+                            const barberRevenue =
+                                barberAppointments.reduce(
+                                    (
+                                        total,
+                                        appointment
+                                    ) =>
+                                        total +
+                                        Number(
+                                            appointment.price ||
+                                            0
+                                        ),
+                                    0
+                                );
+
+
+                            return {
+
+                                name:
+                                    barber.nome ??
+                                    barber.name ??
+                                    "Barbeiro",
+
+                                appointments:
+                                    barberAppointments.length,
+
+                                revenue:
+                                    barberRevenue
+
+                            };
+
+                        }
+                    )
+                    .sort(
+                        (
+                            first,
+                            second
+                        ) =>
+                            second.appointments -
+                            first.appointments
+                    );
+
+
+                const maximum =
+                    Math.max(
+                        1,
+                        ...barberStats.map(
+                            item =>
+                                item.appointments
+                        )
+                    );
+
+
+                if (
+                    barberStats.length === 0
+                ) {
+
+                    barberContainer.innerHTML = `
+                        <div class="dashv3-empty">
+                            Nenhum barbeiro ativo.
+                        </div>
+                    `;
+
+                } else {
+
+                    barberContainer.innerHTML =
+                        barberStats
+                            .map(
+                                item => `
+
+                                    <div
+                                        class="dashv3-team-row">
+
+                                        <div
+                                            class="dashv3-avatar">
+
+                                            ${escapeHTML(
+                                                dashV3Initials(
+                                                    item.name
+                                                )
+                                            )}
+
+                                        </div>
+
+                                        <div
+                                            class="dashv3-row-info">
+
+                                            <strong>
+                                                ${escapeHTML(
+                                                    item.name
+                                                )}
+                                            </strong>
+
+                                            <span>
+                                                ${item.appointments}
+                                                atendimentos
+                                                ·
+                                                ${dashV3Money(
+                                                    item.revenue
+                                                )}
+                                            </span>
+
+                                            <div
+                                                class="dashv3-bar">
+
+                                                <i
+                                                    style="width:${Math.round(
+                                                        (
+                                                            item.appointments /
+                                                            maximum
+                                                        ) * 100
+                                                    )}%;">
+                                                </i>
+
+                                            </div>
+
+                                        </div>
+
+                                        <span
+                                            class="dashv3-count">
+
+                                            ${item.appointments}
+
+                                        </span>
+
+                                    </div>
+
+                                `
+                            )
+                            .join("");
+
+                }
+
+            }
+
+
+            /*
+             * SERVIÇOS MAIS PROCURADOS
+             */
+
+            const serviceContainer =
+                document.getElementById(
+                    "dashv3Services"
+                );
+
+
+            if (
+                serviceContainer
+            ) {
+
+                const serviceStats =
+                    services
+                        .map(
+                            service => {
+
+                                const count =
+                                    periodAppointments.filter(
+                                        appointment =>
+                                            String(
+                                                appointment.serviceId
+                                            ) ===
+                                            String(
+                                                service.id
+                                            )
+                                    ).length;
+
+
+                                return {
+
+                                    name:
+                                        service.nome ??
+                                        service.name ??
+                                        "Serviço",
+
+                                    count
+
+                                };
+
+                            }
+                        )
+                        .filter(
+                            item =>
+                                item.count > 0
+                        )
+                        .sort(
+                            (
+                                first,
+                                second
+                            ) =>
+                                second.count -
+                                first.count
+                        )
+                        .slice(
+                            0,
+                            5
+                        );
+
+
+                dashV3Set(
+                    "dashv3ServiceCount",
+                    `${services.filter(
+                        service =>
+                            service.ativo !== false
+                    ).length} ativos`
+                );
+
+
+                if (
+                    serviceStats.length === 0
+                ) {
+
+                    serviceContainer.innerHTML = `
+                        <div class="dashv3-empty">
+                            Ainda não existem atendimentos no período.
+                        </div>
+                    `;
+
+                } else {
+
+                    const maxService =
+                        Math.max(
+                            1,
+                            ...serviceStats.map(
+                                item =>
+                                    item.count
+                            )
+                        );
+
+
+                    serviceContainer.innerHTML =
+                        serviceStats
+                            .map(
+                                item => `
+
+                                    <div
+                                        class="dashv3-service-row">
+
+                                        <div
+                                            class="dashv3-row-info">
+
+                                            <strong>
+                                                ${escapeHTML(
+                                                    item.name
+                                                )}
+                                            </strong>
+
+                                            <span>
+                                                ${item.count}
+                                                ${
+                                                    item.count === 1
+                                                        ? "atendimento"
+                                                        : "atendimentos"
+                                                }
+                                            </span>
+
+                                        </div>
+
+                                        <div
+                                            class="dashv3-bar">
+
+                                            <i
+                                                style="width:${Math.round(
+                                                    (
+                                                        item.count /
+                                                        maxService
+                                                    ) * 100
+                                                )}%;">
+                                            </i>
+
+                                        </div>
+
+                                        <span
+                                            class="dashv3-count">
+
+                                            ${item.count}
+
+                                        </span>
+
+                                    </div>
+
+                                `
+                            )
+                            .join("");
+
+                }
+
+            }
+
+        } catch (
+            error
+        ) {
+
+            console.error(
+                "Dashboard V3:",
+                error
+            );
+
+        }
+
+    }
+
+
+    function dashV3Init() {
+
+        const periodSelect =
+            document.getElementById(
+                "dashv3Period"
+            );
+
+
+        if (
+            periodSelect
+        ) {
+
+            periodSelect.addEventListener(
+                "change",
+                dashV3Load
+            );
+
+        }
+
+
+        const agendaButton =
+            document.getElementById(
+                "dashv3OpenAgenda"
+            );
+
+
+        if (
+            agendaButton
+        ) {
+
+            agendaButton.addEventListener(
+                "click",
+                () => {
+
+                    const agendaNav =
+                        document.querySelector(
+                            '[data-section="agenda"]'
+                        );
+
+
+                    if (
+                        agendaNav
+                    ) {
+
+                        agendaNav.click();
+
+                    }
+
+                }
+            );
+
+        }
+
+
+        dashV3Load();
+
+    }
+
+
+    if (
+        document.readyState ===
+        "loading"
+    ) {
+
+        document.addEventListener(
+            "DOMContentLoaded",
+            dashV3Init
+        );
+
+    } else {
+
+        dashV3Init();
+
+    }
+
+})();
