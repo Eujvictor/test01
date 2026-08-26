@@ -1,6 +1,13 @@
-document.addEventListener(
-    "DOMContentLoaded",
-    async function () {
+const SUPABASE_URL = "https://cjwmzbknarafinftpqsv.supabase.co";
+const SUPABASE_KEY = "sb_publishable_k1KkMm2f4-xRDy07B7f46w_0WddyoUj";
+
+const supabaseClient = window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY
+);
+
+
+document.addEventListener("DOMContentLoaded", function () {
 
     // ==========================================
     // VARIÁVEIS
@@ -9,54 +16,9 @@ document.addEventListener(
     let selectedService = "";
     let selectedPrice = 0;
     let selectedBarber = "";
+    let selectedBarberId = "";
     let selectedDate = "";
     let selectedTime = "";
-    let selectedServiceDuration = 0;
-
-    function addMinutesToTime(time, minutes) {
-
-    const [hours, mins] =
-        time.split(":").map(Number);
-
-    const totalMinutes =
-        hours * 60 +
-        mins +
-        Number(minutes || 0);
-
-    const resultHours =
-        Math.floor(totalMinutes / 60);
-
-    const resultMinutes =
-        totalMinutes % 60;
-
-    return (
-        String(resultHours).padStart(2, "0") +
-        ":" +
-        String(resultMinutes).padStart(2, "0")
-    );
-}
-
-function timeToMinutes(time) {
-
-    const [hours, minutes] =
-        time.split(":").map(Number);
-
-    return (
-        hours * 60 +
-        minutes
-    );
-}
-
-    function escapeHTML(value) {
-
-    return String(value)
-        .replaceAll("&", "&amp;")
-        .replaceAll("<", "&lt;")
-        .replaceAll(">", "&gt;")
-        .replaceAll('"', "&quot;")
-        .replaceAll("'", "&#039;");
-
-}
 
     // ==========================================
     // ELEMENTOS DO RESUMO
@@ -77,254 +39,40 @@ function timeToMinutes(time) {
     const summaryPrice =
         document.getElementById("summaryPrice");
 
-   // ==========================================
-// SERVIÇOS — SUPABASE
-// ==========================================
-
-const servicesContainer =
-    document.getElementById("servicesContainer");
-
-
-async function loadServicesFromSupabase() {
-
-    if (!servicesContainer) {
-        return;
-    }
-
-
-    servicesContainer.innerHTML =
-        "<p>Carregando serviços...</p>";
-
-
-    const {
-        data: services,
-        error
-    } =
-        await supabaseClient
-            .from("SERVIÇOS")
-            .select(
-                'id, nome, "preço", "duraçao"'
-            )
-            .eq(
-                "ativo",
-                true
-            )
-            .order(
-                "id",
-                {
-                    ascending: true
-                }
-            );
-
-
-    if (error) {
-
-        console.error(
-            "Erro ao carregar serviços:",
-            error
-        );
-
-
-        servicesContainer.innerHTML =
-            "<p>Não foi possível carregar os serviços.</p>";
-
-        return;
-    }
-
-
-    if (
-        !services ||
-        services.length === 0
-    ) {
-
-        servicesContainer.innerHTML =
-            "<p>Nenhum serviço disponível.</p>";
-
-        return;
-
-    }
-
-
-    servicesContainer.innerHTML = "";
-
-
-    services.forEach(
-        function (service) {
-
-            const button =
-                document.createElement(
-                    "button"
-                );
-
-
-            button.type =
-                "button";
-
-
-            button.classList.add(
-                "option",
-                "service-option"
-            );
-
-
-            button.dataset.service =
-                service.nome;
-
-
-            button.dataset.price =
-                service["preço"];
-
-
-            button.dataset.duration =
-                service["duraçao"];
-
-
-            button.innerHTML = `
-
-                <div>
-
-                    <strong>
-                        ${escapeHTML(
-                            service.nome
-                        )}
-                    </strong>
-
-                    <span>
-                        ${Number(
-                            service["duraçao"] ?? 0
-                        )}
-                        min
-                    </span>
-
-                </div>
-
-                <strong>
-                    ${Number(
-                        service["preço"] ?? 0
-                    ).toLocaleString(
-                        "pt-BR",
-                        {
-                            style: "currency",
-                            currency: "BRL"
-                        }
-                    )}
-                </strong>
-
-            `;
-
-
-            button.addEventListener(
-                "click",
-                function () {
-
-                    document
-                        .querySelectorAll(
-                            ".service-option"
-                        )
-                        .forEach(
-                            function (item) {
-
-                                item.classList.remove(
-                                    "selected"
-                                );
-
-                            }
-                        );
-
-
-                    button.classList.add(
-                        "selected"
-                    );
-
-
-                    selectedService =
-                        service.nome;
-
-
-                    selectedPrice =
-                        Number(
-                            service["preço"] ?? 0
-                        );
-
-                        selectedServiceDuration =
-                        Number(
-                            service["duraçao"] ?? 0
-                        );
-
-                    if (summaryService) {
-
-                        summaryService.textContent =
-                            selectedService;
-
-                    }
-
-
-                    if (summaryPrice) {
-
-                        summaryPrice.textContent =
-                            new Intl.NumberFormat(
-                                "pt-BR",
-                                {
-                                    style: "currency",
-                                    currency: "BRL"
-                                }
-                            ).format(
-                                selectedPrice
-                            );
-
-                    }
-
-                    if (selectedDate && selectedBarber) {
-                        loadAvailableTimes();
-                    } else {
-                        renderTimeButtons();
-                    }
-
-                    updateButton();
-
-                }
-            );
-
-
-            servicesContainer.appendChild(
-                button
-            );
-
-        }
-    );
-
-}
-
-
     // ==========================================
-    // BARBEIROS
+    // SERVIÇOS
     // ==========================================
 
-    const barberButtons =
-        document.querySelectorAll(".barber-option");
+    const serviceButtons =
+        document.querySelectorAll(".service-option");
 
-    barberButtons.forEach(function (button) {
+    serviceButtons.forEach(function (button) {
 
         button.addEventListener("click", function () {
 
-            barberButtons.forEach(function (item) {
+            serviceButtons.forEach(function (item) {
                 item.classList.remove("selected");
             });
 
             button.classList.add("selected");
 
-            selectedBarber =
-                button.dataset.barber;
+            selectedService =
+                button.dataset.service;
 
-            if (summaryBarber) {
-                summaryBarber.textContent =
-                    selectedBarber;
+            selectedPrice =
+                Number(button.dataset.price);
+
+            if (summaryService) {
+                summaryService.textContent =
+                    selectedService;
             }
 
-            if (selectedDate) {
-                loadAvailableTimes();
-            } else {
-                renderTimeButtons();
+            if (summaryPrice) {
+                summaryPrice.textContent =
+                    new Intl.NumberFormat("pt-BR", {
+                        style: "currency",
+                        currency: "BRL"
+                    }).format(selectedPrice);
             }
 
             updateButton();
@@ -332,6 +80,196 @@ async function loadServicesFromSupabase() {
         });
 
     });
+
+
+    // ==========================================
+    // BARBEIROS — CARREGAMENTO DINÂMICO
+    // ==========================================
+
+    const barbersGrid =
+        document.getElementById("barbersGrid");
+
+
+    function escapeHTML(value) {
+
+        return String(value ?? "")
+            .replaceAll("&", "&amp;")
+            .replaceAll("<", "&lt;")
+            .replaceAll(">", "&gt;")
+            .replaceAll('"', "&quot;")
+            .replaceAll("'", "&#039;");
+
+    }
+
+
+    function getInitials(name) {
+
+        return String(name ?? "")
+            .trim()
+            .split(/\s+/)
+            .filter(Boolean)
+            .slice(0, 2)
+            .map(word =>
+                word.charAt(0).toUpperCase()
+            )
+            .join("") || "B";
+
+    }
+
+
+    async function loadBarbers() {
+
+        if (!barbersGrid) {
+            return;
+        }
+
+        barbersGrid.innerHTML =
+            "<p class=\"barbers-loading\">Carregando barbeiros...</p>";
+
+        const { data, error } =
+            await supabaseClient
+                .from("BARBEIROS")
+                .select("id, nome, especialidade, ativo")
+                .eq("ativo", true)
+                .order("nome", { ascending: true });
+
+        if (error) {
+
+            console.error(
+                "Erro ao carregar barbeiros:",
+                error
+            );
+
+            barbersGrid.innerHTML =
+                "<p>Não foi possível carregar os barbeiros.</p>";
+
+            return;
+        }
+
+        renderBarbers(data || []);
+
+    }
+
+
+    function renderBarbers(barbers) {
+
+        if (!barbersGrid) {
+            return;
+        }
+
+        if (barbers.length === 0) {
+
+            selectedBarber = "";
+            selectedBarberId = "";
+
+            if (summaryBarber) {
+                summaryBarber.textContent =
+                    "Nenhum barbeiro disponível";
+            }
+
+            barbersGrid.innerHTML =
+                "<p>Nenhum barbeiro disponível no momento.</p>";
+
+            updateButton();
+
+            return;
+        }
+
+        barbersGrid.innerHTML =
+            barbers.map(function (barber) {
+
+                const name =
+                    barber.nome ?? "";
+
+                const specialty =
+                    barber.especialidade ??
+                    "Barbeiro";
+
+                return `
+                    <button
+                        type="button"
+                        class="barber-option"
+                        data-barber-id="${escapeHTML(barber.id)}"
+                        data-barber-name="${escapeHTML(name)}"
+                    >
+                        <div class="barber-avatar">
+                            ${escapeHTML(getInitials(name))}
+                        </div>
+
+                        <div>
+                            <strong>
+                                ${escapeHTML(name)}
+                            </strong>
+
+                            <small>
+                                ${escapeHTML(specialty)}
+                            </small>
+                        </div>
+                    </button>
+                `;
+
+            }).join("");
+
+        document
+            .querySelectorAll(".barber-option")
+            .forEach(function (button) {
+
+                button.addEventListener(
+                    "click",
+                    function () {
+
+                        document
+                            .querySelectorAll(".barber-option")
+                            .forEach(function (item) {
+                                item.classList.remove(
+                                    "selected"
+                                );
+                            });
+
+                        button.classList.add(
+                            "selected"
+                        );
+
+                        selectedBarberId =
+                            button.dataset.barberId;
+
+                        selectedBarber =
+                            button.dataset.barberName;
+
+                        selectedTime = "";
+
+                        document
+                            .querySelectorAll(
+                                ".time-option"
+                            )
+                            .forEach(function (item) {
+                                item.classList.remove(
+                                    "selected"
+                                );
+                            });
+
+                        if (summaryBarber) {
+                            summaryBarber.textContent =
+                                selectedBarber;
+                        }
+
+                        if (summaryTime) {
+                            summaryTime.textContent =
+                                "—";
+                        }
+
+                        updateButton();
+
+                        if (selectedDate) {
+                            loadAvailableTimes();
+                        }
+
+                    }
+                );
+
+            });
+
+    }
 
 
     // ==========================================
@@ -659,18 +597,15 @@ async function loadServicesFromSupabase() {
                         selectedDate =
                             button.dataset.date;
 
-                        // A disponibilidade dos horários depende da data escolhida.
+
+                        
+
                         selectedTime = "";
 
                         if (summaryTime) {
                             summaryTime.textContent =
-                                "Não selecionado";
+                                "—";
                         }
-
-                        loadAvailableTimes();
-
-
-                        // Atualiza resumo
 
                         if (summaryDate) {
 
@@ -683,6 +618,10 @@ async function loadServicesFromSupabase() {
 
 
                         updateButton();
+
+                        if (selectedBarberId) {
+                            loadAvailableTimes();
+                        }
 
                     }
                 );
@@ -823,566 +762,250 @@ async function loadServicesFromSupabase() {
     }
 
 
-   // ==========================================
-// INICIAR CALENDÁRIO
-// ==========================================
+    // ==========================================
+    // INICIAR CALENDÁRIO
+    // ==========================================
 
-renderCalendar();
+    renderCalendar();
 
 
-let availableTimes = [];
+    async function loadAvailableTimes() {
 
-let workingDays = [];
+    if (!timesContainer) {
+        return;
+    }
 
-let blockedSlots = {};
+    if (!selectedDate || !selectedBarberId) {
 
-let blockedDates = [];
+        timesContainer.innerHTML =
+            "<p>Escolha o barbeiro e a data para ver os horários.</p>";
 
-let considerServiceDuration = false;
+        return;
+    }
 
-async function loadScheduleSettingsFromSupabase() {
-    const { data, error } =
+
+    timesContainer.innerHTML =
+        "<p>Carregando horários...</p>";
+
+
+    // ==========================================
+    // BARBEIRO JÁ SELECIONADO
+    // ==========================================
+
+    const barberId =
+        selectedBarberId;
+
+
+    // ==========================================
+    // BUSCAR HORÁRIOS JÁ RESERVADOS
+    // ==========================================
+
+    const { data: appointments, error } =
         await supabaseClient
-            .from("configuracoes_horarios")
-            .select("*")
-            .limit(1)
-            .maybeSingle();
+            .from("agendamentos")
+            .select("horario")
+            .eq("barbeiro_id", barberId)
+            .eq("data", selectedDate)
+            .neq("status", "cancelado");
 
 
     if (error) {
 
         console.error(
-            "Erro ao carregar configurações de horários:",
+            "Erro ao buscar agendamentos:",
             error
         );
 
-        return;
-    }
-
-
-    if (!data) {
-
-        console.warn(
-            "Nenhuma configuração de horário encontrada."
-        );
+        timesContainer.innerHTML =
+            "<p>Erro ao carregar horários.</p>";
 
         return;
     }
 
 
-    const openingTime =
-        data.horario_abertura ?? "09:00";
+    const occupiedTimes =
+        (appointments || []).map(function (appointment) {
 
+            return appointment.horario.substring(0, 5);
 
-    const closingTime =
-        data.horario_fechamento ?? "19:00";
-
-
-    const interval =
-    Number(
-        data.intervalo ?? 60
-    );
-considerServiceDuration =
-    Boolean(
-        data.considerar_duracao_servicos
-    );
-
-
-
-
-
-workingDays =
-    Array.isArray(data.dias_funcionamento)
-        ? data.dias_funcionamento
-        : [];
-
-
-workingDays =
-    Array.isArray(data.dias_funcionamento)
-        ? data.dias_funcionamento
-        : [];
-
-
-blockedDates =
-    Array.isArray(data.datas_bloqueadas)
-        ? data.datas_bloqueadas
-        : [];
-
-
-const savedBlockedSlots =
-    data.horarios_bloqueados;
-
-
-if (
-    savedBlockedSlots &&
-    typeof savedBlockedSlots === "object" &&
-    !Array.isArray(savedBlockedSlots)
-) {
-
-    blockedSlots =
-        savedBlockedSlots;
-
-} else {
-
-    blockedSlots = {};
-
-}
-
-
-const times = [];
-
-
-    const [openingHour, openingMinute] =
-        openingTime
-            .split(":")
-            .map(Number);
-
-
-    const [closingHour, closingMinute] =
-        closingTime
-            .split(":")
-            .map(Number);
-
-
-    let current =
-        openingHour * 60 +
-        openingMinute;
-
-
-    const closing =
-        closingHour * 60 +
-        closingMinute;
-
-
-    while (current < closing) {
-
-        const stepForSlot =
-            considerServiceDuration &&
-            selectedServiceDuration > 0
-                ? selectedServiceDuration
-                : interval;
-
-        if (current + stepForSlot > closing) {
-            break;
-        }
-
-        const hour =
-            String(
-                Math.floor(current / 60)
-            ).padStart(2, "0");
-
-
-        const minute =
-            String(
-                current % 60
-            ).padStart(2, "0");
-
-
-        times.push(
-            `${hour}:${minute}`
-        );
-
-
-        current += stepForSlot;
-
-    }
-
-
-    availableTimes = times;
-
-}
-
-
-    async function loadAppointmentBlocks(barberId, date) {
-
-        const { data: appointments, error } =
-            await supabaseClient
-                .from("agendamentos")
-                .select("horario, servico_id")
-                .eq("barbeiro_id", barberId)
-                .eq("data", date)
-                .neq("status", "cancelado");
-
-        if (error) {
-            throw error;
-        }
-
-        const appointmentBlocks = [];
-
-        for (const appointment of appointments || []) {
-
-            const start =
-                String(appointment.horario).substring(0, 5);
-
-            const { data: serviceData, error: serviceError } =
-                await supabaseClient
-                    .from("SERVIÇOS")
-                    .select('"duraçao"')
-                    .eq("id", appointment.servico_id)
-                    .maybeSingle();
-
-            appointmentBlocks.push({
-                start,
-                duration:
-                    !serviceError && serviceData
-                        ? Number(serviceData["duraçao"] ?? 0)
-                        : 0
-            });
-        }
-
-        return appointmentBlocks;
-    }
-
-
-    function hasDurationConflict(startTime, duration, appointmentBlocks) {
-
-        if (!considerServiceDuration || !duration) {
-            return false;
-        }
-
-        const selectedStart = timeToMinutes(startTime);
-        const selectedEnd =
-            selectedStart + Number(duration);
-
-        return appointmentBlocks.some(appointment => {
-
-            const appointmentStart =
-                timeToMinutes(appointment.start);
-
-            const appointmentEnd =
-                appointmentStart +
-                Number(appointment.duration || 0);
-
-            return (
-                selectedStart < appointmentEnd &&
-                selectedEnd > appointmentStart
-            );
         });
-    }
 
 
-    function renderTimeButtons(
-    occupiedTimes = [],
-    appointmentBlocks = []
-) {
+    // ==========================================
+    // VERIFICAR SE A DATA É HOJE
+    // ==========================================
 
-        if (!timesContainer) {
-            return;
+    const now =
+        new Date();
+
+    const todayString =
+        formatDate(now);
+
+
+    const isToday =
+        selectedDate === todayString;
+
+
+    // ==========================================
+    // LIMPAR HORÁRIOS
+    // ==========================================
+
+    timesContainer.innerHTML = "";
+
+
+    // ==========================================
+    // CRIAR HORÁRIOS
+    // ==========================================
+
+    availableTimes.forEach(function (time) {
+
+        let isOccupied =
+            occupiedTimes.includes(time);
+
+
+        let isPast =
+            false;
+
+
+        // ==========================================
+        // SE FOR HOJE, VERIFICAR HORÁRIO PASSADO
+        // ==========================================
+
+        if (isToday) {
+
+            const [hours, minutes] =
+                time.split(":").map(Number);
+
+
+            const timeDate =
+                new Date();
+
+            timeDate.setHours(
+                hours,
+                minutes,
+                0,
+                0
+            );
+
+
+            isPast =
+                timeDate <= now;
         }
 
-        timesContainer.innerHTML = "";
 
-        const now = new Date();
+        // ==========================================
+        // CRIAR BOTÃO
+        // ==========================================
 
-        const todayString =
-            formatDate(now);
-
-        const isToday =
-            selectedDate === todayString;
+        const button =
+            document.createElement("button");
 
 
-        availableTimes.forEach(function (time) {
+        button.type =
+            "button";
 
-            const button =
-                document.createElement("button");
 
-            button.type = "button";
+        button.classList.add(
+            "time-option"
+        );
+
+
+        button.textContent =
+            time;
+
+
+        // ==========================================
+        // HORÁRIO OCUPADO
+        // ==========================================
+
+        if (isOccupied) {
+
+            button.disabled =
+                true;
 
             button.classList.add(
-                "time-option"
+                "disabled"
             );
 
-            button.textContent = time;
+            button.textContent =
+                time + " — Ocupado";
+        }
 
 
-            let isOccupied =
-                occupiedTimes.includes(time);
+        // ==========================================
+        // HORÁRIO JÁ PASSOU
+        // ==========================================
 
-            if (hasDurationConflict(
-                time,
-                selectedServiceDuration,
-                appointmentBlocks
-            )) {
-                isOccupied = true;
-            }
+        else if (isPast) {
 
+            button.disabled =
+                true;
 
-            const blockedTimesForDate =
-    Array.isArray(
-        blockedSlots[selectedDate]
-    )
-        ? blockedSlots[selectedDate]
-        : [];
+            button.classList.add(
+                "disabled"
+            );
+
+            button.textContent =
+                time + " — Encerrado";
+        }
 
 
-const isBlocked =
-    blockedTimesForDate.includes(time);
+        // ==========================================
+        // HORÁRIO DISPONÍVEL
+        // ==========================================
 
+        else {
 
-let isPast = false;
+            button.addEventListener(
+                "click",
+                function () {
 
+                    document
+                        .querySelectorAll(
+                            ".time-option"
+                        )
+                        .forEach(
+                            function (item) {
 
-            // Se for hoje, não permite horários que já passaram.
-            if (isToday) {
+                                item.classList.remove(
+                                    "selected"
+                                );
 
-                const [hours, minutes] =
-                    time.split(":").map(Number);
-
-                const timeDate =
-                    new Date();
-
-                timeDate.setHours(
-                    hours,
-                    minutes,
-                    0,
-                    0
-                );
-
-                isPast =
-                    timeDate <= now;
-            }
-
-
-            if (isOccupied) {
-
-    button.disabled = true;
-
-    button.classList.add(
-        "disabled"
-    );
-
-    button.textContent =
-        time + " — Ocupado";
-
-} else if (isBlocked) {
-
-    button.disabled = true;
-
-    button.classList.add(
-        "disabled"
-    );
-
-    button.textContent =
-        time + " — Bloqueado";
-
-} else if (isPast) {
-
-                button.disabled = true;
-
-                button.classList.add(
-                    "disabled"
-                );
-
-                button.textContent =
-                    time + " — Encerrado";
-
-            } else {
-
-                button.addEventListener(
-                    "click",
-                    function () {
-
-                        document
-                            .querySelectorAll(
-                                ".time-option"
-                            )
-                            .forEach(
-                                function (item) {
-                                    item.classList.remove(
-                                        "selected"
-                                    );
-                                }
-                            );
-
-
-                        button.classList.add(
-                            "selected"
+                            }
                         );
 
 
-                        selectedTime =
-                            time;
+                    button.classList.add(
+                        "selected"
+                    );
 
 
-                        if (summaryTime) {
-                            summaryTime.textContent =
-                                selectedTime;
-                        }
+                    selectedTime =
+                        time;
 
 
-                        updateButton();
+                    if (summaryTime) {
+
+                        summaryTime.textContent =
+                            selectedTime;
 
                     }
-                );
-            }
 
 
-            timesContainer.appendChild(
-                button
+                    updateButton();
+
+                }
             );
-
-        });
-    }
-
-
-    async function loadAvailableTimes() {
-
-        if (!timesContainer) {
-            return;
         }
 
-      await loadScheduleSettingsFromSupabase();
 
-
-if (
-    selectedDate &&
-    blockedDates.includes(selectedDate)
-) {
-
-    timesContainer.innerHTML =
-        "<p>Este dia está bloqueado pela barbearia.</p>";
-
-    return;
-}
-
-
-console.log(
-    "Dias de funcionamento carregados:",
-    workingDays
-);
-
-console.log(
-    "Data selecionada:",
-    selectedDate
-);
-
-
-if (selectedDate) {  
-
-
-
-
-    const selectedDateObject =
-        new Date(
-            selectedDate + "T12:00:00"
+        timesContainer.appendChild(
+            button
         );
 
-
-    const dayNames = [
-        "domingo",
-        "segunda",
-        "terca",
-        "quarta",
-        "quinta",
-        "sexta",
-        "sabado"
-    ];
-
-
-    const selectedDay =
-        dayNames[
-            selectedDateObject.getDay()
-        ];
-
-
-    if (
-        workingDays.length > 0 &&
-        !workingDays.includes(selectedDay)
-    ) {
-
-        timesContainer.innerHTML =
-            "<p>A barbearia não funciona neste dia.</p>";
-
-        return;
-
-    }
+    });
 
 }
-
-        // Antes da data ser escolhida, os horários aparecem normalmente.
-        // Depois que a data for escolhida, o Supabase verifica a disponibilidade.
-        if (!selectedDate || !selectedBarber) {
-
-            renderTimeButtons();
-
-            return;
-        }
-
-
-        timesContainer.innerHTML =
-            "<p>Verificando disponibilidade...</p>";
-
-
-        // ==========================================
-        // ENCONTRAR O BARBEIRO
-        // ==========================================
-
-        const { data: barberData, error: barberError } =
-            await supabaseClient
-                .from("BARBEIROS")
-                .select("id")
-                .eq("nome", selectedBarber)
-                .eq("ativo", true)
-                .maybeSingle();
-
-
-        if (barberError || !barberData) {
-
-            console.error(
-                "Erro ao encontrar barbeiro:",
-                barberError
-            );
-
-            timesContainer.innerHTML =
-                "<p>Não foi possível carregar os horários.</p>";
-
-            return;
-        }
-
-
-        const barberId =
-            barberData.id;
-
-
-        // ==========================================
-        // BUSCAR HORÁRIOS JÁ RESERVADOS
-        // ==========================================
-
-        let appointmentBlocks = [];
-
-        try {
-
-            appointmentBlocks =
-                await loadAppointmentBlocks(
-                    barberId,
-                    selectedDate
-                );
-
-        } catch (error) {
-
-            console.error(
-                "Erro ao buscar agendamentos:",
-                error
-            );
-
-            timesContainer.innerHTML =
-                "<p>Erro ao carregar horários.</p>";
-
-            return;
-        }
-
-
-        const occupiedTimes =
-            appointmentBlocks.map(
-                appointment => appointment.start
-            );
-
-        renderTimeButtons(
-    occupiedTimes,
-    appointmentBlocks
-);
-
-    }
 
     // ==========================================
     // CONFIRMAR AGENDAMENTO
@@ -1399,7 +1022,7 @@ if (selectedDate) {
 
         confirmButton.addEventListener(
             "click",
-            async function () {
+            function () {
 
                 const nameElement =
                     document.getElementById("name");
@@ -1421,344 +1044,103 @@ if (selectedDate) {
 
 
                 if (!selectedService) {
-                    showMessage("Escolha um serviço.");
+
+                    showMessage(
+                        "Escolha um serviço."
+                    );
+
                     return;
                 }
 
-                if (!selectedBarber) {
-                    showMessage("Escolha um barbeiro.");
+
+                if (!selectedBarber || !selectedBarberId) {
+
+                    showMessage(
+                        "Escolha um barbeiro."
+                    );
+
                     return;
                 }
+
 
                 if (!selectedDate) {
-                    showMessage("Escolha uma data.");
+
+                    showMessage(
+                        "Escolha uma data."
+                    );
+
                     return;
                 }
+
 
                 if (!selectedTime) {
-                    showMessage("Escolha um horário disponível.");
+
+                    showMessage(
+                        "Escolha um horário."
+                    );
+
                     return;
                 }
+
 
                 if (!name) {
-                    showMessage("Digite seu nome.");
+
+                    showMessage(
+                        "Digite seu nome."
+                    );
+
                     return;
                 }
+
 
                 if (!phone) {
-                    showMessage("Digite seu WhatsApp.");
-                    return;
-                }
-
-
-                confirmButton.disabled = true;
-
-                showMessage(
-                    "Confirmando agendamento..."
-                );
-
-
-                // ==========================================
-                // ENCONTRAR BARBEIRO
-                // ==========================================
-
-                const { data: barberData, error: barberError } =
-                    await supabaseClient
-                        .from("BARBEIROS")
-                        .select("id")
-                        .eq("nome", selectedBarber)
-                        .eq("ativo", true)
-                        .maybeSingle();
-
-
-                if (barberError || !barberData) {
-
-                    console.error(
-                        "Erro ao encontrar barbeiro:",
-                        barberError
-                    );
 
                     showMessage(
-                        "Não foi possível encontrar o barbeiro."
+                        "Digite seu WhatsApp."
                     );
 
-                    updateButton();
                     return;
                 }
 
 
-                // ==========================================
-                // ENCONTRAR SERVIÇO
-                // ==========================================
+                const appointment = {
 
-                const { data: serviceData, error: serviceError } =
-                    await supabaseClient
-                        .from("SERVIÇOS")
-                        .select("id")
-                        .eq("nome", selectedService)
-                        .maybeSingle();
+                    service:
+                        selectedService,
 
+                    price:
+                        selectedPrice,
 
-                if (serviceError || !serviceData) {
+                    barber:
+                        selectedBarber,
 
-                    console.error(
-                        "Erro ao encontrar serviço:",
-                        serviceError
-                    );
+                    barberId:
+                        selectedBarberId,
 
-                    showMessage(
-                        "Não foi possível encontrar o serviço."
-                    );
+                    date:
+                        selectedDate,
 
-                    updateButton();
-                    return;
-                }
+                    time:
+                        selectedTime,
 
+                    name:
+                        name,
 
-                // ==========================================
-                // VERIFICAR NOVAMENTE O HORÁRIO
-                // ==========================================
+                    phone:
+                        phone
 
-                const { data: existingAppointment, error: checkError } =
-                    await supabaseClient
-                        .from("agendamentos")
-                        .select("id")
-                        .eq("barbeiro_id", barberData.id)
-                        .eq("data", selectedDate)
-                        .eq("horario", selectedTime)
-                        .neq("status", "cancelado")
-                        .maybeSingle();
-
-
-                if (checkError) {
-
-                    console.error(
-                        "Erro ao verificar horário:",
-                        checkError
-                    );
-
-                    showMessage(
-                        "Erro ao verificar a disponibilidade."
-                    );
-
-                    updateButton();
-                    return;
-                }
-
-
-                if (considerServiceDuration) {
-
-                    try {
-
-                        const confirmationBlocks =
-                            await loadAppointmentBlocks(
-                                barberData.id,
-                                selectedDate
-                            );
-
-                        if (hasDurationConflict(
-                            selectedTime,
-                            selectedServiceDuration,
-                            confirmationBlocks
-                        )) {
-
-                            showMessage(
-                                "Esse horário entra em conflito com outro atendimento. Escolha outro."
-                            );
-
-                            await loadAvailableTimes();
-                            updateButton();
-                            return;
-                        }
-
-                    } catch (error) {
-
-                        console.error(
-                            "Erro ao validar duração do serviço:",
-                            error
-                        );
-
-                        showMessage(
-                            "Não foi possível validar a duração do atendimento."
-                        );
-
-                        updateButton();
-                        return;
-                    }
-                }
-
-
-                if (existingAppointment) {
-
-                    selectedTime = "";
-
-                    if (summaryTime) {
-                        summaryTime.textContent =
-                            "Não selecionado";
-                    }
-
-                    showMessage(
-                        "Esse horário acabou de ser reservado. Escolha outro."
-                    );
-
-                    await load();
-
-                    updateButton();
-                    return;
-                }
-
-
-                // ==========================================
-                // PROCURAR CLIENTE
-                // ==========================================
-
-                const { data: existingClient, error: clientSearchError } =
-                    await supabaseClient
-                        .from("clientes")
-                        .select("id")
-                        .eq("telefone", phone)
-                        .maybeSingle();
-
-
-                if (clientSearchError) {
-
-                    console.error(
-                        "Erro ao procurar cliente:",
-                        clientSearchError
-                    );
-
-                    showMessage(
-                        "Erro ao verificar seus dados."
-                    );
-
-                    updateButton();
-                    return;
-                }
-
-
-                let clientId;
-
-
-                if (existingClient) {
-
-                    clientId =
-                        existingClient.id;
-
-                } else {
-
-                    // ==========================================
-                    // CRIAR CLIENTE
-                    // ==========================================
-
-                    const { data: newClient, error: clientInsertError } =
-                        await supabaseClient
-                            .from("clientes")
-                            .insert({
-                                nome: name,
-                                telefone: phone,
-                                ativo: true
-                            })
-                            .select("id")
-                            .single();
-
-
-                    if (clientInsertError) {
-
-                        console.error(
-                            "Erro ao criar cliente:",
-                            clientInsertError
-                        );
-
-                        showMessage(
-                            "Não foi possível cadastrar seus dados."
-                        );
-
-                        updateButton();
-                        return;
-                    }
-
-
-                    clientId =
-                        newClient.id;
-                }
-
-
-                // ==========================================
-                // SALVAR AGENDAMENTO
-                // ==========================================
-
-                const { data: newAppointment, error: appointmentError } =
-                    await supabaseClient
-                        .from("agendamentos")
-                        .insert({
-                            cliente_id: clientId,
-                            barbeiro_id: barberData.id,
-                            servico_id: serviceData.id,
-                            data: selectedDate,
-                            horario: selectedTime,
-                            status: "confirmado"
-                        })
-                        .select()
-                        .single();
-
-
-                if (appointmentError) {
-
-                    console.error(
-                        "Erro ao criar agendamento:",
-                        appointmentError
-                    );
-
-
-                    // A constraint UNIQUE protege contra duas pessoas
-                    // reservando o mesmo barbeiro/data/horário ao mesmo tempo.
-                    if (
-                        appointmentError.code === "23505"
-                    ) {
-
-                        selectedTime = "";
-
-                        if (summaryTime) {
-                            summaryTime.textContent =
-                                "Não selecionado";
-                        }
-
-                        showMessage(
-                            "Esse horário acabou de ser reservado por outra pessoa. Escolha outro."
-                        );
-
-                        await loadAvailableTimes();
-
-                        updateButton();
-                        return;
-                    }
-
-
-                    showMessage(
-                        "Não foi possível confirmar o agendamento."
-                    );
-
-                    updateButton();
-                    return;
-                }
+                };
 
 
                 console.log(
-                    "Agendamento salvo:",
-                    newAppointment
+                    "Agendamento:",
+                    appointment
                 );
 
 
                 showMessage(
-                    "Agendamento confirmado com sucesso!"
+                    "Agendamento preenchido com sucesso!"
                 );
-
-
-                // Atualiza a tela: o horário recém-reservado
-                // passa a aparecer como ocupado.
-                await loadAvailableTimes();
-
-                updateButton();
 
             }
         );
@@ -1780,6 +1162,7 @@ if (selectedDate) {
         const ready =
             selectedService !== "" &&
             selectedBarber !== "" &&
+            selectedBarberId !== "" &&
             selectedDate !== "" &&
             selectedTime !== "";
 
@@ -1809,10 +1192,14 @@ if (selectedDate) {
     // ==========================================
     // INICIALIZAÇÃO
     // ==========================================
-loadServicesFromSupabase();
 
-renderTimeButtons();
+    updateButton();
 
-updateButton();
-    
+    loadBarbers();
+
+    window.addEventListener(
+        "focus",
+        loadBarbers
+    );
+
 });

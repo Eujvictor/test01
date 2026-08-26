@@ -7,5 +7,4 @@ const supabaseClient = window.supabase.createClient(
     SUPABASE_PUBLISHABLE_KEY
 );
 
-window.supabaseClient =
-    supabaseClient;
+window.supabaseClient = supabaseClient;

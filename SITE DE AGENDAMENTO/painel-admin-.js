@@ -36,91 +36,10 @@ document.addEventListener(
 
 
     // ==========================================
-    // DADOS INICIAIS
+    // DADOS DOS BARBEIROS — SUPABASE
     // ==========================================
 
-    const defaultBarbers = [
-
-        {
-            id: 1,
-            name: "João",
-            specialty: "Corte masculino",
-            phone: "(62) 99999-1111",
-            appointments: 7,
-            revenue: 475,
-            active: true
-        },
-
-        {
-            id: 2,
-            name: "Carlos",
-            specialty: "Barba e acabamento",
-            phone: "(62) 99999-2222",
-            appointments: 6,
-            revenue: 360,
-            active: true
-        },
-
-        {
-            id: 3,
-            name: "Pedro",
-            specialty: "Corte moderno",
-            phone: "(62) 99999-3333",
-            appointments: 5,
-            revenue: 445,
-            active: true
-        }
-
-    ];
-
-
-    /*
-    ==========================================
-    LOCAL STORAGE
-
-    Enquanto não usamos Supabase,
-    os barbeiros ficam salvos no navegador.
-    ==========================================
-    */
-
-    function getBarbers() {
-
-        const saved =
-            localStorage.getItem(
-                "navalha_barbers"
-            );
-
-        if (saved) {
-
-            try {
-
-                return JSON.parse(saved);
-
-            } catch (error) {
-
-                return defaultBarbers;
-
-            }
-
-        }
-
-        return defaultBarbers;
-
-    }
-
-
-    let barbers = getBarbers();
-
-
-    function saveBarbers() {
-
-        localStorage.setItem(
-            "navalha_barbers",
-            JSON.stringify(barbers)
-        );
-
-    }
-
+    let barbers = [];
 
     // ==========================================
     // ELEMENTOS
@@ -204,6 +123,106 @@ document.addEventListener(
         document.getElementById(
             "barberPhone"
         );
+
+
+    // ==========================================
+    // CARREGAR BARBEIROS E ESTATÍSTICAS — SUPABASE
+    // ==========================================
+
+    async function loadBarbers() {
+
+        if (!window.supabaseClient) {
+            console.error("Supabase não foi carregado.");
+            return;
+        }
+
+        const [
+            barbersResponse,
+            appointmentsResponse,
+            servicesResponse
+        ] = await Promise.all([
+
+            window.supabaseClient
+                .from("BARBEIROS")
+                .select("id, nome, especialidade, telefone, ativo")
+                .order("nome", { ascending: true }),
+
+            window.supabaseClient
+                .from("agendamentos")
+                .select("barbeiro_id, servico_id, status")
+                .neq("status", "cancelado"),
+
+            window.supabaseClient
+                .from("SERVIÇOS")
+                .select('id, "preço"')
+
+        ]);
+
+        if (barbersResponse.error) {
+
+            console.error(
+                "Erro ao carregar barbeiros:",
+                barbersResponse.error
+            );
+
+            if (barbersGrid) {
+                barbersGrid.innerHTML =
+                    "<p>Não foi possível carregar os barbeiros.</p>";
+            }
+
+            return;
+        }
+
+        if (appointmentsResponse.error) {
+            console.error(
+                "Erro ao carregar agendamentos dos barbeiros:",
+                appointmentsResponse.error
+            );
+        }
+
+        if (servicesResponse.error) {
+            console.error(
+                "Erro ao carregar serviços para estatísticas:",
+                servicesResponse.error
+            );
+        }
+
+        const servicePrices = new Map(
+            (servicesResponse.data || []).map(service => [
+                String(service.id),
+                Number(service["preço"] ?? 0)
+            ])
+        );
+
+        barbers = (barbersResponse.data || []).map(barber => {
+
+            const barberAppointments = (appointmentsResponse.data || [])
+                .filter(appointment =>
+                    String(appointment.barbeiro_id) === String(barber.id)
+                );
+
+            const revenue = barberAppointments.reduce(
+                (total, appointment) =>
+                    total + Number(
+                        servicePrices.get(String(appointment.servico_id)) ?? 0
+                    ),
+                0
+            );
+
+            return {
+                id: barber.id,
+                name: barber.nome ?? "",
+                specialty: barber.especialidade ?? "",
+                phone: barber.telefone ?? "",
+                active: barber.ativo !== false,
+                appointments: barberAppointments.length,
+                revenue
+            };
+
+        });
+
+        renderBarbers();
+    }
 
 
     // ==========================================
@@ -616,9 +635,7 @@ document.addEventListener(
 
 
             const id =
-                Number(
-                    button.dataset.id
-                );
+                button.dataset.id;
 
 
             const action =
@@ -692,7 +709,7 @@ document.addEventListener(
         const barber =
             barbers.find(
                 item =>
-                    item.id === id
+                    String(item.id) === String(id)
             );
 
 
@@ -785,166 +802,109 @@ document.addEventListener(
 
 
     // ==========================================
-    // SALVAR / EDITAR
+    // SALVAR / EDITAR — SUPABASE
     // ==========================================
 
     barberForm.addEventListener(
         "submit",
-        event => {
+        async event => {
 
             event.preventDefault();
 
+            const name = barberName.value.trim();
+            const specialty = barberSpecialty.value.trim();
+            const phone = barberPhone.value.trim();
+            const id = editingBarberId.value;
 
-            const name =
-                barberName.value.trim();
-
-
-            const specialty =
-                barberSpecialty.value.trim();
-
-
-            const phone =
-                barberPhone.value.trim();
-
-
-            if (
-                !name ||
-                !specialty ||
-                !phone
-            ) {
-
-                alert(
-                    "Preencha todos os campos."
-                );
-
+            if (!name || !specialty || !phone) {
+                alert("Preencha todos os campos.");
                 return;
-
             }
 
+            if (!window.supabaseClient) {
+                alert("Supabase não foi carregado.");
+                return;
+            }
 
-            const id =
-                Number(
-                    editingBarberId.value
-                );
+            let response;
 
-
-            // EDITAR
             if (id) {
-
-                const barber =
-                    barbers.find(
-                        item =>
-                            item.id === id
-                    );
-
-
-                if (barber) {
-
-                    barber.name =
-                        name;
-
-                    barber.specialty =
-                        specialty;
-
-                    barber.phone =
-                        phone;
-
-                }
-
+                response = await window.supabaseClient
+                    .from("BARBEIROS")
+                    .update({
+                        nome: name,
+                        especialidade: specialty,
+                        telefone: phone
+                    })
+                    .eq("id", id);
+            } else {
+                response = await window.supabaseClient
+                    .from("BARBEIROS")
+                    .insert({
+                        nome: name,
+                        especialidade: specialty,
+                        telefone: phone,
+                        ativo: true
+                    });
             }
 
-            // ADICIONAR
-            else {
-
-                const newBarber = {
-
-                    id:
-                        Date.now(),
-
-                    name:
-                        name,
-
-                    specialty:
-                        specialty,
-
-                    phone:
-                        phone,
-
-                    appointments:
-                        0,
-
-                    revenue:
-                        0,
-
-                    active:
-                        true
-
-                };
-
-
-                barbers.push(
-                    newBarber
-                );
-
+            if (response.error) {
+                console.error("Erro ao salvar barbeiro:", response.error);
+                alert("Não foi possível salvar o barbeiro.");
+                return;
             }
-
-
-            saveBarbers();
-
-            renderBarbers();
 
             closeModal();
-
+            await loadBarbers();
+            await loadDashboardAndAgenda();
         }
     );
 
 
     // ==========================================
-    // ATIVAR / DESATIVAR
+    // ATIVAR / DESATIVAR — SUPABASE
     // ==========================================
 
-    function toggleBarber(id) {
+    async function toggleBarber(id) {
 
-        const barber =
-            barbers.find(
-                item =>
-                    item.id === id
-            );
-
+        const barber = barbers.find(
+            item => String(item.id) === String(id)
+        );
 
         if (!barber) {
             return;
         }
 
-
         if (barber.active) {
-
-            const confirmed =
-                confirm(
-                    `Deseja desativar ${barber.name}?`
-                );
-
-
+            const confirmed = confirm(
+                `Deseja desativar ${barber.name}?`
+            );
             if (!confirmed) {
                 return;
             }
-
-
-            barber.active = false;
-
         }
 
-        else {
-
-            barber.active = true;
-
+        if (!window.supabaseClient) {
+            alert("Supabase não foi carregado.");
+            return;
         }
 
+        const { error } = await window.supabaseClient
+            .from("BARBEIROS")
+            .update({ ativo: !barber.active })
+            .eq("id", id);
 
-        saveBarbers();
+        if (error) {
+            console.error(
+                "Erro ao alterar status do barbeiro:",
+                error
+            );
+            alert("Não foi possível alterar o status do barbeiro.");
+            return;
+        }
 
-        renderBarbers();
-
+        await loadBarbers();
+        await loadDashboardAndAgenda();
     }
 
 
@@ -1849,7 +1809,7 @@ loadAdminClients();
     // INICIALIZAÇÃO
     // ==========================================
 
-renderBarbers();
+loadBarbers();
 
 loadDashboardAndAgenda();
 
@@ -3451,4 +3411,4 @@ document.querySelectorAll(".day-option input").forEach(checkbox => {
     checkbox.addEventListener("change", previewScheduleSettings);
 
 });
-loadScheduleSettings();git pull origin main --allow-unrelated-histories
+loadScheduleSettings();
