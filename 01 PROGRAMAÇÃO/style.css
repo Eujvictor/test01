@@ -1,0 +1,39 @@
+body {
+    display: flex;
+    justify-content: center; /* centraliza na horizontal */
+    align-items: center; /*centraliza na vertical */
+    height: 100vh;
+    background-color: rgb(83, 201, 37);
+    
+}
+button {
+    width: 40px;
+    height: 40px;
+    justify-content: center
+    
+}
+.container {
+    display: ;
+    display: grid;
+    grid-template-columns:repeat(4, 1fr); 
+    gap: 10px
+}
+.b1{order:1;}
+.b2{order:2;}
+.b3{order:3;}
+.b4{order: 4;}
+.b5{order:5;}
+.b6{order:6;}
+.b7{order:7;}
+.b8{order:8;}
+.b9{order:9;}
+.b10{order:10;}
+.b11{order:11;}
+.b12{order:12;}
+.b13{
+    width: 60px;
+    height: 80px;
+    order:13;}
+.b14{order:14;}
+.b15{order:15;}
+.b16{order:16;}
