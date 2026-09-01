@@ -1,3 +1,55 @@
+
+
+    // ==========================================
+    // VERIFICA SE É O ADMINISTRADOR
+    // ==========================================
+
+   document.addEventListener("DOMContentLoaded", async function () {
+
+    const {
+        data: { user },
+        error
+    } = await window.supabaseClient.auth.getUser();
+
+    if (error || !user) {
+
+        window.location.href = "area-equipe.html";
+
+        return;
+
+    }
+
+    const adminEmail = "navalhadeouro@gmail.com";
+
+    if (user.email !== adminEmail) {
+
+        await window.supabaseClient.auth.signOut();
+
+        window.location.href = "area-equipe.html";
+
+        return;
+
+    }
+
+});
+
+
+    // ==========================================
+    // ADMINISTRADOR AUTORIZADO
+    // ==========================================
+
+    
+
+
+    // ==========================================
+    // RESTANTE DO CÓDIGO DO PAINEL
+    // ==========================================
+
+
+
+
+
+
 function escapeHTML(value) {
 
     return String(value)
@@ -40,6 +92,58 @@ document.addEventListener(
     // ==========================================
 
     let barbers = [];
+    async function loadBarbers() {
+
+    const { data, error } = await window.supabaseClient
+    .from("configuracoes_horarios")
+    .select("*")
+    .order("id", { ascending: false })
+    .limit(1)
+    .maybeSingle();
+
+
+    if (error) {
+
+        console.error(
+            "Erro ao carregar barbeiros:",
+            error
+        );
+
+        return;
+
+    }
+
+
+    barbers =
+        (data || []).map(
+            barber => {
+
+                return {
+
+                    id:
+                        barber.id,
+
+                    name:
+                        barber.nome ?? "",
+
+                    specialty:
+                        barber.especialidade ?? "",
+
+                    phone:
+                        barber.telefone ?? "",
+
+                    active:
+                        barber.ativo !== false
+
+                };
+
+            }
+        );
+
+
+    renderBarbers();
+
+}
 
     // ==========================================
     // ELEMENTOS
@@ -3225,42 +3329,116 @@ function saveScheduleToLocalStorage() {
 }
 
 async function loadScheduleSettings() {
+
     loadScheduleFromLocalStorage();
-    loadScheduleInputs();
-    updateScheduleSummary();
-    renderAvailabilityCalendar();
 
-    if (!window.supabaseClient) return;
+    if (
+        !window.supabaseClient
+    ) {
 
-    const { data, error } = await window.supabaseClient
-        .from("configuracoes_horarios")
-        .select("*")
-        .limit(1)
-        .maybeSingle();
+        loadScheduleInputs();
+        updateScheduleSummary();
+        renderAvailabilityCalendar();
+
+        return;
+
+    }
+
+
+    const {
+        data,
+        error
+    } =
+        await window.supabaseClient
+            .from("configuracoes_horarios")
+            .select("*")
+            .order(
+                "id",
+                {
+                    ascending: false
+                }
+            )
+            .limit(1);
+
 
     if (error) {
-        console.warn("Configurações de horários ainda não foram carregadas do Supabase.", error.message);
+
+        console.error(
+            "Erro ao carregar horários:",
+            error
+        );
+
+        loadScheduleInputs();
+        updateScheduleSummary();
+        renderAvailabilityCalendar();
+
         return;
+
     }
 
-    if (data) {
+
+    const settings =
+        data && data.length > 0
+            ? data[0]
+            : null;
+
+
+    if (settings) {
+
         scheduleSettings = {
-            openingTime: data.horario_abertura ?? data.opening_time ?? defaultScheduleSettings.openingTime,
-            closingTime: data.horario_fechamento ?? data.closing_time ?? defaultScheduleSettings.closingTime,
-            interval: Number(data.intervalo ?? data.interval ?? defaultScheduleSettings.interval),
-            workingDays: normalizeWorkingDays(data.dias_funcionamento ?? data.working_days),
-            blockedDates: normalizeBlockedDates(data.datas_bloqueadas ?? data.blocked_dates),
-            blockedSlots: normalizeBlockedSlots(data.horarios_bloqueados ?? data.blocked_slots),
-            considerServiceDuration: data.considerar_duracao_servicos ?? false
+
+            openingTime:
+                settings.horario_abertura ??
+                settings.opening_time ??
+                defaultScheduleSettings.openingTime,
+
+            closingTime:
+                settings.horario_fechamento ??
+                settings.closing_time ??
+                defaultScheduleSettings.closingTime,
+
+            interval:
+                Number(
+                    settings.intervalo ??
+                    settings.interval ??
+                    defaultScheduleSettings.interval
+                ),
+
+            workingDays:
+                normalizeWorkingDays(
+                    settings.dias_funcionamento ??
+                    settings.working_days
+                ),
+
+            blockedDates:
+                normalizeBlockedDates(
+                    settings.datas_bloqueadas ??
+                    settings.blocked_dates
+                ),
+
+            blockedSlots:
+                normalizeBlockedSlots(
+                    settings.horarios_bloqueados ??
+                    settings.blocked_slots
+                ),
+
+            considerServiceDuration:
+                settings.considerar_duracao_servicos ??
+                false
+
         };
+
+
         saveScheduleToLocalStorage();
+
     }
+
 
     loadScheduleInputs();
     updateScheduleSummary();
     renderAvailabilityCalendar();
-}
 
+}
 async function saveScheduleSettings() {
     saveScheduleToLocalStorage();
 
@@ -3276,9 +3454,11 @@ async function saveScheduleSettings() {
         considerar_duracao_servicos: scheduleSettings.considerServiceDuration
     };
 
-    const { data: existing, error: existingError } = await window.supabaseClient
+    const { data: existing, error: existingError } =
+    await window.supabaseClient
         .from("configuracoes_horarios")
         .select("id")
+        .order("id", { ascending: false })
         .limit(1)
         .maybeSingle();
 

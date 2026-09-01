@@ -62,7 +62,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     loginForm.addEventListener(
         "submit",
-        function (event) {
+       async function (event) {
 
             event.preventDefault();
 
@@ -104,111 +104,96 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
             // ==================================
-            // LOGIN DE TESTE
-            // ==================================
-            //
-            // IMPORTANTE:
-            // Estes dados são apenas para
-            // testar a estrutura enquanto
-            // ainda não usamos Supabase.
-            //
-            // Depois serão substituídos
-            // pela autenticação real.
-            // ==================================
+// LOGIN REAL COM SUPABASE
+// ==================================
+
+try {
+
+    const {
+        data,
+        error
+    } = await window.supabaseClient.auth.signInWithPassword({
+        email: email,
+        password: password
+    });
 
 
-            const adminEmail =
-                "admin@navalhadeouro.com";
+    // ==================================
+    // ERRO NO LOGIN
+    // ==================================
 
-            const adminPassword =
-                "admin123";
+    if (error) {
 
+        showMessage(
+            "E-mail ou senha incorretos."
+        );
 
-            const barberEmail =
-                "barbeiro@navalhadeouro.com";
+        return;
 
-            const barberPassword =
-                "barbeiro123";
-
-
-            // ==================================
-            // ADMINISTRADOR
-            // ==================================
-
-            if (
-                email === adminEmail &&
-                password === adminPassword
-            ) {
-
-                sessionStorage.setItem(
-                    "userRole",
-                    "admin"
-                );
+    }
 
 
-                sessionStorage.setItem(
-                    "userEmail",
-                    email
-                );
+    // ==================================
+    // USUÁRIO NÃO ENCONTRADO
+    // ==================================
+
+    if (!data.user) {
+
+        showMessage(
+            "Não foi possível acessar sua conta."
+        );
+
+        return;
+
+    }
 
 
-                showSuccess(
-                    "Login realizado. Área administrativa será aberta."
-                );
+    // ==================================
+    // LOGIN REALIZADO
+    // ==================================
+
+    sessionStorage.setItem(
+        "userEmail",
+        data.user.email
+    );
 
 
-                /*
-                 * O painel administrativo
-                 * será criado no Módulo 05.
-                 *
-                 * Por enquanto deixamos
-                 * a mensagem de acesso.
-                 */
+    sessionStorage.setItem(
+        "userRole",
+        "admin"
+    );
 
 
-                return;
-
-            }
-
-
-            // ==================================
-            // BARBEIRO
-            // ==================================
-
-            if (
-                email === barberEmail &&
-                password === barberPassword
-            ) {
-
-                sessionStorage.setItem(
-                    "userRole",
-                    "barbeiro"
-                );
+    showSuccess(
+        "Login realizado com sucesso."
+    );
 
 
-                sessionStorage.setItem(
-                    "userEmail",
-                    email
-                );
+    // Aguarda um instante e abre
+    // o painel administrativo
+
+    setTimeout(
+        function () {
+
+            window.location.href =
+                "painel-admin-.html";
+
+        },
+        800
+    );
 
 
-                showSuccess(
-                    "Login realizado. Painel do barbeiro será aberto."
-                );
+} catch (error) {
 
+    console.error(error);
 
-                /*
-                 * O painel do barbeiro
-                 * será criado no Módulo 04.
-                 *
-                 * Por enquanto deixamos
-                 * a mensagem de acesso.
-                 */
+    showMessage(
+        "Ocorreu um erro ao tentar entrar."
+    );
 
+}
 
-                return;
-
-            }
+return;
 
 
             // ==================================
