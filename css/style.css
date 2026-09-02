@@ -592,6 +592,10 @@ img {
     .nav {
         display: none;
     }
+    .nav.mobile-open {
+    display: flex;
+    flex-direction: column;
+}
 
     .menu-button {
         display: block;
