@@ -1,0 +1,638 @@
+/* ==========================================
+   CONFIGURAÇÕES GERAIS
+   ========================================== */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+
+:root {
+
+    --background:
+        #111111;
+
+    --background-secondary:
+        #181818;
+
+    --card:
+        #1c1c1c;
+
+    --card-secondary:
+        #202020;
+
+    --border:
+        rgba(255, 255, 255, 0.10);
+
+    --border-light:
+        rgba(255, 255, 255, 0.16);
+
+    --text:
+        #ffffff;
+
+    --text-secondary:
+        #b8b8b8;
+
+    --text-muted:
+        #777777;
+
+    --gold:
+        #d6b36a;
+
+    --gold-light:
+        #ead39b;
+
+    --danger:
+        #e57373;
+
+    --success:
+        #7bcf9a;
+
+}
+
+
+/* ==========================================
+   BODY
+   ========================================== */
+
+body {
+
+    min-height: 100vh;
+
+    background:
+        radial-gradient(
+            circle at top,
+            #252525 0%,
+            #151515 38%,
+            #0e0e0e 100%
+        );
+
+    color:
+        var(--text);
+
+    font-family:
+        Arial,
+        Helvetica,
+        sans-serif;
+
+}
+
+
+/* ==========================================
+   PÁGINA DE LOGIN
+   ========================================== */
+
+.login-page {
+
+    min-height: 100vh;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    padding: 30px 20px;
+
+}
+
+
+/* ==========================================
+   CARD
+   ========================================== */
+
+.login-card {
+
+    width: 100%;
+
+    max-width: 430px;
+
+    background:
+        rgba(28, 28, 28, 0.96);
+
+    border:
+        1px solid var(--border);
+
+    padding:
+        42px 38px;
+
+    box-shadow:
+        0 30px 80px rgba(0, 0, 0, 0.45);
+
+}
+
+
+/* ==========================================
+   MARCA
+   ========================================== */
+
+.brand {
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+
+    gap: 12px;
+
+    margin-bottom: 40px;
+
+}
+
+
+.brand-symbol {
+
+    width: 54px;
+
+    height: 54px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    background:
+        var(--gold);
+
+    color:
+        #151515;
+
+    font-size: 16px;
+
+    font-weight: 800;
+
+    letter-spacing: 1px;
+
+}
+
+
+.brand-name {
+
+    font-size: 12px;
+
+    font-weight: 700;
+
+    letter-spacing: 2.5px;
+
+    color:
+        var(--gold-light);
+
+    text-align: center;
+
+}
+
+
+/* ==========================================
+   CABEÇALHO
+   ========================================== */
+
+.login-header {
+
+    margin-bottom: 30px;
+
+}
+
+
+.eyebrow {
+
+    display: block;
+
+    margin-bottom: 10px;
+
+    font-size: 10px;
+
+    font-weight: 700;
+
+    letter-spacing: 2px;
+
+    color:
+        var(--gold);
+
+}
+
+
+.login-header h1 {
+
+    font-size: 32px;
+
+    line-height: 1.15;
+
+    margin-bottom: 12px;
+
+    font-weight: 700;
+
+}
+
+
+.login-header p {
+
+    color:
+        var(--text-secondary);
+
+    font-size: 14px;
+
+    line-height: 1.7;
+
+}
+
+
+/* ==========================================
+   FORMULÁRIO
+   ========================================== */
+
+.login-form {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 21px;
+
+}
+
+
+.form-group {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 9px;
+
+}
+
+
+.form-group label {
+
+    font-size: 12px;
+
+    font-weight: 600;
+
+    color:
+        #dddddd;
+
+}
+
+
+/* ==========================================
+   LABEL DA SENHA
+   ========================================== */
+
+.password-label {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+}
+
+
+.show-password {
+
+    background: none;
+
+    border: none;
+
+    color:
+        var(--gold);
+
+    font-size: 11px;
+
+    cursor: pointer;
+
+    padding: 0;
+
+}
+
+
+.show-password:hover {
+
+    color:
+        var(--gold-light);
+
+}
+
+
+/* ==========================================
+   INPUTS
+   ========================================== */
+
+.form-group input {
+
+    width: 100%;
+
+    height: 54px;
+
+    padding:
+        0 16px;
+
+    background:
+        #111111;
+
+    color:
+        var(--text);
+
+    border:
+        1px solid var(--border-light);
+
+    outline: none;
+
+    font-size: 14px;
+
+    border-radius: 2px;
+
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
+
+}
+
+
+.form-group input::placeholder {
+
+    color:
+        #5e5e5e;
+
+}
+
+
+.form-group input:focus {
+
+    border-color:
+        var(--gold);
+
+    box-shadow:
+        0 0 0 3px
+        rgba(214, 179, 106, 0.08);
+
+}
+
+
+/* ==========================================
+   MENSAGEM
+   ========================================== */
+
+.login-message {
+
+    min-height: 18px;
+
+    font-size: 12px;
+
+    line-height: 1.5;
+
+    color:
+        var(--danger);
+
+}
+
+
+.login-message.success {
+
+    color:
+        var(--success);
+
+}
+
+
+/* ==========================================
+   BOTÃO ENTRAR
+   ========================================== */
+
+.login-button {
+
+    width: 100%;
+
+    height: 54px;
+
+    border: none;
+
+    background:
+        var(--gold);
+
+    color:
+        #111111;
+
+    font-size: 13px;
+
+    font-weight: 800;
+
+    letter-spacing: 0.8px;
+
+    cursor: pointer;
+
+    transition:
+        transform 0.2s ease,
+        background 0.2s ease;
+
+}
+
+
+.login-button:hover {
+
+    background:
+        var(--gold-light);
+
+    transform:
+        translateY(-1px);
+
+}
+
+
+.login-button:active {
+
+    transform:
+        translateY(0);
+
+}
+
+
+/* ==========================================
+   ESQUECI A SENHA
+   ========================================== */
+
+.forgot-password {
+
+    display: block;
+
+    margin:
+        22px auto 0;
+
+    border: none;
+
+    background: none;
+
+    color:
+        var(--text-secondary);
+
+    font-size: 12px;
+
+    cursor: pointer;
+
+}
+
+
+.forgot-password:hover {
+
+    color:
+        var(--gold);
+
+}
+
+
+/* ==========================================
+   INFORMAÇÃO DE SEGURANÇA
+   ========================================== */
+
+.security-info {
+
+    display: flex;
+
+    align-items: flex-start;
+
+    gap: 10px;
+
+    margin-top: 32px;
+
+    padding:
+        14px;
+
+    background:
+        rgba(255, 255, 255, 0.035);
+
+    border:
+        1px solid var(--border);
+
+}
+
+
+.security-icon {
+
+    flex-shrink: 0;
+
+    width: 20px;
+
+    height: 20px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    border:
+        1px solid var(--gold);
+
+    color:
+        var(--gold);
+
+    font-size: 11px;
+
+}
+
+
+.security-info p {
+
+    color:
+        var(--text-muted);
+
+    font-size: 11px;
+
+    line-height: 1.5;
+
+}
+
+
+/* ==========================================
+   VOLTAR
+   ========================================== */
+
+.back-link {
+
+    display: block;
+
+    margin-top: 30px;
+
+    text-align: center;
+
+    color:
+        var(--text-muted);
+
+    font-size: 12px;
+
+    text-decoration: none;
+
+    transition:
+        color 0.2s ease;
+
+}
+
+
+.back-link:hover {
+
+    color:
+        var(--gold);
+
+}
+
+
+/* ==========================================
+   RESPONSIVIDADE
+   ========================================== */
+
+@media (max-width: 500px) {
+
+    .login-page {
+
+        padding:
+            20px 15px;
+
+    }
+
+
+    .login-card {
+
+        padding:
+            34px 24px;
+
+    }
+
+
+    .brand {
+
+        margin-bottom: 32px;
+
+    }
+
+
+    .login-header h1 {
+
+        font-size: 28px;
+
+    }
+
+}
+
+
+@media (max-width: 360px) {
+
+    .login-card {
+
+        padding:
+            30px 19px;
+
+    }
+
+
+    .login-header h1 {
+
+        font-size: 25px;
+
+    }
+
+}

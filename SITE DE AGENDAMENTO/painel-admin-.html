@@ -1,0 +1,1638 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Painel Administrativo | Navalha de Ouro</title>
+
+    <link rel="stylesheet" href="painel-admin-.css">
+</head>
+
+<body>
+
+<div class="app">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar" id="sidebar">
+
+        <div>
+
+            <div class="brand">
+                <div class="brand-symbol">NO</div>
+
+                <div class="brand-text">
+                    <strong>NAVALHA</strong>
+                    <span>DE OURO</span>
+                </div>
+            </div>
+
+            <div class="admin-profile">
+
+                <div class="admin-avatar">AD</div>
+
+                <div class="admin-info">
+                    <strong>Administrador</strong>
+                    <span>Proprietário</span>
+                </div>
+
+                <span class="online-dot"></span>
+
+            </div>
+
+            <nav class="navigation">
+
+                <a href="#dashboard"
+                   class="nav-item active"
+                   data-section="dashboard">
+                    <span>▦</span>
+                    Dashboard
+                </a>
+
+                <a href="#agenda"
+                   class="nav-item"
+                   data-section="agenda">
+                    <span>◫</span>
+                    Agenda
+                </a>
+
+                <a href="#barbeiros"
+                   class="nav-item"
+                   data-section="barbeiros">
+                    <span>◎</span>
+                    Barbeiros
+                </a>
+
+                <a href="#servicos"
+                   class="nav-item"
+                   data-section="servicos">
+                    <span>✂</span>
+                    Serviços
+                </a>
+
+                <a href="#clientes"
+                   class="nav-item"
+                   data-section="clientes">
+                    <span>◉</span>
+                    Clientes
+                </a>
+
+                <a href="#horarios"
+                   class="nav-item"
+                   data-section="horarios">
+                    <span>◷</span>
+                    Horários
+                </a>
+
+                <a href="#configuracoes"
+                   class="nav-item"
+                   data-section="configuracoes">
+                    <span>⚙</span>
+                    Configurações
+                </a>
+
+            </nav>
+
+        </div>
+
+        <button class="logout-button" id="logoutButton">
+            ↪ Sair
+        </button>
+
+    </aside>
+
+
+    <!-- CONTEÚDO -->
+    <main class="main-content">
+
+        <!-- HEADER MOBILE -->
+        <header class="mobile-header">
+
+            <button id="menuButton" class="menu-button">
+                ☰
+            </button>
+
+            <strong>NAVALHA DE OURO</strong>
+
+            <div class="mobile-avatar">
+                AD
+            </div>
+
+        </header>
+
+
+        <!-- =========================
+             DASHBOARD
+             ========================= -->
+
+      <section id="dashboard"
+         class="page-section active">
+
+    <div class="dashv3-shell">
+
+        <div class="dashv3-topbar">
+
+            <div>
+                <span class="dashv3-eyebrow">
+                    PAINEL ADMINISTRATIVO
+                </span>
+
+                <h1>Visão geral</h1>
+
+                <p id="currentDate"></p>
+            </div>
+
+            <div class="dashv3-actions">
+
+                <select id="dashv3Period">
+
+                    <option value="today">
+                        Hoje
+                    </option>
+
+                    <option value="7">
+                        Últimos 7 dias
+                    </option>
+
+                    <option value="30" selected>
+                        Últimos 30 dias
+                    </option>
+
+                    <option value="all">
+                        Todo o período
+                    </option>
+
+                </select>
+
+                <span class="dashv3-live">
+                    <i></i>
+                    Dados reais
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <div class="dashv3-stats">
+
+            <article class="dashv3-stat">
+
+                <span class="dashv3-icon">
+                    📅
+                </span>
+
+                <div>
+                    <span>AGENDA DE HOJE</span>
+
+                    <strong id="dashv3TodayTotal">
+                        0
+                    </strong>
+
+                    <small id="dashv3TodayMeta">
+                        Carregando...
+                    </small>
+                </div>
+
+            </article>
+
+
+            <article class="dashv3-stat">
+
+                <span class="dashv3-icon">
+                    ✓
+                </span>
+
+                <div>
+                    <span>FINALIZADOS</span>
+
+                    <strong id="dashv3Finalized">
+                        0
+                    </strong>
+
+                    <small id="dashv3FinalizedMeta">
+                        No período selecionado
+                    </small>
+                </div>
+
+            </article>
+
+
+            <article class="dashv3-stat">
+
+                <span class="dashv3-icon">
+                    👥
+                </span>
+
+                <div>
+                    <span>CLIENTES</span>
+
+                    <strong id="dashv3Clients">
+                        0
+                    </strong>
+
+                    <small>
+                        Clientes cadastrados
+                    </small>
+                </div>
+
+            </article>
+
+
+            <article class="dashv3-stat dashv3-stat-gold">
+
+                <span class="dashv3-icon">
+                    R$
+                </span>
+
+                <div>
+                    <span>FATURAMENTO</span>
+
+                    <strong id="dashv3Revenue">
+                        R$ 0,00
+                    </strong>
+
+                    <small id="dashv3RevenueMeta">
+                        No período selecionado
+                    </small>
+                </div>
+
+            </article>
+
+        </div>
+
+
+        <div class="dashv3-grid dashv3-grid-main">
+
+            <section class="dashv3-panel">
+
+                <div class="dashv3-panel-head">
+
+                    <div>
+                        <span>AGENDA</span>
+
+                        <h2>
+                            Próximos agendamentos
+                        </h2>
+                    </div>
+
+                    <button
+                        type="button"
+                        id="dashv3OpenAgenda">
+                        Abrir agenda
+                    </button>
+
+                </div>
+
+                <div
+                    id="dashv3Upcoming"
+                    class="dashv3-list">
+                </div>
+
+            </section>
+
+
+            <section class="dashv3-panel">
+
+                <div class="dashv3-panel-head">
+
+                    <div>
+                        <span>STATUS</span>
+
+                        <h2>
+                            Atendimentos
+                        </h2>
+                    </div>
+
+                </div>
+
+
+                <div class="dashv3-statuses">
+
+                    <div>
+                        <span>
+                            <i class="dashv3-dot dashv3-pending"></i>
+                            Pendentes
+                        </span>
+
+                        <strong id="dashv3Pending">
+                            0
+                        </strong>
+                    </div>
+
+
+                    <div>
+                        <span>
+                            <i class="dashv3-dot dashv3-confirmed"></i>
+                            Confirmados
+                        </span>
+
+                        <strong id="dashv3Confirmed">
+                            0
+                        </strong>
+                    </div>
+
+
+                    <div>
+                        <span>
+                            <i class="dashv3-dot dashv3-finalized"></i>
+                            Finalizados
+                        </span>
+
+                        <strong id="dashv3StatusFinalized">
+                            0
+                        </strong>
+                    </div>
+
+
+                    <div>
+                        <span>
+                            <i class="dashv3-dot dashv3-canceled"></i>
+                            Cancelados / faltas
+                        </span>
+
+                        <strong id="dashv3Canceled">
+                            0
+                        </strong>
+                    </div>
+
+                </div>
+
+            </section>
+
+        </div>
+
+
+        <div class="dashv3-grid dashv3-grid-bottom">
+
+            <section class="dashv3-panel">
+
+                <div class="dashv3-panel-head">
+
+                    <div>
+                        <span>EQUIPE</span>
+
+                        <h2>
+                            Desempenho dos barbeiros
+                        </h2>
+                    </div>
+
+                    <small id="dashv3ActiveBarbers">
+                        0 ativos
+                    </small>
+
+                </div>
+
+                <div
+                    id="dashv3Barbers"
+                    class="dashv3-team">
+                </div>
+
+            </section>
+
+
+            <section class="dashv3-panel">
+
+                <div class="dashv3-panel-head">
+
+                    <div>
+                        <span>SERVIÇOS</span>
+
+                        <h2>
+                            Mais procurados
+                        </h2>
+                    </div>
+
+                    <small id="dashv3ServiceCount">
+                        0 ativos
+                    </small>
+
+                </div>
+
+                <div
+                    id="dashv3Services"
+                    class="dashv3-services">
+                </div>
+
+            </section>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+        <!-- =========================
+             AGENDA
+             ========================= -->
+
+        <section id="agenda"
+                 class="page-section">
+
+            <div class="page-header agenda-page-header">
+
+                <div>
+                    <span class="eyebrow">
+                        AGENDA
+                    </span>
+
+                    <h1>Agenda geral</h1>
+
+                    <p>
+                        Visualize, filtre e acompanhe todos os agendamentos da barbearia.
+                    </p>
+                </div>
+
+                <a
+                    class="primary-button agenda-new-button"
+                    href="agendar.html">
+                    + Novo agendamento
+                </a>
+
+            </div>
+
+            <div class="agenda-toolbar-card">
+
+                <div class="agenda-period-tabs" role="group" aria-label="Período da agenda">
+                    <button type="button" class="agenda-period-button active" data-agenda-view="today">
+                        Hoje
+                    </button>
+                    <button type="button" class="agenda-period-button" data-agenda-view="tomorrow">
+                        Amanhã
+                    </button>
+                    <button type="button" class="agenda-period-button" data-agenda-view="week">
+                        Esta semana
+                    </button>
+                    <button type="button" class="agenda-period-button" data-agenda-view="14days">
+                        14 dias
+                    </button>
+                </div>
+
+                <div class="agenda-filters">
+
+                    <div class="agenda-filter-group agenda-date-filter">
+                        <label for="agendaDateFilter">Data</label>
+                        <input type="date" id="agendaDateFilter">
+                    </div>
+
+                    <div class="agenda-filter-group">
+                        <label for="agendaBarberFilter">Barbeiro</label>
+                        <select id="agendaBarberFilter">
+                            <option value="">Todos os barbeiros</option>
+                        </select>
+                    </div>
+
+                    <div class="agenda-filter-group">
+                        <label for="agendaStatusFilter">Status</label>
+                        <select id="agendaStatusFilter">
+                            <option value="">Todos os status</option>
+                            <option value="agendado">Agendado</option>
+                            <option value="pendente">Pendente</option>
+                            <option value="confirmado">Confirmado</option>
+                            <option value="finalizado">Finalizado</option>
+                            <option value="cancelado">Cancelado</option>
+                        </select>
+                    </div>
+
+                    <div class="agenda-filter-group agenda-search-filter">
+                        <label for="agendaSearchInput">Pesquisar</label>
+                        <input
+                            type="search"
+                            id="agendaSearchInput"
+                            placeholder="Cliente, serviço ou barbeiro...">
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="agenda-results-header">
+                <div>
+                    <span class="eyebrow">AGENDA</span>
+                    <h2 id="agendaPeriodTitle">Agendamentos de hoje</h2>
+                </div>
+                <span class="agenda-count" id="agendaFilteredCount">0 agendamentos</span>
+            </div>
+
+            <div class="agenda-list-card">
+                <div id="adminAppointments"></div>
+            </div>
+
+        </section>
+
+
+
+        <!-- =========================
+             BARBEIROS
+             MÓDULO 06
+             ========================= -->
+
+        <section id="barbeiros"
+                 class="page-section">
+
+            <div class="page-header">
+
+                <div>
+                    <span class="eyebrow">
+                        EQUIPE
+                    </span>
+
+                    <h1>Barbeiros</h1>
+
+                    <p>
+                        Gerencie os profissionais da barbearia.
+                    </p>
+                </div>
+
+                <button
+                    class="primary-button"
+                    id="addBarberButton">
+
+                     barbeiro
+
+                </button>
+
+            </div>
+
+
+            <!-- RESUMO DA EQUIPE -->
+
+            <div class="team-summary">
+
+                <div>
+                    <span>Profissionais</span>
+                    <strong id="totalBarbers">0</strong>
+                </div>
+
+                <div>
+                    <span>Ativos</span>
+                    <strong id="activeBarbers">0</strong>
+                </div>
+
+                <div>
+                    <span>Inativos</span>
+                    <strong id="inactiveBarbers">0</strong>
+                </div>
+
+            </div>
+
+
+            <!-- LISTA -->
+
+            <div
+                class="barbers-grid"
+                id="barbersGrid">
+            </div>
+
+        </section>
+
+
+        <!-- =========================
+     SERVIÇOS
+     MÓDULO 07
+     ========================= -->
+
+<section id="servicos" class="page-section">
+
+    <div class="page-header">
+
+        <div>
+            <span class="eyebrow">
+                SERVIÇOS
+            </span>
+
+            <h1>Serviços</h1>
+
+            <p>
+                Gerencie os serviços oferecidos pela barbearia.
+            </p>
+        </div>
+
+        <button
+            class="primary-button"
+            id="addServiceButton">
+
+            + Adicionar serviço
+
+        </button>
+
+    </div>
+
+
+    <!-- RESUMO DOS SERVIÇOS -->
+
+    <div class="team-summary">
+
+        <div>
+            <span>Total de serviços</span>
+            <strong id="totalServices">0</strong>
+        </div>
+
+        <div>
+            <span>Serviços ativos</span>
+            <strong id="activeServices">0</strong>
+        </div>
+
+        <div>
+            <span>Serviços inativos</span>
+            <strong id="inactiveServices">0</strong>
+        </div>
+
+    </div>
+
+
+    <!-- LISTA DE SERVIÇOS -->
+
+    <div
+        class="services-grid"
+        id="servicesGrid">
+    </div>
+
+</section>
+
+
+<!-- =========================
+     MODAL SERVIÇO
+     ========================= -->
+
+<div
+    class="modal-overlay"
+    id="serviceModal">
+
+    <div class="modal">
+
+        <button
+            class="modal-close"
+            id="closeServiceModal">
+
+            ×
+
+        </button>
+
+        <span class="eyebrow">
+            SERVIÇOS
+        </span>
+
+        <h2 id="serviceModalTitle">
+            Adicionar serviço
+        </h2>
+
+
+        <form id="serviceForm">
+
+            <input
+                type="hidden"
+                id="editingServiceId">
+
+
+            <div class="form-group">
+
+                <label>
+                    Nome do serviço
+                </label>
+
+                <input
+                    type="text"
+                    id="serviceName"
+                    placeholder="Ex: Corte masculino"
+                    required>
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    Preço
+                </label>
+
+                <input
+                    type="number"
+                    id="servicePrice"
+                    placeholder="60"
+                    min="0"
+                    step="0.01"
+                    required>
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    Duração em minutos
+                </label>
+
+                <input
+                    type="number"
+                    id="serviceDuration"
+                    placeholder="45"
+                    min="1"
+                    required>
+
+            </div>
+
+
+            <div class="modal-actions">
+
+                <button
+                    type="button"
+                    class="secondary-button"
+                    id="cancelService">
+
+                    Cancelar
+
+                </button>
+
+                <button
+                    type="submit"
+                    class="primary-button">
+
+                    <span id="submitServiceText">
+                        Adicionar serviço
+                    </span>
+
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+
+        <!-- =========================
+     CLIENTES
+     MÓDULO 09
+     ========================= -->
+
+<section id="clientes" class="page-section">
+
+    <div class="page-header">
+
+        <div>
+            <span class="eyebrow">
+                CLIENTES
+            </span>
+
+            <h1>Clientes</h1>
+
+            <p>
+                Gerencie os clientes e acompanhe o histórico de atendimentos.
+            </p>
+        </div>
+
+        <button
+            class="primary-button"
+            id="addClientButton">
+
+            + Adicionar cliente
+
+        </button>
+
+    </div>
+
+
+    <!-- RESUMO -->
+
+    <div class="client-summary">
+
+        <div class="client-summary-card">
+
+            <span>
+                Total de clientes
+            </span>
+
+            <strong id="totalClients">
+                0
+            </strong>
+
+        </div>
+
+
+        <div class="client-summary-card">
+
+            <span>
+                Clientes ativos
+            </span>
+
+            <strong id="activeClients">
+                0
+            </strong>
+
+        </div>
+
+
+        <div class="client-summary-card">
+
+            <span>
+                Atendimentos
+            </span>
+
+            <strong id="totalClientAppointments">
+                0
+            </strong>
+
+        </div>
+
+    </div>
+
+
+    <!-- BUSCA -->
+
+    <div class="content-card client-search-card">
+
+        <label for="clientSearch">
+            Pesquisar cliente
+        </label>
+
+        <input
+            type="text"
+            id="clientSearch"
+            class="search-input client-search-input"
+            placeholder="Nome ou WhatsApp...">
+
+    </div>
+
+
+    <!-- LISTA -->
+
+    <div
+        class="clients-grid"
+        id="clientsGrid">
+    </div>
+
+</section>
+
+
+<!-- =========================
+     MODAL CLIENTE
+     ========================= -->
+
+<div
+    class="modal-overlay"
+    id="clientModal">
+
+    <div class="modal">
+
+        <button
+            class="modal-close"
+            id="closeClientModal">
+
+            ×
+
+        </button>
+
+        <span class="eyebrow">
+            CLIENTE
+        </span>
+
+        <h2 id="clientModalTitle">
+            Adicionar cliente
+        </h2>
+
+
+        <form id="clientForm">
+
+            <input
+                type="hidden"
+                id="editingClientId">
+
+
+            <div class="form-group">
+
+                <label>
+                    Nome
+                </label>
+
+                <input
+                    type="text"
+                    id="clientName"
+                    placeholder="Nome completo"
+                    required>
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    WhatsApp / Telefone
+                </label>
+
+                <input
+                    type="tel"
+                    id="clientPhone"
+                    placeholder="(62) 99999-9999"
+                    required>
+
+            </div>
+
+
+            <div class="modal-actions">
+
+                <button
+                    type="button"
+                    class="secondary-button"
+                    id="cancelClient">
+
+                    Cancelar
+
+                </button>
+
+                <button
+                    type="submit"
+                    class="primary-button">
+
+                    <span id="submitClientText">
+                        Adicionar cliente
+                    </span>
+
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+
+<!-- =========================
+     MODAL HISTÓRICO
+     ========================= -->
+
+<div
+    class="modal-overlay"
+    id="clientHistoryModal">
+
+    <div class="modal history-modal">
+
+        <button
+            class="modal-close"
+            id="closeClientHistoryModal">
+
+            ×
+
+        </button>
+
+        <span class="eyebrow">
+            HISTÓRICO
+        </span>
+
+        <h2 id="historyClientName">
+            Histórico do cliente
+        </h2>
+
+
+        <div
+            class="client-history"
+            id="clientHistory">
+        </div>
+
+    </div>
+
+</div>
+
+
+       <!-- =========================
+     HORÁRIOS E DISPONIBILIDADE
+     MÓDULO 08
+     ========================= -->
+
+<section id="horarios" class="page-section">
+
+    <div class="page-header">
+
+        <div>
+            <span class="eyebrow">
+                DISPONIBILIDADE
+            </span>
+
+            <h1>Horários</h1>
+
+            <p>
+                Controle o funcionamento e a disponibilidade da barbearia.
+            </p>
+        </div>
+
+    </div>
+
+
+    <!-- RESUMO -->
+
+    <div class="schedule-summary">
+
+        <div class="schedule-summary-card">
+
+            <span>
+                Funcionamento
+            </span>
+
+            <strong id="workingHoursDisplay">
+                09:00 — 19:00
+            </strong>
+
+        </div>
+
+
+        <div class="schedule-summary-card">
+
+            <span>
+                Dias ativos
+            </span>
+
+            <strong id="activeDaysCount">
+                6
+            </strong>
+
+        </div>
+
+
+        <div class="schedule-summary-card">
+
+            <span>
+                Intervalo
+            </span>
+
+            <strong id="slotIntervalDisplay">
+                60 min
+            </strong>
+
+        </div>
+
+    </div>
+
+
+    <!-- CONFIGURAÇÃO GERAL -->
+
+    <div class="content-card">
+
+        <div class="card-header">
+
+            <span class="eyebrow">
+                FUNCIONAMENTO
+            </span>
+
+            <h2>
+                Horário da barbearia
+            </h2>
+
+        </div>
+
+
+        <div class="schedule-settings-grid">
+
+            <div class="form-group">
+
+                <label>
+                    Abertura
+                </label>
+
+                <input
+                    type="time"
+                    id="openingTime"
+                    value="09:00">
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    Fechamento
+                </label>
+
+                <input
+                    type="time"
+                    id="closingTime"
+                    value="19:00">
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    Intervalo entre horários
+                </label>
+
+                <select id="slotInterval">
+
+                    <option value="30">
+                        30 minutos
+                    </option>
+
+                    <option value="45">
+                        45 minutos
+                    </option>
+
+                    <option value="60" selected>
+                        60 minutos
+                    </option>
+
+                    <option value="90">
+                        90 minutos
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <div class="form-group scheduling-mode-card">
+
+                <div class="scheduling-mode-heading">
+
+                    <span class="scheduling-mode-eyebrow">
+                        CONFIGURAÇÃO DA AGENDA
+                    </span>
+
+                    <h3>
+                        Forma de agendamento
+                    </h3>
+
+                    <p>
+                        Escolha como os horários serão distribuídos.
+                    </p>
+
+                </div>
+
+
+                <!--
+                    Os radios continuam existindo para manter
+                    a lógica atual do sistema.
+                    O usuário interage pelo switch abaixo.
+                -->
+
+                <input
+                    type="radio"
+                    name="schedulingMode"
+                    id="modeInterval"
+                    value="intervalo"
+                    checked
+                    class="scheduling-mode-radio-hidden">
+
+                <input
+                    type="radio"
+                    name="schedulingMode"
+                    id="modeDuration"
+                    value="duracao"
+                    class="scheduling-mode-radio-hidden">
+
+
+                <div class="scheduling-mode-control">
+
+                    <div class="scheduling-mode-copy">
+
+                        <strong id="schedulingModeTitle">
+                            Intervalo entre horários
+                        </strong>
+
+                        <span id="schedulingModeDescription">
+                            Os horários seguem o intervalo definido acima.
+                        </span>
+
+                    </div>
+
+
+                    <button
+                        type="button"
+                        id="schedulingModeSwitch"
+                        class="scheduling-mode-switch"
+                        aria-pressed="false"
+                        aria-label="Alternar forma de agendamento">
+
+                        <span
+                            class="scheduling-mode-switch-text"
+                            id="schedulingModeSwitchText">
+                            OFF
+                        </span>
+
+                        <span
+                            class="scheduling-mode-switch-knob">
+                        </span>
+
+                    </button>
+
+                </div>
+
+            </div>
+
+
+        </div>
+
+    </div>
+
+
+    <!-- DIAS DA SEMANA -->
+
+    <div class="content-card">
+
+        <div class="card-header">
+
+            <span class="eyebrow">
+                DIAS DE FUNCIONAMENTO
+            </span>
+
+            <h2>
+                Escolha os dias de atendimento
+            </h2>
+
+        </div>
+
+
+        <div class="week-days">
+
+            <label class="day-option">
+
+                <input
+                    type="checkbox"
+                    value="segunda"
+                    checked>
+
+                <span>
+                    Segunda
+                </span>
+
+            </label>
+
+
+            <label class="day-option">
+
+                <input
+                    type="checkbox"
+                    value="terca"
+                    checked>
+
+                <span>
+                    Terça
+                </span>
+
+            </label>
+
+
+            <label class="day-option">
+
+                <input
+                    type="checkbox"
+                    value="quarta"
+                    checked>
+
+                <span>
+                    Quarta
+                </span>
+
+            </label>
+
+
+            <label class="day-option">
+
+                <input
+                    type="checkbox"
+                    value="quinta"
+                    checked>
+
+                <span>
+                    Quinta
+                </span>
+
+            </label>
+
+
+            <label class="day-option">
+
+                <input
+                    type="checkbox"
+                    value="sexta"
+                    checked>
+
+                <span>
+                    Sexta
+                </span>
+
+            </label>
+
+
+            <label class="day-option">
+
+                <input
+                    type="checkbox"
+                    value="sabado"
+                    checked>
+
+                <span>
+                    Sábado
+                </span>
+
+            </label>
+
+
+            <label class="day-option">
+
+                <input
+                    type="checkbox"
+                    value="domingo">
+
+                <span>
+                    Domingo
+                </span>
+
+            </label>
+
+        </div>
+
+    </div>
+
+
+    <!-- PRÓXIMOS 14 DIAS -->
+
+    <div class="content-card">
+
+        <div class="card-header">
+
+            <span class="eyebrow">
+                AGENDA
+            </span>
+
+            <h2>
+                Próximos 14 dias
+            </h2>
+
+            <p class="schedule-description">
+                Visualize os dias que estarão disponíveis para agendamento.
+            </p>
+
+        </div>
+
+
+        <div
+            class="availability-calendar"
+            id="availabilityCalendar">
+        </div>
+
+    </div>
+
+
+    <!-- HORÁRIOS DO DIA -->
+
+    <div
+        class="content-card"
+        id="dayScheduleCard">
+
+        <div class="card-header">
+
+            <span class="eyebrow">
+                HORÁRIOS
+            </span>
+
+            <h2 id="selectedScheduleDate">
+                Selecione uma data
+            </h2>
+
+        </div>
+
+
+        <div
+            class="schedule-slots"
+            id="scheduleSlots">
+
+            <p class="empty-schedule">
+                Selecione uma data acima para visualizar os horários.
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <!-- SALVAR -->
+
+    <div class="schedule-save-area">
+
+        <button
+            class="primary-button"
+            id="saveScheduleSettings">
+
+            Salvar configurações
+
+        </button>
+
+    </div>
+
+</section>
+
+
+        <!-- =========================
+             CONFIGURAÇÕES
+             ========================= -->
+
+        <section id="configuracoes"
+                 class="page-section">
+
+            <div class="page-header">
+
+                <div>
+                    <span class="eyebrow">
+                        CONFIGURAÇÕES
+                    </span>
+
+                    <h1>Configurações</h1>
+
+                    <p>
+                        Configurações da barbearia.
+                    </p>
+                </div>
+
+            </div>
+
+            <div class="content-card">
+
+                <div class="form-group">
+
+                    <label>
+                        Nome da barbearia
+                    </label>
+
+                    <input
+                        type="text"
+                        id="barbershopName"
+                        value="Navalha de Ouro">
+
+                </div>
+
+                <div class="form-group">
+
+                    <label>
+                        WhatsApp
+                    </label>
+
+                    <input
+                        type="text"
+                        id="barbershopWhatsapp"
+                        value="(62) 99999-9999">
+
+                </div>
+
+                <button
+                    class="primary-button"
+                    id="saveSettings">
+
+                    Salvar alterações
+
+                </button>
+
+            </div>
+
+        </section>
+
+    </main>
+
+</div>
+
+
+<!-- =========================
+     MODAL DETALHES DO AGENDAMENTO
+     ========================= -->
+
+<div class="modal-overlay" id="appointmentDetailsModal">
+    <div class="modal appointment-details-modal">
+        <button type="button" class="modal-close" id="closeAppointmentDetailsModal">×</button>
+
+        <span class="eyebrow">AGENDA</span>
+        <h2>Detalhes do agendamento</h2>
+
+        <div id="appointmentDetailsContent" class="appointment-details-content"></div>
+
+        <div class="modal-actions">
+            <button type="button" class="secondary-button" id="closeAppointmentDetailsButton">
+                Fechar
+            </button>
+        </div>
+    </div>
+</div>
+
+
+<!-- =========================
+     MODAL ADICIONAR / EDITAR
+     ========================= -->
+
+<div
+    class="modal-overlay"
+    id="barberModal">
+
+    <div class="modal">
+
+        <button
+            class="modal-close"
+            id="closeBarberModal">
+
+            ×
+
+        </button>
+
+        <span class="eyebrow">
+            EQUIPE
+        </span>
+
+        <h2 id="modalTitle">
+            Adicionar barbeiro
+        </h2>
+
+
+        <form id="barberForm">
+
+            <input
+                type="hidden"
+                id="editingBarberId">
+
+
+            <div class="form-group">
+
+                <label>
+                    Nome do barbeiro
+                </label>
+
+                <input
+                    type="text"
+                    id="barberName"
+                    placeholder="Ex: Joaquim"
+                    required>
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    Especialidade
+                </label>
+
+                <input
+                    type="text"
+                    id="barberSpecialty"
+                    placeholder="Ex: Corte masculino"
+                    required>
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    Telefone / WhatsApp
+                </label>
+
+                <input
+                    type="tel"
+                    id="barberPhone"
+                    placeholder="(62) 99999-9999"
+                    required>
+
+            </div>
+
+
+            <div class="modal-actions">
+
+                <button
+                    type="button"
+                    class="secondary-button"
+                    id="cancelBarber">
+
+                    Cancelar
+
+                </button>
+
+                <button
+                    type="submit"
+                    class="primary-button">
+
+                    <span id="submitBarberText">
+                        Adicionar barbeiro
+                    </span>
+
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script src="supabese.js"></script>
+
+<script src="proteger-admin.js"></script>
+
+<script src="painel-admin-.js"></script>
+
+
+</body>
+</html>
