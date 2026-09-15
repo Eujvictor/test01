@@ -1217,17 +1217,6 @@ function getWeekRange() {
         end: getLocalDateKey(end)
     };
 }
-function get14DaysRange() {
-    const start = new Date();
-    start.setHours(0, 0, 0, 0);
-    const end = new Date(start);
-    end.setDate(start.getDate() + 13);
-    return {
-        start: getLocalDateKey(start),
-        end: getLocalDateKey(end)
-    };
-}
-
 
 function formatAgendaDate(date) {
     if (!date) return "Data não informada";
@@ -1279,7 +1268,6 @@ function getStatusClass(status) {
 function getAgendaPeriodTitle() {
     if (agendaViewMode === "tomorrow") return "Agendamentos de amanhã";
     if (agendaViewMode === "week") return "Agendamentos desta semana";
-    if (agendaViewMode === "14days") return "Agendamentos dos próximos 14 dias";
     if (agendaViewMode === "date") return `Agenda de ${formatAgendaDate(agendaSelectedDate)}`;
     return "Agendamentos de hoje";
 }
@@ -1300,10 +1288,6 @@ function getFilteredAppointments() {
         if (agendaViewMode === "tomorrow" && appointmentDate !== getTomorrowKey()) return false;
         if (agendaViewMode === "date" && appointmentDate !== agendaSelectedDate) return false;
         if (agendaViewMode === "week" && (appointmentDate < week.start || appointmentDate > week.end)) return false;
-        if (agendaViewMode === "14days") {
-            const range14 = get14DaysRange();
-            if (appointmentDate < range14.start || appointmentDate > range14.end) return false;
-        }
 
         if (barberFilter && String(appointment.barberId) !== String(barberFilter)) return false;
         if (statusFilter && normalizeStatus(appointment.status) !== normalizeStatus(statusFilter)) return false;
@@ -1519,9 +1503,7 @@ function setupAgendaFilters() {
             if (agendaViewMode === "today") agendaSelectedDate = formatToday();
             if (agendaViewMode === "tomorrow") agendaSelectedDate = getTomorrowKey();
 
-            if (dateInput && agendaViewMode !== "week" && agendaViewMode !== "14days") {
-                dateInput.value = agendaSelectedDate;
-            }
+            if (dateInput && agendaViewMode !== "week") dateInput.value = agendaSelectedDate;
 
             periodButtons.forEach(item => item.classList.toggle("active", item === button));
             renderAdminAppointments();
@@ -3253,10 +3235,12 @@ const defaultScheduleSettings = {
     workingDays: ["segunda", "terca", "quarta", "quinta", "sexta", "sabado"],
     blockedDates: [],
     blockedSlots: {},
-    considerServiceDuration: false
+    considerServiceDuration: false,
+    smartToleranceMinutes: 5
 };
 
 let scheduleSettings = { ...defaultScheduleSettings };
+let whatsappSettings = { phone: "", enabled: false };
 let selectedScheduleDateKey = null;
 
 const openingTimeInput = document.getElementById("openingTime");
@@ -3335,7 +3319,8 @@ function loadScheduleFromLocalStorage() {
             ...parsed,
             workingDays: normalizeWorkingDays(parsed.workingDays),
             blockedDates: normalizeBlockedDates(parsed.blockedDates),
-            blockedSlots: normalizeBlockedSlots(parsed.blockedSlots)
+            blockedSlots: normalizeBlockedSlots(parsed.blockedSlots),
+            smartToleranceMinutes: [5, 10, 15].includes(Number(parsed.smartToleranceMinutes)) ? Number(parsed.smartToleranceMinutes) : 5
         };
     } catch (error) {
         console.warn("Não foi possível carregar os horários salvos localmente.", error);
@@ -3343,6 +3328,7 @@ function loadScheduleFromLocalStorage() {
 }
 
 function saveScheduleToLocalStorage() {
+    scheduleSettings.smartToleranceMinutes = ensureSmartToleranceValue(scheduleSettings.smartToleranceMinutes);
     localStorage.setItem("navalha_schedule_settings", JSON.stringify(scheduleSettings));
 }
 
@@ -3442,10 +3428,25 @@ async function loadScheduleSettings() {
 
             considerServiceDuration:
                 settings.considerar_duracao_servicos ??
-                false
+                false,
+
+            smartToleranceMinutes: 5
 
         };
 
+        const savedSmartConfig = scheduleSettings.blockedSlots && scheduleSettings.blockedSlots.__smart_config;
+        if (savedSmartConfig && typeof savedSmartConfig === "object") {
+            const tolerance = Number(savedSmartConfig.toleranceMinutes);
+            if ([5, 10, 15].includes(tolerance)) scheduleSettings.smartToleranceMinutes = tolerance;
+        }
+
+        const savedWhatsappConfig = scheduleSettings.blockedSlots && scheduleSettings.blockedSlots.__whatsapp_config;
+        if (savedWhatsappConfig && typeof savedWhatsappConfig === "object") {
+            whatsappSettings = {
+                phone: String(savedWhatsappConfig.phone || ""),
+                enabled: Boolean(savedWhatsappConfig.enabled)
+            };
+        }
 
         saveScheduleToLocalStorage();
 
@@ -3455,12 +3456,58 @@ async function loadScheduleSettings() {
     loadScheduleInputs();
     updateScheduleSummary();
     renderAvailabilityCalendar();
+    loadWhatsappSettingsUI();
 
 }
+function ensureSmartToleranceValue(value) {
+    const numeric = Number(value);
+    return [5, 10, 15].includes(numeric) ? numeric : 5;
+}
+
+function getSmartToleranceMinutes() {
+    return ensureSmartToleranceValue(scheduleSettings.smartToleranceMinutes);
+}
+
+function setupSmartToleranceControl() {
+    if (!schedulingModeSwitch || document.getElementById("smartToleranceControl")) return;
+    const wrapper = document.createElement("div");
+    wrapper.id = "smartToleranceControl";
+    wrapper.style.cssText = "margin-top:10px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;";
+    wrapper.innerHTML = '<label for="smartToleranceSelect" style="font-size:14px;">Tolerância entre atendimentos</label><select id="smartToleranceSelect" style="padding:6px 8px;border-radius:8px;"><option value="5">5 min</option><option value="10">10 min</option><option value="15">15 min</option></select>';
+    const parent = schedulingModeSwitch.parentElement;
+    if (parent) parent.appendChild(wrapper); else schedulingModeSwitch.insertAdjacentElement("afterend", wrapper);
+    const select = document.getElementById("smartToleranceSelect");
+    if (select) {
+        select.value = String(getSmartToleranceMinutes());
+        select.addEventListener("change", () => {
+            scheduleSettings.smartToleranceMinutes = ensureSmartToleranceValue(select.value);
+            previewScheduleSettings();
+        });
+    }
+}
+
+function updateSmartToleranceUI() {
+    setupSmartToleranceControl();
+    const wrapper = document.getElementById("smartToleranceControl");
+    const select = document.getElementById("smartToleranceSelect");
+    const visible = Boolean(scheduleSettings.considerServiceDuration);
+    if (wrapper) wrapper.style.display = visible ? "flex" : "none";
+    if (select) select.value = String(getSmartToleranceMinutes());
+}
+
 async function saveScheduleSettings() {
     saveScheduleToLocalStorage();
 
     if (!window.supabaseClient) return true;
+
+    const blockedSlotsForStorage = {
+        ...scheduleSettings.blockedSlots,
+        __smart_config: { toleranceMinutes: getSmartToleranceMinutes() },
+        __whatsapp_config: {
+            phone: String(whatsappSettings.phone || ""),
+            enabled: Boolean(whatsappSettings.enabled)
+        }
+    };
 
     const payload = {
         horario_abertura: scheduleSettings.openingTime,
@@ -3468,7 +3515,7 @@ async function saveScheduleSettings() {
         intervalo: scheduleSettings.interval,
         dias_funcionamento: scheduleSettings.workingDays,
         datas_bloqueadas: scheduleSettings.blockedDates,
-        horarios_bloqueados: scheduleSettings.blockedSlots,
+        horarios_bloqueados: blockedSlotsForStorage,
         considerar_duracao_servicos: scheduleSettings.considerServiceDuration
     };
 
@@ -3531,6 +3578,12 @@ function updateSchedulingModeUI() {
             durationMode
         );
 
+        schedulingModeSwitch.style.background = durationMode ? "#d7b56d" : "transparent";
+        schedulingModeSwitch.style.color = durationMode ? "#111" : "rgba(255,255,255,.72)";
+        schedulingModeSwitch.style.boxShadow = durationMode
+            ? "0 0 0 1px rgba(215,181,109,.55), 0 4px 14px rgba(215,181,109,.18)"
+            : "inset 0 0 0 1px rgba(255,255,255,.22)";
+
 
         schedulingModeSwitch.setAttribute(
             "aria-pressed",
@@ -3549,6 +3602,24 @@ function updateSchedulingModeUI() {
                 ? "ON"
                 : "OFF";
 
+        schedulingModeSwitchText.style.fontWeight = "800";
+        schedulingModeSwitchText.style.fontSize = "12px";
+        schedulingModeSwitchText.style.letterSpacing = ".06em";
+    }
+
+    const schedulingModeKnob = schedulingModeSwitch
+        ? schedulingModeSwitch.querySelector(".scheduling-mode-switch-knob")
+        : null;
+
+    if (schedulingModeKnob) {
+        schedulingModeKnob.style.width = "28px";
+        schedulingModeKnob.style.height = "28px";
+        schedulingModeKnob.style.borderRadius = "50%";
+        schedulingModeKnob.style.display = "block";
+        schedulingModeKnob.style.background = durationMode ? "#fff" : "rgba(255,255,255,.35)";
+        schedulingModeKnob.style.boxShadow = "0 1px 5px rgba(0,0,0,.25)";
+        schedulingModeKnob.style.transform = durationMode ? "translateX(0)" : "translateX(0)";
+        schedulingModeKnob.style.transition = ".2s ease";
     }
 
 
@@ -3570,6 +3641,8 @@ function updateSchedulingModeUI() {
                 : "Os horários seguem o intervalo definido acima.";
 
     }
+
+    updateSmartToleranceUI();
 }
 
 if (modeIntervalInput) {
@@ -3862,9 +3935,12 @@ function previewScheduleSettings() {
     if (closingTimeInput && closingTimeInput.value) scheduleSettings.closingTime = closingTimeInput.value;
     if (slotIntervalInput && slotIntervalInput.value) scheduleSettings.interval = Number(slotIntervalInput.value);
     scheduleSettings.workingDays = getSelectedWorkingDays();
+    const toleranceSelect = document.getElementById("smartToleranceSelect");
+    if (toleranceSelect) scheduleSettings.smartToleranceMinutes = ensureSmartToleranceValue(toleranceSelect.value);
 
     updateScheduleSummary();
     renderAvailabilityCalendar();
+    markSettingsDirty();
 
     if (selectedScheduleDateKey) {
         const [year, month, day] = selectedScheduleDateKey.split("-").map(Number);
@@ -3906,11 +3982,15 @@ if (saveScheduleButton) {
         scheduleSettings.considerServiceDuration =
             Boolean(modeDurationInput && modeDurationInput.checked);
 
+        const toleranceSelect = document.getElementById("smartToleranceSelect");
+        if (toleranceSelect) scheduleSettings.smartToleranceMinutes = ensureSmartToleranceValue(toleranceSelect.value);
+
         updateSchedulingModeUI();
 
         await saveScheduleSettings();
         updateScheduleSummary();
         renderAvailabilityCalendar();
+        markSettingsClean();
         alert("Configurações de horários salvas.");
     });
 }
@@ -3931,6 +4011,198 @@ document.querySelectorAll(".day-option input").forEach(checkbox => {
     checkbox.addEventListener("change", previewScheduleSettings);
 
 });
+// ==========================================
+// CONFIGURAÇÃO DE WHATSAPP APÓS AGENDAMENTO
+// ==========================================
+
+const barbershopWhatsappInput = document.getElementById("barbershopWhatsapp");
+const whatsappAfterBookingInput = document.getElementById("whatsappAfterBooking");
+const whatsappAfterBookingSwitch = document.getElementById("whatsappAfterBookingSwitch");
+const whatsappAfterBookingSwitchText = document.getElementById("whatsappAfterBookingSwitchText");
+const whatsappAfterBookingSwitchKnob = document.getElementById("whatsappAfterBookingSwitchKnob");
+const saveSettingsButton = document.getElementById("saveSettings");
+
+const settingsSaveLight = document.getElementById("settingsSaveLight");
+const settingsSaveStatusText = document.getElementById("settingsSaveStatusText");
+const whatsappDisableConfirmModal = document.getElementById("whatsappDisableConfirmModal");
+const cancelWhatsappDisable = document.getElementById("cancelWhatsappDisable");
+const confirmWhatsappDisable = document.getElementById("confirmWhatsappDisable");
+
+let settingsHaveUnsavedChanges = false;
+let whatsappDisablePending = false;
+let suppressWhatsappChange = false;
+
+function updateSettingsSaveIndicator(isDirty) {
+    settingsHaveUnsavedChanges = Boolean(isDirty);
+
+    if (settingsSaveLight) {
+        settingsSaveLight.style.background = settingsHaveUnsavedChanges ? "#d7b56d" : "transparent";
+        settingsSaveLight.style.boxShadow = settingsHaveUnsavedChanges
+            ? "0 0 0 3px rgba(215,181,109,.14), 0 0 12px rgba(215,181,109,.35)"
+            : "none";
+    }
+
+    if (settingsSaveStatusText) {
+        settingsSaveStatusText.textContent = settingsHaveUnsavedChanges
+            ? "Alterações não salvas"
+            : "Tudo salvo";
+    }
+}
+
+function markSettingsDirty() {
+    updateSettingsSaveIndicator(true);
+}
+
+function markSettingsClean() {
+    updateSettingsSaveIndicator(false);
+}
+
+function openWhatsappDisableConfirmation() {
+    whatsappDisablePending = true;
+    if (whatsappDisableConfirmModal) {
+        whatsappDisableConfirmModal.style.display = "flex";
+    }
+}
+
+function closeWhatsappDisableConfirmation() {
+    whatsappDisablePending = false;
+    if (whatsappDisableConfirmModal) {
+        whatsappDisableConfirmModal.style.display = "none";
+    }
+}
+
+if (cancelWhatsappDisable) {
+    cancelWhatsappDisable.addEventListener("click", () => {
+        suppressWhatsappChange = true;
+        if (whatsappAfterBookingInput) whatsappAfterBookingInput.checked = true;
+        updateWhatsappSwitchUI();
+        suppressWhatsappChange = false;
+        closeWhatsappDisableConfirmation();
+    });
+}
+
+if (confirmWhatsappDisable) {
+    confirmWhatsappDisable.addEventListener("click", () => {
+        if (whatsappAfterBookingInput) whatsappAfterBookingInput.checked = false;
+        updateWhatsappSwitchUI();
+        closeWhatsappDisableConfirmation();
+        markSettingsDirty();
+    });
+}
+
+if (whatsappDisableConfirmModal) {
+    whatsappDisableConfirmModal.addEventListener("click", (event) => {
+        if (event.target === whatsappDisableConfirmModal) {
+            suppressWhatsappChange = true;
+            if (whatsappAfterBookingInput) whatsappAfterBookingInput.checked = true;
+            updateWhatsappSwitchUI();
+            suppressWhatsappChange = false;
+            closeWhatsappDisableConfirmation();
+        }
+    });
+}
+
+
+
+function updateWhatsappSwitchUI() {
+    const enabled = Boolean(whatsappAfterBookingInput && whatsappAfterBookingInput.checked);
+
+    if (whatsappAfterBookingSwitch) {
+        whatsappAfterBookingSwitch.setAttribute("aria-pressed", enabled ? "true" : "false");
+        whatsappAfterBookingSwitch.style.background = enabled ? "#d7b56d" : "transparent";
+        whatsappAfterBookingSwitch.style.color = enabled ? "#111" : "rgba(255,255,255,.72)";
+        whatsappAfterBookingSwitch.style.boxShadow = enabled
+            ? "0 0 0 1px rgba(215,181,109,.55), 0 4px 14px rgba(215,181,109,.18)"
+            : "inset 0 0 0 1px rgba(255,255,255,.22)";
+    }
+
+    if (whatsappAfterBookingSwitchText) {
+        whatsappAfterBookingSwitchText.textContent = enabled ? "ON" : "OFF";
+    }
+
+    if (whatsappAfterBookingSwitchKnob) {
+        whatsappAfterBookingSwitchKnob.style.background = enabled ? "#fff" : "rgba(255,255,255,.35)";
+        whatsappAfterBookingSwitchKnob.style.transform = "translateX(0)";
+    }
+}
+
+function normalizeWhatsappNumber(value) {
+    return String(value || "").replace(/\D/g, "");
+}
+
+function loadWhatsappSettingsUI() {
+    if (barbershopWhatsappInput) {
+        barbershopWhatsappInput.value = whatsappSettings.phone || barbershopWhatsappInput.value || "";
+    }
+    if (whatsappAfterBookingInput) {
+        whatsappAfterBookingInput.checked = Boolean(whatsappSettings.enabled);
+    }
+    updateWhatsappSwitchUI();
+}
+
+async function saveWhatsappSettings() {
+    const phone = barbershopWhatsappInput ? normalizeWhatsappNumber(barbershopWhatsappInput.value) : "";
+    const enabled = Boolean(whatsappAfterBookingInput && whatsappAfterBookingInput.checked);
+
+    if (enabled && phone.length < 10) {
+        alert("Informe um WhatsApp válido antes de ativar o redirecionamento.");
+        return false;
+    }
+
+    whatsappSettings = { phone, enabled };
+    await saveScheduleSettings();
+    if (barbershopWhatsappInput) barbershopWhatsappInput.value = phone;
+    return true;
+}
+
+
+if (whatsappAfterBookingSwitch) {
+    whatsappAfterBookingSwitch.addEventListener("click", () => {
+        if (!whatsappAfterBookingInput) return;
+
+        if (whatsappAfterBookingInput.checked) {
+            openWhatsappDisableConfirmation();
+            return;
+        }
+
+        whatsappAfterBookingInput.checked = true;
+        updateWhatsappSwitchUI();
+        markSettingsDirty();
+    });
+}
+
+if (whatsappAfterBookingInput) {
+    whatsappAfterBookingInput.addEventListener("change", () => {
+        updateWhatsappSwitchUI();
+
+        if (suppressWhatsappChange) return;
+
+        if (!whatsappAfterBookingInput.checked) {
+            openWhatsappDisableConfirmation();
+            return;
+        }
+
+        markSettingsDirty();
+    });
+}
+
+if (barbershopWhatsappInput) {
+    barbershopWhatsappInput.addEventListener("input", markSettingsDirty);
+}
+
+if (saveSettingsButton) {
+    saveSettingsButton.addEventListener("click", async () => {
+        const saved = await saveWhatsappSettings();
+        if (saved) {
+            markSettingsClean();
+            alert("Configurações salvas com sucesso.");
+        }
+    });
+}
+
+loadWhatsappSettingsUI();
+markSettingsClean();
+
 loadScheduleSettings();
 
 
