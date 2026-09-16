@@ -598,50 +598,335 @@ button {
 
 @media (max-width: 600px) {
 
+    /* =========================================================
+       MOBILE — NAVALHA DE OURO
+       Somente celular. Desktop permanece intacto.
+       ========================================================= */
+
+    .container {
+        width: calc(100% - 28px);
+        max-width: none;
+    }
+
+    /* HEADER */
+    .header {
+        height: 62px;
+        position: sticky;
+        top: 0;
+        z-index: 100;
+    }
+
+    .header-content {
+        height: 62px;
+    }
+
+    .logo {
+        font-size: 11px;
+        letter-spacing: 2.2px;
+    }
+
+    .back-link {
+        font-size: 11px;
+        color: #aaa;
+    }
+
+    /* CABEÇALHO DO AGENDAMENTO */
     .booking-section {
-        padding: 55px 0 80px;
+        padding: 32px 0 55px;
+    }
+
+    .booking-header {
+        max-width: none;
+        margin-bottom: 28px;
+    }
+
+    .eyebrow {
+        font-size: 9px;
+        letter-spacing: 1.8px;
     }
 
     .booking-header h1 {
-        font-size: 45px;
+        font-size: 38px;
+        line-height: 0.98;
+        letter-spacing: -1.8px;
+        margin: 10px 0 13px;
     }
 
-    .step,
-    .confirm-area {
-        padding: 22px;
+    .booking-header p {
+        font-size: 13px;
+        line-height: 1.45;
+        max-width: 330px;
     }
 
-    .options-grid {
-        grid-template-columns: 1fr;
+    /* LAYOUT MOBILE */
+    .booking-layout {
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
     }
 
-    .form-grid {
-        grid-template-columns: 1fr;
+    /* RESUMO — aparece primeiro no celular */
+    .booking-summary {
+        order: 1;
+        position: static;
+        width: 100%;
+        padding: 18px;
+        border-radius: 8px;
+        background: #111;
     }
 
-    .times-grid {
-        grid-template-columns: repeat(3, 1fr);
+    .summary-logo {
+        width: 44px;
+        height: 44px;
+        margin-bottom: 12px;
+        font-size: 14px;
     }
 
-    .calendar {
-        padding: 15px;
+    .booking-summary h2 {
+        font-size: 18px;
     }
 
-    .calendar-day {
-        min-height: 38px;
+    .summary-address {
+        font-size: 11px;
+        margin-top: 3px;
+    }
+
+    .summary-divider {
+        margin: 17px 0;
+    }
+
+    .summary-item {
+        margin-bottom: 13px;
+    }
+
+    .summary-item span {
+        font-size: 8px;
+        letter-spacing: 1.2px;
+        margin-bottom: 3px;
+    }
+
+    .summary-item strong {
         font-size: 12px;
+    }
+
+    .summary-total {
+        margin-top: 15px;
+        padding-top: 14px;
+    }
+
+    .summary-total strong {
+        font-size: 17px;
+    }
+
+    /* ÁREA PRINCIPAL */
+    .booking-card {
+        order: 2;
+        width: 100%;
+        border-radius: 8px;
+        overflow: hidden;
+    }
+
+    .step {
+        padding: 19px 15px;
+    }
+
+    .step-title {
+        gap: 10px;
+        margin-bottom: 17px;
+        align-items: flex-start;
+    }
+
+    .step-number {
+        width: 28px;
+        height: 28px;
+        min-width: 28px;
+        border-radius: 50%;
+        background: var(--gold);
+        color: #111;
+        font-size: 12px;
+    }
+
+    .step-title h2 {
+        font-size: 16px;
+        line-height: 1.15;
+        margin-bottom: 3px;
+    }
+
+    .step-title p {
+        font-size: 10px;
+        line-height: 1.35;
+    }
+
+    /* SERVIÇOS
+       Nenhum ícone/símbolo é criado pelo CSS.
+       O espaço fica limpo para você adicionar um ícone no HTML depois. */
+    .options-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 8px;
+    }
+
+    .option {
+        min-height: 102px;
+        padding: 13px;
+        border-radius: 7px;
+        align-items: flex-end;
+        gap: 8px;
+    }
+
+    .option strong {
+        font-size: 11px;
+        line-height: 1.2;
+    }
+
+    .option small {
+        font-size: 9px;
+        margin-top: 5px;
+    }
+
+    .option > span {
+        font-size: 10px;
+        white-space: nowrap;
+    }
+
+    .option.selected {
+        border-color: var(--gold);
+        background: rgba(201, 164, 92, 0.10);
+        box-shadow: inset 0 0 0 1px rgba(201, 164, 92, 0.12);
+    }
+
+    /* BARBEIROS
+       Sem avatar/símbolo criado pelo CSS: mantém o avatar que vier do HTML/JS. */
+    .barbers-grid {
+        grid-template-columns: 1fr;
+        gap: 8px;
+    }
+
+    .barber-option {
+        min-height: 68px;
+        padding: 11px 12px;
+        border-radius: 7px;
+        gap: 11px;
+    }
+
+    .barber-avatar {
+        width: 42px;
+        height: 42px;
+        min-width: 42px;
+        font-size: 13px;
+    }
+
+    .barber-option strong {
+        font-size: 12px;
+    }
+
+    .barber-option small {
+        font-size: 9px;
+        margin-top: 2px;
+    }
+
+    /* CALENDÁRIO */
+    .calendar {
+        width: 100%;
+        max-width: none;
+        padding: 13px;
+        border-radius: 8px;
+    }
+
+    .calendar-header {
+        grid-template-columns: 34px 1fr 34px;
+        gap: 6px;
+        margin-bottom: 14px;
+    }
+
+    .calendar-header strong {
+        font-size: 14px;
+    }
+
+    .calendar-nav {
+        width: 34px;
+        height: 34px;
+        font-size: 21px;
+        border-radius: 5px;
+    }
+
+    .calendar-weekdays {
+        gap: 2px;
+        margin-bottom: 4px;
     }
 
     .calendar-weekdays span {
         font-size: 8px;
+        padding: 5px 0;
     }
 
-    .calendar-header {
-        grid-template-columns: 38px 1fr 38px;
+    .calendar-days {
+        gap: 2px;
     }
 
-    .calendar-nav {
-        width: 38px;
-        height: 38px;
+    .calendar-day {
+        min-height: 39px;
+        font-size: 11px;
+        border-radius: 5px;
+    }
+
+    /* HORÁRIOS */
+    .times-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 7px;
+    }
+
+    .time-option {
+        min-height: 43px;
+        padding: 10px 5px;
+        border-radius: 6px;
+        font-size: 11px;
+    }
+
+    .time-option.selected {
+        font-weight: 800;
+    }
+
+    /* DADOS */
+    .form-grid {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+
+    .form-group label {
+        font-size: 10px;
+        margin-bottom: 5px;
+    }
+
+    .form-group input {
+        padding: 13px;
+        min-height: 45px;
+        border-radius: 6px;
+        font-size: 13px;
+    }
+
+    /* CONFIRMAR */
+    .confirm-area {
+        padding: 15px;
+    }
+
+    .confirm-button {
+        min-height: 48px;
+        padding: 14px;
+        border-radius: 6px;
+        font-size: 12px;
+    }
+
+    #bookingMessage {
+        font-size: 11px;
+        line-height: 1.4;
+    }
+
+    /* FOOTER */
+    .footer {
+        padding: 35px 0;
+    }
+
+    .footer p {
+        font-size: 11px;
     }
 }
