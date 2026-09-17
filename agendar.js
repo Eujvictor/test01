@@ -27,6 +27,7 @@ document.addEventListener("DOMContentLoaded", function () {
     let selectedServiceDuration = 0;
     let selectedBarber = "";
     let selectedBarberId = "";
+    let selectedBarberPhone = "";
     let selectedDate = "";
     let selectedTime = "";
     let serviceDurationMap = new Map();
@@ -264,7 +265,7 @@ document.addEventListener("DOMContentLoaded", function () {
         const { data, error } =
             await supabaseClient
                 .from("BARBEIROS")
-                .select("id, nome, especialidade, ativo")
+                .select("id, nome, especialidade, telefone, ativo")
                 .eq("ativo", true)
                 .order("nome", { ascending: true });
 
@@ -296,6 +297,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
             selectedBarber = "";
             selectedBarberId = "";
+            selectedBarberPhone = "";
 
             if (summaryBarber) {
                 summaryBarber.textContent =
@@ -326,6 +328,7 @@ document.addEventListener("DOMContentLoaded", function () {
                         class="barber-option"
                         data-barber-id="${escapeHTML(barber.id)}"
                         data-barber-name="${escapeHTML(name)}"
+                        data-barber-phone="${escapeHTML(barber.telefone ?? "")}"
                     >
                         <div class="barber-avatar">
                             ${escapeHTML(getInitials(name))}
@@ -370,6 +373,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
                         selectedBarber =
                             button.dataset.barberName;
+
+                        selectedBarberPhone =
+                            button.dataset.barberPhone || "";
 
                         selectedTime = "";
 
@@ -528,9 +534,19 @@ document.addEventListener("DOMContentLoaded", function () {
                 data.considerar_duracao_servicos
             ),
 
-        smartToleranceMinutes: 5
+        smartToleranceMinutes: 5,
+        whatsapp: { phone: "", enabled: false, mode: "barbearia" }
 
     };
+
+    const savedWhatsappConfig = scheduleSettings.blockedSlots && scheduleSettings.blockedSlots.__whatsapp_config;
+    if (savedWhatsappConfig && typeof savedWhatsappConfig === "object") {
+        scheduleSettings.whatsapp = {
+            phone: String(savedWhatsappConfig.phone || ""),
+            enabled: Boolean(savedWhatsappConfig.enabled),
+            mode: savedWhatsappConfig.mode === "barbeiro" ? "barbeiro" : "barbearia"
+        };
+    }
 
     const smartConfig = scheduleSettings.blockedSlots && scheduleSettings.blockedSlots.__smart_config;
     if (smartConfig && typeof smartConfig === "object") {
@@ -1370,7 +1386,7 @@ if (confirmButton) {
             }
 
             // ==============================
-            // 6. SUCESSO
+            // 6. SUCESSO + WHATSAPP
             // ==============================
 
             showMessage(
@@ -1378,6 +1394,46 @@ if (confirmButton) {
             );
 
             confirmButton.disabled = true;
+
+            const whatsappConfig = scheduleSettings.whatsapp || {};
+            if (whatsappConfig.enabled) {
+                const configuredMode =
+                    whatsappConfig.mode === "barbeiro" ? "barbeiro" : "barbearia";
+
+                const targetPhone = configuredMode === "barbeiro"
+                    ? selectedBarberPhone
+                    : whatsappConfig.phone;
+
+                const normalizedTargetPhone = normalizeWhatsappDestination(targetPhone);
+
+                if (normalizedTargetPhone) {
+                    const formattedDate = formatBookingDateForWhatsapp(selectedDate);
+                    const message = [
+                        "Olá! Gostaria de confirmar meu agendamento na Navalha de Ouro.",
+                        "",
+                        `Cliente: ${name}`,
+                        `Barbeiro: ${selectedBarber}`,
+                        `Serviço: ${selectedService}`,
+                        `Data: ${formattedDate}`,
+                        `Horário: ${selectedTime}`,
+                        `Meu WhatsApp: ${normalizedPhone}`
+                    ].join("\n");
+
+                    const whatsappUrl =
+                        `https://wa.me/${normalizedTargetPhone}?text=${encodeURIComponent(message)}`;
+
+                    window.location.href = whatsappUrl;
+                    return;
+                }
+
+                const destinationLabel = configuredMode === "barbeiro"
+                    ? `o WhatsApp de ${selectedBarber}`
+                    : "o WhatsApp da barbearia";
+
+                showMessage(
+                    `Agendamento realizado! Não foi possível abrir ${destinationLabel} porque o número não está configurado.`
+                );
+            }
 
         } catch (error) {
 
@@ -1442,6 +1498,19 @@ function updateButton() {
 
     }
 
+
+    function normalizeWhatsappDestination(value) {
+        let digits = String(value || "").replace(/\D/g, "");
+        if (!digits) return "";
+        if (digits.startsWith("55")) return digits;
+        if (digits.length === 10 || digits.length === 11) return `55${digits}`;
+        return digits;
+    }
+
+    function formatBookingDateForWhatsapp(value) {
+        const match = String(value || "").match(/^(\d{4})-(\d{2})-(\d{2})$/);
+        return match ? `${match[3]}/${match[2]}/${match[1]}` : String(value || "");
+    }
 
     // ==========================================
     // INICIALIZAÇÃO
