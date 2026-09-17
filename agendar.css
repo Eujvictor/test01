@@ -922,3 +922,53 @@ button {
         font-size: 11px;
     }
 }
+
+/* =========================================================
+   CORREÇÃO DESKTOP — AGENDAMENTO
+   Somente telas acima de 900px.
+   A versão mobile não é alterada.
+   ========================================================= */
+
+@media (min-width: 901px) {
+
+    .booking-layout {
+        display: block;
+        width: 100%;
+        max-width: none;
+    }
+
+    .booking-card {
+        display: block;
+        width: 100%;
+        max-width: none;
+        min-width: 0;
+    }
+
+    .booking-card .step {
+        width: 100%;
+    }
+
+    .booking-card .options-grid,
+    .booking-card .barbers-grid,
+    .booking-card .times-grid,
+    .booking-card .form-grid {
+        width: 100%;
+    }
+
+    .booking-card .times-grid {
+        grid-template-columns: repeat(5, minmax(0, 1fr));
+    }
+
+    .booking-card .form-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .booking-card .confirm-area {
+        width: 100%;
+    }
+
+    .booking-summary {
+        width: 100%;
+        max-width: none;
+    }
+}
