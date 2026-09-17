@@ -3240,7 +3240,7 @@ const defaultScheduleSettings = {
 };
 
 let scheduleSettings = { ...defaultScheduleSettings };
-let whatsappSettings = { phone: "", enabled: false };
+let whatsappSettings = { phone: "", enabled: false, mode: "barbearia" };
 let selectedScheduleDateKey = null;
 
 const openingTimeInput = document.getElementById("openingTime");
@@ -3444,7 +3444,8 @@ async function loadScheduleSettings() {
         if (savedWhatsappConfig && typeof savedWhatsappConfig === "object") {
             whatsappSettings = {
                 phone: String(savedWhatsappConfig.phone || ""),
-                enabled: Boolean(savedWhatsappConfig.enabled)
+                enabled: Boolean(savedWhatsappConfig.enabled),
+                mode: savedWhatsappConfig.mode === "barbeiro" ? "barbeiro" : "barbearia"
             };
         }
 
@@ -3505,7 +3506,8 @@ async function saveScheduleSettings() {
         __smart_config: { toleranceMinutes: getSmartToleranceMinutes() },
         __whatsapp_config: {
             phone: String(whatsappSettings.phone || ""),
-            enabled: Boolean(whatsappSettings.enabled)
+            enabled: Boolean(whatsappSettings.enabled),
+            mode: whatsappSettings.mode === "barbeiro" ? "barbeiro" : "barbearia"
         }
     };
 
@@ -4104,6 +4106,54 @@ if (whatsappDisableConfirmModal) {
 
 
 
+function ensureWhatsappDestinationControl() {
+    if (document.getElementById("whatsappDestinationMode")) return;
+    if (!barbershopWhatsappInput) return;
+
+    const wrapper = document.createElement("div");
+    wrapper.id = "whatsappDestinationControl";
+    wrapper.style.cssText = "margin-top:14px;padding:14px;border:1px solid rgba(255,255,255,.12);border-radius:12px;background:rgba(255,255,255,.03);";
+    wrapper.innerHTML = `
+        <div style="font-weight:700;margin-bottom:6px;">Destino das confirmações pelo WhatsApp</div>
+        <div style="font-size:13px;opacity:.72;line-height:1.45;margin-bottom:10px;">Escolha quem recebe a mensagem depois que o cliente confirmar o agendamento.</div>
+        <select id="whatsappDestinationMode" style="width:100%;padding:10px 12px;border-radius:9px;border:1px solid rgba(255,255,255,.18);background:#171717;color:#fff;">
+            <option value="barbearia">WhatsApp da barbearia</option>
+            <option value="barbeiro">WhatsApp do barbeiro selecionado</option>
+        </select>
+        <div id="whatsappDestinationHelp" style="font-size:12px;opacity:.68;line-height:1.45;margin-top:8px;"></div>
+    `;
+
+    const parent = barbershopWhatsappInput.closest(".form-group") || barbershopWhatsappInput.parentElement;
+    if (parent && parent.parentElement) {
+        parent.parentElement.insertBefore(wrapper, parent.nextSibling);
+    } else if (barbershopWhatsappInput.parentElement) {
+        barbershopWhatsappInput.parentElement.appendChild(wrapper);
+    }
+
+    const select = document.getElementById("whatsappDestinationMode");
+    const help = document.getElementById("whatsappDestinationHelp");
+
+    function updateHelp() {
+        const mode = select ? select.value : "barbearia";
+        if (help) {
+            help.textContent = mode === "barbeiro"
+                ? "A mensagem será enviada para o telefone cadastrado no perfil do barbeiro escolhido pelo cliente."
+                : "A mensagem será enviada para o número da barbearia informado acima.";
+        }
+    }
+
+    if (select) {
+        select.value = whatsappSettings.mode === "barbeiro" ? "barbeiro" : "barbearia";
+        select.addEventListener("change", () => {
+            whatsappSettings.mode = select.value === "barbeiro" ? "barbeiro" : "barbearia";
+            updateHelp();
+            markSettingsDirty();
+        });
+    }
+
+    updateHelp();
+}
+
 function updateWhatsappSwitchUI() {
     const enabled = Boolean(whatsappAfterBookingInput && whatsappAfterBookingInput.checked);
 
@@ -4131,11 +4181,22 @@ function normalizeWhatsappNumber(value) {
 }
 
 function loadWhatsappSettingsUI() {
+    ensureWhatsappDestinationControl();
     if (barbershopWhatsappInput) {
         barbershopWhatsappInput.value = whatsappSettings.phone || barbershopWhatsappInput.value || "";
     }
     if (whatsappAfterBookingInput) {
         whatsappAfterBookingInput.checked = Boolean(whatsappSettings.enabled);
+    }
+    const destinationMode = document.getElementById("whatsappDestinationMode");
+    if (destinationMode) {
+        destinationMode.value = whatsappSettings.mode === "barbeiro" ? "barbeiro" : "barbearia";
+        const help = document.getElementById("whatsappDestinationHelp");
+        if (help) {
+            help.textContent = destinationMode.value === "barbeiro"
+                ? "A mensagem será enviada para o telefone cadastrado no perfil do barbeiro escolhido pelo cliente."
+                : "A mensagem será enviada para o número da barbearia informado acima.";
+        }
     }
     updateWhatsappSwitchUI();
 }
@@ -4143,13 +4204,15 @@ function loadWhatsappSettingsUI() {
 async function saveWhatsappSettings() {
     const phone = barbershopWhatsappInput ? normalizeWhatsappNumber(barbershopWhatsappInput.value) : "";
     const enabled = Boolean(whatsappAfterBookingInput && whatsappAfterBookingInput.checked);
+    const destinationModeInput = document.getElementById("whatsappDestinationMode");
+    const mode = destinationModeInput && destinationModeInput.value === "barbeiro" ? "barbeiro" : "barbearia";
 
-    if (enabled && phone.length < 10) {
-        alert("Informe um WhatsApp válido antes de ativar o redirecionamento.");
+    if (enabled && mode === "barbearia" && phone.length < 10) {
+        alert("Informe um WhatsApp da barbearia válido antes de ativar o redirecionamento para a barbearia.");
         return false;
     }
 
-    whatsappSettings = { phone, enabled };
+    whatsappSettings = { phone, enabled, mode };
     await saveScheduleSettings();
     if (barbershopWhatsappInput) barbershopWhatsappInput.value = phone;
     return true;
