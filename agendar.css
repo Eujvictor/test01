@@ -121,8 +121,7 @@ button {
 /* SUMMARY */
 
 .booking-summary {
-    position: sticky;
-    top: 25px;
+    position: static;
     background: var(--card);
     border: 1px solid var(--border);
     padding: 28px;
@@ -579,11 +578,6 @@ button {
 
     .booking-summary {
         position: static;
-        order: 2;
-    }
-
-    .booking-card {
-        order: 1;
     }
 
     .barbers-grid {
@@ -665,10 +659,8 @@ button {
         gap: 14px;
     }
 
-    /* RESUMO — aparece primeiro no celular */
+    /* RESUMO — fica depois dos dados e antes da confirmação */
     .booking-summary {
-        order: 1;
-        position: static;
         width: 100%;
         padding: 18px;
         border-radius: 8px;
