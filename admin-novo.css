@@ -3612,3 +3612,2205 @@ button {
     }
 
 }
+
+/* =========================================================
+   PAINEL ADMINISTRATIVO — AJUSTE MOBILE FINAL
+   ---------------------------------------------------------
+   Este bloco foi adicionado somente para o celular.
+   Desktop (> 700px) permanece com as regras originais.
+   ========================================================= */
+
+@media (max-width: 700px) {
+
+    /* ---------- BASE MOBILE ---------- */
+
+    html,
+    body {
+        width: 100%;
+        max-width: 100%;
+        overflow-x: hidden;
+    }
+
+    .main-content {
+        width: 100%;
+        padding: 78px 14px 28px;
+    }
+
+    .page-section {
+        width: 100%;
+        max-width: none;
+    }
+
+    .page-header {
+        gap: 14px;
+        margin-bottom: 20px;
+    }
+
+    .page-header h1 {
+        font-size: 28px;
+        line-height: 1.08;
+        margin-bottom: 6px;
+    }
+
+    .page-header p {
+        font-size: 11px;
+        line-height: 1.45;
+    }
+
+    .page-header .primary-button {
+        width: 100%;
+        min-height: 46px;
+    }
+
+    .content-card {
+        padding: 14px;
+        margin-bottom: 14px;
+    }
+
+    .card-header {
+        margin-bottom: 14px;
+    }
+
+    .card-header h2 {
+        font-size: 15px;
+    }
+
+    /* ---------- DASHBOARD / VISÃO GERAL ---------- */
+
+    .dashv3-topbar {
+        gap: 12px;
+        margin-bottom: 16px;
+    }
+
+    .dashv3-topbar h1 {
+        font-size: 28px;
+        line-height: 1.08;
+    }
+
+    .dashv3-topbar p {
+        font-size: 11px;
+        line-height: 1.45;
+    }
+
+    .dashv3-actions {
+        width: 100%;
+        gap: 8px;
+        flex-wrap: nowrap;
+    }
+
+    .dashv3-actions select {
+        flex: 1;
+        min-width: 0;
+        min-height: 40px;
+        font-size: 10px;
+    }
+
+    .dashv3-live {
+        font-size: 9px;
+    }
+
+    /* 2 x 2, como no layout mobile de referência */
+    .dashv3-stats {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 9px;
+        margin-bottom: 14px;
+    }
+
+    .dashv3-stat {
+        min-height: 88px;
+        padding: 12px;
+        gap: 9px;
+    }
+
+    .dashv3-icon {
+        width: 32px;
+        height: 32px;
+        font-size: 12px;
+    }
+
+    .dashv3-stat span:not(.dashv3-icon) {
+        font-size: 8px;
+        letter-spacing: .6px;
+    }
+
+    .dashv3-stat strong {
+        font-size: 20px;
+    }
+
+    .dashv3-stat small {
+        font-size: 8px;
+        line-height: 1.25;
+    }
+
+    .dashv3-grid {
+        gap: 14px;
+        margin-bottom: 14px;
+    }
+
+    .dashv3-grid-main,
+    .dashv3-grid-bottom {
+        grid-template-columns: 1fr;
+    }
+
+    .dashv3-panel {
+        padding: 14px;
+    }
+
+    .dashv3-panel-head {
+        gap: 10px;
+        margin-bottom: 12px;
+    }
+
+    .dashv3-panel-head h2 {
+        font-size: 15px;
+    }
+
+    .dashv3-panel-head > small,
+    .dashv3-panel-head button {
+        font-size: 9px;
+    }
+
+    .dashv3-appointment {
+        grid-template-columns: 48px minmax(0, 1fr) auto;
+        gap: 9px;
+        min-height: 58px;
+        padding: 8px 0;
+    }
+
+    .dashv3-time {
+        font-size: 11px;
+    }
+
+    .dashv3-person {
+        min-width: 0;
+    }
+
+    .dashv3-person strong {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        font-size: 10px;
+    }
+
+    .dashv3-person span {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        font-size: 8px;
+    }
+
+    .dashv3-barber {
+        display: none;
+    }
+
+    .dashv3-badge {
+        grid-column: 3;
+        grid-row: 1;
+        padding: 4px 6px;
+        font-size: 7px;
+    }
+
+    .dashv3-statuses > div {
+        min-height: 48px;
+    }
+
+    .dashv3-statuses > div > span {
+        font-size: 10px;
+    }
+
+    .dashv3-statuses strong {
+        font-size: 13px;
+    }
+
+    .dashv3-team-row,
+    .dashv3-service-row {
+        min-height: 54px;
+        gap: 9px;
+    }
+
+    .dashv3-avatar {
+        width: 32px;
+        height: 32px;
+        font-size: 9px;
+    }
+
+    .dashv3-row-info strong {
+        font-size: 10px;
+    }
+
+    .dashv3-row-info span {
+        font-size: 8px;
+    }
+
+    .dashv3-count {
+        font-size: 9px;
+    }
+
+    .dashv3-bar {
+        width: 70px;
+    }
+
+
+    /* ---------- AGENDA GERAL ---------- */
+
+    .agenda-page-header,
+    .agenda-results-header {
+        gap: 12px;
+        margin-bottom: 16px;
+    }
+
+    .agenda-new-button {
+        width: 100%;
+        min-height: 46px;
+    }
+
+    .agenda-toolbar-card {
+        padding: 12px;
+        margin-bottom: 14px;
+    }
+
+    /* Mantém os quatro períodos organizados na horizontal */
+    .agenda-period-tabs {
+        width: 100%;
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 3px;
+        margin-bottom: 12px;
+        overflow: hidden;
+    }
+
+    .agenda-period-button {
+        min-width: 0;
+        min-height: 38px;
+        padding: 0 5px;
+        font-size: 9px;
+    }
+
+    /* Filtros em 2 x 2 no celular */
+    .agenda-filters,
+    .agenda-search-filter {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 8px;
+    }
+
+    .agenda-search-filter {
+        grid-column: span 2;
+    }
+
+    .agenda-filter-group {
+        min-width: 0;
+        gap: 5px;
+    }
+
+    .agenda-filter-group label {
+        font-size: 8px;
+    }
+
+    .agenda-filter-group input,
+    .agenda-filter-group select {
+        min-height: 42px;
+        padding: 0 9px;
+        font-size: 9px;
+    }
+
+    .agenda-results-header {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .agenda-results-header h2 {
+        font-size: 16px;
+    }
+
+    .agenda-list-card {
+        width: 100%;
+        overflow-x: auto;
+    }
+
+    .agenda-day-header {
+        min-width: 0;
+        padding: 13px 14px;
+    }
+
+    .agenda-day-header span {
+        font-size: 9px;
+    }
+
+    .agenda-day-header small {
+        font-size: 8px;
+    }
+
+    /*
+       A tabela continua com a estrutura completa.
+       Em telas pequenas ela rola somente dentro do card,
+       evitando quebrar o restante da página.
+    */
+    .agenda-table-header {
+        min-width: 820px;
+        padding: 9px 14px;
+    }
+
+    .agenda-rows {
+        min-width: 820px;
+    }
+
+    .agenda-row {
+        min-height: 68px;
+        padding: 10px 14px;
+    }
+
+    .agenda-time-cell {
+        font-size: 13px;
+    }
+
+    .agenda-client-cell strong,
+    .agenda-service-cell strong,
+    .agenda-barber-cell {
+        font-size: 10px;
+    }
+
+    .agenda-client-cell small,
+    .agenda-service-cell small {
+        font-size: 8px;
+    }
+
+    .appointment-details-modal {
+        max-width: 100%;
+    }
+
+
+    /* ---------- BARBEIROS ---------- */
+
+    .team-summary {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 7px;
+        margin-bottom: 12px;
+    }
+
+    .team-summary div {
+        min-width: 0;
+        padding: 10px 8px;
+    }
+
+    .team-summary span {
+        font-size: 7px;
+        letter-spacing: .5px;
+    }
+
+    .team-summary strong {
+        font-size: 18px;
+    }
+
+    .barbers-grid {
+        grid-template-columns: 1fr;
+        gap: 9px;
+    }
+
+    /*
+       Card horizontal no mobile:
+       informações em cima/esquerda,
+       métricas embaixo,
+       ações na lateral quando houver espaço.
+    */
+    .barber-card {
+        padding: 12px;
+    }
+
+    .barber-card-header {
+        gap: 9px;
+        margin-bottom: 9px;
+    }
+
+    .barber-avatar {
+        width: 42px;
+        height: 42px;
+        font-size: 11px;
+    }
+
+    .barber-card-header h3 {
+        font-size: 12px;
+        margin-bottom: 3px;
+    }
+
+    .barber-card-header p {
+        font-size: 8px;
+    }
+
+    .barber-phone {
+        padding-bottom: 9px;
+        margin-bottom: 9px;
+        font-size: 9px;
+    }
+
+    .barber-data {
+        gap: 8px;
+        margin-bottom: 0;
+    }
+
+    .barber-data span {
+        font-size: 8px;
+        margin-bottom: 3px;
+    }
+
+    .barber-data strong {
+        font-size: 11px;
+    }
+
+    .barber-actions {
+        gap: 6px;
+        margin-top: 10px;
+    }
+
+    .barber-actions button {
+        height: 34px;
+        font-size: 8px;
+    }
+
+
+    /* ---------- SERVIÇOS ---------- */
+
+    .services-grid {
+        grid-template-columns: 1fr;
+        gap: 9px;
+    }
+
+    .service-card {
+        padding: 12px;
+    }
+
+    .service-card-header {
+        gap: 8px;
+        margin-bottom: 10px;
+    }
+
+    .service-icon {
+        width: 38px;
+        height: 38px;
+        font-size: 15px;
+        flex-shrink: 0;
+    }
+
+    .service-card h3 {
+        font-size: 12px;
+        margin-bottom: 3px;
+    }
+
+    .service-description {
+        font-size: 8px;
+    }
+
+    .service-price {
+        font-size: 19px;
+        margin: 10px 0 3px;
+    }
+
+    .service-duration {
+        font-size: 8px;
+    }
+
+    .service-info {
+        padding: 9px 0;
+        margin-top: 10px;
+    }
+
+    .service-status {
+        padding: 4px 7px;
+        font-size: 7px;
+    }
+
+    .service-actions {
+        gap: 5px;
+        margin-top: 9px;
+    }
+
+    .service-actions button {
+        height: 33px;
+        font-size: 8px;
+        min-width: 0;
+    }
+
+
+    /* ---------- HORÁRIOS ---------- */
+
+    .schedule-summary {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 7px;
+        margin-bottom: 12px;
+    }
+
+    .schedule-summary-card {
+        min-width: 0;
+        padding: 10px 8px;
+        gap: 5px;
+    }
+
+    .schedule-summary-card span {
+        font-size: 7px;
+        letter-spacing: .5px;
+    }
+
+    .schedule-summary-card strong {
+        font-size: 14px;
+        white-space: nowrap;
+    }
+
+    .schedule-settings-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 7px;
+    }
+
+    .schedule-settings-grid .form-group {
+        min-width: 0;
+    }
+
+    .form-group {
+        gap: 5px;
+        margin-bottom: 11px;
+    }
+
+    .form-group label {
+        font-size: 8px;
+    }
+
+    .form-group select {
+        height: 40px;
+        padding: 0 7px;
+        font-size: 9px;
+    }
+
+    .scheduling-mode-card {
+        padding: 13px;
+    }
+
+    .scheduling-mode-heading {
+        margin-bottom: 12px;
+    }
+
+    .scheduling-mode-heading h3 {
+        font-size: 18px;
+    }
+
+    .scheduling-mode-heading p {
+        font-size: 9px;
+    }
+
+    .scheduling-mode-control {
+        gap: 10px;
+        padding-top: 12px;
+    }
+
+    .scheduling-mode-copy strong {
+        font-size: 11px;
+    }
+
+    .scheduling-mode-copy span {
+        font-size: 8px;
+    }
+
+    .scheduling-mode-switch {
+        width: 78px;
+        height: 38px;
+    }
+
+    .scheduling-mode-switch-knob {
+        width: 28px;
+        height: 28px;
+        top: 4px;
+        left: 4px;
+    }
+
+    .scheduling-mode-switch-text {
+        left: 11px;
+        font-size: 8px;
+    }
+
+    .scheduling-mode-switch.active .scheduling-mode-switch-knob {
+        left: 46px;
+    }
+
+    .scheduling-mode-switch.active .scheduling-mode-switch-text {
+        left: 42px;
+    }
+
+    /* 7 dias em uma única linha */
+    .week-days {
+        grid-template-columns: repeat(7, minmax(0, 1fr));
+        gap: 4px;
+    }
+
+    .day-option span {
+        min-height: 44px;
+        padding: 4px 2px;
+        font-size: 7px;
+        text-align: center;
+    }
+
+    .schedule-description {
+        font-size: 8px;
+    }
+
+    /* 4 colunas no calendário, como no layout de referência */
+    .availability-calendar {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 5px;
+    }
+
+    .availability-day {
+        min-height: 70px;
+        padding: 7px;
+    }
+
+    .availability-day .day-name {
+        font-size: 7px;
+        margin-bottom: 5px;
+    }
+
+    .availability-day .day-number {
+        font-size: 16px;
+        margin-bottom: 5px;
+    }
+
+    .availability-day .day-status {
+        font-size: 7px;
+    }
+
+    /* Horários disponíveis em 2 colunas */
+    .schedule-slots {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 6px;
+    }
+
+    .schedule-slot {
+        min-height: 40px;
+        font-size: 8px;
+    }
+
+    .schedule-save-area {
+        margin-top: 2px;
+        margin-bottom: 20px;
+    }
+
+    .schedule-save-area .primary-button {
+        width: 100%;
+    }
+
+
+    /* ---------- CLIENTES ---------- */
+
+    .client-summary {
+        grid-template-columns: 1fr;
+        gap: 8px;
+        margin-bottom: 12px;
+    }
+
+    .client-summary-card {
+        padding: 12px;
+    }
+
+    .client-summary-card span {
+        font-size: 8px;
+    }
+
+    .client-summary-card strong {
+        font-size: 21px;
+    }
+
+    .client-search-card {
+        gap: 7px;
+    }
+
+    .client-search-card label {
+        font-size: 8px;
+    }
+
+    .client-search-input {
+        height: 42px;
+        font-size: 9px;
+    }
+
+    .clients-grid {
+        grid-template-columns: 1fr;
+        gap: 8px;
+    }
+
+    .client-card {
+        padding: 11px;
+    }
+
+    .client-card-header {
+        gap: 8px;
+        margin-bottom: 7px;
+    }
+
+    .client-avatar {
+        width: 38px;
+        height: 38px;
+        font-size: 10px;
+    }
+
+    .client-card-header h3 {
+        font-size: 11px;
+        margin-bottom: 2px;
+    }
+
+    .client-card-header p {
+        font-size: 8px;
+    }
+
+    .client-phone {
+        font-size: 8px;
+        padding-bottom: 8px;
+    }
+
+    .client-data {
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+        padding: 9px 0;
+    }
+
+    .client-data span {
+        font-size: 8px;
+        margin-bottom: 3px;
+    }
+
+    .client-data strong {
+        font-size: 10px;
+    }
+
+    .client-last-visit {
+        font-size: 8px;
+        padding-bottom: 8px;
+    }
+
+    .client-actions {
+        gap: 5px;
+    }
+
+    .client-actions button {
+        height: 32px;
+        font-size: 8px;
+    }
+
+    .history-modal {
+        max-width: 100%;
+    }
+
+}
+
+
+/* =========================================================
+   CELULARES MUITO ESTREITOS
+   ========================================================= */
+
+@media (max-width: 380px) {
+
+    .main-content {
+        padding-left: 10px;
+        padding-right: 10px;
+    }
+
+    .mobile-header {
+        padding-left: 12px;
+        padding-right: 12px;
+    }
+
+    .dashv3-stat {
+        padding: 10px;
+        gap: 7px;
+    }
+
+    .dashv3-icon {
+        width: 29px;
+        height: 29px;
+        font-size: 11px;
+    }
+
+    .dashv3-stat strong {
+        font-size: 18px;
+    }
+
+    .team-summary,
+    .schedule-summary {
+        gap: 4px;
+    }
+
+    .team-summary div,
+    .schedule-summary-card {
+        padding-left: 6px;
+        padding-right: 6px;
+    }
+
+    .week-days {
+        gap: 2px;
+    }
+
+    .day-option span {
+        font-size: 6px;
+    }
+
+    .availability-calendar {
+        gap: 4px;
+    }
+
+    .availability-day {
+        padding: 5px;
+    }
+
+    .availability-day .day-number {
+        font-size: 14px;
+    }
+
+    .agenda-period-button {
+        padding-left: 2px;
+        padding-right: 2px;
+        font-size: 8px;
+    }
+
+}
+
+
+/* =========================================================
+   PAINEL ADMINISTRATIVO — MOBILE FINAL V2
+   ---------------------------------------------------------
+   Ajustes finais para os módulos:
+   Dashboard • Agenda • Barbeiros • Serviços • Clientes • Horários
+
+   Desktop preservado.
+   Somente regras para telas de até 700px.
+   ========================================================= */
+
+@media (max-width: 700px) {
+
+    /* ---------- BASE ---------- */
+
+    html,
+    body {
+        width: 100%;
+        max-width: 100%;
+        overflow-x: hidden !important;
+    }
+
+    .app,
+    .main-content,
+    .page-section,
+    .dashv3-shell {
+        width: 100%;
+        max-width: 100%;
+        min-width: 0;
+    }
+
+    .main-content {
+        margin-left: 0;
+        padding: 78px 14px 28px;
+        overflow-x: hidden;
+    }
+
+    /* ---------- DASHBOARD / VISÃO GERAL ---------- */
+
+    .dashv3-topbar {
+        display: flex;
+        flex-direction: column;
+        gap: 11px;
+        margin-bottom: 16px;
+    }
+
+    .dashv3-topbar h1 {
+        font-size: 28px;
+        line-height: 1.08;
+    }
+
+    .dashv3-topbar p {
+        font-size: 11px;
+    }
+
+    .dashv3-actions {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex-wrap: nowrap;
+    }
+
+    .dashv3-actions select {
+        min-width: 0;
+        flex: 1 1 auto;
+        min-height: 40px;
+        font-size: 10px;
+    }
+
+    .dashv3-live {
+        flex: 0 0 auto;
+        font-size: 9px;
+    }
+
+    /* 4 indicadores em 2 x 2 */
+    .dashv3-stats {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+        gap: 9px;
+        margin-bottom: 14px;
+    }
+
+    .dashv3-stat {
+        min-width: 0;
+        min-height: 92px;
+        padding: 12px;
+        gap: 9px;
+    }
+
+    .dashv3-icon {
+        width: 32px;
+        height: 32px;
+        font-size: 12px;
+    }
+
+    .dashv3-stat > div:last-child {
+        min-width: 0;
+    }
+
+    .dashv3-stat span:not(.dashv3-icon) {
+        font-size: 8px;
+        letter-spacing: .6px;
+    }
+
+    .dashv3-stat strong {
+        font-size: 20px;
+    }
+
+    .dashv3-stat small {
+        font-size: 8px;
+        line-height: 1.25;
+    }
+
+    .dashv3-grid,
+    .dashv3-grid-main,
+    .dashv3-grid-bottom {
+        width: 100%;
+        min-width: 0;
+        grid-template-columns: 1fr !important;
+        gap: 14px;
+        margin-bottom: 14px;
+    }
+
+    .dashv3-panel {
+        min-width: 0;
+        padding: 14px;
+        overflow: hidden;
+    }
+
+    .dashv3-panel-head {
+        gap: 10px;
+        margin-bottom: 12px;
+    }
+
+    .dashv3-panel-head h2 {
+        font-size: 15px;
+    }
+
+    .dashv3-panel-head > small,
+    .dashv3-panel-head button {
+        font-size: 9px;
+    }
+
+    .dashv3-appointment {
+        min-width: 0;
+        grid-template-columns: 48px minmax(0, 1fr) auto !important;
+        gap: 9px;
+        min-height: 58px;
+        padding: 8px 0;
+    }
+
+    .dashv3-time {
+        font-size: 11px;
+    }
+
+    .dashv3-person {
+        min-width: 0;
+    }
+
+    .dashv3-person strong,
+    .dashv3-person span {
+        min-width: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .dashv3-person strong {
+        font-size: 10px;
+    }
+
+    .dashv3-person span {
+        font-size: 8px;
+    }
+
+    .dashv3-barber {
+        display: none !important;
+    }
+
+    .dashv3-badge {
+        grid-column: 3 !important;
+        grid-row: 1;
+        padding: 4px 6px;
+        font-size: 7px;
+    }
+
+    .dashv3-statuses > div {
+        min-height: 48px;
+    }
+
+    .dashv3-statuses > div > span {
+        font-size: 10px;
+    }
+
+    .dashv3-statuses strong {
+        font-size: 13px;
+    }
+
+    .dashv3-team-row,
+    .dashv3-service-row {
+        min-height: 54px;
+        gap: 9px;
+    }
+
+    .dashv3-avatar {
+        width: 32px;
+        height: 32px;
+        font-size: 9px;
+    }
+
+    .dashv3-row-info strong {
+        font-size: 10px;
+    }
+
+    .dashv3-row-info span {
+        font-size: 8px;
+    }
+
+    .dashv3-count {
+        font-size: 9px;
+    }
+
+    .dashv3-bar {
+        width: 70px;
+    }
+
+
+    /* ---------- AGENDA ---------- */
+
+    .agenda-page-header {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 12px;
+        margin-bottom: 16px;
+    }
+
+    .agenda-new-button {
+        width: 100%;
+        min-height: 44px;
+    }
+
+    .agenda-toolbar-card {
+        width: 100%;
+        padding: 12px;
+        margin-bottom: 14px;
+        overflow: hidden;
+    }
+
+    .agenda-period-tabs {
+        width: 100%;
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 3px;
+        overflow: hidden !important;
+        margin-bottom: 12px;
+    }
+
+    .agenda-period-button {
+        min-width: 0;
+        min-height: 38px;
+        padding: 0 4px;
+        font-size: 8px;
+    }
+
+    /* Data | Barbeiro
+       Status | Pesquisa */
+    .agenda-filters {
+        width: 100%;
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+        gap: 8px;
+    }
+
+    .agenda-filter-group {
+        min-width: 0;
+    }
+
+    .agenda-filter-group label {
+        font-size: 8px;
+    }
+
+    .agenda-filter-group input,
+    .agenda-filter-group select {
+        min-width: 0;
+        min-height: 42px;
+        padding: 0 9px;
+        font-size: 9px;
+    }
+
+    .agenda-search-filter {
+        grid-column: span 2 !important;
+        min-width: 0;
+    }
+
+    .agenda-results-header {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 5px;
+        margin: 18px 0 10px;
+    }
+
+    .agenda-results-header h2 {
+        font-size: 16px;
+    }
+
+    /*
+       Sem rolagem horizontal.
+       A tabela vira uma ficha compacta por agendamento.
+    */
+    .agenda-list-card {
+        width: 100%;
+        max-width: 100%;
+        overflow-x: hidden !important;
+    }
+
+    .agenda-day-header {
+        min-width: 0;
+        padding: 13px 14px;
+    }
+
+    .agenda-table-header {
+        display: none !important;
+    }
+
+    .agenda-rows {
+        width: 100%;
+        min-width: 0 !important;
+    }
+
+    .agenda-row {
+        width: 100%;
+        min-width: 0 !important;
+        min-height: 0;
+        display: grid;
+        grid-template-columns: 68px minmax(0, 1fr);
+        gap: 8px 10px;
+        padding: 12px 14px;
+        overflow: hidden;
+    }
+
+    .agenda-time-cell {
+        min-width: 0;
+        font-size: 13px;
+    }
+
+    .agenda-client-cell,
+    .agenda-service-cell,
+    .agenda-barber-cell,
+    .agenda-status-badge,
+    .agenda-actions-cell {
+        min-width: 0;
+    }
+
+    .agenda-client-cell {
+        gap: 8px;
+    }
+
+    .agenda-client-avatar {
+        width: 30px;
+        height: 30px;
+        flex: 0 0 30px;
+        font-size: 8px;
+    }
+
+    .agenda-client-cell strong,
+    .agenda-service-cell strong,
+    .agenda-barber-cell {
+        font-size: 9px;
+    }
+
+    .agenda-client-cell small,
+    .agenda-service-cell small {
+        font-size: 7px;
+    }
+
+    .agenda-status-badge {
+        min-width: 0;
+        width: max-content;
+        max-width: 100%;
+        min-height: 24px;
+        font-size: 7px;
+    }
+
+    .agenda-details-button,
+    .agenda-status-select {
+        height: 34px;
+        font-size: 8px;
+    }
+
+    .agenda-actions-cell {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 5px;
+    }
+
+
+    /* ---------- BARBEIROS ---------- */
+
+    .team-summary {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 7px;
+        margin-bottom: 12px;
+    }
+
+    .team-summary div {
+        min-width: 0;
+        padding: 10px 8px;
+    }
+
+    .team-summary span {
+        font-size: 7px;
+        letter-spacing: .5px;
+    }
+
+    .team-summary strong {
+        font-size: 17px;
+    }
+
+    .barbers-grid {
+        grid-template-columns: 1fr;
+        gap: 9px;
+    }
+
+    .barber-card {
+        min-width: 0;
+        padding: 13px;
+    }
+
+    .barber-card-header {
+        gap: 9px;
+        margin-bottom: 9px;
+    }
+
+    .barber-avatar {
+        width: 42px;
+        height: 42px;
+        font-size: 11px;
+    }
+
+    .barber-card-header h3 {
+        font-size: 12px;
+    }
+
+    .barber-card-header p {
+        font-size: 8px;
+    }
+
+    .barber-phone {
+        padding-bottom: 9px;
+        margin-bottom: 9px;
+        font-size: 9px;
+    }
+
+    .barber-data {
+        gap: 8px;
+        margin-bottom: 0;
+    }
+
+    .barber-data span {
+        font-size: 8px;
+    }
+
+    .barber-data strong {
+        font-size: 11px;
+    }
+
+    .barber-actions {
+        gap: 6px;
+        margin-top: 10px;
+    }
+
+    .barber-actions button {
+        min-width: 0;
+        height: 35px;
+        font-size: 8px;
+    }
+
+
+    /* ---------- SERVIÇOS ---------- */
+
+    .services-grid {
+        grid-template-columns: 1fr;
+        gap: 9px;
+    }
+
+    .service-card {
+        min-width: 0;
+        padding: 13px;
+    }
+
+    .service-card-header {
+        gap: 9px;
+        margin-bottom: 10px;
+    }
+
+    .service-icon {
+        width: 38px;
+        height: 38px;
+        flex: 0 0 38px;
+        font-size: 15px;
+    }
+
+    .service-card h3 {
+        font-size: 12px;
+    }
+
+    .service-description {
+        font-size: 8px;
+        line-height: 1.35;
+    }
+
+    .service-price {
+        font-size: 19px;
+        margin: 10px 0 3px;
+    }
+
+    .service-duration {
+        font-size: 8px;
+    }
+
+    .service-info {
+        padding: 9px 0;
+        margin-top: 10px;
+    }
+
+    .service-status {
+        padding: 4px 7px;
+        font-size: 7px;
+    }
+
+    .service-actions {
+        gap: 5px;
+        margin-top: 9px;
+    }
+
+    .service-actions button {
+        min-width: 0;
+        height: 34px;
+        font-size: 8px;
+    }
+
+
+    /* ---------- CLIENTES ---------- */
+
+    .client-summary {
+        grid-template-columns: 1fr;
+        gap: 8px;
+        margin-bottom: 12px;
+    }
+
+    .client-summary-card {
+        padding: 12px;
+    }
+
+    .client-summary-card span {
+        font-size: 8px;
+    }
+
+    .client-summary-card strong {
+        font-size: 21px;
+    }
+
+    .client-search-card {
+        gap: 7px;
+    }
+
+    .client-search-card label {
+        font-size: 8px;
+    }
+
+    .client-search-input {
+        width: 100%;
+        height: 42px;
+        font-size: 9px;
+    }
+
+    .clients-grid {
+        grid-template-columns: 1fr;
+        gap: 8px;
+    }
+
+    .client-card {
+        min-width: 0;
+        padding: 13px;
+    }
+
+    .client-card-header {
+        gap: 8px;
+        margin-bottom: 8px;
+    }
+
+    .client-avatar {
+        width: 40px;
+        height: 40px;
+        font-size: 10px;
+    }
+
+    .client-card-header h3 {
+        font-size: 12px;
+    }
+
+    .client-card-header p {
+        font-size: 8px;
+    }
+
+    .client-phone {
+        font-size: 9px;
+        padding-bottom: 9px;
+    }
+
+    .client-data {
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+        padding: 10px 0;
+    }
+
+    .client-data span {
+        font-size: 8px;
+    }
+
+    .client-data strong {
+        font-size: 10px;
+    }
+
+    .client-last-visit {
+        font-size: 8px;
+        padding-bottom: 9px;
+    }
+
+    .client-actions {
+        gap: 5px;
+    }
+
+    .client-actions button {
+        min-width: 0;
+        height: 34px;
+        font-size: 8px;
+    }
+
+
+    /* ---------- HORÁRIOS ---------- */
+
+    .schedule-summary {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 7px;
+        margin-bottom: 12px;
+    }
+
+    .schedule-summary-card {
+        min-width: 0;
+        padding: 10px 8px;
+        gap: 5px;
+    }
+
+    .schedule-summary-card span {
+        font-size: 7px;
+        letter-spacing: .5px;
+    }
+
+    .schedule-summary-card strong {
+        font-size: 14px;
+        white-space: nowrap;
+    }
+
+    .schedule-settings-grid {
+        grid-template-columns: 1fr;
+        gap: 0;
+    }
+
+    .form-group {
+        min-width: 0;
+        gap: 5px;
+        margin-bottom: 11px;
+    }
+
+    .form-group label {
+        font-size: 8px;
+    }
+
+    .form-group select {
+        min-width: 0;
+        height: 40px;
+        padding: 0 8px;
+        font-size: 9px;
+    }
+
+    .scheduling-mode-card {
+        width: 100%;
+        min-width: 0;
+        padding: 13px;
+    }
+
+    .scheduling-mode-heading {
+        margin-bottom: 12px;
+    }
+
+    .scheduling-mode-heading h3 {
+        font-size: 18px;
+    }
+
+    .scheduling-mode-heading p {
+        font-size: 9px;
+    }
+
+    .scheduling-mode-control {
+        gap: 10px;
+        padding-top: 12px;
+    }
+
+    .scheduling-mode-copy {
+        min-width: 0;
+    }
+
+    .scheduling-mode-copy strong {
+        font-size: 11px;
+    }
+
+    .scheduling-mode-copy span {
+        font-size: 8px;
+    }
+
+    .scheduling-mode-switch {
+        width: 78px;
+        height: 38px;
+        flex: 0 0 78px;
+    }
+
+    .scheduling-mode-switch-knob {
+        width: 28px;
+        height: 28px;
+    }
+
+    .scheduling-mode-switch.active .scheduling-mode-switch-knob {
+        left: 46px;
+    }
+
+    .scheduling-mode-switch.active .scheduling-mode-switch-text {
+        left: 42px;
+    }
+
+    /* Dias de atendimento em uma linha */
+    .week-days {
+        grid-template-columns: repeat(7, minmax(0, 1fr));
+        gap: 4px;
+    }
+
+    .day-option span {
+        min-height: 44px;
+        padding: 4px 2px;
+        font-size: 7px;
+        text-align: center;
+    }
+
+    .schedule-description {
+        font-size: 8px;
+    }
+
+    /* Próximos 14 dias em 4 colunas */
+    .availability-calendar {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 5px;
+    }
+
+    .availability-day {
+        min-width: 0;
+        min-height: 70px;
+        padding: 7px;
+    }
+
+    .availability-day .day-name {
+        font-size: 7px;
+        margin-bottom: 5px;
+    }
+
+    .availability-day .day-number {
+        font-size: 16px;
+        margin-bottom: 5px;
+    }
+
+    .availability-day .day-status {
+        font-size: 7px;
+    }
+
+    /* Horários da data selecionada */
+    .schedule-slots {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 6px;
+    }
+
+    .schedule-slot {
+        min-width: 0;
+        min-height: 44px;
+        font-size: 9px;
+    }
+
+    .schedule-save-area {
+        margin-top: 4px;
+        margin-bottom: 20px;
+    }
+
+    .schedule-save-area .primary-button {
+        width: 100%;
+        min-height: 44px;
+    }
+
+
+    /* ---------- ELEMENTOS GENÉRICOS ---------- */
+
+    .modal {
+        max-width: calc(100vw - 28px);
+        padding: 20px;
+    }
+
+    .modal-actions {
+        flex-direction: column;
+    }
+
+    .modal-actions button {
+        width: 100%;
+    }
+}
+
+
+/* =========================================================
+   CELULARES MUITO ESTREITOS
+   ========================================================= */
+
+@media (max-width: 380px) {
+
+    .main-content {
+        padding-left: 10px;
+        padding-right: 10px;
+    }
+
+    .mobile-header {
+        padding-left: 12px;
+        padding-right: 12px;
+    }
+
+    .dashv3-stats {
+        gap: 8px;
+    }
+
+    .dashv3-stat {
+        min-height: 88px;
+        padding: 10px;
+        gap: 7px;
+    }
+
+    .dashv3-icon {
+        width: 29px;
+        height: 29px;
+        font-size: 11px;
+    }
+
+    .dashv3-stat strong {
+        font-size: 18px;
+    }
+
+    .team-summary,
+    .schedule-summary {
+        gap: 4px;
+    }
+
+    .team-summary div,
+    .schedule-summary-card {
+        padding-left: 6px;
+        padding-right: 6px;
+    }
+
+    .week-days {
+        gap: 2px;
+    }
+
+    .day-option span {
+        font-size: 6px;
+    }
+
+    .availability-calendar {
+        gap: 4px;
+    }
+
+    .availability-day {
+        padding: 5px;
+    }
+
+    .availability-day .day-number {
+        font-size: 14px;
+    }
+
+    .agenda-period-button {
+        padding-left: 2px;
+        padding-right: 2px;
+        font-size: 8px;
+    }
+}
+
+
+/* =========================================================
+   AGENDA — REFINO MOBILE PROFISSIONAL
+   ---------------------------------------------------------
+   Somente celular. Desktop permanece inalterado.
+   ========================================================= */
+@media (max-width: 700px) {
+
+    /* Cabeçalho: título + Novo agendamento lado a lado */
+    .agenda-page-header {
+        flex-direction: row !important;
+        align-items: flex-start !important;
+        justify-content: space-between;
+        gap: 10px;
+        margin-bottom: 16px;
+    }
+
+    .agenda-page-header > div {
+        flex: 1 1 auto;
+        min-width: 0;
+    }
+
+    .agenda-page-header h1 {
+        font-size: 27px;
+        line-height: 1.05;
+    }
+
+    .agenda-page-header p {
+        font-size: 10px;
+        line-height: 1.4;
+    }
+
+    /* Botão menor e arredondado */
+    .agenda-page-header .agenda-new-button {
+        width: auto !important;
+        min-width: 136px;
+        min-height: 40px;
+        height: 40px;
+        flex: 0 0 auto;
+        padding: 0 12px;
+        border-radius: 10px;
+        font-size: 9px;
+        white-space: nowrap;
+    }
+
+    /* Caixa dos períodos */
+    .agenda-toolbar-card {
+        border-radius: 13px;
+        padding: 11px;
+    }
+
+    .agenda-period-tabs {
+        border-radius: 10px;
+        padding: 3px;
+    }
+
+    .agenda-period-button {
+        border-radius: 8px;
+        min-height: 36px;
+    }
+
+    /* Filtros: compactos, arredondados e 2 x 2 */
+    .agenda-filters {
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+        gap: 8px;
+    }
+
+    .agenda-search-filter {
+        grid-column: span 2 !important;
+    }
+
+    .agenda-filter-group label {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        font-size: 8px;
+    }
+
+    /* Ícones dos filtros — apenas CSS, sem alterar HTML/JS */
+    .agenda-filter-group:nth-child(1) label::before {
+        content: "▣";
+        color: var(--gold-light);
+        font-size: 11px;
+        line-height: 1;
+    }
+
+    .agenda-filter-group:nth-child(2) label::before {
+        content: "♙";
+        color: var(--gold-light);
+        font-size: 12px;
+        line-height: 1;
+    }
+
+    .agenda-filter-group:nth-child(3) label::before {
+        content: "◉";
+        color: var(--gold-light);
+        font-size: 10px;
+        line-height: 1;
+    }
+
+    .agenda-filter-group:nth-child(4) label::before {
+        content: "⌕";
+        color: var(--gold-light);
+        font-size: 15px;
+        line-height: .7;
+    }
+
+    .agenda-filter-group input,
+    .agenda-filter-group select {
+        min-height: 40px;
+        height: 40px;
+        border-radius: 9px;
+        padding: 0 10px;
+    }
+
+    /* Resultado da agenda */
+    .agenda-list-card {
+        border-radius: 13px;
+        overflow: hidden !important;
+    }
+
+    /* Cabeçalho do dia: menor, mas continua destacado */
+    .agenda-day-header {
+        padding: 11px 13px;
+        min-height: 48px;
+        border-radius: 0;
+    }
+
+    .agenda-day-header span {
+        font-size: 9px;
+    }
+
+    .agenda-day-header small {
+        font-size: 8px;
+    }
+
+    /* Cada agendamento mais compacto */
+    .agenda-row {
+        grid-template-columns: 56px minmax(0, 1fr);
+        gap: 6px 9px;
+        padding: 10px 12px;
+        min-height: 0;
+    }
+
+    .agenda-time-cell {
+        font-size: 13px;
+        padding-top: 1px;
+    }
+
+    .agenda-client-cell {
+        gap: 7px;
+    }
+
+    .agenda-client-avatar {
+        width: 29px;
+        height: 29px;
+        flex-basis: 29px;
+        font-size: 8px;
+    }
+
+    .agenda-client-cell strong,
+    .agenda-service-cell strong,
+    .agenda-barber-cell {
+        font-size: 9px;
+    }
+
+    .agenda-client-cell small,
+    .agenda-service-cell small {
+        font-size: 7px;
+        margin-top: 2px;
+    }
+
+    /* Status e ações menores, sem deixar a ficha gigante */
+    .agenda-status-badge {
+        min-height: 22px;
+        padding: 0 7px;
+        border-radius: 7px;
+        font-size: 7px;
+    }
+
+    .agenda-actions-cell {
+        gap: 5px;
+    }
+
+    .agenda-details-button,
+    .agenda-status-select {
+        height: 31px;
+        min-height: 31px;
+        border-radius: 7px;
+        font-size: 7px;
+    }
+
+    .agenda-details-button {
+        padding: 0 8px;
+    }
+
+    .agenda-status-select {
+        min-width: 90px;
+        padding: 0 6px;
+    }
+}
+
+@media (max-width: 380px) {
+    .agenda-page-header .agenda-new-button {
+        min-width: 128px;
+        padding: 0 9px;
+        font-size: 8px;
+    }
+
+    .agenda-page-header h1 {
+        font-size: 25px;
+    }
+
+    .agenda-page-header p {
+        font-size: 9px;
+    }
+
+    .agenda-toolbar-card {
+        padding: 10px;
+    }
+
+    .agenda-row {
+        grid-template-columns: 52px minmax(0, 1fr);
+        padding: 9px 10px;
+    }
+}
+
+
+/* =========================================================
+   BARBEIROS — AJUSTE FINAL MOBILE
+   Referência: Imagem 01
+   Desktop permanece inalterado.
+   ========================================================= */
+
+@media (max-width: 700px) {
+
+    /* Cabeçalho: título + botão na mesma linha */
+    .page-section:has(.barbers-grid) .page-header {
+        flex-direction: row;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 10px;
+        margin-bottom: 18px;
+    }
+
+    .page-section:has(.barbers-grid) .page-header > div {
+        min-width: 0;
+        flex: 1 1 auto;
+    }
+
+    .page-section:has(.barbers-grid) .page-header h1 {
+        font-size: 25px;
+        line-height: 1.05;
+        margin-bottom: 6px;
+    }
+
+    .page-section:has(.barbers-grid) .page-header p {
+        font-size: 9px;
+        line-height: 1.35;
+    }
+
+    /* Botão Adicionar barbeiro compacto */
+    .page-section:has(.barbers-grid) .page-header .primary-button {
+        width: auto;
+        min-width: 0;
+        min-height: 42px;
+        height: 42px;
+        flex: 0 0 auto;
+        padding: 0 12px;
+        border-radius: 9px;
+        font-size: 9px;
+        white-space: nowrap;
+    }
+
+    /* Resumo */
+    .page-section:has(.barbers-grid) .team-summary {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 7px;
+        margin-bottom: 12px;
+    }
+
+    .page-section:has(.barbers-grid) .team-summary div {
+        min-width: 0;
+        min-height: 72px;
+        padding: 10px 8px;
+        border-radius: 9px;
+        justify-content: center;
+    }
+
+    .page-section:has(.barbers-grid) .team-summary span {
+        font-size: 7px;
+        line-height: 1.2;
+    }
+
+    .page-section:has(.barbers-grid) .team-summary strong {
+        font-size: 18px;
+    }
+
+    /* Pesquisa / filtro */
+    .page-section:has(.barbers-grid) .search-input {
+        width: 100%;
+        max-width: none;
+        height: 42px;
+        min-height: 42px;
+        margin-bottom: 10px;
+        padding: 0 11px;
+        border-radius: 9px;
+        font-size: 9px;
+    }
+
+    .page-section:has(.barbers-grid) select {
+        min-height: 42px;
+        height: 42px;
+        border-radius: 9px;
+        font-size: 9px;
+    }
+
+    /* Todos os cards com acabamento arredondado */
+    .page-section:has(.barbers-grid) .barber-card {
+        min-width: 0;
+        padding: 12px;
+        border-radius: 10px;
+        overflow: hidden;
+    }
+
+    .page-section:has(.barbers-grid) .barber-card-header {
+        gap: 9px;
+        margin-bottom: 8px;
+    }
+
+    .page-section:has(.barbers-grid) .barber-avatar {
+        width: 42px;
+        height: 42px;
+        border-radius: 50%;
+        font-size: 11px;
+    }
+
+    .page-section:has(.barbers-grid) .barber-card-header h3 {
+        font-size: 12px;
+        margin-bottom: 3px;
+    }
+
+    .page-section:has(.barbers-grid) .barber-card-header p {
+        font-size: 8px;
+    }
+
+    /* Telefone */
+    .page-section:has(.barbers-grid) .barber-phone {
+        padding-bottom: 9px;
+        margin-bottom: 9px;
+        font-size: 9px;
+    }
+
+    /* Métricas */
+    .page-section:has(.barbers-grid) .barber-data {
+        gap: 0;
+        margin-bottom: 0;
+        padding-right: 8px;
+    }
+
+    .page-section:has(.barbers-grid) .barber-data > div {
+        min-width: 0;
+        padding-right: 8px;
+    }
+
+    .page-section:has(.barbers-grid) .barber-data span {
+        font-size: 8px;
+        margin-bottom: 3px;
+    }
+
+    .page-section:has(.barbers-grid) .barber-data strong {
+        font-size: 11px;
+    }
+
+    /* Status */
+    .page-section:has(.barbers-grid) .barber-status {
+        padding: 4px 7px;
+        border-radius: 7px;
+        font-size: 7px;
+    }
+
+    /* Ações compactas e arredondadas */
+    .page-section:has(.barbers-grid) .barber-actions {
+        gap: 6px;
+        margin-top: 10px;
+    }
+
+    .page-section:has(.barbers-grid) .barber-actions button {
+        min-width: 0;
+        height: 34px;
+        min-height: 34px;
+        padding: 0 8px;
+        border-radius: 8px;
+        font-size: 8px;
+    }
+
+    .page-section:has(.barbers-grid) .edit-button,
+    .page-section:has(.barbers-grid) .toggle-button {
+        border-radius: 8px;
+    }
+}
+
+@media (max-width: 380px) {
+
+    .page-section:has(.barbers-grid) .page-header {
+        gap: 7px;
+    }
+
+    .page-section:has(.barbers-grid) .page-header h1 {
+        font-size: 23px;
+    }
+
+    .page-section:has(.barbers-grid) .page-header p {
+        font-size: 8px;
+    }
+
+    .page-section:has(.barbers-grid) .page-header .primary-button {
+        height: 40px;
+        min-height: 40px;
+        padding: 0 9px;
+        font-size: 8px;
+        border-radius: 8px;
+    }
+
+    .page-section:has(.barbers-grid) .team-summary div {
+        min-height: 68px;
+        padding: 9px 6px;
+    }
+
+    .page-section:has(.barbers-grid) .team-summary span {
+        font-size: 6.5px;
+    }
+
+    .page-section:has(.barbers-grid) .team-summary strong {
+        font-size: 17px;
+    }
+
+    .page-section:has(.barbers-grid) .barber-card {
+        padding: 11px;
+        border-radius: 9px;
+    }
+
+    .page-section:has(.barbers-grid) .barber-actions button {
+        height: 33px;
+        min-height: 33px;
+        padding: 0 6px;
+        font-size: 7.5px;
+    }
+}
