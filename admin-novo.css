@@ -5592,225 +5592,1656 @@ button {
     }
 }
 
-
 /* =========================================================
-   BARBEIROS — AJUSTE FINAL MOBILE
-   Referência: Imagem 01
-   Desktop permanece inalterado.
+   MÓDULO SERVIÇOS — AJUSTE MOBILE PROFISSIONAL
+   Somente visual/CSS. Mantém os elementos e funções existentes.
    ========================================================= */
 
 @media (max-width: 700px) {
 
-    /* Cabeçalho: título + botão na mesma linha */
-    .page-section:has(.barbers-grid) .page-header {
+    /* Cabeçalho: botão compacto no canto direito */
+    #servicos .page-header {
         flex-direction: row;
         align-items: flex-start;
-        justify-content: space-between;
         gap: 10px;
-        margin-bottom: 18px;
+        margin-bottom: 16px;
     }
 
-    .page-section:has(.barbers-grid) .page-header > div {
+    #servicos .page-header > div {
         min-width: 0;
-        flex: 1 1 auto;
+        flex: 1;
     }
 
-    .page-section:has(.barbers-grid) .page-header h1 {
-        font-size: 25px;
-        line-height: 1.05;
-        margin-bottom: 6px;
-    }
-
-    .page-section:has(.barbers-grid) .page-header p {
+    #servicos .page-header .primary-button {
+        width: auto;
+        flex: 0 0 auto;
+        min-height: 40px;
+        height: 40px;
+        padding: 0 12px;
+        border-radius: 10px;
         font-size: 9px;
+        white-space: nowrap;
+        margin-top: 2px;
+    }
+
+    #servicos .page-header h1 {
+        font-size: 27px;
+        line-height: 1.05;
+        margin-bottom: 5px;
+    }
+
+    #servicos .page-header p {
+        font-size: 10px;
         line-height: 1.35;
     }
 
-    /* Botão Adicionar barbeiro compacto */
-    .page-section:has(.barbers-grid) .page-header .primary-button {
-        width: auto;
-        min-width: 0;
-        min-height: 42px;
-        height: 42px;
-        flex: 0 0 auto;
-        padding: 0 12px;
-        border-radius: 9px;
-        font-size: 9px;
-        white-space: nowrap;
-    }
-
-    /* Resumo */
-    .page-section:has(.barbers-grid) .team-summary {
+    /* Resumo: três cartões compactos, arredondados e alinhados */
+    #servicos .team-summary {
         grid-template-columns: repeat(3, minmax(0, 1fr));
         gap: 7px;
         margin-bottom: 12px;
     }
 
-    .page-section:has(.barbers-grid) .team-summary div {
+    #servicos .team-summary > div {
         min-width: 0;
-        min-height: 72px;
+        min-height: 70px;
         padding: 10px 8px;
-        border-radius: 9px;
-        justify-content: center;
+        gap: 5px;
+        border-radius: 10px;
+        background: linear-gradient(145deg, rgba(255,255,255,.035), rgba(255,255,255,.018));
+        border: 1px solid rgba(255,255,255,.10);
+        box-shadow: inset 0 1px 0 rgba(255,255,255,.025);
     }
 
-    .page-section:has(.barbers-grid) .team-summary span {
+    #servicos .team-summary span {
         font-size: 7px;
         line-height: 1.2;
+        letter-spacing: .5px;
+        white-space: normal;
     }
 
-    .page-section:has(.barbers-grid) .team-summary strong {
-        font-size: 18px;
+    #servicos .team-summary strong {
+        font-size: 19px;
+        line-height: 1;
     }
 
-    /* Pesquisa / filtro */
-    .page-section:has(.barbers-grid) .search-input {
+    /* Lista em uma coluna, sem cartões gigantes */
+    #servicos .services-grid {
+        grid-template-columns: 1fr;
+        gap: 9px;
         width: 100%;
-        max-width: none;
-        height: 42px;
-        min-height: 42px;
-        margin-bottom: 10px;
-        padding: 0 11px;
-        border-radius: 9px;
-        font-size: 9px;
     }
 
-    .page-section:has(.barbers-grid) select {
-        min-height: 42px;
-        height: 42px;
-        border-radius: 9px;
-        font-size: 9px;
-    }
-
-    /* Todos os cards com acabamento arredondado */
-    .page-section:has(.barbers-grid) .barber-card {
+    #servicos .service-card {
         min-width: 0;
         padding: 12px;
-        border-radius: 10px;
+        border-radius: 12px;
+        background: linear-gradient(145deg, rgba(255,255,255,.035), rgba(255,255,255,.015));
+        border: 1px solid rgba(255,255,255,.10);
+        box-shadow: inset 0 1px 0 rgba(255,255,255,.025);
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        column-gap: 10px;
+        row-gap: 0;
         overflow: hidden;
     }
 
-    .page-section:has(.barbers-grid) .barber-card-header {
+    /* Ícone à esquerda + nome do serviço */
+    #servicos .service-card-header {
+        grid-column: 1 / -1;
+        display: grid;
+        grid-template-columns: 40px minmax(0, 1fr);
+        align-items: center;
         gap: 9px;
-        margin-bottom: 8px;
-    }
-
-    .page-section:has(.barbers-grid) .barber-avatar {
-        width: 42px;
-        height: 42px;
-        border-radius: 50%;
-        font-size: 11px;
-    }
-
-    .page-section:has(.barbers-grid) .barber-card-header h3 {
-        font-size: 12px;
-        margin-bottom: 3px;
-    }
-
-    .page-section:has(.barbers-grid) .barber-card-header p {
-        font-size: 8px;
-    }
-
-    /* Telefone */
-    .page-section:has(.barbers-grid) .barber-phone {
-        padding-bottom: 9px;
-        margin-bottom: 9px;
-        font-size: 9px;
-    }
-
-    /* Métricas */
-    .page-section:has(.barbers-grid) .barber-data {
-        gap: 0;
-        margin-bottom: 0;
-        padding-right: 8px;
-    }
-
-    .page-section:has(.barbers-grid) .barber-data > div {
+        margin: 0 0 8px;
         min-width: 0;
-        padding-right: 8px;
     }
 
-    .page-section:has(.barbers-grid) .barber-data span {
+    #servicos .service-card-header > div:first-child {
+        min-width: 0;
+    }
+
+    #servicos .service-icon {
+        grid-column: 1;
+        grid-row: 1;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        flex: 0 0 40px;
+        background: rgba(214,179,106,.13);
+        border: 1px solid rgba(214,179,106,.20);
+        color: var(--gold-light);
+        font-size: 15px;
+    }
+
+    #servicos .service-card-header > div:first-child {
+        grid-column: 2;
+        grid-row: 1;
+    }
+
+    #servicos .service-card h3 {
+        font-size: 12px;
+        line-height: 1.2;
+        margin: 0 0 3px;
+    }
+
+    #servicos .service-description {
         font-size: 8px;
-        margin-bottom: 3px;
+        line-height: 1.25;
     }
 
-    .page-section:has(.barbers-grid) .barber-data strong {
-        font-size: 11px;
+    /* Preço e duração na mesma faixa */
+    #servicos .service-price {
+        grid-column: 1;
+        font-size: 18px;
+        line-height: 1.1;
+        margin: 0;
+        align-self: center;
     }
 
-    /* Status */
-    .page-section:has(.barbers-grid) .barber-status {
-        padding: 4px 7px;
+    #servicos .service-duration {
+        grid-column: 2;
+        align-self: center;
+        justify-self: end;
+        font-size: 8px;
+        white-space: nowrap;
+        color: var(--secondary);
+    }
+
+    /* Status compacto */
+    #servicos .service-info {
+        grid-column: 1 / -1;
+        padding: 7px 0;
+        margin-top: 8px;
+        border-top: 1px solid rgba(255,255,255,.08);
+        border-bottom: 1px solid rgba(255,255,255,.08);
+    }
+
+    #servicos .service-status {
+        min-height: 22px;
+        padding: 0 7px;
         border-radius: 7px;
         font-size: 7px;
+        align-items: center;
     }
 
     /* Ações compactas e arredondadas */
-    .page-section:has(.barbers-grid) .barber-actions {
+    #servicos .service-actions {
+        grid-column: 1 / -1;
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
         gap: 6px;
-        margin-top: 10px;
+        margin-top: 8px;
     }
 
-    .page-section:has(.barbers-grid) .barber-actions button {
+    #servicos .service-actions button {
         min-width: 0;
+        width: 100%;
         height: 34px;
         min-height: 34px;
-        padding: 0 8px;
+        padding: 0 5px;
         border-radius: 8px;
-        font-size: 8px;
-    }
-
-    .page-section:has(.barbers-grid) .edit-button,
-    .page-section:has(.barbers-grid) .toggle-button {
-        border-radius: 8px;
+        font-size: 7px;
+        font-weight: 800;
+        letter-spacing: .25px;
     }
 }
 
 @media (max-width: 380px) {
 
-    .page-section:has(.barbers-grid) .page-header {
-        gap: 7px;
+    #servicos .page-header {
+        gap: 8px;
     }
 
-    .page-section:has(.barbers-grid) .page-header h1 {
-        font-size: 23px;
-    }
-
-    .page-section:has(.barbers-grid) .page-header p {
+    #servicos .page-header .primary-button {
+        min-height: 38px;
+        height: 38px;
+        padding: 0 10px;
         font-size: 8px;
-    }
-
-    .page-section:has(.barbers-grid) .page-header .primary-button {
-        height: 40px;
-        min-height: 40px;
-        padding: 0 9px;
-        font-size: 8px;
-        border-radius: 8px;
-    }
-
-    .page-section:has(.barbers-grid) .team-summary div {
-        min-height: 68px;
-        padding: 9px 6px;
-    }
-
-    .page-section:has(.barbers-grid) .team-summary span {
-        font-size: 6.5px;
-    }
-
-    .page-section:has(.barbers-grid) .team-summary strong {
-        font-size: 17px;
-    }
-
-    .page-section:has(.barbers-grid) .barber-card {
-        padding: 11px;
         border-radius: 9px;
     }
 
-    .page-section:has(.barbers-grid) .barber-actions button {
-        height: 33px;
-        min-height: 33px;
-        padding: 0 6px;
+    #servicos .page-header h1 {
+        font-size: 25px;
+    }
+
+    #servicos .page-header p {
+        font-size: 9px;
+    }
+
+    #servicos .team-summary {
+        gap: 6px;
+    }
+
+    #servicos .team-summary > div {
+        min-height: 66px;
+        padding: 9px 6px;
+        border-radius: 9px;
+    }
+
+    #servicos .team-summary span {
+        font-size: 6.5px;
+    }
+
+    #servicos .team-summary strong {
+        font-size: 18px;
+    }
+
+    #servicos .service-card {
+        padding: 11px;
+        border-radius: 11px;
+    }
+
+    #servicos .service-card-header {
+        grid-template-columns: 38px minmax(0, 1fr);
+        gap: 8px;
+    }
+
+    #servicos .service-icon {
+        width: 38px;
+        height: 38px;
+        flex-basis: 38px;
+        font-size: 14px;
+    }
+
+    #servicos .service-card h3 {
+        font-size: 11px;
+    }
+
+    #servicos .service-description {
+        font-size: 7px;
+    }
+
+    #servicos .service-price {
+        font-size: 17px;
+    }
+
+    #servicos .service-duration {
+        font-size: 7px;
+    }
+
+    #servicos .service-actions {
+        gap: 5px;
+    }
+
+    #servicos .service-actions button {
+        height: 32px;
+        min-height: 32px;
+        font-size: 6.5px;
+        border-radius: 7px;
+    }
+}
+
+/* =========================================================
+   CORREÇÃO MOBILE — SEM CORTE LATERAL + DASHBOARD
+   ---------------------------------------------------------
+   Esta correção vem por último para vencer as regras antigas.
+   Desktop não é alterado.
+   ========================================================= */
+
+@media (max-width: 700px) {
+
+    /* ---------- CORREÇÃO DA LARGURA DO PAINEL ---------- */
+
+    html,
+    body {
+        width: 100% !important;
+        max-width: 100% !important;
+        min-width: 0 !important;
+        overflow-x: visible !important;
+    }
+
+    .app {
+        width: 100% !important;
+        max-width: 100% !important;
+        min-width: 0 !important;
+    }
+
+    .main-content {
+        width: 100% !important;
+        max-width: 100vw !important;
+        min-width: 0 !important;
+        margin-left: 0 !important;
+        box-sizing: border-box !important;
+        overflow-x: visible !important;
+    }
+
+    .page-section,
+    .page-section.active {
+        width: 100% !important;
+        max-width: 100% !important;
+        min-width: 0 !important;
+        box-sizing: border-box !important;
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+    }
+
+    /* Nada dentro do módulo pode criar uma largura maior que a tela. */
+    .page-section.active > *,
+    .content-card,
+    .agenda-toolbar-card,
+    .agenda-list-card,
+    .barber-card,
+    .client-card,
+    .service-card,
+    .schedule-card {
+        max-width: 100% !important;
+        min-width: 0 !important;
+        box-sizing: border-box !important;
+    }
+
+    input,
+    select,
+    textarea,
+    button {
+        max-width: 100% !important;
+        box-sizing: border-box !important;
+    }
+
+    /* ---------- DASHBOARD: SOMENTE CELULAR ---------- */
+
+    .dashv3-shell {
+        width: 100% !important;
+        max-width: 100% !important;
+        min-width: 0 !important;
+        box-sizing: border-box !important;
+    }
+
+    .dashv3-topbar {
+        width: 100% !important;
+        max-width: 100% !important;
+        min-width: 0 !important;
+        box-sizing: border-box !important;
+    }
+
+    .dashv3-actions {
+        width: 100% !important;
+        max-width: 100% !important;
+        min-width: 0 !important;
+        box-sizing: border-box !important;
+        flex-wrap: wrap !important;
+    }
+
+    .dashv3-actions select {
+        min-width: 0 !important;
+        max-width: 100% !important;
+        flex: 1 1 150px !important;
+    }
+
+    .dashv3-stats {
+        width: 100% !important;
+        max-width: 100% !important;
+        min-width: 0 !important;
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+        gap: 8px !important;
+    }
+
+    .dashv3-stat {
+        width: 100% !important;
+        max-width: 100% !important;
+        min-width: 0 !important;
+        min-height: 82px !important;
+        padding: 11px !important;
+        border-radius: 14px !important;
+        box-sizing: border-box !important;
+    }
+
+    .dashv3-icon {
+        border-radius: 10px !important;
+    }
+
+    .dashv3-grid,
+    .dashv3-grid-main,
+    .dashv3-grid-bottom {
+        width: 100% !important;
+        max-width: 100% !important;
+        min-width: 0 !important;
+        grid-template-columns: 1fr !important;
+        gap: 10px !important;
+    }
+
+    .dashv3-panel {
+        width: 100% !important;
+        max-width: 100% !important;
+        min-width: 0 !important;
+        box-sizing: border-box !important;
+        border-radius: 14px !important;
+        overflow: visible !important;
+    }
+
+    .dashv3-panel-head,
+    .dashv3-appointment,
+    .dashv3-team-row,
+    .dashv3-service-row {
+        min-width: 0 !important;
+        max-width: 100% !important;
+    }
+
+    .dashv3-appointment {
+        grid-template-columns: 44px minmax(0, 1fr) auto !important;
+        gap: 7px !important;
+    }
+
+    .dashv3-person,
+    .dashv3-row-info {
+        min-width: 0 !important;
+        max-width: 100% !important;
+    }
+
+}
+
+@media (max-width: 380px) {
+
+    .main-content {
+        padding-left: 10px !important;
+        padding-right: 10px !important;
+    }
+
+    .dashv3-stats {
+        gap: 6px !important;
+    }
+
+    .dashv3-stat {
+        padding: 9px !important;
+        min-height: 76px !important;
+        border-radius: 12px !important;
+    }
+}
+
+
+/* =========================================================
+   AJUSTE FINAL — BOTÕES DO MÓDULO BARBEIROS NO CELULAR
+   Mantém o mesmo tamanho visual dos demais botões do painel.
+   ========================================================= */
+@media (max-width: 700px) {
+    .barber-actions button {
+        height: 38px !important;
+        min-height: 38px !important;
+        max-height: 38px !important;
+        padding: 0 12px !important;
+        font-size: 9px !important;
+        line-height: 1 !important;
+        box-sizing: border-box !important;
+    }
+}
+
+@media (max-width: 380px) {
+    .barber-actions button {
+        height: 36px !important;
+        min-height: 36px !important;
+        max-height: 36px !important;
+        padding: 0 10px !important;
+        font-size: 8px !important;
+    }
+}
+
+
+/* =========================================================
+   MÓDULO CLIENTES — LAYOUT DE REFERÊNCIA
+   ---------------------------------------------------------
+   Somente o módulo #clientes.
+   Não altera os demais módulos.
+   ========================================================= */
+
+/* Remove o botão grande de adicionar cliente */
+#clientes .page-header .primary-button {
+    display: none !important;
+}
+
+/* Cabeçalho mais limpo */
+#clientes .page-header {
+    margin-bottom: 16px;
+}
+
+#clientes .page-header h1 {
+    font-size: 30px;
+}
+
+#clientes .page-header p {
+    font-size: 11px;
+}
+
+/* Área superior: Total + Pesquisa */
+#clientes .client-summary {
+    display: grid;
+    grid-template-columns: 180px minmax(0, 1fr);
+    gap: 10px;
+    margin-bottom: 14px;
+}
+
+/* Só o TOTAL DE CLIENTES aparece */
+#clientes .client-summary-card {
+    min-height: 72px;
+    padding: 12px 14px;
+    border-radius: 12px;
+    flex-direction: row;
+    align-items: center;
+    gap: 12px;
+}
+
+#clientes .client-summary-card:nth-child(n + 2) {
+    display: none !important;
+}
+
+#clientes .client-summary-card::before {
+    content: "♟";
+    width: 40px;
+    height: 40px;
+    flex: 0 0 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+    background: rgba(214,179,106,0.10);
+    color: var(--gold);
+    font-size: 21px;
+}
+
+#clientes .client-summary-card span {
+    margin: 0 0 4px;
+    font-size: 8px;
+    letter-spacing: .7px;
+}
+
+#clientes .client-summary-card strong {
+    font-size: 23px;
+    line-height: 1;
+}
+
+/* Pesquisa compacta */
+#clientes .client-search-card {
+    min-width: 0;
+    min-height: 72px;
+    padding: 10px 14px;
+    margin: 0;
+    border-radius: 12px;
+    justify-content: center;
+    gap: 5px;
+}
+
+#clientes .client-search-card label {
+    display: none;
+}
+
+#clientes .client-search-input {
+    width: 100%;
+    max-width: none;
+    height: 44px;
+    margin: 0;
+    padding: 0 14px 0 42px;
+    border-radius: 10px;
+    font-size: 10px;
+    background: #101010;
+    position: relative;
+}
+
+#clientes .client-search-card {
+    position: relative;
+}
+
+#clientes .client-search-card::before {
+    content: "⌕";
+    position: absolute;
+    left: 27px;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 2;
+    color: var(--gold);
+    font-size: 24px;
+    line-height: 1;
+    pointer-events: none;
+}
+
+/* Cards dos clientes — dois lado a lado */
+#clientes .clients-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+}
+
+#clientes .client-card {
+    min-width: 0;
+    padding: 14px;
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+/* Cabeçalho do cliente */
+#clientes .client-card-header {
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+#clientes .client-avatar {
+    width: 48px;
+    height: 48px;
+    flex: 0 0 48px;
+    font-size: 13px;
+}
+
+#clientes .client-card-header h3 {
+    font-size: 13px;
+    margin-bottom: 3px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+#clientes .client-card-header p {
+    font-size: 8px;
+}
+
+/* WhatsApp */
+#clientes .client-phone {
+    position: relative;
+    padding: 0 0 10px 22px;
+    margin: 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 9px;
+}
+
+#clientes .client-phone::before {
+    content: "◉";
+    position: absolute;
+    left: 1px;
+    top: 0;
+    color: #78c98f;
+    font-size: 10px;
+}
+
+/* Informações inferiores em duas colunas */
+#clientes .client-data {
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    padding: 11px 0 0;
+}
+
+#clientes .client-data > div {
+    min-width: 0;
+    position: relative;
+    padding-left: 27px;
+}
+
+/* Ícone de calendário */
+#clientes .client-data > div:first-child::before {
+    content: "▦";
+    position: absolute;
+    left: 0;
+    top: 0;
+    color: var(--gold);
+    font-size: 21px;
+    line-height: 1;
+}
+
+/* Ícone de relógio */
+#clientes .client-data > div:nth-child(2)::before {
+    content: "◷";
+    position: absolute;
+    left: 0;
+    top: -1px;
+    color: var(--gold);
+    font-size: 22px;
+    line-height: 1;
+}
+
+#clientes .client-data span {
+    font-size: 7px;
+    margin-bottom: 4px;
+    white-space: nowrap;
+}
+
+#clientes .client-data strong {
+    font-size: 10px;
+    white-space: nowrap;
+}
+
+/* Caso o HTML use o bloco separado de último atendimento */
+#clientes .client-last-visit {
+    display: none;
+}
+
+/* Os botões não aparecem no card da referência */
+#clientes .client-actions {
+    display: none;
+}
+
+/* Arredondamento geral */
+#clientes .client-summary-card,
+#clientes .client-search-card,
+#clientes .client-card {
+    box-shadow: none;
+}
+
+/* =========================================================
+   MOBILE — MESMA COMPOSIÇÃO DA IMAGEM DE REFERÊNCIA
+   ========================================================= */
+
+@media (max-width: 700px) {
+
+    #clientes .page-header {
+        gap: 6px;
+        margin-bottom: 13px;
+    }
+
+    #clientes .page-header h1 {
+        font-size: 26px;
+    }
+
+    #clientes .page-header p {
+        font-size: 9px;
+        line-height: 1.4;
+    }
+
+    #clientes .client-summary {
+        grid-template-columns: 0.9fr 1.45fr;
+        gap: 8px;
+        margin-bottom: 12px;
+    }
+
+    #clientes .client-summary-card {
+        min-height: 68px;
+        padding: 9px;
+        border-radius: 11px;
+        gap: 8px;
+    }
+
+    #clientes .client-summary-card::before {
+        width: 34px;
+        height: 34px;
+        flex-basis: 34px;
+        border-radius: 9px;
+        font-size: 18px;
+    }
+
+    #clientes .client-summary-card span {
+        font-size: 7px;
+        letter-spacing: .4px;
+    }
+
+    #clientes .client-summary-card strong {
+        font-size: 19px;
+    }
+
+    #clientes .client-search-card {
+        min-height: 68px;
+        padding: 8px;
+        border-radius: 11px;
+    }
+
+    #clientes .client-search-input {
+        height: 48px;
+        border-radius: 9px;
+        padding-left: 36px;
+        font-size: 8px;
+    }
+
+    #clientes .client-search-card::before {
+        left: 20px;
+        font-size: 21px;
+    }
+
+    #clientes .clients-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 8px;
+    }
+
+    #clientes .client-card {
+        padding: 10px;
+        border-radius: 11px;
+    }
+
+    #clientes .client-card-header {
+        gap: 7px;
+        margin-bottom: 8px;
+    }
+
+    #clientes .client-avatar {
+        width: 40px;
+        height: 40px;
+        flex-basis: 40px;
+        font-size: 11px;
+    }
+
+    #clientes .client-card-header h3 {
+        font-size: 10px;
+    }
+
+    #clientes .client-card-header p {
+        display: none;
+    }
+
+    #clientes .client-phone {
+        padding-left: 18px;
+        padding-bottom: 8px;
+        font-size: 7px;
+    }
+
+    #clientes .client-phone::before {
+        font-size: 8px;
+    }
+
+    #clientes .client-data {
+        gap: 5px;
+        padding-top: 9px;
+    }
+
+    #clientes .client-data > div {
+        padding-left: 20px;
+    }
+
+    #clientes .client-data > div:first-child::before,
+    #clientes .client-data > div:nth-child(2)::before {
+        font-size: 17px;
+    }
+
+    #clientes .client-data span {
+        font-size: 6px;
+        margin-bottom: 3px;
+    }
+
+    #clientes .client-data strong {
+        font-size: 8px;
+    }
+}
+
+@media (max-width: 380px) {
+
+    #clientes .client-summary {
+        gap: 6px;
+    }
+
+    #clientes .client-summary-card {
+        padding: 7px;
+    }
+
+    #clientes .client-summary-card::before {
+        width: 30px;
+        height: 30px;
+        flex-basis: 30px;
+        font-size: 16px;
+    }
+
+    #clientes .client-summary-card span {
+        font-size: 6px;
+    }
+
+    #clientes .client-summary-card strong {
+        font-size: 17px;
+    }
+
+    #clientes .client-search-card {
+        padding: 6px;
+    }
+
+    #clientes .client-search-input {
+        height: 44px;
+        font-size: 7px;
+    }
+
+    #clientes .clients-grid {
+        gap: 6px;
+    }
+
+    #clientes .client-card {
+        padding: 8px;
+    }
+
+    #clientes .client-avatar {
+        width: 36px;
+        height: 36px;
+        flex-basis: 36px;
+    }
+
+    #clientes .client-card-header h3 {
+        font-size: 9px;
+    }
+
+    #clientes .client-phone {
+        font-size: 6.5px;
+    }
+
+    #clientes .client-data span {
+        font-size: 5.5px;
+    }
+
+    #clientes .client-data strong {
         font-size: 7.5px;
+    }
+}
+
+
+/* =========================================================
+   BARBEIROS — VERSÃO FINAL DE REFERÊNCIA
+   ---------------------------------------------------------
+   Somente #barbeiros.
+   Estrutura visual:
+   TOTAL + PESQUISA
+   CARDS EM 2 COLUNAS
+   ÍCONES + CARDS COMPACTOS + BOTÕES PROPORCIONAIS
+   ========================================================= */
+
+/* Remove o botão gigante de adicionar */
+#barbeiros .page-header .primary-button {
+    display: none !important;
+}
+
+/* Cabeçalho */
+#barbeiros .page-header {
+    margin-bottom: 16px !important;
+}
+
+#barbeiros .page-header h1 {
+    font-size: 30px !important;
+    line-height: 1.08;
+}
+
+#barbeiros .page-header p {
+    font-size: 11px !important;
+}
+
+/* =========================================================
+   TOTAL DE BARBEIROS + DISPLAY DE PESQUISA
+   ========================================================= */
+
+#barbeiros .team-summary {
+    display: grid !important;
+    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.45fr) !important;
+    gap: 10px !important;
+    margin-bottom: 14px !important;
+}
+
+#barbeiros .team-summary > div {
+    min-width: 0 !important;
+    min-height: 72px !important;
+    height: 72px !important;
+    padding: 11px 14px !important;
+    border-radius: 13px !important;
+    box-sizing: border-box !important;
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    gap: 12px !important;
+}
+
+#barbeiros .team-summary > div:nth-child(n + 2) {
+    display: none !important;
+}
+
+/* Ícone de profissionais */
+#barbeiros .team-summary > div:first-child::before {
+    content: "♟";
+    width: 42px;
+    height: 42px;
+    flex: 0 0 42px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid rgba(214,179,106,0.18);
+    border-radius: 11px;
+    background: rgba(214,179,106,0.08);
+    color: var(--gold);
+    font-size: 21px;
+}
+
+/* Texto do total */
+#barbeiros .team-summary > div:first-child span {
+    margin: 0 0 3px !important;
+    font-size: 8px !important;
+    letter-spacing: .6px !important;
+}
+
+#barbeiros .team-summary > div:first-child strong {
+    font-size: 24px !important;
+    line-height: 1 !important;
+}
+
+/* Display de pesquisa criado no mesmo bloco */
+#barbeiros .team-summary::after {
+    content: "⌕   Nome ou telefone...";
+    min-width: 0;
+    height: 72px;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    padding: 0 18px;
+    border: 1px solid var(--border);
+    border-radius: 13px;
+    background: #101010;
+    color: var(--muted);
+    font-size: 10px;
+    letter-spacing: .1px;
+}
+
+/* =========================================================
+   CARDS DOS BARBEIROS — 2 COLUNAS
+   ========================================================= */
+
+#barbeiros .barbers-grid {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 12px !important;
+}
+
+#barbeiros .barber-card {
+    min-width: 0 !important;
+    padding: 15px !important;
+    border-radius: 14px !important;
+    box-sizing: border-box !important;
+}
+
+/* Cabeçalho */
+#barbeiros .barber-card-header {
+    gap: 10px !important;
+    margin-bottom: 10px !important;
+}
+
+#barbeiros .barber-avatar {
+    width: 48px !important;
+    height: 48px !important;
+    flex: 0 0 48px !important;
+    font-size: 13px !important;
+}
+
+#barbeiros .barber-card-header h3 {
+    font-size: 13px !important;
+    margin-bottom: 3px !important;
+}
+
+#barbeiros .barber-card-header p {
+    font-size: 8px !important;
+}
+
+/* WhatsApp / telefone */
+#barbeiros .barber-phone {
+    position: relative;
+    padding: 0 0 10px 22px !important;
+    margin: 0 0 10px !important;
+    font-size: 9px !important;
+}
+
+#barbeiros .barber-phone::before {
+    content: "◉";
+    position: absolute;
+    left: 1px;
+    top: 0;
+    color: #65d98a;
+    font-size: 10px;
+}
+
+/* Métricas */
+#barbeiros .barber-data {
+    grid-template-columns: 1fr 1fr !important;
+    gap: 8px !important;
+    margin-bottom: 9px !important;
+}
+
+#barbeiros .barber-data > div {
+    min-width: 0;
+    position: relative;
+    padding-left: 27px;
+}
+
+/* Calendário */
+#barbeiros .barber-data > div:first-child::before {
+    content: "▦";
+    position: absolute;
+    left: 0;
+    top: -1px;
+    color: var(--gold);
+    font-size: 20px;
+    line-height: 1;
+}
+
+/* Dinheiro */
+#barbeiros .barber-data > div:nth-child(2)::before {
+    content: "$";
+    position: absolute;
+    left: 0;
+    top: -2px;
+    width: 21px;
+    height: 21px;
+    border: 2px solid var(--gold);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--gold);
+    font-size: 11px;
+    font-weight: 700;
+    box-sizing: border-box;
+}
+
+#barbeiros .barber-data span {
+    font-size: 7px !important;
+    margin-bottom: 3px !important;
+}
+
+#barbeiros .barber-data strong {
+    font-size: 11px !important;
+    white-space: nowrap;
+}
+
+/* Status */
+#barbeiros .barber-status {
+    padding: 5px 9px !important;
+    border-radius: 14px !important;
+    font-size: 8px !important;
+}
+
+#barbeiros .barber-status.active::before {
+    content: "";
+    width: 7px;
+    height: 7px;
+    margin-right: 5px;
+    border-radius: 50%;
+    background: var(--green);
+}
+
+/* Botões */
+#barbeiros .barber-actions {
+    gap: 7px !important;
+    margin-top: 10px !important;
+}
+
+#barbeiros .barber-actions button {
+    min-width: 0 !important;
+    height: 36px !important;
+    min-height: 36px !important;
+    padding: 0 8px !important;
+    border-radius: 9px !important;
+    font-size: 8px !important;
+}
+
+/* =========================================================
+   MOBILE — MANTER 2 COLUNAS
+   ========================================================= */
+
+@media (max-width: 700px) {
+
+    #barbeiros .page-header {
+        margin-bottom: 13px !important;
+    }
+
+    #barbeiros .page-header h1 {
+        font-size: 27px !important;
+    }
+
+    #barbeiros .page-header p {
+        font-size: 9px !important;
+    }
+
+    #barbeiros .team-summary {
+        grid-template-columns: minmax(0, .9fr) minmax(0, 1.45fr) !important;
+        gap: 8px !important;
+        margin-bottom: 12px !important;
+    }
+
+    #barbeiros .team-summary > div {
+        height: 66px !important;
+        min-height: 66px !important;
+        padding: 8px !important;
+        border-radius: 11px !important;
+        gap: 8px !important;
+    }
+
+    #barbeiros .team-summary > div:first-child::before {
+        width: 34px;
+        height: 34px;
+        flex-basis: 34px;
+        border-radius: 9px;
+        font-size: 17px;
+    }
+
+    #barbeiros .team-summary > div:first-child span {
+        font-size: 7px !important;
+    }
+
+    #barbeiros .team-summary > div:first-child strong {
+        font-size: 21px !important;
+    }
+
+    #barbeiros .team-summary::after {
+        height: 66px;
+        padding: 0 11px;
+        border-radius: 11px;
+        font-size: 8px;
+        white-space: nowrap;
+        overflow: hidden;
+    }
+
+    #barbeiros .barbers-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+        gap: 9px !important;
+    }
+
+    #barbeiros .barber-card {
+        padding: 11px !important;
+        border-radius: 12px !important;
+    }
+
+    #barbeiros .barber-card-header {
+        gap: 7px !important;
+        margin-bottom: 8px !important;
+    }
+
+    #barbeiros .barber-avatar {
+        width: 38px !important;
+        height: 38px !important;
+        flex-basis: 38px !important;
+        font-size: 11px !important;
+    }
+
+    #barbeiros .barber-card-header h3 {
+        font-size: 10px !important;
+    }
+
+    #barbeiros .barber-card-header p {
+        font-size: 7px !important;
+    }
+
+    #barbeiros .barber-phone {
+        padding-left: 18px !important;
+        padding-bottom: 8px !important;
+        margin-bottom: 8px !important;
+        font-size: 7px !important;
+    }
+
+    #barbeiros .barber-data {
+        gap: 5px !important;
+        margin-bottom: 7px !important;
+    }
+
+    #barbeiros .barber-data > div {
+        padding-left: 20px;
+    }
+
+    #barbeiros .barber-data > div:first-child::before {
+        font-size: 16px;
+    }
+
+    #barbeiros .barber-data > div:nth-child(2)::before {
+        width: 17px;
+        height: 17px;
+        font-size: 9px;
+        border-width: 1.5px;
+    }
+
+    #barbeiros .barber-data span {
+        font-size: 6px !important;
+    }
+
+    #barbeiros .barber-data strong {
+        font-size: 8px !important;
+    }
+
+    #barbeiros .barber-status {
+        padding: 4px 7px !important;
+        font-size: 7px !important;
+    }
+
+    #barbeiros .barber-status.active::before {
+        width: 6px;
+        height: 6px;
+        margin-right: 4px;
+    }
+
+    #barbeiros .barber-actions {
+        gap: 5px !important;
+        margin-top: 8px !important;
+    }
+
+    #barbeiros .barber-actions button {
+        height: 31px !important;
+        min-height: 31px !important;
+        padding: 0 4px !important;
+        border-radius: 8px !important;
+        font-size: 7px !important;
+    }
+}
+
+/* Celulares muito estreitos: continua em 2 colunas */
+@media (max-width: 380px) {
+
+    #barbeiros .barbers-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+        gap: 7px !important;
+    }
+
+    #barbeiros .barber-card {
+        padding: 9px !important;
+    }
+
+    #barbeiros .barber-avatar {
+        width: 34px !important;
+        height: 34px !important;
+        flex-basis: 34px !important;
+    }
+
+    #barbeiros .barber-card-header h3 {
+        font-size: 9px !important;
+    }
+
+    #barbeiros .barber-card-header p {
+        font-size: 6px !important;
+    }
+
+    #barbeiros .barber-phone {
+        font-size: 6px !important;
+    }
+
+    #barbeiros .barber-data span {
+        font-size: 5.5px !important;
+    }
+
+    #barbeiros .barber-data strong {
+        font-size: 7px !important;
+    }
+
+    #barbeiros .barber-actions button {
+        height: 29px !important;
+        min-height: 29px !important;
+        font-size: 6.5px !important;
+    }
+}
+
+
+/* =========================================================
+   AJUSTE FINAL — BARBEIROS
+   Remover display/pesquisa e manter somente PROFISSIONAIS
+   ========================================================= */
+
+#barbeiros .team-summary {
+    display: block !important;
+    margin-bottom: 14px !important;
+}
+
+#barbeiros .team-summary > div:first-child {
+    display: flex !important;
+    width: 100% !important;
+    height: 72px !important;
+    min-height: 72px !important;
+    box-sizing: border-box !important;
+}
+
+#barbeiros .team-summary > div:nth-child(n + 2),
+#barbeiros .team-summary::after {
+    display: none !important;
+}
+
+@media (max-width: 700px) {
+    #barbeiros .team-summary {
+        display: block !important;
+    }
+
+    #barbeiros .team-summary > div:first-child {
+        width: 100% !important;
+        height: 66px !important;
+        min-height: 66px !important;
+    }
+}
+
+
+/* =========================================================
+   HORÁRIOS — AJUSTE VISUAL FINAL
+   ---------------------------------------------------------
+   Somente o módulo de Horários.
+   Deixa os componentes arredondados e compactos,
+   sem alterar a estrutura/funcionalidade.
+   ========================================================= */
+
+/* Cards de resumo */
+.schedule-summary {
+    gap: 10px !important;
+    margin-bottom: 14px !important;
+}
+
+.schedule-summary-card {
+    padding: 14px !important;
+    border-radius: 13px !important;
+    min-height: 72px !important;
+    box-sizing: border-box !important;
+}
+
+.schedule-summary-card span {
+    font-size: 8px !important;
+    letter-spacing: .7px !important;
+}
+
+.schedule-summary-card strong {
+    font-size: 20px !important;
+}
+
+/* Bloco principal de configurações */
+.schedule-settings-grid {
+    gap: 10px !important;
+}
+
+.schedule-settings-grid .form-group {
+    min-width: 0;
+}
+
+.form-group select {
+    height: 42px !important;
+    border-radius: 10px !important;
+    padding: 0 12px !important;
+}
+
+/* Seleção dos dias */
+.week-days {
+    gap: 7px !important;
+}
+
+.day-option span {
+    min-height: 44px !important;
+    border-radius: 10px !important;
+    padding: 5px 8px !important;
+    box-sizing: border-box !important;
+}
+
+/* Calendário dos próximos dias */
+.availability-calendar {
+    gap: 7px !important;
+}
+
+.availability-day {
+    min-height: 78px !important;
+    padding: 9px !important;
+    border-radius: 11px !important;
+    box-sizing: border-box !important;
+}
+
+.availability-day .day-name {
+    margin-bottom: 6px !important;
+    font-size: 7px !important;
+}
+
+.availability-day .day-number {
+    font-size: 18px !important;
+    margin-bottom: 5px !important;
+}
+
+.availability-day .day-status {
+    font-size: 7px !important;
+}
+
+/* Horários disponíveis */
+.schedule-slots {
+    gap: 7px !important;
+}
+
+.schedule-slot {
+    min-height: 42px !important;
+    border-radius: 10px !important;
+    font-size: 9px !important;
+}
+
+/* Área do botão salvar */
+.schedule-save-area {
+    margin-top: 10px !important;
+    margin-bottom: 22px !important;
+}
+
+.schedule-save-area .primary-button {
+    min-height: 42px !important;
+    border-radius: 10px !important;
+}
+
+/* Se existir o card de modo de agendamento */
+.scheduling-mode-card {
+    padding: 16px !important;
+    border-radius: 13px !important;
+}
+
+.scheduling-mode-heading {
+    margin-bottom: 12px !important;
+}
+
+.scheduling-mode-switch {
+    border-radius: 999px !important;
+}
+
+/* Mobile */
+@media (max-width: 700px) {
+
+    .schedule-summary {
+        grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+        gap: 7px !important;
+        margin-bottom: 11px !important;
+    }
+
+    .schedule-summary-card {
+        min-height: 64px !important;
+        padding: 9px 8px !important;
+        border-radius: 11px !important;
+    }
+
+    .schedule-summary-card span {
+        font-size: 6.5px !important;
+    }
+
+    .schedule-summary-card strong {
+        font-size: 15px !important;
+    }
+
+    .schedule-settings-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+        gap: 7px !important;
+    }
+
+    .form-group {
+        gap: 4px !important;
+        margin-bottom: 9px !important;
+    }
+
+    .form-group label {
+        font-size: 7px !important;
+    }
+
+    .form-group select {
+        height: 38px !important;
+        border-radius: 9px !important;
+        padding: 0 7px !important;
+        font-size: 8px !important;
+    }
+
+    .week-days {
+        grid-template-columns: repeat(7, minmax(0, 1fr)) !important;
+        gap: 4px !important;
+    }
+
+    .day-option span {
+        min-height: 40px !important;
+        border-radius: 9px !important;
+        padding: 3px 2px !important;
+        font-size: 7px !important;
+    }
+
+    .availability-calendar {
+        grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+        gap: 5px !important;
+    }
+
+    .availability-day {
+        min-height: 65px !important;
+        padding: 6px !important;
+        border-radius: 9px !important;
+    }
+
+    .availability-day .day-name {
+        font-size: 6px !important;
+        margin-bottom: 4px !important;
+    }
+
+    .availability-day .day-number {
+        font-size: 15px !important;
+        margin-bottom: 4px !important;
+    }
+
+    .availability-day .day-status {
+        font-size: 6px !important;
+    }
+
+    .schedule-slots {
+        grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+        gap: 5px !important;
+    }
+
+    .schedule-slot {
+        min-height: 38px !important;
+        border-radius: 8px !important;
+        font-size: 8px !important;
+    }
+
+    .schedule-save-area .primary-button {
+        min-height: 40px !important;
+        border-radius: 9px !important;
+    }
+
+    .scheduling-mode-card {
+        padding: 12px !important;
+        border-radius: 11px !important;
+    }
+}
+
+/* Celulares estreitos */
+@media (max-width: 380px) {
+
+    .schedule-summary {
+        gap: 5px !important;
+    }
+
+    .schedule-summary-card {
+        min-height: 60px !important;
+        padding: 8px 6px !important;
+    }
+
+    .schedule-summary-card span {
+        font-size: 6px !important;
+    }
+
+    .schedule-summary-card strong {
+        font-size: 14px !important;
+    }
+
+    .week-days {
+        gap: 3px !important;
+    }
+
+    .day-option span {
+        min-height: 37px !important;
+        font-size: 6px !important;
+    }
+
+    .availability-calendar {
+        gap: 4px !important;
+    }
+
+    .availability-day {
+        min-height: 60px !important;
+        padding: 5px !important;
+    }
+
+    .schedule-slots {
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
     }
 }
