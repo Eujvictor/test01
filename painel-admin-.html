@@ -1436,119 +1436,226 @@
              CONFIGURAÇÕES
              ========================= -->
 
-        <section id="configuracoes"
-                 class="page-section">
+        <section id="configuracoes" class="page-section">
+<div class="page-header settings-page-header"><div><span class="eyebrow">GESTÃO DO SITE</span><h1>Configurações da Barbearia</h1><p>Gerencie as informações e o conteúdo do site da barbearia.</p></div><div class="settings-top-actions"></div></div>
+<div class="settings-whatsapp-top">
+<div class="content-card site-settings-card" id="config-card-whatsapp">
+  <div class="card-header"><div class="settings-card-title"><span class="settings-card-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 11.5a8 8 0 0 1-11.8 7L4 20l1.5-4.1A8 8 0 1 1 20 11.5Z"/><path d="M8.5 8.5c.4-.5.7-.5 1-.1l1 1.3c.2.3.2.5 0 .8l-.5.6c.7 1.1 1.5 1.9 2.7 2.5l.6-.5c.3-.2.5-.2.8 0l1.3.9c.3.2.3.6 0 1-.5.6-1.2.8-1.9.6-3.3-1-5.6-3.1-6.4-5.9-.2-.6 0-1.2.4-1.7Z"/></svg></span><div><span class="eyebrow">WhatsApp</span><h2>Agendamentos pelo WhatsApp</h2><p>Configure o número e o comportamento após o agendamento.</p></div></div></div>
+  <div class="form-group"><label for="barbershopWhatsapp">WhatsApp para receber agendamentos</label><input type="text" id="barbershopWhatsapp" placeholder="(62) 99999-9999" ></div><div class="form-group"><label for="whatsappAfterBookingSwitch">Enviar cliente para o WhatsApp após o agendamento</label><div class="settings-switch-row"><span class="settings-help-text">Ativar redirecionamento para o WhatsApp</span><button type="button" id="whatsappAfterBookingSwitch" aria-pressed="false" aria-label="Alternar redirecionamento para o WhatsApp" class="settings-switch"><span id="whatsappAfterBookingSwitchText" class="settings-switch-text">OFF</span><span id="whatsappAfterBookingSwitchKnob" class="settings-switch-knob"></span></button></div><input type="checkbox" id="whatsappAfterBooking" aria-hidden="true" tabindex="-1" style="position:absolute;opacity:0;pointer-events:none;width:1px;height:1px;"></div><div id="settingsSaveStatus" class="settings-save-status"><span id="settingsSaveLight" class="settings-save-light" aria-hidden="true"></span><span id="settingsSaveStatusText">Tudo salvo</span></div>
+</div>
+</div>
+<div class="settings-top-actions settings-save-after-whatsapp"><button type="button" class="primary-button" id="saveSettings"><span>Salvar alterações</span></button></div>
+<div class="settings-shortcuts-wrap">
+  <div class="settings-shortcuts-title"><span class="eyebrow">ATALHOS</span><strong>Acesse uma configuração rapidamente</strong></div>
+  <div class="settings-shortcuts">
+    <a class="settings-shortcut" href="#config-card-configuracao-basica">Configuração básica</a>
+    <a class="settings-shortcut" href="#config-card-aparencia-e-exibicao">Aparência e exibição</a>
+    <a class="settings-shortcut" href="#config-card-estatisticas">Estatísticas</a>
+    <a class="settings-shortcut" href="#config-card-servicos">Serviços</a>
+    <a class="settings-shortcut" href="#config-card-portfolio">Portfólio</a>
+    <a class="settings-shortcut" href="#config-card-equipe">Equipe</a>
+    <a class="settings-shortcut" href="#config-card-avaliacao">Avaliações</a>
+    <a class="settings-shortcut" href="#config-card-imagem-principal">Imagem principal</a>
+    <a class="settings-shortcut" href="#config-card-cores-e-fontes">Cores e fontes</a>
+    <a class="settings-shortcut" href="#config-card-whatsapp">WhatsApp</a>
+    <a class="settings-shortcut" href="#config-card-logo-da-barbearia">Logo / identidade da barbearia</a>
+    <a class="settings-shortcut" href="#config-card-localizacao">Localização</a>
+    <a class="settings-shortcut" href="#config-card-redes-sociais">Redes sociais</a>
+    <a class="settings-shortcut" href="#config-card-rodape">Rodapé</a>
 
-            <div class="page-header">
+</div>
+  <div class="settings-disabled-note" role="note"><span class="settings-disabled-note-icon" aria-hidden="true">!</span><div><strong>As demais seções estão temporariamente desativadas.</strong><span>Elas ficam em modo de visualização enquanto concluímos a configuração e a integração de cada parte do site.</span></div></div>
 
-                <div>
-                    <span class="eyebrow">
-                        CONFIGURAÇÕES
-                    </span>
-
-                    <h1>Configurações</h1>
-
-                    <p>
-                        Configurações da barbearia.
-                    </p>
-                </div>
-
-            </div>
-
-            <div class="content-card">
-
-                <div class="form-group">
-
-                    <label>
-                        Nome da barbearia
-                    </label>
-
-                    <input
-                        type="text"
-                        id="barbershopName"
-                        value="Navalha de Ouro">
-
-                </div>
-
-                <div class="form-group">
-
-                    <label for="barbershopWhatsapp">
-                        WhatsApp para receber agendamentos
-                    </label>
-
-                    <input
-                        type="text"
-                        id="barbershopWhatsapp"
-                        value="(62) 99999-9999"
-                        placeholder="(62) 99999-9999">
-
-                </div>
-
-                <div class="form-group">
-
-                    <label for="whatsappAfterBookingSwitch">
-                        Enviar cliente para o WhatsApp após o agendamento
-                    </label>
-
-                    <div style="display:flex;align-items:center;justify-content:space-between;gap:20px;margin-top:10px;max-width:560px;">
-
-                        <span style="font-size:13px;color:rgba(255,255,255,.68);">
-                            Ativar redirecionamento para o WhatsApp
-                        </span>
-
-                        <button
-                            type="button"
-                            id="whatsappAfterBookingSwitch"
-                            aria-pressed="false"
-                            aria-label="Alternar redirecionamento para o WhatsApp"
-                            style="flex:0 0 auto;width:92px;height:44px;border:0;border-radius:999px;padding:4px 8px;display:flex;align-items:center;justify-content:space-between;gap:6px;cursor:pointer;background:transparent;color:rgba(255,255,255,.72);box-shadow:inset 0 0 0 1px rgba(255,255,255,.22);transition:.2s ease;">
-
-                            <span
-                                id="whatsappAfterBookingSwitchText"
-                                style="font-weight:800;font-size:12px;letter-spacing:.06em;">
-                                OFF
-                            </span>
-
-                            <span
-                                id="whatsappAfterBookingSwitchKnob"
-                                style="width:28px;height:28px;border-radius:50%;display:block;background:rgba(255,255,255,.35);box-shadow:0 1px 5px rgba(0,0,0,.25);transition:.2s ease;">
-                            </span>
-
-                        </button>
-
-                    </div>
-
-                    <input
-                        type="checkbox"
-                        id="whatsappAfterBooking"
-                        aria-hidden="true"
-                        tabindex="-1"
-                        style="position:absolute;opacity:0;pointer-events:none;width:1px;height:1px;">
-
-                </div>
-
-                            <div
-                    id="settingsSaveStatus"
-                    style="display:flex;align-items:center;gap:8px;margin:14px 0 10px 0;min-height:22px;font-size:13px;color:inherit;">
-                    <span
-                        id="settingsSaveLight"
-                        aria-hidden="true"
-                        style="width:10px;height:10px;border-radius:50%;display:inline-block;background:transparent;box-shadow:none;transition:.2s ease;">
-                    </span>
-                    <span id="settingsSaveStatusText">Tudo salvo</span>
-                </div>
-
-                <button
-                    class="primary-button"
-                    id="saveSettings">
-
-                    Salvar alterações
-
-                </button>
-
-            </div>
-
-        </section>
+</div>
+<div class="settings-cards-grid">
+<div class="content-card site-settings-card settings-card-muted" id="config-card-configuracao-basica">
+  <div class="card-header"><div class="settings-card-title"><span class="settings-card-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 17v-5"/><path d="M12 8h.01"/><circle cx="12" cy="12" r="9"/></svg></span><div><span class="eyebrow">Configuração Básica</span><h2>Informações da barbearia</h2><p>Dados principais exibidos no site.</p></div></div></div>
+  <div class="form-group"><label for="barbershopName">Nome da barbearia</label><input type="text" id="barbershopName" maxlength="40" placeholder="Navalha de Ouro"></div>
+  <div class="form-group"><label for="siteTituloPrincipal">Descrição principal</label><input type="text" id="siteTituloPrincipal" maxlength="60" placeholder="Seu estilo começa aqui."></div>
+  <div class="form-group"><label for="siteDescricaoPrincipal">Descrição secundária</label><textarea id="siteDescricaoPrincipal" rows="4" maxlength="180" placeholder="Barbearia premium para o homem que valoriza detalhe e presença."></textarea><span class="settings-field-note">Máximo de 180 caracteres.</span></div>
+  <div class="form-group"><label for="siteTextoBotaoPrincipal">Botão principal</label><input type="text" id="siteTextoBotaoPrincipal" placeholder="Agendar horário"></div>
+  <div class="form-group"><label for="siteTextoBotaoSecundario">Botão secundário</label><input type="text" id="siteTextoBotaoSecundario" placeholder="Ver serviços"></div>
+</div>
+<div class="content-card site-settings-card settings-card-muted" id="config-card-aparencia-e-exibicao">
+  <div class="card-header"><div class="settings-card-title"><span class="settings-card-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M8 21h8"/><path d="M12 18v3"/></svg></span><div><span class="eyebrow">Aparência e Exibição</span><h2>Exibição das seções</h2><p>Escolha quais áreas estarão visíveis no site.</p></div></div></div>
+<label class="site-settings-check"><input type="checkbox" id="siteMostrarServicos"><span class="site-settings-check-copy"><span class="site-settings-check-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="6.5" cy="17.5" r="2.8"/><circle cx="17.5" cy="17.5" r="2.8"/><path d="M8.8 16.1 19.5 5.5"/><path d="M15.2 16.1 4.5 5.5"/><path d="M4.5 5.5c1.8-.8 3.4-.2 4.5 1.3"/><path d="M19.5 5.5c-1.8-.8-3.4-.2-4.5 1.3"/></svg></span><span class="site-settings-check-text">Mostrar serviços</span></span><span class="site-settings-switch" aria-hidden="true"><span class="site-settings-switch-state">OFF</span><span class="site-settings-switch-knob"></span></span></label><label class="site-settings-check"><input type="checkbox" id="siteMostrarPortfolio"><span class="site-settings-check-copy"><span class="site-settings-check-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="8" cy="9" r="1.5"/><path d="m5 17 5-5 3 3 2-2 4 4"/></svg></span><span class="site-settings-check-text">Mostrar portfólio</span></span><span class="site-settings-switch" aria-hidden="true"><span class="site-settings-switch-state">OFF</span><span class="site-settings-switch-knob"></span></span></label><label class="site-settings-check"><input type="checkbox" id="siteMostrarEquipe"><span class="site-settings-check-copy"><span class="site-settings-check-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3"/><circle cx="17" cy="9" r="2.5"/><path d="M3.5 19c.5-3 2.4-4.5 5.5-4.5s5 1.5 5.5 4.5"/><path d="M14 15c2.8-.3 4.8 1 5.5 4"/></svg></span><span class="site-settings-check-text">Mostrar equipe</span></span><span class="site-settings-switch" aria-hidden="true"><span class="site-settings-switch-state">OFF</span><span class="site-settings-switch-knob"></span></span></label><label class="site-settings-check"><input type="checkbox" id="siteMostrarAvaliacoes"><span class="site-settings-check-copy"><span class="site-settings-check-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3 2.8 5.7 6.2.9-4.5 4.4 1.1 6.2-5.6-3-5.6 3 1.1-6.2L3 9.6l6.2-.9L12 3Z"/></svg></span><span class="site-settings-check-text">Mostrar avaliações</span></span><span class="site-settings-switch" aria-hidden="true"><span class="site-settings-switch-state">OFF</span><span class="site-settings-switch-knob"></span></span></label><label class="site-settings-check"><input type="checkbox" id="siteMostrarInstagram"><span class="site-settings-check-copy"><span class="site-settings-check-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="5"/><circle cx="12" cy="12" r="3.5"/><circle cx="17" cy="7" r=".8"/></svg></span><span class="site-settings-check-text">Mostrar Instagram</span></span><span class="site-settings-switch" aria-hidden="true"><span class="site-settings-switch-state">OFF</span><span class="site-settings-switch-knob"></span></span></label><label class="site-settings-check"><input type="checkbox" id="siteMostrarLocalizacao"><span class="site-settings-check-copy"><span class="site-settings-check-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 5-8 11-8 11S4 15 4 10a8 8 0 1 1 16 0Z"/><circle cx="12" cy="10" r="2.5"/></svg></span><span class="site-settings-check-text">Mostrar localização</span></span><span class="site-settings-switch" aria-hidden="true"><span class="site-settings-switch-state">OFF</span><span class="site-settings-switch-knob"></span></span></label>
+</div>
+<div class="content-card site-settings-card settings-card-muted" id="config-card-estatisticas">
+  <div class="card-header"><div class="settings-card-title"><span class="settings-card-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 20V10"/><path d="M12 20V4"/><path d="M19 20v-7"/><path d="M3 20h18"/></svg></span><div><span class="eyebrow">Estatísticas</span><h2>Números de destaque</h2><p>Configure os três números exibidos no site.</p></div></div></div>
+  <div class="form-group"><label for="siteEstatistica1Numero">Estatística 1 — número</label><input type="text" id="siteEstatistica1Numero" placeholder="Ex: 10+" ></div><div class="form-group"><label for="siteEstatistica1Texto">Estatística 1 — texto</label><input type="text" id="siteEstatistica1Texto" placeholder="Ex: Anos de experiência" ></div><div class="form-group"><label for="siteEstatistica2Numero">Estatística 2 — número</label><input type="text" id="siteEstatistica2Numero" placeholder="Ex: 5K+" ></div><div class="form-group"><label for="siteEstatistica2Texto">Estatística 2 — texto</label><input type="text" id="siteEstatistica2Texto" placeholder="Ex: Clientes atendidos" ></div><div class="form-group"><label for="siteEstatistica3Numero">Estatística 3 — número</label><input type="text" id="siteEstatistica3Numero" placeholder="Ex: 4.9" ></div><div class="form-group"><label for="siteEstatistica3Texto">Estatística 3 — texto</label><input type="text" id="siteEstatistica3Texto" placeholder="Ex: Avaliação média" ></div>
+</div>
+<div class="content-card site-settings-card settings-card-muted" id="config-card-servicos">
+  <div class="card-header"><div class="settings-card-title"><span class="settings-card-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h16"/><path d="M6 8h12"/><path d="M8 16h8"/><circle cx="6" cy="8" r="1"/><circle cx="18" cy="12" r="1"/><circle cx="8" cy="16" r="1"/></svg></span><div><span class="eyebrow">Serviços</span><h2>Conteúdo da seção de serviços</h2><p>Conteúdo de apresentação da seção de serviços.</p></div></div></div>
+  <div class="form-group"><label for="siteServicosTitulo">Título da seção</label><input type="text" id="siteServicosTitulo" maxlength="40" placeholder="O que fazemos"></div>
+  <div class="form-group"><label for="siteServicosDescricao">Descrição da seção</label><textarea id="siteServicosDescricao" rows="4" maxlength="180" placeholder="Preços justos, tempo respeitado e acabamento de barbearia premium."></textarea></div>
+</div>
+<div class="content-card site-settings-card settings-card-muted" id="config-card-portfolio">
+  <div class="card-header"><div class="settings-card-title"><span class="settings-card-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="8" cy="9" r="1.5"/><path d="m5 17 5-5 3 3 2-2 4 4"/></svg></span><div><span class="eyebrow">Portfólio</span><h2>Conteúdo do portfólio</h2><p>Configure o título, a descrição e até quatro imagens para o portfólio.</p></div></div></div>
+  <div class="form-group"><label for="sitePortfolioTitulo">Título da seção</label><input type="text" id="sitePortfolioTitulo" maxlength="40" placeholder="Nossos trabalhos"></div>
+  <div class="form-group"><label for="sitePortfolioDescricao">Descrição da seção</label><textarea id="sitePortfolioDescricao" rows="4" maxlength="180" placeholder="Um pouco do que sai das nossas cadeiras toda semana."></textarea><span class="settings-field-note">Máximo de 180 caracteres.</span></div>
+  <div class="portfolio-image-grid" id="sitePortfolioImageGrid" aria-label="Imagens do portfólio">
+    <div class="portfolio-image-slot" data-portfolio-slot="1">
+      <div class="portfolio-image-slot-title">Imagem 01</div>
+      <div class="image-upload-preview portfolio-image-preview" id="sitePortfolioPreviewWrap1">
+        <img id="sitePortfolioPreview1" class="image-upload-preview-img" alt="Pré-visualização da imagem 1 do portfólio" hidden>
+        <div class="image-upload-empty" id="sitePortfolioEmpty1">Nenhuma imagem selecionada</div>
+        <button type="button" class="image-upload-remove" id="sitePortfolioRemoveButton1" aria-label="Remover imagem 1 do portfólio" hidden>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16"/><path d="M9 7V4h6v3"/><path d="M7 7l1 13h8l1-13"/><path d="M10 11v5"/><path d="M14 11v5"/></svg>
+        </button>
+      </div>
+      <input type="file" id="sitePortfolioFile1" class="image-upload-file-input" accept="image/jpeg,image/png" hidden>
+      <button type="button" class="image-upload-button" id="sitePortfolioUploadButton1"><span class="image-upload-button-icon" aria-hidden="true">↥</span><span>Alterar imagem</span></button>
+    </div>
+    <div class="portfolio-image-slot" data-portfolio-slot="2">
+      <div class="portfolio-image-slot-title">Imagem 02</div>
+      <div class="image-upload-preview portfolio-image-preview" id="sitePortfolioPreviewWrap2">
+        <img id="sitePortfolioPreview2" class="image-upload-preview-img" alt="Pré-visualização da imagem 2 do portfólio" hidden>
+        <div class="image-upload-empty" id="sitePortfolioEmpty2">Nenhuma imagem selecionada</div>
+        <button type="button" class="image-upload-remove" id="sitePortfolioRemoveButton2" aria-label="Remover imagem 2 do portfólio" hidden>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16"/><path d="M9 7V4h6v3"/><path d="M7 7l1 13h8l1-13"/><path d="M10 11v5"/><path d="M14 11v5"/></svg>
+        </button>
+      </div>
+      <input type="file" id="sitePortfolioFile2" class="image-upload-file-input" accept="image/jpeg,image/png" hidden>
+      <button type="button" class="image-upload-button" id="sitePortfolioUploadButton2"><span class="image-upload-button-icon" aria-hidden="true">↥</span><span>Alterar imagem</span></button>
+    </div>
+    <div class="portfolio-image-slot" data-portfolio-slot="3">
+      <div class="portfolio-image-slot-title">Imagem 03</div>
+      <div class="image-upload-preview portfolio-image-preview" id="sitePortfolioPreviewWrap3">
+        <img id="sitePortfolioPreview3" class="image-upload-preview-img" alt="Pré-visualização da imagem 3 do portfólio" hidden>
+        <div class="image-upload-empty" id="sitePortfolioEmpty3">Nenhuma imagem selecionada</div>
+        <button type="button" class="image-upload-remove" id="sitePortfolioRemoveButton3" aria-label="Remover imagem 3 do portfólio" hidden>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16"/><path d="M9 7V4h6v3"/><path d="M7 7l1 13h8l1-13"/><path d="M10 11v5"/><path d="M14 11v5"/></svg>
+        </button>
+      </div>
+      <input type="file" id="sitePortfolioFile3" class="image-upload-file-input" accept="image/jpeg,image/png" hidden>
+      <button type="button" class="image-upload-button" id="sitePortfolioUploadButton3"><span class="image-upload-button-icon" aria-hidden="true">↥</span><span>Alterar imagem</span></button>
+    </div>
+    <div class="portfolio-image-slot" data-portfolio-slot="4">
+      <div class="portfolio-image-slot-title">Imagem 04</div>
+      <div class="image-upload-preview portfolio-image-preview" id="sitePortfolioPreviewWrap4">
+        <img id="sitePortfolioPreview4" class="image-upload-preview-img" alt="Pré-visualização da imagem 4 do portfólio" hidden>
+        <div class="image-upload-empty" id="sitePortfolioEmpty4">Nenhuma imagem selecionada</div>
+        <button type="button" class="image-upload-remove" id="sitePortfolioRemoveButton4" aria-label="Remover imagem 4 do portfólio" hidden>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16"/><path d="M9 7V4h6v3"/><path d="M7 7l1 13h8l1-13"/><path d="M10 11v5"/><path d="M14 11v5"/></svg>
+        </button>
+      </div>
+      <input type="file" id="sitePortfolioFile4" class="image-upload-file-input" accept="image/jpeg,image/png" hidden>
+      <button type="button" class="image-upload-button" id="sitePortfolioUploadButton4"><span class="image-upload-button-icon" aria-hidden="true">↥</span><span>Alterar imagem</span></button>
+    </div>
+  </div>
+  <p class="settings-field-note image-format-note portfolio-format-note"><strong>Tamanho recomendado: 1200 × 900 px por imagem</strong><br>Proporção 4:3 • JPG ou PNG • Máximo recomendado: 5 MB por imagem • Limite máximo: 4 imagens</p>
+</div>
+<div class="content-card site-settings-card settings-card-muted" id="config-card-equipe">
+  <div class="card-header"><div class="settings-card-title"><span class="settings-card-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="9" r="3"/><circle cx="17" cy="10" r="2.5"/><path d="M3.5 19c.5-3 2.4-4.5 5.5-4.5s5 1.5 5.5 4.5"/><path d="M14 15c2.8-.3 4.8 1 5.5 4"/></svg></span><div><span class="eyebrow">Equipe</span><h2>Conteúdo da equipe</h2><p>Conteúdo de apresentação da equipe exibido no site.</p></div></div></div>
+  <div class="form-group"><label for="siteEquipeTitulo">Título da seção</label><input type="text" id="siteEquipeTitulo" maxlength="40" placeholder="Nossa equipe"></div>
+  <div class="form-group"><label for="siteEquipeDescricao">Descrição da seção</label><textarea id="siteEquipeDescricao" rows="4" maxlength="180" placeholder="Barbeiros especializados, cada um com sua assinatura."></textarea><span class="settings-field-note">Máximo de 180 caracteres.</span></div>
+</div>
+<div class="content-card site-settings-card settings-card-muted settings-review-card" id="config-card-avaliacao">
+  <div class="card-header"><div class="settings-card-title"><span class="settings-card-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3 2.8 5.7 6.2.9-4.5 4.4 1.1 6.2-5.6-3-5.6 3 1.1-6.2L3 9.6l6.2-.9L12 3Z"/></svg></span><div><span class="eyebrow">Avaliações</span><h2>O que nossos clientes dizem?</h2><p>Cadastre até cinco avaliações que serão exibidas no site.</p></div></div></div>
+  <div class="form-group"><label for="siteAvaliacaoTitulo">Título da seção</label><input type="text" id="siteAvaliacaoTitulo" maxlength="40" placeholder="O que nossos clientes dizem?"></div>
+  <div class="settings-review-list">
+    <div class="settings-review-entry">
+      <div class="settings-review-entry-head"><strong>Avaliação 1</strong><span>1 a 5 estrelas</span></div>
+      <div class="settings-review-entry-grid">
+        <div class="form-group"><label for="siteAvaliacao1Estrelas">Estrelas</label><select id="siteAvaliacao1Estrelas"><option value="5">★★★★★</option><option value="4">★★★★☆</option><option value="3">★★★☆☆</option><option value="2">★★☆☆☆</option><option value="1">★☆☆☆☆</option></select></div>
+        <div class="form-group"><label for="siteAvaliacao1Nome">Nome</label><input type="text" id="siteAvaliacao1Nome" maxlength="60" placeholder="Nome do cliente"></div>
+      </div>
+      <div class="form-group"><label for="siteAvaliacao1Texto">Texto da avaliação</label><textarea id="siteAvaliacao1Texto" rows="3" maxlength="240" placeholder="Escreva a avaliação do cliente."></textarea></div>
+    </div>
+    <div class="settings-review-entry">
+      <div class="settings-review-entry-head"><strong>Avaliação 2</strong><span>1 a 5 estrelas</span></div>
+      <div class="settings-review-entry-grid">
+        <div class="form-group"><label for="siteAvaliacao2Estrelas">Estrelas</label><select id="siteAvaliacao2Estrelas"><option value="5">★★★★★</option><option value="4">★★★★☆</option><option value="3">★★★☆☆</option><option value="2">★★☆☆☆</option><option value="1">★☆☆☆☆</option></select></div>
+        <div class="form-group"><label for="siteAvaliacao2Nome">Nome</label><input type="text" id="siteAvaliacao2Nome" maxlength="60" placeholder="Nome do cliente"></div>
+      </div>
+      <div class="form-group"><label for="siteAvaliacao2Texto">Texto da avaliação</label><textarea id="siteAvaliacao2Texto" rows="3" maxlength="240" placeholder="Escreva a avaliação do cliente."></textarea></div>
+    </div>
+    <div class="settings-review-entry">
+      <div class="settings-review-entry-head"><strong>Avaliação 3</strong><span>1 a 5 estrelas</span></div>
+      <div class="settings-review-entry-grid">
+        <div class="form-group"><label for="siteAvaliacao3Estrelas">Estrelas</label><select id="siteAvaliacao3Estrelas"><option value="5">★★★★★</option><option value="4">★★★★☆</option><option value="3">★★★☆☆</option><option value="2">★★☆☆☆</option><option value="1">★☆☆☆☆</option></select></div>
+        <div class="form-group"><label for="siteAvaliacao3Nome">Nome</label><input type="text" id="siteAvaliacao3Nome" maxlength="60" placeholder="Nome do cliente"></div>
+      </div>
+      <div class="form-group"><label for="siteAvaliacao3Texto">Texto da avaliação</label><textarea id="siteAvaliacao3Texto" rows="3" maxlength="240" placeholder="Escreva a avaliação do cliente."></textarea></div>
+    </div>
+    <div class="settings-review-entry">
+      <div class="settings-review-entry-head"><strong>Avaliação 4</strong><span>1 a 5 estrelas</span></div>
+      <div class="settings-review-entry-grid">
+        <div class="form-group"><label for="siteAvaliacao4Estrelas">Estrelas</label><select id="siteAvaliacao4Estrelas"><option value="5">★★★★★</option><option value="4">★★★★☆</option><option value="3">★★★☆☆</option><option value="2">★★☆☆☆</option><option value="1">★☆☆☆☆</option></select></div>
+        <div class="form-group"><label for="siteAvaliacao4Nome">Nome</label><input type="text" id="siteAvaliacao4Nome" maxlength="60" placeholder="Nome do cliente"></div>
+      </div>
+      <div class="form-group"><label for="siteAvaliacao4Texto">Texto da avaliação</label><textarea id="siteAvaliacao4Texto" rows="3" maxlength="240" placeholder="Escreva a avaliação do cliente."></textarea></div>
+    </div>
+    <div class="settings-review-entry">
+      <div class="settings-review-entry-head"><strong>Avaliação 5</strong><span>1 a 5 estrelas</span></div>
+      <div class="settings-review-entry-grid">
+        <div class="form-group"><label for="siteAvaliacao5Estrelas">Estrelas</label><select id="siteAvaliacao5Estrelas"><option value="5">★★★★★</option><option value="4">★★★★☆</option><option value="3">★★★☆☆</option><option value="2">★★☆☆☆</option><option value="1">★☆☆☆☆</option></select></div>
+        <div class="form-group"><label for="siteAvaliacao5Nome">Nome</label><input type="text" id="siteAvaliacao5Nome" maxlength="60" placeholder="Nome do cliente"></div>
+      </div>
+      <div class="form-group"><label for="siteAvaliacao5Texto">Texto da avaliação</label><textarea id="siteAvaliacao5Texto" rows="3" maxlength="240" placeholder="Escreva a avaliação do cliente."></textarea></div>
+    </div>
+  </div>
+  <div class="form-group"><label for="siteTextoBotaoAvaliacao">Texto acima do botão</label><input type="text" id="siteTextoBotaoAvaliacao" maxlength="40" placeholder="Nos avalie"></div>
+  <div class="form-group"><label for="siteTextoBotaoGoogle">Texto do botão</label><input type="text" id="siteTextoBotaoGoogle" maxlength="40" placeholder="Ver no Google"></div>
+  <div class="form-group"><label for="siteLinkAvaliacaoGoogle">Link para avaliação no Google</label><input type="url" id="siteLinkAvaliacaoGoogle" placeholder="https://g.page/.../review"><span class="settings-field-note">Cole aqui o link direto para o cliente deixar a avaliação.</span></div>
+  <div class="settings-review-preview"><strong>Pré-visualização</strong><span>Use o botão abaixo para testar o link cadastrado.</span><button type="button" class="secondary-button settings-review-test" id="testGoogleReviewLink" disabled><span aria-hidden="true">↗</span> Testar link de avaliação</button></div>
+</div>
+<div class="content-card site-settings-card settings-card-muted" id="config-card-imagem-principal">
+  <div class="card-header"><div class="settings-card-title"><span class="settings-card-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="8" cy="9" r="1.5"/><path d="m5 17 4-4 3 3 3-4 4 5"/></svg></span><div><span class="eyebrow">Imagem Principal</span><h2>Banner / imagem principal</h2><p>Defina a imagem principal da página inicial.</p></div></div></div>
+  <div class="image-upload-field image-upload-field-banner">
+    <div class="image-upload-preview image-upload-preview-banner" id="siteBannerPreviewWrap">
+      <img id="siteBannerPreview" class="image-upload-preview-img" alt="Pré-visualização da imagem principal" hidden>
+      <div class="image-upload-empty" id="siteBannerEmpty">Nenhuma imagem selecionada</div>
+      <button type="button" class="image-upload-remove" id="siteBannerRemoveButton" aria-label="Remover imagem principal" hidden>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16"/><path d="M9 7V4h6v3"/><path d="M7 7l1 13h8l-1-13"/><path d="M10 11v5"/><path d="M14 11v5"/></svg>
+      </button>
+    </div>
+    <input type="file" id="siteBannerFile" class="image-upload-file-input" accept="image/jpeg,image/png" hidden>
+    <button type="button" class="image-upload-button" id="siteBannerUploadButton">
+      <span class="image-upload-button-icon" aria-hidden="true">↥</span>
+      <span>Alterar imagem</span>
+    </button>
+    <p class="settings-field-note image-format-note"><strong>Tamanho recomendado: 1920 × 1080 px</strong><br>Proporção 16:9 • JPG ou PNG • Máximo recomendado: 5 MB</p>
+    <p class="image-upload-status" id="siteBannerUploadStatus">Escolha uma imagem nos arquivos do computador ou celular.</p>
+  </div>
+</div>
+<div class="content-card site-settings-card settings-card-muted" id="config-card-cores-e-fontes">
+  <div class="card-header"><div class="settings-card-title"><span class="settings-card-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a9 9 0 0 0 0 18h1.2c1.1 0 1.8-1.2 1.2-2.2-.6-1 .1-2.3 1.3-2.3H17a4 4 0 0 0 4-4C21 7.1 17 3 12 3Z"/><circle cx="7.5" cy="10" r="1"/><circle cx="9" cy="6.5" r="1"/><circle cx="13" cy="6" r="1"/></svg></span><div><span class="eyebrow">Cores e Fontes</span><h2>Identidade visual</h2><p>Defina as cores e a tipografia do site.</p></div></div></div>
+  <div class="form-group"><label for="siteCorPrincipal">Cor principal</label><input type="text" id="siteCorPrincipal" placeholder="#000000" ></div><div class="form-group"><label for="siteCorFundo">Cor de fundo</label><input type="text" id="siteCorFundo" placeholder="#111111" ></div><div class="form-group"><label for="siteCorDestaque">Cor de destaque</label><input type="text" id="siteCorDestaque" placeholder="#D7B56D" ></div><div class="form-group"><label for="siteFonte">Fonte</label><input type="text" id="siteFonte" placeholder="Ex: Inter" ></div>
+</div>
+<div class="content-card site-settings-card settings-card-muted" id="config-card-logo-da-barbearia">
+  <div class="card-header"><div class="settings-card-title"><span class="settings-card-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 19h14"/><path d="M7 19 8.5 9h7L17 19"/><path d="M9 9 12 4l3 5"/><path d="M10 13h4"/></svg></span><div><span class="eyebrow">Logo da Barbearia</span><h2>Identidade da marca</h2><p>Escolha a imagem da logo que será usada no site.</p></div></div></div>
+  <div class="image-upload-field image-upload-field-logo">
+    <div class="image-upload-preview image-upload-preview-square" id="siteLogoPreviewWrap">
+      <img id="siteLogoPreview" class="image-upload-preview-img" alt="Pré-visualização da logo da barbearia" hidden>
+      <div class="image-upload-empty" id="siteLogoEmpty">Nenhuma logo selecionada</div>
+      <button type="button" class="image-upload-remove" id="siteLogoRemoveButton" aria-label="Remover logo da barbearia" hidden>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16"/><path d="M9 7V4h6v3"/><path d="M7 7l1 13h8l1-13"/><path d="M10 11v5"/><path d="M14 11v5"/></svg>
+      </button>
+    </div>
+    <input type="file" id="siteLogoFile" class="image-upload-file-input" accept="image/jpeg,image/png,image/svg+xml" hidden>
+    <button type="button" class="image-upload-button" id="siteLogoUploadButton">
+      <span class="image-upload-button-icon" aria-hidden="true">↥</span>
+      <span>Alterar logo</span>
+    </button>
+    <p class="settings-field-note image-format-note"><strong>Tamanho recomendado: 1000 × 1000 px</strong><br>Proporção 1:1 • PNG, JPG ou SVG • Máximo recomendado: 2 MB</p>
+    <p class="image-upload-status" id="siteLogoUploadStatus">Escolha uma logo nos arquivos do computador ou celular.</p>
+  </div>
+</div>
+<div class="content-card site-settings-card settings-card-muted" id="config-card-localizacao">
+  <div class="card-header"><div class="settings-card-title"><span class="settings-card-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 5-8 11-8 11S4 15 4 10a8 8 0 1 1 16 0Z"/><circle cx="12" cy="10" r="2.5"/></svg></span><div><span class="eyebrow">Localização</span><h2>Endereço da barbearia</h2><p>Informações usadas na seção de localização.</p></div></div></div>
+  <div class="form-group"><label for="siteEndereco">Endereço</label><input type="text" id="siteEndereco" placeholder="Rua, número e complemento" ></div><div class="form-group"><label for="siteCidade">Cidade</label><input type="text" id="siteCidade" placeholder="Anápolis" ></div><div class="form-group"><label for="siteEstado">Estado</label><input type="text" id="siteEstado" placeholder="GO" ></div><div class="form-group"><label for="siteCep">CEP</label><input type="text" id="siteCep" placeholder="75000-000" ></div><div class="form-group"><label for="siteGoogleMapsLink">Link do Google Maps</label><input type="url" id="siteGoogleMapsLink" placeholder="https://maps.google.com/..." ></div>
+</div>
+<div class="content-card site-settings-card settings-card-muted" id="config-card-redes-sociais">
+  <div class="card-header"><div class="settings-card-title"><span class="settings-card-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="12" r="2"/><circle cx="18" cy="6" r="2"/><circle cx="18" cy="18" r="2"/><path d="m8 11 8-4"/><path d="m8 13 8 4"/></svg></span><div><span class="eyebrow">Redes Sociais</span><h2>Redes sociais</h2><p>Configure a presença da barbearia nas redes sociais.</p></div></div></div>
+  <div class="form-group"><label for="siteInstagram">Instagram</label><input type="text" id="siteInstagram" placeholder="@navalhadeouro" ></div><div class="form-group"><label for="siteInstagramDescricao">Descrição do Instagram</label><textarea id="siteInstagramDescricao" rows="3" maxlength="180" placeholder="Acompanhe os cortes do dia, novidades e promoções exclusivas para quem segue."></textarea><span class="settings-field-note">Máximo de 180 caracteres.</span></div><div class="form-group"><label for="siteInstagramLink">Link do Instagram</label><input type="url" id="siteInstagramLink" placeholder="https://instagram.com/..." ></div>
+</div>
+<div class="content-card site-settings-card settings-card-muted" id="config-card-rodape">
+  <div class="card-header"><div class="settings-card-title"><span class="settings-card-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M8 8h8"/><path d="M8 12h8"/><path d="M8 16h5"/></svg></span><div><span class="eyebrow">Rodapé</span><h2>Informações do rodapé</h2><p>Defina os textos exibidos no rodapé do site.</p></div></div></div>
+  <div class="form-group"><label for="siteTextoRodape">Texto do rodapé</label><textarea id="siteTextoRodape" rows="3" placeholder="Digite o texto do rodapé."></textarea></div><div class="form-group"><label for="siteTextoDireitosAutorais">Texto dos direitos autorais</label><input type="text" id="siteTextoDireitosAutorais" placeholder="© 2026 Navalha de Ouro" ></div><label class="site-settings-check"><input type="checkbox" id="siteMostrarDireitos"><span class="site-settings-check-copy"><span class="site-settings-check-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M8 8h8"/><path d="M8 12h8"/><path d="M8 16h5"/></svg></span><span class="site-settings-check-text">Mostrar direitos autorais</span></span><span class="site-settings-switch" aria-hidden="true"><span class="site-settings-switch-state">OFF</span><span class="site-settings-switch-knob"></span></span></label>
+</div>
+</div>
+</section>
 
     </main>
 
