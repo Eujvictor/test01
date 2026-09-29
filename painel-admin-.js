@@ -709,9 +709,12 @@ document.addEventListener(
         ).textContent = inactive;
 
 
-        document.getElementById(
-            "dashboardBarberCount"
-        ).textContent = active;
+        const dashboardBarberCount =
+            document.getElementById("dashboardBarberCount");
+
+        if (dashboardBarberCount) {
+            dashboardBarberCount.textContent = active;
+        }
 
 
         renderDashboardTeam();
@@ -5530,4 +5533,183 @@ loadScheduleSettings();
 
     }
 
+})();
+/* =========================================================
+   CONFIGURAÇÕES — SWITCHES VISUAIS PREMIUM
+   ========================================================= */
+(function initSiteSettingsSwitches(){
+    function syncSwitch(checkbox){
+        if (!checkbox) return;
+        const label = checkbox.closest('.site-settings-check');
+        if (!label) return;
+        const state = label.querySelector('.site-settings-switch-state');
+        if (state) state.textContent = checkbox.checked ? 'ON' : 'OFF';
+        label.classList.toggle('is-on', checkbox.checked);
+    }
+
+    const ids = [
+        'siteMostrarServicos',
+        'siteMostrarPortfolio',
+        'siteMostrarEquipe',
+        'siteMostrarAvaliacoes',
+        'siteMostrarInstagram',
+        'siteMostrarLocalizacao',
+        'siteMostrarDireitos'
+    ];
+
+    ids.forEach(id => {
+        const checkbox = document.getElementById(id);
+        if (!checkbox) return;
+        syncSwitch(checkbox);
+        checkbox.addEventListener('change', () => {
+            syncSwitch(checkbox);
+            if (typeof markSettingsDirty === 'function') markSettingsDirty();
+        });
+    });
+
+    const whatsappSwitch = document.getElementById('whatsappAfterBookingSwitch');
+    const whatsappInput = document.getElementById('whatsappAfterBooking');
+    if (whatsappSwitch && whatsappInput) {
+        const syncWhatsapp = () => {
+            whatsappSwitch.setAttribute('aria-pressed', whatsappInput.checked ? 'true' : 'false');
+        };
+        syncWhatsapp();
+        whatsappInput.addEventListener('change', syncWhatsapp);
+    }
+})();
+
+
+/* =========================================================
+   CONFIGURAÇÕES — SELEÇÃO DE IMAGENS
+   Portfólio (até 4), Banner e Logo.
+   Somente seleção/preview local; upload para Storage fica
+   para a etapa de integração com o Supabase.
+   ========================================================= */
+(function initSiteImagePickers(){
+    const MAX_FILE_BYTES = 5 * 1024 * 1024;
+    const portfolioFiles = new Map();
+    const imageObjectUrls = new Map();
+
+    function getFileSizeLabel(bytes){
+        return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+    }
+
+    function setupPicker({buttonId, inputId, previewId, emptyId, removeId, statusId, label, maxBytes, allowedTypes}){
+        const button = document.getElementById(buttonId);
+        const input = document.getElementById(inputId);
+        const preview = document.getElementById(previewId);
+        const empty = document.getElementById(emptyId);
+        const remove = document.getElementById(removeId);
+        const status = document.getElementById(statusId);
+
+        if (!button || !input || !preview || !empty || !remove) return;
+
+        const stateKey = inputId;
+
+        function clearObjectUrl(){
+            const current = imageObjectUrls.get(stateKey);
+            if (current) {
+                URL.revokeObjectURL(current);
+                imageObjectUrls.delete(stateKey);
+            }
+        }
+
+        function clearPreview(markDirty = true){
+            clearObjectUrl();
+            preview.removeAttribute('src');
+            preview.hidden = true;
+            empty.hidden = false;
+            remove.hidden = true;
+            input.value = '';
+            if (status) status.textContent = `Escolha ${label.toLowerCase()} nos arquivos do computador ou celular.`;
+            if (markDirty && typeof markSettingsDirty === 'function') markSettingsDirty();
+        }
+
+        function showFile(file){
+            if (!file) return;
+
+            if (!allowedTypes.includes(file.type)) {
+                alert(`Formato inválido. Selecione ${allowedTypes.map(type => type.replace('image/','').toUpperCase()).join(' ou ')}.`);
+                input.value = '';
+                return;
+            }
+
+            if (file.size > maxBytes) {
+                alert(`${label} excede o limite recomendado de ${getFileSizeLabel(maxBytes)}.`);
+                input.value = '';
+                return;
+            }
+
+            clearObjectUrl();
+            const objectUrl = URL.createObjectURL(file);
+            imageObjectUrls.set(stateKey, objectUrl);
+            preview.src = objectUrl;
+            preview.hidden = false;
+            empty.hidden = true;
+            remove.hidden = false;
+            if (status) status.textContent = `${file.name} • ${getFileSizeLabel(file.size)}`;
+            if (typeof markSettingsDirty === 'function') markSettingsDirty();
+
+            if (inputId.startsWith('sitePortfolioFile')) {
+                portfolioFiles.set(inputId, file);
+                window.__sitePortfolioFiles = portfolioFiles;
+            } else {
+                window.__siteImageFiles = window.__siteImageFiles || {};
+                window.__siteImageFiles[inputId] = file;
+            }
+        }
+
+        button.addEventListener('click', (event) => {
+            event.preventDefault();
+            input.click();
+        });
+
+        input.addEventListener('change', () => {
+            showFile(input.files && input.files[0]);
+        });
+
+        remove.addEventListener('click', (event) => {
+            event.preventDefault();
+            if (inputId.startsWith('sitePortfolioFile')) portfolioFiles.delete(inputId);
+            if (window.__siteImageFiles) delete window.__siteImageFiles[inputId];
+            clearPreview(true);
+        });
+    }
+
+    for (let i = 1; i <= 4; i++) {
+        setupPicker({
+            buttonId: `sitePortfolioUploadButton${i}`,
+            inputId: `sitePortfolioFile${i}`,
+            previewId: `sitePortfolioPreview${i}`,
+            emptyId: `sitePortfolioEmpty${i}`,
+            removeId: `sitePortfolioRemoveButton${i}`,
+            label: `a imagem do portfólio ${i}`,
+            maxBytes: MAX_FILE_BYTES,
+            allowedTypes: ['image/jpeg','image/png']
+        });
+    }
+
+    setupPicker({
+        buttonId: 'siteBannerUploadButton',
+        inputId: 'siteBannerFile',
+        previewId: 'siteBannerPreview',
+        emptyId: 'siteBannerEmpty',
+        removeId: 'siteBannerRemoveButton',
+        statusId: 'siteBannerUploadStatus',
+        label: 'a imagem principal',
+        maxBytes: MAX_FILE_BYTES,
+        allowedTypes: ['image/jpeg','image/png']
+    });
+
+    setupPicker({
+        buttonId: 'siteLogoUploadButton',
+        inputId: 'siteLogoFile',
+        previewId: 'siteLogoPreview',
+        emptyId: 'siteLogoEmpty',
+        removeId: 'siteLogoRemoveButton',
+        statusId: 'siteLogoUploadStatus',
+        label: 'a logo',
+        maxBytes: 2 * 1024 * 1024,
+        allowedTypes: ['image/jpeg','image/png','image/svg+xml']
+    });
 })();
