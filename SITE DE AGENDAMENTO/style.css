@@ -120,7 +120,7 @@ img {
 }
 
 .btn-outline {
-    border-color: #777;
+    border-color: #7d7e7c;
     color: var(--white);
 }
 
@@ -142,7 +142,7 @@ img {
     display: none;
     background: none;
     border: 0;
-    color: white;
+    color: rgb(231, 8, 8);
     font-size: 25px;
 }
 

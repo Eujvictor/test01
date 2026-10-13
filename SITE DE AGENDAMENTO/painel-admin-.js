@@ -1,10 +1,8 @@
+// ==========================================
+// VERIFICA SE É O ADMINISTRADOR
+// ==========================================
 
-
-    // ==========================================
-    // VERIFICA SE É O ADMINISTRADOR
-    // ==========================================
-
-   document.addEventListener("DOMContentLoaded", async function () {
+document.addEventListener("DOMContentLoaded", async function () {
 
     const {
         data: { user },
@@ -34,18 +32,15 @@
 });
 
 
-    // ==========================================
-    // ADMINISTRADOR AUTORIZADO
-    // ==========================================
-
-    
+// ==========================================
+// ADMINISTRADOR AUTORIZADO
+// ==========================================
 
 
-    // ==========================================
-    // RESTANTE DO CÓDIGO DO PAINEL
-    // ==========================================
 
-
+// ==========================================
+// RESTANTE DO CÓDIGO DO PAINEL
+// ==========================================
 
 
 
@@ -61,6 +56,7 @@ function escapeHTML(value) {
 
 }
 
+
 function formatMoney(value) {
 
     return Number(value)
@@ -73,6 +69,7 @@ function formatMoney(value) {
         );
 
 }
+
 
 document.addEventListener(
     "DOMContentLoaded",
@@ -92,6 +89,8 @@ document.addEventListener(
     // ==========================================
 
     let barbers = [];
+
+
     async function loadBarbers() {
 
     const { data, error } = await window.supabaseClient
@@ -144,6 +143,7 @@ document.addEventListener(
     renderBarbers();
 
 }
+
 
     // ==========================================
     // ELEMENTOS
@@ -575,10 +575,19 @@ document.addEventListener(
 
                     <div class="barber-phone">
 
-                        📱
-                        ${escapeHTML(
-                            barber.phone
-                        )}
+                        <span class="whatsapp-icon" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M20.4 11.6a8.4 8.4 0 0 1-12.4 7.4L4 20l1-3.8a8.4 8.4 0 1 1 15.4-4.6Z"
+                                    fill="none" stroke="currentColor" stroke-width="1.8"
+                                    stroke-linecap="round" stroke-linejoin="round" />
+                                <path d="M8.5 8.2c.2-.4.4-.4.7-.4h.4c.2 0 .4.1.5.4l.6 1.5c.1.3.1.5-.1.7l-.5.6c-.2.2-.2.3-.1.6.4.7 1 1.4 1.6 1.9.5.4 1 .7 1.5.9.3.1.5.1.7-.1l.7-.8c.2-.2.4-.3.7-.2l1.5.7c.3.1.4.3.4.5 0 .3-.1 1-.6 1.4-.5.4-1.2.7-1.8.6-1 0-2.3-.5-3.8-1.8-1.6-1.4-2.6-3.1-2.9-4.1-.3-1.1-.1-1.9.3-2.4Z"
+                                    fill="currentColor" />
+                            </svg>
+                        </span>
+
+                        <span class="barber-phone-number">
+                            ${escapeHTML(barber.phone)}
+                        </span>
 
                     </div>
 
@@ -616,17 +625,13 @@ document.addEventListener(
 
 
                     <span class="
-                        barber-status
-                        ${barber.active
-                            ? "active"
-                            : "inactive"}
-                    ">
-
-                        ${barber.active
-                            ? "● ATIVO"
-                            : "● INATIVO"}
-
-                    </span>
+    barber-status
+    ${barber.active
+        ? "active"
+        : "inactive"}
+" aria-label="${barber.active ? "Ativo" : "Inativo"}"
+  title="${barber.active ? "Ativo" : "Inativo"}">
+</span>
 
 
                     <div class="barber-actions">
@@ -641,19 +646,33 @@ document.addEventListener(
                         </button>
 
 
-                        <button
-                            class="toggle-button
-                            ${barber.active
-                                ? ""
-                                : "activate"}"
-                            data-action="toggle"
-                            data-id="${barber.id}">
+                        <div class="barber-toggle-group">
 
-                            ${barber.active
-                                ? "DESATIVAR"
-                                : "ATIVAR"}
+                            <button
+                                class="delete-button"
+                                data-action="delete"
+                                data-id="${barber.id}">
 
-                        </button>
+                                EXCLUIR
+
+                            </button>
+
+
+                            <button
+                                class="toggle-button
+                                ${barber.active
+                                    ? ""
+                                    : "activate"}"
+                                data-action="toggle"
+                                data-id="${barber.id}">
+
+                                ${barber.active
+                                    ? "DESATIVAR"
+                                    : "ATIVAR"}
+
+                            </button>
+
+                        </div>
 
                     </div>
 
@@ -709,9 +728,12 @@ document.addEventListener(
         ).textContent = inactive;
 
 
-        document.getElementById(
-            "dashboardBarberCount"
-        ).textContent = active;
+        const dashboardBarberCount =
+            document.getElementById("dashboardBarberCount");
+
+        if (dashboardBarberCount) {
+            dashboardBarberCount.textContent = active;
+        }
 
 
         renderDashboardTeam();
@@ -756,6 +778,13 @@ document.addEventListener(
             if (action === "toggle") {
 
                 toggleBarber(id);
+
+            }
+
+
+            if (action === "delete") {
+
+                deleteBarber(id);
 
             }
 
@@ -933,6 +962,7 @@ document.addEventListener(
             let response;
 
             if (id) {
+
                 response = await window.supabaseClient
                     .from("BARBEIROS")
                     .update({
@@ -941,7 +971,9 @@ document.addEventListener(
                         telefone: phone
                     })
                     .eq("id", id);
+
             } else {
+
                 response = await window.supabaseClient
                     .from("BARBEIROS")
                     .insert({
@@ -950,17 +982,30 @@ document.addEventListener(
                         telefone: phone,
                         ativo: true
                     });
+
             }
 
             if (response.error) {
-                console.error("Erro ao salvar barbeiro:", response.error);
-                alert("Não foi possível salvar o barbeiro.");
+
+                console.error(
+                    "Erro ao salvar barbeiro:",
+                    response.error
+                );
+
+                alert(
+                    "Não foi possível salvar o barbeiro."
+                );
+
                 return;
+
             }
 
             closeModal();
+
             await loadBarbers();
+
             await loadDashboardAndAgenda();
+
         }
     );
 
@@ -972,10 +1017,10 @@ document.addEventListener(
     async function toggleBarber(id) {
 
         const barber = barbers.find(
-            item => String(item.id) === String(id)
+            item =>
+                String(item.id) === String(id)
         );
-
-        if (!barber) {
+                if (!barber) {
             return;
         }
 
@@ -1009,6 +1054,68 @@ document.addEventListener(
 
         await loadBarbers();
         await loadDashboardAndAgenda();
+    }
+
+
+    // ==========================================
+    // EXCLUIR BARBEIRO — SUPABASE
+    // ==========================================
+
+    async function deleteBarber(id) {
+
+        const barber = barbers.find(
+            item => String(item.id) === String(id)
+        );
+
+        if (!barber) {
+            return;
+        }
+
+
+        const confirmed = confirm(
+            `Deseja realmente excluir o barbeiro ${barber.name}?`
+        );
+
+        if (!confirmed) {
+            return;
+        }
+
+
+        if (!window.supabaseClient) {
+
+            alert(
+                "Supabase não foi carregado."
+            );
+
+            return;
+        }
+
+
+        const { error } = await window.supabaseClient
+            .from("BARBEIROS")
+            .delete()
+            .eq("id", id);
+
+
+        if (error) {
+
+            console.error(
+                "Erro ao excluir barbeiro:",
+                error
+            );
+
+            alert(
+                "Não foi possível excluir o barbeiro."
+            );
+
+            return;
+        }
+
+
+        await loadBarbers();
+
+        await loadDashboardAndAgenda();
+
     }
 
 
@@ -1184,7 +1291,7 @@ function renderDashboardAppointments() {
 // RENDERIZAR AGENDA COMPLETA
 // ==========================================
 
-let agendaViewMode = "today";
+let agendaViewMode = "all";
 let agendaSelectedDate = formatToday();
 let agendaFiltersInitialized = false;
 
@@ -1266,9 +1373,22 @@ function getStatusClass(status) {
 }
 
 function getAgendaPeriodTitle() {
-    if (agendaViewMode === "tomorrow") return "Agendamentos de amanhã";
-    if (agendaViewMode === "week") return "Agendamentos desta semana";
-    if (agendaViewMode === "date") return `Agenda de ${formatAgendaDate(agendaSelectedDate)}`;
+    if (agendaViewMode === "all") {
+        return "Todos os agendamentos";
+    }
+
+    if (agendaViewMode === "tomorrow") {
+        return "Agendamentos de amanhã";
+    }
+
+    if (agendaViewMode === "week") {
+        return "Agendamentos desta semana";
+    }
+
+    if (agendaViewMode === "date") {
+        return `Agenda de ${formatAgendaDate(agendaSelectedDate)}`;
+    }
+
     return "Agendamentos de hoje";
 }
 
@@ -1498,14 +1618,28 @@ function setupAgendaFilters() {
 
     periodButtons.forEach(button => {
         button.addEventListener("click", () => {
-            agendaViewMode = button.dataset.agendaView || "today";
+            agendaViewMode = button.dataset.agendaView || "all";
 
-            if (agendaViewMode === "today") agendaSelectedDate = formatToday();
-            if (agendaViewMode === "tomorrow") agendaSelectedDate = getTomorrowKey();
+            if (agendaViewMode === "today") {
+                agendaSelectedDate = formatToday();
+            }
 
-            if (dateInput && agendaViewMode !== "week") dateInput.value = agendaSelectedDate;
+            if (agendaViewMode === "tomorrow") {
+                agendaSelectedDate = getTomorrowKey();
+            }
 
-            periodButtons.forEach(item => item.classList.toggle("active", item === button));
+            if (agendaViewMode === "all") {
+                if (dateInput) {
+                    dateInput.value = "";
+                }
+            } else if (dateInput && agendaViewMode !== "week") {
+                dateInput.value = agendaSelectedDate;
+            }
+
+            periodButtons.forEach(item =>
+                item.classList.toggle("active", item === button)
+            );
+
             renderAdminAppointments();
         });
     });
@@ -1854,6 +1988,11 @@ const totalClientAppointmentsElement =
         "totalClientAppointments"
     );
 
+const deleteAllClientsButton =
+    document.getElementById(
+        "deleteAllClientsButton"
+    );
+
 
 let adminClients = [];
 
@@ -1880,8 +2019,7 @@ async function loadAdminClients() {
         clientsResponse,
         appointmentsResponse
     ] = await Promise.all([
-
-        window.supabaseClient
+                window.supabaseClient
             .from("clientes")
             .select("*")
             .order(
@@ -2106,7 +2244,6 @@ function renderAdminClients(
 
 
                 return `
-
                     <div class="client-card">
 
                         <div class="client-card-header">
@@ -2117,7 +2254,7 @@ function renderAdminClients(
                                 )}
                             </div>
 
-                            <div>
+                            <div class="client-card-identity">
 
                                 <h3>
                                     ${escapeHTML(
@@ -2136,12 +2273,52 @@ function renderAdminClients(
                         </div>
 
 
-                        <div class="client-phone">
+                        <div class="client-phone-row">
 
-                            📱
-                            ${escapeHTML(
-                                client.phone
-                            )}
+                            <div class="client-phone">
+
+                                <span class="client-phone-status"></span>
+
+                               <span class="client-phone-icon" aria-hidden="true">
+    <svg viewBox="0 0 24 24" width="18" height="18"
+         fill="none" stroke="currentColor" stroke-width="2"
+         stroke-linecap="round" stroke-linejoin="round">
+        <path d="M21 11.5a8.4 8.4 0 0 1-12.4 7.4L3 20l1.2-5.3A8.4 8.4 0 1 1 21 11.5Z"/>
+        <path d="M8.5 8.5c.3-.6.6-.6 1-.6l.7 1.6c.1.2 0 .4-.2.6l-.5.5c.5 1 1.3 1.8 2.3 2.3l.5-.5c.2-.2.4-.3.6-.2l1.6.7c0 .4 0 .7-.6 1-1 .5-2.7-.2-4.2-1.7s-2.2-3.2-1.2-4.2Z"/>
+    </svg>
+</span>
+
+                                <span>
+                                    ${escapeHTML(
+                                        client.phone
+                                    )}
+                                </span>
+
+                            </div>
+
+                            <button
+                                type="button"
+                                class="client-delete-button"
+                                data-client-action="delete"
+                                data-id="${client.id}"
+                                aria-label="Excluir ${escapeHTML(client.name)}"
+                                title="Excluir cliente">
+                                <svg
+                                    viewBox="0 0 24 24"
+                                    width="17"
+                                    height="17"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    stroke-width="1.8"
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    aria-hidden="true">
+                                    <path d="M3 6h18" />
+                                    <path d="M8 6V4h8v2" />
+                                    <path d="m19 6-1 14H6L5 6" />
+                                    <path d="M10 10v6M14 10v6" />
+                                </svg>
+                            </button>
 
                         </div>
 
@@ -2176,7 +2353,6 @@ function renderAdminClients(
                         </div>
 
                     </div>
-
                 `;
 
             }
@@ -2208,6 +2384,179 @@ function formatDateForClient(
 
 
     return `${parts[2]}/${parts[1]}/${parts[0]}`;
+
+}
+
+
+
+async function deleteAdminClient(clientId) {
+
+    if (!window.supabaseClient) {
+        alert("Supabase não foi carregado.");
+        return;
+    }
+
+    const client = adminClients.find(
+        item => String(item.id) === String(clientId)
+    );
+
+    if (!client) {
+        return;
+    }
+
+    const confirmed = confirm(
+        `Deseja excluir o cliente "${client.name}" e o histórico de agendamentos dele?`
+    );
+
+    if (!confirmed) {
+        return;
+    }
+
+    const appointmentsDeleteResponse =
+        await window.supabaseClient
+            .from("agendamentos")
+            .delete()
+            .eq("cliente_id", clientId);
+
+    if (appointmentsDeleteResponse.error) {
+        console.error(
+            "Erro ao excluir agendamentos do cliente:",
+            appointmentsDeleteResponse.error
+        );
+        alert(
+            "Não foi possível excluir o histórico de agendamentos deste cliente."
+        );
+        return;
+    }
+
+    
+
+    const clientDeleteResponse =
+        await window.supabaseClient
+            .from("clientes")
+            .delete()
+            .eq("id", clientId);
+
+   
+    if (clientDeleteResponse.error) {
+        console.error(
+            "Erro ao excluir cliente:",
+            clientDeleteResponse.error
+        );
+
+        alert(
+            "Não foi possível excluir o cliente."
+        );
+
+        return;
+    }
+
+
+    await loadAdminClients();
+    await loadDashboardAndAgenda();
+}
+
+
+async function deleteAllAdminClients() {
+
+    if (!window.supabaseClient) {
+        alert("Supabase não foi carregado.");
+        return;
+    }
+
+    if (adminClients.length === 0) {
+        alert("Não há clientes para excluir.");
+        return;
+    }
+
+    const confirmed = confirm(
+        `Deseja excluir TODOS os ${adminClients.length} clientes e todos os agendamentos relacionados? Esta ação não pode ser desfeita.`
+    );
+
+    if (!confirmed) {
+        return;
+    }
+
+    deleteAllClientsButton.disabled = true;
+
+    try {
+
+        const appointmentsDeleteResponse =
+            await window.supabaseClient
+                .from("agendamentos")
+                .delete()
+                .not("id", "is", null);
+
+        if (appointmentsDeleteResponse.error) {
+            console.error(
+                "Erro ao excluir agendamentos:",
+                appointmentsDeleteResponse.error
+            );
+            alert(
+                "Não foi possível excluir os agendamentos."
+            );
+            return;
+        }
+
+        const clientsDeleteResponse =
+            await window.supabaseClient
+                .from("clientes")
+                .delete()
+                .not("id", "is", null);
+
+        if (clientsDeleteResponse.error) {
+            console.error(
+                "Erro ao excluir clientes:",
+                clientsDeleteResponse.error
+            );
+            alert(
+                "Não foi possível excluir os clientes."
+            );
+            return;
+        }
+
+        await loadAdminClients();
+        await loadDashboardAndAgenda();
+
+    } finally {
+
+        deleteAllClientsButton.disabled = false;
+
+    }
+}
+
+
+if (clientsGrid) {
+
+    clientsGrid.addEventListener(
+        "click",
+        event => {
+
+            const button =
+                event.target.closest(
+                    "[data-client-action='delete']"
+                );
+
+            if (!button) {
+                return;
+            }
+
+            deleteAdminClient(
+                button.dataset.id
+            );
+
+        }
+    );
+
+}
+
+
+if (deleteAllClientsButton) {
+
+    deleteAllClientsButton.addEventListener(
+        "click",
+        deleteAllAdminClients
+    );
 
 }
 
@@ -2257,6 +2606,50 @@ loadDashboardAndAgenda();
 
     }
 
+
+    // ==========================================
+    // BOTÃO SAIR — VOLTAR PARA ÁREA DA EQUIPE
+    // ==========================================
+
+    const logoutButton =
+        document.getElementById("logoutButton");
+
+    if (logoutButton) {
+
+        logoutButton.addEventListener(
+            "click",
+            async event => {
+
+                event.preventDefault();
+
+                logoutButton.disabled = true;
+
+                try {
+
+                    if (window.supabaseClient) {
+
+                        await window.supabaseClient.auth.signOut();
+
+                    }
+
+                } catch (error) {
+
+                    console.error(
+                        "Erro ao sair:",
+                        error
+                    );
+
+                } finally {
+
+                    window.location.href =
+                        "area-equipe.html";
+
+                }
+
+            }
+        );
+
+    }
 });
 
 /* ==========================================
@@ -2598,8 +2991,6 @@ function renderServices() {
     );
 
 }
-
-
 // ==========================================
 // ABRIR — ADICIONAR
 // ==========================================
@@ -2798,8 +3189,6 @@ if (serviceModal) {
     );
 
 }
-
-
 // ==========================================
 // SALVAR / EDITAR SERVIÇO
 // ==========================================
@@ -3214,8 +3603,6 @@ if (servicesGrid) {
     );
 
 }
-
-
 // ==========================================
 // INICIALIZAÇÃO DOS SERVIÇOS
 // ==========================================
@@ -3232,34 +3619,90 @@ const defaultScheduleSettings = {
     openingTime: "09:00",
     closingTime: "19:00",
     interval: 60,
-    workingDays: ["segunda", "terca", "quarta", "quinta", "sexta", "sabado"],
+    workingDays: [
+        "segunda",
+        "terca",
+        "quarta",
+        "quinta",
+        "sexta",
+        "sabado"
+    ],
     blockedDates: [],
     blockedSlots: {},
     considerServiceDuration: false,
-    smartToleranceMinutes: 5
+    smartToleranceMinutes: 5,
+    diasAntecedencia: 14
 };
 
 let scheduleSettings = { ...defaultScheduleSettings };
-let whatsappSettings = { phone: "", enabled: false };
+
+let whatsappSettings = {
+    phone: "",
+    enabled: false,
+    mode: "barbearia"
+};
+
 let selectedScheduleDateKey = null;
 
-const openingTimeInput = document.getElementById("openingTime");
-const closingTimeInput = document.getElementById("closingTime");
-const slotIntervalInput = document.getElementById("slotInterval");
-const availabilityCalendar = document.getElementById("availabilityCalendar");
-const scheduleSlots = document.getElementById("scheduleSlots");
-const selectedScheduleDate = document.getElementById("selectedScheduleDate");
-const saveScheduleButton = document.getElementById("saveScheduleSettings");
-const modeIntervalInput = document.getElementById("modeInterval");
-const modeDurationInput = document.getElementById("modeDuration");
-const schedulingModeSwitch = document.getElementById("schedulingModeSwitch");
-const schedulingModeSwitchText = document.getElementById("schedulingModeSwitchText");
-const schedulingModeTitle = document.getElementById("schedulingModeTitle");
-const schedulingModeDescription = document.getElementById("schedulingModeDescription");
+const openingTimeInput =
+    document.getElementById("openingTime");
+
+const closingTimeInput =
+    document.getElementById("closingTime");
+
+const slotIntervalInput =
+    document.getElementById("slotInterval");
+
+const bookingAdvanceDaysInput =
+    document.getElementById("bookingAdvanceDays");
+
+const availabilityCalendar =
+    document.getElementById("availabilityCalendar");
+
+const scheduleSlots =
+    document.getElementById("scheduleSlots");
+
+const selectedScheduleDate =
+    document.getElementById("selectedScheduleDate");
+
+const saveScheduleButton =
+    document.getElementById("saveScheduleSettings");
+
+const horariosSaveStatus =
+    document.getElementById("horariosSaveStatus");
+
+const horariosSaveStatusText =
+    document.getElementById("horariosSaveStatusText");
+
+const modeIntervalInput =
+    document.getElementById("modeInterval");
+
+const modeDurationInput =
+    document.getElementById("modeDuration");
+
+const schedulingModeSwitch =
+    document.getElementById("schedulingModeSwitch");
+
+const schedulingModeSwitchText =
+    document.getElementById("schedulingModeSwitchText");
+
+const schedulingModeTitle =
+    document.getElementById("schedulingModeTitle");
+
+const schedulingModeDescription =
+    document.getElementById("schedulingModeDescription");
 
 
+const WEEKDAY_KEYS = [
+    "domingo",
+    "segunda",
+    "terca",
+    "quarta",
+    "quinta",
+    "sexta",
+    "sabado"
+];
 
-const WEEKDAY_KEYS = ["domingo", "segunda", "terca", "quarta", "quinta", "sexta", "sabado"];
 const WEEKDAY_LABELS = {
     domingo: "Domingo",
     segunda: "Segunda-feira",
@@ -3270,21 +3713,40 @@ const WEEKDAY_LABELS = {
     sabado: "Sábado"
 };
 
+
 function normalizeWorkingDays(value) {
-    if (Array.isArray(value)) return value;
+    if (Array.isArray(value)) {
+        return value;
+    }
+
     if (typeof value === "string") {
         try {
             const parsed = JSON.parse(value);
-            return Array.isArray(parsed) ? parsed : value.split(",").map(item => item.trim()).filter(Boolean);
+
+            return Array.isArray(parsed)
+                ? parsed
+                : value
+                    .split(",")
+                    .map(item => item.trim())
+                    .filter(Boolean);
+
         } catch {
-            return value.split(",").map(item => item.trim()).filter(Boolean);
+            return value
+                .split(",")
+                .map(item => item.trim())
+                .filter(Boolean);
         }
     }
+
     return [...defaultScheduleSettings.workingDays];
 }
 
+
 function normalizeBlockedDates(value) {
-    if (Array.isArray(value)) return value;
+    if (Array.isArray(value)) {
+        return value;
+    }
+
     if (typeof value === "string") {
         try {
             const parsed = JSON.parse(value);
@@ -3293,80 +3755,126 @@ function normalizeBlockedDates(value) {
             return [];
         }
     }
+
     return [];
 }
 
+
 function normalizeBlockedSlots(value) {
-    if (value && typeof value === "object" && !Array.isArray(value)) return value;
+    if (
+        value &&
+        typeof value === "object" &&
+        !Array.isArray(value)
+    ) {
+        return value;
+    }
+
     if (typeof value === "string") {
         try {
             const parsed = JSON.parse(value);
-            return parsed && typeof parsed === "object" && !Array.isArray(parsed) ? parsed : {};
+
+            return (
+                parsed &&
+                typeof parsed === "object" &&
+                !Array.isArray(parsed)
+            )
+                ? parsed
+                : {};
+
         } catch {
             return {};
         }
     }
+
     return {};
 }
 
+
 function loadScheduleFromLocalStorage() {
     try {
-        const saved = localStorage.getItem("navalha_schedule_settings");
+        const saved = localStorage.getItem(
+            "navalha_schedule_settings"
+        );
+
         if (!saved) return;
+
         const parsed = JSON.parse(saved);
+
         scheduleSettings = {
             ...defaultScheduleSettings,
             ...parsed,
-            workingDays: normalizeWorkingDays(parsed.workingDays),
-            blockedDates: normalizeBlockedDates(parsed.blockedDates),
-            blockedSlots: normalizeBlockedSlots(parsed.blockedSlots),
-            smartToleranceMinutes: [5, 10, 15].includes(Number(parsed.smartToleranceMinutes)) ? Number(parsed.smartToleranceMinutes) : 5
+
+            workingDays:
+                normalizeWorkingDays(parsed.workingDays),
+
+            blockedDates:
+                normalizeBlockedDates(parsed.blockedDates),
+
+            blockedSlots:
+                normalizeBlockedSlots(parsed.blockedSlots),
+
+            smartToleranceMinutes:
+                [5, 10, 15].includes(
+                    Number(parsed.smartToleranceMinutes)
+                )
+                    ? Number(parsed.smartToleranceMinutes)
+                    : 5,
+
+            diasAntecedencia: Math.min(
+                365,
+                Math.max(
+                    1,
+                    Number(
+                        parsed.diasAntecedencia ?? 14
+                    ) || 14
+                )
+            )
         };
+
     } catch (error) {
-        console.warn("Não foi possível carregar os horários salvos localmente.", error);
+        console.warn(
+            "Não foi possível carregar os horários salvos localmente.",
+            error
+        );
     }
 }
 
+
 function saveScheduleToLocalStorage() {
-    scheduleSettings.smartToleranceMinutes = ensureSmartToleranceValue(scheduleSettings.smartToleranceMinutes);
-    localStorage.setItem("navalha_schedule_settings", JSON.stringify(scheduleSettings));
+    scheduleSettings.smartToleranceMinutes =
+        ensureSmartToleranceValue(
+            scheduleSettings.smartToleranceMinutes
+        );
+
+    localStorage.setItem(
+        "navalha_schedule_settings",
+        JSON.stringify(scheduleSettings)
+    );
 }
 
-async function loadScheduleSettings() {
 
+async function loadScheduleSettings() {
     loadScheduleFromLocalStorage();
 
-    if (
-        !window.supabaseClient
-    ) {
-
+    if (!window.supabaseClient) {
         loadScheduleInputs();
         updateScheduleSummary();
         renderAvailabilityCalendar();
-
         return;
-
     }
-
 
     const {
         data,
         error
-    } =
-        await window.supabaseClient
-            .from("configuracoes_horarios")
-            .select("*")
-            .order(
-                "id",
-                {
-                    ascending: false
-                }
-            )
-            .limit(1);
-
+    } = await window.supabaseClient
+        .from("configuracoes_horarios")
+        .select("*")
+        .order("id", {
+            ascending: false
+        })
+        .limit(1);
 
     if (error) {
-
         console.error(
             "Erro ao carregar horários:",
             error
@@ -3375,22 +3883,16 @@ async function loadScheduleSettings() {
         loadScheduleInputs();
         updateScheduleSummary();
         renderAvailabilityCalendar();
-
         return;
-
     }
-
 
     const settings =
         data && data.length > 0
             ? data[0]
             : null;
 
-
     if (settings) {
-
         scheduleSettings = {
-
             openingTime:
                 settings.horario_abertura ??
                 settings.opening_time ??
@@ -3401,206 +3903,364 @@ async function loadScheduleSettings() {
                 settings.closing_time ??
                 defaultScheduleSettings.closingTime,
 
-            interval:
-                Number(
-                    settings.intervalo ??
-                    settings.interval ??
-                    defaultScheduleSettings.interval
-                ),
+            interval: Number(
+                settings.intervalo ??
+                settings.interval ??
+                defaultScheduleSettings.interval
+            ),
 
-            workingDays:
-                normalizeWorkingDays(
-                    settings.dias_funcionamento ??
-                    settings.working_days
-                ),
+            workingDays: normalizeWorkingDays(
+                settings.dias_funcionamento ??
+                settings.working_days
+            ),
 
-            blockedDates:
-                normalizeBlockedDates(
-                    settings.datas_bloqueadas ??
-                    settings.blocked_dates
-                ),
+            blockedDates: normalizeBlockedDates(
+                settings.datas_bloqueadas ??
+                settings.blocked_dates
+            ),
 
-            blockedSlots:
-                normalizeBlockedSlots(
-                    settings.horarios_bloqueados ??
-                    settings.blocked_slots
-                ),
+            blockedSlots: normalizeBlockedSlots(
+                settings.horarios_bloqueados ??
+                settings.blocked_slots
+            ),
 
             considerServiceDuration:
                 settings.considerar_duracao_servicos ??
                 false,
 
-            smartToleranceMinutes: 5
+            // A coluna correta do Supabase:
+            diasAntecedencia: Math.min(
+                365,
+                Math.max(
+                    1,
+                    Number(
+                        settings.dias_maximos_agendamento ?? 14
+                    ) || 14
+                )
+            ),
 
+            smartToleranceMinutes: 5
         };
 
-        const savedSmartConfig = scheduleSettings.blockedSlots && scheduleSettings.blockedSlots.__smart_config;
-        if (savedSmartConfig && typeof savedSmartConfig === "object") {
-            const tolerance = Number(savedSmartConfig.toleranceMinutes);
-            if ([5, 10, 15].includes(tolerance)) scheduleSettings.smartToleranceMinutes = tolerance;
+        // Configuração de tolerância entre atendimentos.
+        const savedSmartConfig =
+            scheduleSettings.blockedSlots &&
+            scheduleSettings.blockedSlots.__smart_config;
+
+        if (
+            savedSmartConfig &&
+            typeof savedSmartConfig === "object"
+        ) {
+            const tolerance =
+                Number(savedSmartConfig.toleranceMinutes);
+
+            if ([5, 10, 15].includes(tolerance)) {
+                scheduleSettings.smartToleranceMinutes =
+                    tolerance;
+            }
         }
 
-        const savedWhatsappConfig = scheduleSettings.blockedSlots && scheduleSettings.blockedSlots.__whatsapp_config;
-        if (savedWhatsappConfig && typeof savedWhatsappConfig === "object") {
+        // Configuração do WhatsApp.
+        const savedWhatsappConfig =
+            scheduleSettings.blockedSlots &&
+            scheduleSettings.blockedSlots.__whatsapp_config;
+
+        if (
+            savedWhatsappConfig &&
+            typeof savedWhatsappConfig === "object"
+        ) {
             whatsappSettings = {
-                phone: String(savedWhatsappConfig.phone || ""),
-                enabled: Boolean(savedWhatsappConfig.enabled)
+                phone: String(
+                    savedWhatsappConfig.phone || ""
+                ),
+                enabled: Boolean(
+                    savedWhatsappConfig.enabled
+                ),
+                mode:
+                    savedWhatsappConfig.mode === "barbeiro"
+                        ? "barbeiro"
+                        : "barbearia"
             };
         }
 
         saveScheduleToLocalStorage();
-
     }
-
 
     loadScheduleInputs();
     updateScheduleSummary();
     renderAvailabilityCalendar();
     loadWhatsappSettingsUI();
-
 }
 function ensureSmartToleranceValue(value) {
     const numeric = Number(value);
-    return [5, 10, 15].includes(numeric) ? numeric : 5;
+
+    return [5, 10, 15].includes(numeric)
+        ? numeric
+        : 5;
 }
+
 
 function getSmartToleranceMinutes() {
-    return ensureSmartToleranceValue(scheduleSettings.smartToleranceMinutes);
+    return ensureSmartToleranceValue(
+        scheduleSettings.smartToleranceMinutes
+    );
 }
 
+
 function setupSmartToleranceControl() {
-    if (!schedulingModeSwitch || document.getElementById("smartToleranceControl")) return;
+    if (
+        !schedulingModeSwitch ||
+        document.getElementById("smartToleranceControl")
+    ) {
+        return;
+    }
+
     const wrapper = document.createElement("div");
+
     wrapper.id = "smartToleranceControl";
-    wrapper.style.cssText = "margin-top:10px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;";
-    wrapper.innerHTML = '<label for="smartToleranceSelect" style="font-size:14px;">Tolerância entre atendimentos</label><select id="smartToleranceSelect" style="padding:6px 8px;border-radius:8px;"><option value="5">5 min</option><option value="10">10 min</option><option value="15">15 min</option></select>';
+
+    wrapper.style.cssText =
+        "margin-top:10px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;";
+
+    wrapper.innerHTML = `
+        <label
+            for="smartToleranceSelect"
+            style="font-size:14px;"
+        >
+            Tolerância entre atendimentos
+        </label>
+
+        <select
+            id="smartToleranceSelect"
+            style="padding:6px 8px;border-radius:8px;"
+        >
+            <option value="5">5 min</option>
+            <option value="10">10 min</option>
+            <option value="15">15 min</option>
+        </select>
+    `;
+
     const parent = schedulingModeSwitch.parentElement;
-    if (parent) parent.appendChild(wrapper); else schedulingModeSwitch.insertAdjacentElement("afterend", wrapper);
-    const select = document.getElementById("smartToleranceSelect");
+
+    if (parent) {
+        parent.appendChild(wrapper);
+    } else {
+        schedulingModeSwitch.insertAdjacentElement(
+            "afterend",
+            wrapper
+        );
+    }
+
+    const select =
+        document.getElementById("smartToleranceSelect");
+
     if (select) {
-        select.value = String(getSmartToleranceMinutes());
+        select.value = String(
+            getSmartToleranceMinutes()
+        );
+
         select.addEventListener("change", () => {
-            scheduleSettings.smartToleranceMinutes = ensureSmartToleranceValue(select.value);
+            scheduleSettings.smartToleranceMinutes =
+                ensureSmartToleranceValue(select.value);
+
             previewScheduleSettings();
         });
     }
 }
 
+
 function updateSmartToleranceUI() {
     setupSmartToleranceControl();
-    const wrapper = document.getElementById("smartToleranceControl");
-    const select = document.getElementById("smartToleranceSelect");
-    const visible = Boolean(scheduleSettings.considerServiceDuration);
-    if (wrapper) wrapper.style.display = visible ? "flex" : "none";
-    if (select) select.value = String(getSmartToleranceMinutes());
+
+    const wrapper =
+        document.getElementById("smartToleranceControl");
+
+    const select =
+        document.getElementById("smartToleranceSelect");
+
+    const visible =
+        Boolean(scheduleSettings.considerServiceDuration);
+
+    if (wrapper) {
+        wrapper.style.display =
+            visible ? "flex" : "none";
+    }
+
+    if (select) {
+        select.value = String(
+            getSmartToleranceMinutes()
+        );
+    }
 }
+
 
 async function saveScheduleSettings() {
     saveScheduleToLocalStorage();
 
-    if (!window.supabaseClient) return true;
+    if (!window.supabaseClient) {
+        updateScheduleSaveIndicator(false, true);
+
+        alert(
+            "As configurações ficaram salvas neste navegador, " +
+            "mas o Supabase não está conectado."
+        );
+
+        return false;
+    }
 
     const blockedSlotsForStorage = {
         ...scheduleSettings.blockedSlots,
-        __smart_config: { toleranceMinutes: getSmartToleranceMinutes() },
+
+        __smart_config: {
+            toleranceMinutes:
+                getSmartToleranceMinutes()
+        },
+
         __whatsapp_config: {
             phone: String(whatsappSettings.phone || ""),
-            enabled: Boolean(whatsappSettings.enabled)
+            enabled: Boolean(whatsappSettings.enabled),
+            mode:
+                whatsappSettings.mode === "barbeiro"
+                    ? "barbeiro"
+                    : "barbearia"
         }
     };
 
+    const diasMaximos = Math.min(
+        365,
+        Math.max(
+            1,
+            Number(scheduleSettings.diasAntecedencia || 14)
+        )
+    );
+
     const payload = {
-        horario_abertura: scheduleSettings.openingTime,
-        horario_fechamento: scheduleSettings.closingTime,
-        intervalo: scheduleSettings.interval,
-        dias_funcionamento: scheduleSettings.workingDays,
-        datas_bloqueadas: scheduleSettings.blockedDates,
-        horarios_bloqueados: blockedSlotsForStorage,
-        considerar_duracao_servicos: scheduleSettings.considerServiceDuration
+        horario_abertura:
+            scheduleSettings.openingTime,
+
+        horario_fechamento:
+            scheduleSettings.closingTime,
+
+        intervalo:
+            scheduleSettings.interval,
+
+        dias_funcionamento:
+            scheduleSettings.workingDays,
+
+        datas_bloqueadas:
+            scheduleSettings.blockedDates,
+
+        horarios_bloqueados:
+            blockedSlotsForStorage,
+
+        considerar_duracao_servicos:
+            scheduleSettings.considerServiceDuration,
+
+        // Campo oficial para o prazo máximo de agendamento.
+        dias_maximos_agendamento:
+            diasMaximos
     };
 
-    const { data: existing, error: existingError } =
-    await window.supabaseClient
+    const {
+        data: existing,
+        error: existingError
+    } = await window.supabaseClient
         .from("configuracoes_horarios")
         .select("id")
-        .order("id", { ascending: false })
+        .order("id", {
+            ascending: false
+        })
         .limit(1)
         .maybeSingle();
 
     if (existingError) {
-        console.error("Erro ao verificar configurações:", existingError);
-        alert("As alterações foram salvas neste navegador, mas ainda não foram sincronizadas com o Supabase.");
-        return true;
+        console.error(
+            "Erro ao verificar configurações:",
+            existingError
+        );
+
+        updateScheduleSaveIndicator(false, true);
+
+        alert(
+            "Não foi possível verificar as configurações no Supabase. " +
+            "Confira o console e tente novamente."
+        );
+
+        return false;
     }
 
     const response = existing
-        ? await window.supabaseClient.from("configuracoes_horarios").update(payload).eq("id", existing.id)
-        : await window.supabaseClient.from("configuracoes_horarios").insert(payload);
+        ? await window.supabaseClient
+            .from("configuracoes_horarios")
+            .update(payload)
+            .eq("id", existing.id)
+        : await window.supabaseClient
+            .from("configuracoes_horarios")
+            .insert(payload);
 
     if (response.error) {
-        console.error("Erro ao salvar horários:", response.error);
-        alert("As alterações foram salvas neste navegador, mas houve um problema ao sincronizar com o Supabase.");
+        console.error(
+            "Erro ao salvar horários no Supabase:",
+            response.error
+        );
+
+        updateScheduleSaveIndicator(false, true);
+
+        alert(
+            "Não foi possível sincronizar as configurações com o Supabase. " +
+            "Verifique se a coluna dias_maximos_agendamento existe " +
+            "na tabela configuracoes_horarios."
+        );
+
+        return false;
     }
+
+    markHorariosClean();
 
     return true;
 }
-
 function updateSchedulingModeUI() {
-
     const durationMode =
-        Boolean(
-            scheduleSettings.considerServiceDuration
-        );
-
+        Boolean(scheduleSettings.considerServiceDuration);
 
     if (modeIntervalInput) {
-        modeIntervalInput.checked =
-            !durationMode;
+        modeIntervalInput.checked = !durationMode;
     }
-
 
     if (modeDurationInput) {
-        modeDurationInput.checked =
-            durationMode;
+        modeDurationInput.checked = durationMode;
     }
-
 
     if (slotIntervalInput) {
-        slotIntervalInput.disabled =
-            durationMode;
+        slotIntervalInput.disabled = durationMode;
     }
 
-
     if (schedulingModeSwitch) {
-
         schedulingModeSwitch.classList.toggle(
             "active",
             durationMode
         );
 
-        schedulingModeSwitch.style.background = durationMode ? "#d7b56d" : "transparent";
-        schedulingModeSwitch.style.color = durationMode ? "#111" : "rgba(255,255,255,.72)";
-        schedulingModeSwitch.style.boxShadow = durationMode
-            ? "0 0 0 1px rgba(215,181,109,.55), 0 4px 14px rgba(215,181,109,.18)"
-            : "inset 0 0 0 1px rgba(255,255,255,.22)";
+        schedulingModeSwitch.style.background =
+            durationMode ? "#d7b56d" : "transparent";
 
+        schedulingModeSwitch.style.color =
+            durationMode ? "#111" : "rgba(255,255,255,.72)";
+
+        schedulingModeSwitch.style.boxShadow =
+            durationMode
+                ? "0 0 0 1px rgba(215,181,109,.55), 0 4px 14px rgba(215,181,109,.18)"
+                : "inset 0 0 0 1px rgba(255,255,255,.22)";
 
         schedulingModeSwitch.setAttribute(
             "aria-pressed",
-            durationMode
-                ? "true"
-                : "false"
+            durationMode ? "true" : "false"
         );
-
     }
 
-
     if (schedulingModeSwitchText) {
-
         schedulingModeSwitchText.textContent =
-            durationMode
-                ? "ON"
-                : "OFF";
+            durationMode ? "ON" : "OFF";
 
         schedulingModeSwitchText.style.fontWeight = "800";
         schedulingModeSwitchText.style.fontSize = "12px";
@@ -3608,7 +4268,9 @@ function updateSchedulingModeUI() {
     }
 
     const schedulingModeKnob = schedulingModeSwitch
-        ? schedulingModeSwitch.querySelector(".scheduling-mode-switch-knob")
+        ? schedulingModeSwitch.querySelector(
+            ".scheduling-mode-switch-knob"
+        )
         : null;
 
     if (schedulingModeKnob) {
@@ -3616,115 +4278,160 @@ function updateSchedulingModeUI() {
         schedulingModeKnob.style.height = "28px";
         schedulingModeKnob.style.borderRadius = "50%";
         schedulingModeKnob.style.display = "block";
-        schedulingModeKnob.style.background = durationMode ? "#fff" : "rgba(255,255,255,.35)";
-        schedulingModeKnob.style.boxShadow = "0 1px 5px rgba(0,0,0,.25)";
-        schedulingModeKnob.style.transform = durationMode ? "translateX(0)" : "translateX(0)";
+
+        schedulingModeKnob.style.background =
+            durationMode ? "#fff" : "rgba(255,255,255,.35)";
+
+        schedulingModeKnob.style.boxShadow =
+            "0 1px 5px rgba(0,0,0,.25)";
+
+        schedulingModeKnob.style.transform = "translateX(0)";
         schedulingModeKnob.style.transition = ".2s ease";
     }
 
-
     if (schedulingModeTitle) {
-
         schedulingModeTitle.textContent =
             durationMode
                 ? "Considerar duração dos serviços"
                 : "Intervalo entre horários";
-
     }
 
-
     if (schedulingModeDescription) {
-
         schedulingModeDescription.textContent =
             durationMode
                 ? "Cada atendimento respeita o tempo definido no serviço."
                 : "Os horários seguem o intervalo definido acima.";
-
     }
 
     updateSmartToleranceUI();
 }
 
+
 if (modeIntervalInput) {
-    modeIntervalInput.addEventListener(
-        "change",
-        () => {
-            scheduleSettings.considerServiceDuration = false;
-            updateSchedulingModeUI();
-            previewScheduleSettings();
-        }
-    );
+    modeIntervalInput.addEventListener("change", () => {
+        scheduleSettings.considerServiceDuration = false;
+
+        updateSchedulingModeUI();
+        previewScheduleSettings();
+    });
 }
 
+
 if (modeDurationInput) {
-    modeDurationInput.addEventListener(
-        "change",
-        () => {
-            scheduleSettings.considerServiceDuration = true;
-            updateSchedulingModeUI();
-            previewScheduleSettings();
-        }
-    );
+    modeDurationInput.addEventListener("change", () => {
+        scheduleSettings.considerServiceDuration = true;
+
+        updateSchedulingModeUI();
+        previewScheduleSettings();
+    });
 }
 
 
 if (schedulingModeSwitch) {
+    schedulingModeSwitch.addEventListener("click", () => {
+        scheduleSettings.considerServiceDuration =
+            !scheduleSettings.considerServiceDuration;
 
-    schedulingModeSwitch.addEventListener(
-        "click",
-        () => {
-
-            scheduleSettings.considerServiceDuration =
-                !scheduleSettings.considerServiceDuration;
-
-            updateSchedulingModeUI();
-            previewScheduleSettings();
-
-        }
-    );
-
+        updateSchedulingModeUI();
+        previewScheduleSettings();
+    });
 }
 
 
 function loadScheduleInputs() {
-    if (openingTimeInput) openingTimeInput.value = scheduleSettings.openingTime;
-    if (closingTimeInput) closingTimeInput.value = scheduleSettings.closingTime;
-    if (slotIntervalInput) slotIntervalInput.value = String(scheduleSettings.interval);
+    if (openingTimeInput) {
+        openingTimeInput.value = scheduleSettings.openingTime;
+    }
 
-    document.querySelectorAll(".day-option input").forEach(checkbox => {
-        checkbox.checked = scheduleSettings.workingDays.includes(checkbox.value);
-    });
+    if (closingTimeInput) {
+        closingTimeInput.value = scheduleSettings.closingTime;
+    }
+
+    if (slotIntervalInput) {
+        slotIntervalInput.value =
+            String(scheduleSettings.interval);
+    }
+
+    if (bookingAdvanceDaysInput) {
+        bookingAdvanceDaysInput.value =
+            String(scheduleSettings.diasAntecedencia || 14);
+
+        bookingAdvanceDaysInput.min = "1";
+        bookingAdvanceDaysInput.max = "365";
+    }
+
+    document.querySelectorAll(".day-option input").forEach(
+        checkbox => {
+            checkbox.checked =
+                scheduleSettings.workingDays.includes(
+                    checkbox.value
+                );
+        }
+    );
+
     updateSchedulingModeUI();
 }
 
+
 function getSelectedWorkingDays() {
-    return [...document.querySelectorAll(".day-option input:checked")].map(input => input.value);
+    return [
+        ...document.querySelectorAll(
+            ".day-option input:checked"
+        )
+    ].map(input => input.value);
 }
+
 
 function formatDateKey(date) {
     const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, "0");
-    const day = String(date.getDate()).padStart(2, "0");
+
+    const month = String(
+        date.getMonth() + 1
+    ).padStart(2, "0");
+
+    const day = String(
+        date.getDate()
+    ).padStart(2, "0");
+
     return `${year}-${month}-${day}`;
 }
 
+
 function generateSlots() {
     const slots = [];
-    const [openHour, openMinute] = scheduleSettings.openingTime.split(":").map(Number);
-    const [closeHour, closeMinute] = scheduleSettings.closingTime.split(":").map(Number);
+
+    const [openHour, openMinute] =
+        scheduleSettings.openingTime.split(":").map(Number);
+
+    const [closeHour, closeMinute] =
+        scheduleSettings.closingTime.split(":").map(Number);
+
     let current = openHour * 60 + openMinute;
+
     const closing = closeHour * 60 + closeMinute;
-    const interval = Math.max(1, Number(scheduleSettings.interval || 60));
+
+    const interval = Math.max(
+        1,
+        Number(scheduleSettings.interval || 60)
+    );
 
     while (current < closing) {
-        const hour = String(Math.floor(current / 60)).padStart(2, "0");
-        const minute = String(current % 60).padStart(2, "0");
+        const hour = String(
+            Math.floor(current / 60)
+        ).padStart(2, "0");
+
+        const minute = String(
+            current % 60
+        ).padStart(2, "0");
+
         slots.push(`${hour}:${minute}`);
+
         current += interval;
     }
 
     return slots;
 }
+
 
 function renderAvailabilityCalendar() {
     if (!availabilityCalendar) return;
@@ -3734,28 +4441,63 @@ function renderAvailabilityCalendar() {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
-    for (let i = 0; i < 14; i++) {
+    // O limite máximo agora é de 365 dias.
+    const configuredDays = Math.min(
+        365,
+        Math.max(
+            1,
+            Number(scheduleSettings.diasAntecedencia || 14)
+        )
+    );
+
+    const title = document.getElementById(
+        "availabilityCalendarTitle"
+    );
+
+    if (title) {
+        title.textContent =
+            `Próximos ${configuredDays} ` +
+            `${configuredDays === 1 ? "dia" : "dias"}`;
+    }
+
+    for (let i = 0; i < configuredDays; i++) {
         const date = new Date(today);
+
         date.setDate(today.getDate() + i);
 
         const key = formatDateKey(date);
+
         const weekdayKey = WEEKDAY_KEYS[date.getDay()];
+
         const weekdayLabel = WEEKDAY_LABELS[weekdayKey];
-        const unavailable = !scheduleSettings.workingDays.includes(weekdayKey) || scheduleSettings.blockedDates.includes(key);
+
+        const unavailable =
+            !scheduleSettings.workingDays.includes(weekdayKey) ||
+            scheduleSettings.blockedDates.includes(key);
 
         const button = document.createElement("button");
+
         button.type = "button";
-        button.className = `availability-day ${unavailable ? "closed" : "open"}${selectedScheduleDateKey === key ? " selected" : ""}`;
+
+        button.className =
+            `availability-day ${unavailable ? "closed" : "open"}` +
+            `${selectedScheduleDateKey === key ? " selected" : ""}`;
+
         button.dataset.date = key;
 
         button.innerHTML = `
             <span class="day-name">${weekdayLabel}</span>
-            <strong class="day-number">${String(date.getDate()).padStart(2, "0")}</strong>
-            <span class="day-status">${unavailable ? "INDISPONÍVEL" : "DISPONÍVEL"}</span>
+            <strong class="day-number">
+                ${String(date.getDate()).padStart(2, "0")}
+            </strong>
+            <span class="day-status">
+                ${unavailable ? "INDISPONÍVEL" : "DISPONÍVEL"}
+            </span>
         `;
 
         button.addEventListener("click", () => {
             selectedScheduleDateKey = key;
+
             renderAvailabilityCalendar();
             renderScheduleSlots(key, date);
         });
@@ -3763,22 +4505,26 @@ function renderAvailabilityCalendar() {
         availabilityCalendar.appendChild(button);
     }
 }
-
 function renderScheduleSlots(dateKey, date) {
     if (selectedScheduleDate) {
-        selectedScheduleDate.textContent = date.toLocaleDateString("pt-BR", {
-            weekday: "long",
-            day: "2-digit",
-            month: "2-digit",
-            year: "numeric"
-        });
+        selectedScheduleDate.textContent =
+            date.toLocaleDateString("pt-BR", {
+                weekday: "long",
+                day: "2-digit",
+                month: "2-digit",
+                year: "numeric"
+            });
     }
 
     if (!scheduleSlots) return;
 
     const weekday = WEEKDAY_KEYS[date.getDay()];
-    const outsideWorkingDays = !scheduleSettings.workingDays.includes(weekday);
-    const manuallyBlocked = scheduleSettings.blockedDates.includes(dateKey);
+
+    const outsideWorkingDays =
+        !scheduleSettings.workingDays.includes(weekday);
+
+    const manuallyBlocked =
+        scheduleSettings.blockedDates.includes(dateKey);
 
     if (outsideWorkingDays || manuallyBlocked) {
         const message = outsideWorkingDays
@@ -3788,136 +4534,170 @@ function renderScheduleSlots(dateKey, date) {
         scheduleSlots.innerHTML = `
             <p class="empty-schedule">
                 ${message}
-                ${manuallyBlocked ? '<button type="button" id="toggleDateAvailability">DESBLOQUEAR DIA</button>' : ""}
+
+                ${
+                    manuallyBlocked
+                        ? '<button type="button" id="toggleDateAvailability">DESBLOQUEAR DIA</button>'
+                        : ""
+                }
             </p>
         `;
 
-        const toggle = document.getElementById("toggleDateAvailability");
+        const toggle = document.getElementById(
+            "toggleDateAvailability"
+        );
+
         if (toggle) {
-            toggle.addEventListener("click", () => toggleDateBlock(dateKey));
+            toggle.addEventListener("click", () => {
+                toggleDateBlock(dateKey);
+            });
         }
 
         return;
     }
 
     const blocked =
-    scheduleSettings.blockedSlots[dateKey] || [];
+        scheduleSettings.blockedSlots[dateKey] || [];
 
-const isDateBlocked =
-    scheduleSettings.blockedDates.includes(dateKey);
+    const isDateBlocked =
+        scheduleSettings.blockedDates.includes(dateKey);
 
+    scheduleSlots.innerHTML =
+        generateSlots().map(time => `
+            <button
+                type="button"
+                class="schedule-slot${
+                    blocked.includes(time)
+                        ? " blocked"
+                        : " available"
+                }"
+                data-time="${time}"
+            >
+                ${time}${
+                    blocked.includes(time)
+                        ? " · BLOQUEADO"
+                        : " · DISPONÍVEL"
+                }
+            </button>
+        `).join("") + `
+            <button
+                type="button"
+                id="toggleDateAvailability"
+                class="schedule-day-action"
+            >
+                ${
+                    isDateBlocked
+                        ? "DESBLOQUEAR DIA"
+                        : "BLOQUEAR DIA"
+                }
+            </button>
+        `;
 
-scheduleSlots.innerHTML =
+    scheduleSlots
+        .querySelectorAll(".schedule-slot")
+        .forEach(button => {
+            button.addEventListener("click", () => {
+                toggleSlot(
+                    dateKey,
+                    button.dataset.time,
+                    date
+                );
+            });
+        });
 
-    generateSlots().map(time => `
-
-        <button
-            type="button"
-            class="schedule-slot${blocked.includes(time) ? " blocked" : " available"}"
-            data-time="${time}"
-        >
-            ${time}${blocked.includes(time)
-                ? " · BLOQUEADO"
-                : " · DISPONÍVEL"}
-        </button>
-
-    `).join("")
-
-    +
-
-    `
-        <button
-            type="button"
-            id="toggleDateAvailability"
-            class="schedule-day-action"
-        >
-            ${
-                isDateBlocked
-                    ? "DESBLOQUEAR DIA"
-                    : "BLOQUEAR DIA"
-            }
-        </button>
-    `;
-
-
-scheduleSlots
-    .querySelectorAll(".schedule-slot")
-    .forEach(button => {
-
-        button.addEventListener(
-            "click",
-            () => toggleSlot(
-                dateKey,
-                button.dataset.time,
-                date
-            )
+    const toggleDateAvailability =
+        document.getElementById(
+            "toggleDateAvailability"
         );
 
-    });
-
-
-const toggleDateAvailability =
-    document.getElementById(
-        "toggleDateAvailability"
-    );
-
-
-if (toggleDateAvailability) {
-
-    toggleDateAvailability.addEventListener(
-        "click",
-        () => toggleDateBlock(dateKey)
-    );
-
+    if (toggleDateAvailability) {
+        toggleDateAvailability.addEventListener("click", () => {
+            toggleDateBlock(dateKey);
+        });
+    }
 }
 
-}
 
 async function toggleSlot(dateKey, time, date) {
-    if (!scheduleSettings.blockedSlots[dateKey]) scheduleSettings.blockedSlots[dateKey] = [];
+    if (!scheduleSettings.blockedSlots[dateKey]) {
+        scheduleSettings.blockedSlots[dateKey] = [];
+    }
 
-    const blocked = scheduleSettings.blockedSlots[dateKey];
+    const blocked =
+        scheduleSettings.blockedSlots[dateKey];
+
     const index = blocked.indexOf(time);
 
-    if (index === -1) blocked.push(time);
-    else blocked.splice(index, 1);
+    if (index === -1) {
+        blocked.push(time);
+    } else {
+        blocked.splice(index, 1);
+    }
 
-    await saveScheduleSettings();
+    markHorariosDirty();
+
     renderScheduleSlots(dateKey, date);
     renderAvailabilityCalendar();
 }
 
+
 async function toggleDateBlock(dateKey) {
-    const index = scheduleSettings.blockedDates.indexOf(dateKey);
+    const index =
+        scheduleSettings.blockedDates.indexOf(dateKey);
 
-    if (index === -1) scheduleSettings.blockedDates.push(dateKey);
-    else scheduleSettings.blockedDates.splice(index, 1);
+    if (index === -1) {
+        scheduleSettings.blockedDates.push(dateKey);
+    } else {
+        scheduleSettings.blockedDates.splice(index, 1);
+    }
 
-    await saveScheduleSettings();
+    markHorariosDirty();
     renderAvailabilityCalendar();
 
     if (selectedScheduleDateKey === dateKey) {
-        const [year, month, day] = dateKey.split("-").map(Number);
-        renderScheduleSlots(dateKey, new Date(year, month - 1, day));
+        const [year, month, day] =
+            dateKey.split("-").map(Number);
+
+        renderScheduleSlots(
+            dateKey,
+            new Date(year, month - 1, day)
+        );
     }
 }
+
 
 function updateActiveDaysCount() {
-    const element = document.getElementById("activeDaysCount");
-    if (element) element.textContent = scheduleSettings.workingDays.length;
-}
+    const element =
+        document.getElementById("activeDaysCount");
 
-function updateIntervalDisplay() {
-    const element = document.getElementById("slotIntervalDisplay");
-    if (element) element.textContent = `${scheduleSettings.interval} min`;
-}
-
-function updateWorkingHoursDisplay() {
-    const element = document.getElementById("workingHoursDisplay");
     if (element) {
-        element.textContent = `${scheduleSettings.openingTime} — ${scheduleSettings.closingTime}`;
+        element.textContent =
+            scheduleSettings.workingDays.length;
     }
 }
+
+
+function updateIntervalDisplay() {
+    const element =
+        document.getElementById("slotIntervalDisplay");
+
+    if (element) {
+        element.textContent =
+            `${scheduleSettings.interval} min`;
+    }
+}
+
+
+function updateWorkingHoursDisplay() {
+    const element =
+        document.getElementById("workingHoursDisplay");
+
+    if (element) {
+        element.textContent =
+            `${scheduleSettings.openingTime} — ${scheduleSettings.closingTime}`;
+    }
+}
+
 
 function updateScheduleSummary() {
     updateWorkingHoursDisplay();
@@ -3925,233 +4705,638 @@ function updateScheduleSummary() {
     updateActiveDaysCount();
 }
 
+
+function updateScheduleSaveIndicator(
+    isDirty,
+    isError = false
+) {
+    if (!horariosSaveStatus) return;
+
+    horariosSaveStatus.classList.toggle(
+        "is-dirty",
+        Boolean(isDirty)
+    );
+
+    horariosSaveStatus.classList.toggle(
+        "is-error",
+        Boolean(isError)
+    );
+
+    if (horariosSaveStatusText) {
+        horariosSaveStatusText.textContent = isError
+            ? "Erro ao salvar"
+            : isDirty
+                ? "Alterações não salvas"
+                : "Tudo salvo";
+    }
+
+    const icon = horariosSaveStatus.querySelector(
+        ".horarios-save-status-icon"
+    );
+
+    if (icon) {
+        icon.textContent =
+            isError || isDirty ? "!" : "✓";
+    }
+}
+
+
+function markHorariosDirty() {
+    updateScheduleSaveIndicator(true, false);
+}
+
+
+function markHorariosClean() {
+    updateScheduleSaveIndicator(false, false);
+}
+
+
 function previewScheduleSettings() {
     if (modeDurationInput) {
         scheduleSettings.considerServiceDuration =
             Boolean(modeDurationInput.checked);
     }
 
-    if (openingTimeInput && openingTimeInput.value) scheduleSettings.openingTime = openingTimeInput.value;
-    if (closingTimeInput && closingTimeInput.value) scheduleSettings.closingTime = closingTimeInput.value;
-    if (slotIntervalInput && slotIntervalInput.value) scheduleSettings.interval = Number(slotIntervalInput.value);
-    scheduleSettings.workingDays = getSelectedWorkingDays();
-    const toleranceSelect = document.getElementById("smartToleranceSelect");
-    if (toleranceSelect) scheduleSettings.smartToleranceMinutes = ensureSmartToleranceValue(toleranceSelect.value);
+    if (openingTimeInput && openingTimeInput.value) {
+        scheduleSettings.openingTime =
+            openingTimeInput.value;
+    }
+
+    if (closingTimeInput && closingTimeInput.value) {
+        scheduleSettings.closingTime =
+            closingTimeInput.value;
+    }
+
+    if (slotIntervalInput && slotIntervalInput.value) {
+        scheduleSettings.interval =
+            Number(slotIntervalInput.value);
+    }
+
+    if (
+        bookingAdvanceDaysInput &&
+        bookingAdvanceDaysInput.value
+    ) {
+        scheduleSettings.diasAntecedencia = Math.min(
+            365,
+            Math.max(
+                1,
+                Number(bookingAdvanceDaysInput.value) || 14
+            )
+        );
+    }
+
+    scheduleSettings.workingDays =
+        getSelectedWorkingDays();
+
+    const toleranceSelect =
+        document.getElementById("smartToleranceSelect");
+
+    if (toleranceSelect) {
+        scheduleSettings.smartToleranceMinutes =
+            ensureSmartToleranceValue(
+                toleranceSelect.value
+            );
+    }
 
     updateScheduleSummary();
     renderAvailabilityCalendar();
+
     markSettingsDirty();
+    markHorariosDirty();
 
     if (selectedScheduleDateKey) {
-        const [year, month, day] = selectedScheduleDateKey.split("-").map(Number);
-        renderScheduleSlots(selectedScheduleDateKey, new Date(year, month - 1, day));
+        const [year, month, day] =
+            selectedScheduleDateKey.split("-").map(Number);
+
+        renderScheduleSlots(
+            selectedScheduleDateKey,
+            new Date(year, month - 1, day)
+        );
     }
 }
 
+
 if (saveScheduleButton) {
-    saveScheduleButton.addEventListener("click", async () => {
-        const opening = openingTimeInput ? openingTimeInput.value : "";
-        const closing = closingTimeInput ? closingTimeInput.value : "";
-        const interval = Number(slotIntervalInput ? slotIntervalInput.value : 0);
-        const workingDays = getSelectedWorkingDays();
+    saveScheduleButton.addEventListener(
+        "click",
+        async () => {
+            const opening = openingTimeInput
+                ? openingTimeInput.value
+                : "";
 
-        if (!opening || !closing) {
-            alert("Informe o horário de abertura e fechamento.");
-            return;
+            const closing = closingTimeInput
+                ? closingTimeInput.value
+                : "";
+
+            const interval = Number(
+                slotIntervalInput
+                    ? slotIntervalInput.value
+                    : 0
+            );
+
+            const advanceDays = Number(
+                bookingAdvanceDaysInput
+                    ? bookingAdvanceDaysInput.value
+                    : 14
+            );
+
+            const workingDays =
+                getSelectedWorkingDays();
+
+            if (!opening || !closing) {
+                alert(
+                    "Informe o horário de abertura e fechamento."
+                );
+                return;
+            }
+
+            if (opening >= closing) {
+                alert(
+                    "O horário de abertura precisa ser antes do fechamento."
+                );
+                return;
+            }
+
+            if (!interval || interval <= 0) {
+                alert("Informe um intervalo válido.");
+                return;
+            }
+
+            if (workingDays.length === 0) {
+                alert(
+                    "Selecione pelo menos um dia de funcionamento."
+                );
+                return;
+            }
+
+            if (
+                !Number.isInteger(advanceDays) ||
+                advanceDays < 1 ||
+                advanceDays > 365
+            ) {
+                alert(
+                    "O prazo máximo de agendamento deve estar entre 1 e 365 dias."
+                );
+                return;
+            }
+
+            scheduleSettings.openingTime = opening;
+            scheduleSettings.closingTime = closing;
+            scheduleSettings.interval = interval;
+            scheduleSettings.workingDays = workingDays;
+            scheduleSettings.diasAntecedencia = advanceDays;
+
+            scheduleSettings.considerServiceDuration =
+                Boolean(
+                    modeDurationInput &&
+                    modeDurationInput.checked
+                );
+
+            const toleranceSelect =
+                document.getElementById("smartToleranceSelect");
+
+            if (toleranceSelect) {
+                scheduleSettings.smartToleranceMinutes =
+                    ensureSmartToleranceValue(
+                        toleranceSelect.value
+                    );
+            }
+
+            updateSchedulingModeUI();
+
+            const saved = await saveScheduleSettings();
+
+            if (!saved) return;
+
+            updateScheduleSummary();
+            renderAvailabilityCalendar();
+
+            markSettingsClean();
+            markHorariosClean();
+
+            alert("Configurações de horários salvas.");
         }
-
-        if (opening >= closing) {
-            alert("O horário de abertura precisa ser antes do fechamento.");
-            return;
-        }
-
-        if (!interval || interval <= 0) {
-            alert("Informe um intervalo válido.");
-            return;
-        }
-
-        if (workingDays.length === 0) {
-            alert("Selecione pelo menos um dia de funcionamento.");
-            return;
-        }
-
-        scheduleSettings.openingTime = opening;
-        scheduleSettings.closingTime = closing;
-        scheduleSettings.interval = interval;
-        scheduleSettings.workingDays = workingDays;
-        scheduleSettings.considerServiceDuration =
-            Boolean(modeDurationInput && modeDurationInput.checked);
-
-        const toleranceSelect = document.getElementById("smartToleranceSelect");
-        if (toleranceSelect) scheduleSettings.smartToleranceMinutes = ensureSmartToleranceValue(toleranceSelect.value);
-
-        updateSchedulingModeUI();
-
-        await saveScheduleSettings();
-        updateScheduleSummary();
-        renderAvailabilityCalendar();
-        markSettingsClean();
-        alert("Configurações de horários salvas.");
-    });
+    );
 }
 
-[openingTimeInput, closingTimeInput, slotIntervalInput].filter(Boolean).forEach(input => {
-    input.addEventListener("change", previewScheduleSettings);
-});
+
+[
+    openingTimeInput,
+    closingTimeInput,
+    slotIntervalInput,
+    bookingAdvanceDaysInput
+]
+    .filter(Boolean)
+    .forEach(input => {
+        input.addEventListener(
+            "change",
+            previewScheduleSettings
+        );
+    });
+
 
 if (modeIntervalInput) {
-    modeIntervalInput.addEventListener("change", previewScheduleSettings);
+    modeIntervalInput.addEventListener(
+        "change",
+        previewScheduleSettings
+    );
 }
+
 
 if (modeDurationInput) {
-    modeDurationInput.addEventListener("change", previewScheduleSettings);
+    modeDurationInput.addEventListener(
+        "change",
+        previewScheduleSettings
+    );
 }
 
-document.querySelectorAll(".day-option input").forEach(checkbox => {
-    checkbox.addEventListener("change", previewScheduleSettings);
 
-});
+document.querySelectorAll(".day-option input").forEach(
+    checkbox => {
+        checkbox.addEventListener(
+            "change",
+            previewScheduleSettings
+        );
+    }
+);
 // ==========================================
 // CONFIGURAÇÃO DE WHATSAPP APÓS AGENDAMENTO
 // ==========================================
 
-const barbershopWhatsappInput = document.getElementById("barbershopWhatsapp");
-const whatsappAfterBookingInput = document.getElementById("whatsappAfterBooking");
-const whatsappAfterBookingSwitch = document.getElementById("whatsappAfterBookingSwitch");
-const whatsappAfterBookingSwitchText = document.getElementById("whatsappAfterBookingSwitchText");
-const whatsappAfterBookingSwitchKnob = document.getElementById("whatsappAfterBookingSwitchKnob");
-const saveSettingsButton = document.getElementById("saveSettings");
+const barbershopWhatsappInput =
+    document.getElementById("barbershopWhatsapp");
 
-const settingsSaveLight = document.getElementById("settingsSaveLight");
-const settingsSaveStatusText = document.getElementById("settingsSaveStatusText");
-const whatsappDisableConfirmModal = document.getElementById("whatsappDisableConfirmModal");
-const cancelWhatsappDisable = document.getElementById("cancelWhatsappDisable");
-const confirmWhatsappDisable = document.getElementById("confirmWhatsappDisable");
+const whatsappAfterBookingInput =
+    document.getElementById("whatsappAfterBooking");
+
+const whatsappAfterBookingSwitch =
+    document.getElementById("whatsappAfterBookingSwitch");
+
+const whatsappAfterBookingSwitchText =
+    document.getElementById("whatsappAfterBookingSwitchText");
+
+const whatsappAfterBookingSwitchKnob =
+    document.getElementById("whatsappAfterBookingSwitchKnob");
+
+const saveSettingsButton =
+    document.getElementById("saveSettings");
+
+const settingsSaveLight =
+    document.getElementById("settingsSaveLight");
+
+const settingsSaveStatusText =
+    document.getElementById("settingsSaveStatusText");
+
+const whatsappDisableConfirmModal =
+    document.getElementById("whatsappDisableConfirmModal");
+
+const cancelWhatsappDisable =
+    document.getElementById("cancelWhatsappDisable");
+
+const confirmWhatsappDisable =
+    document.getElementById("confirmWhatsappDisable");
+
 
 let settingsHaveUnsavedChanges = false;
 let whatsappDisablePending = false;
 let suppressWhatsappChange = false;
 
+
 function updateSettingsSaveIndicator(isDirty) {
     settingsHaveUnsavedChanges = Boolean(isDirty);
 
     if (settingsSaveLight) {
-        settingsSaveLight.style.background = settingsHaveUnsavedChanges ? "#d7b56d" : "transparent";
-        settingsSaveLight.style.boxShadow = settingsHaveUnsavedChanges
-            ? "0 0 0 3px rgba(215,181,109,.14), 0 0 12px rgba(215,181,109,.35)"
-            : "none";
+        settingsSaveLight.style.background =
+            settingsHaveUnsavedChanges
+                ? "#d7b56d"
+                : "transparent";
+
+        settingsSaveLight.style.boxShadow =
+            settingsHaveUnsavedChanges
+                ? "0 0 0 3px rgba(215,181,109,.14), 0 0 12px rgba(215,181,109,.35)"
+                : "none";
     }
 
     if (settingsSaveStatusText) {
-        settingsSaveStatusText.textContent = settingsHaveUnsavedChanges
-            ? "Alterações não salvas"
-            : "Tudo salvo";
+        settingsSaveStatusText.textContent =
+            settingsHaveUnsavedChanges
+                ? "Alterações não salvas"
+                : "Tudo salvo";
     }
 }
+
 
 function markSettingsDirty() {
     updateSettingsSaveIndicator(true);
 }
 
+
 function markSettingsClean() {
     updateSettingsSaveIndicator(false);
 }
 
+
 function openWhatsappDisableConfirmation() {
     whatsappDisablePending = true;
+
     if (whatsappDisableConfirmModal) {
         whatsappDisableConfirmModal.style.display = "flex";
     }
 }
 
+
 function closeWhatsappDisableConfirmation() {
     whatsappDisablePending = false;
+
     if (whatsappDisableConfirmModal) {
         whatsappDisableConfirmModal.style.display = "none";
     }
 }
 
+
 if (cancelWhatsappDisable) {
     cancelWhatsappDisable.addEventListener("click", () => {
         suppressWhatsappChange = true;
-        if (whatsappAfterBookingInput) whatsappAfterBookingInput.checked = true;
+
+        if (whatsappAfterBookingInput) {
+            whatsappAfterBookingInput.checked = true;
+        }
+
         updateWhatsappSwitchUI();
+
         suppressWhatsappChange = false;
+
         closeWhatsappDisableConfirmation();
     });
 }
 
+
 if (confirmWhatsappDisable) {
     confirmWhatsappDisable.addEventListener("click", () => {
-        if (whatsappAfterBookingInput) whatsappAfterBookingInput.checked = false;
+        if (whatsappAfterBookingInput) {
+            whatsappAfterBookingInput.checked = false;
+        }
+
         updateWhatsappSwitchUI();
         closeWhatsappDisableConfirmation();
         markSettingsDirty();
     });
 }
 
+
 if (whatsappDisableConfirmModal) {
-    whatsappDisableConfirmModal.addEventListener("click", (event) => {
-        if (event.target === whatsappDisableConfirmModal) {
-            suppressWhatsappChange = true;
-            if (whatsappAfterBookingInput) whatsappAfterBookingInput.checked = true;
-            updateWhatsappSwitchUI();
-            suppressWhatsappChange = false;
-            closeWhatsappDisableConfirmation();
+    whatsappDisableConfirmModal.addEventListener(
+        "click",
+        event => {
+            if (event.target === whatsappDisableConfirmModal) {
+                suppressWhatsappChange = true;
+
+                if (whatsappAfterBookingInput) {
+                    whatsappAfterBookingInput.checked = true;
+                }
+
+                updateWhatsappSwitchUI();
+
+                suppressWhatsappChange = false;
+
+                closeWhatsappDisableConfirmation();
+            }
         }
-    });
+    );
 }
 
+
+function ensureWhatsappDestinationControl() {
+    if (document.getElementById("whatsappDestinationMode")) {
+        return;
+    }
+
+    if (!barbershopWhatsappInput) {
+        return;
+    }
+
+    const wrapper = document.createElement("div");
+
+    wrapper.id = "whatsappDestinationControl";
+
+    wrapper.style.cssText =
+        "margin-top:14px;padding:14px;border:1px solid rgba(255,255,255,.12);border-radius:12px;background:rgba(255,255,255,.03);";
+
+    wrapper.innerHTML = `
+        <div style="font-weight:700;margin-bottom:6px;">
+            Destino das confirmações pelo WhatsApp
+        </div>
+
+        <div style="font-size:13px;opacity:.72;line-height:1.45;margin-bottom:10px;">
+            Escolha quem recebe a mensagem depois que o cliente confirmar o agendamento.
+        </div>
+
+        <select
+            id="whatsappDestinationMode"
+            style="width:100%;padding:10px 12px;border-radius:9px;border:1px solid rgba(255,255,255,.18);background:#171717;color:#fff;"
+        >
+            <option value="barbearia">
+                WhatsApp da barbearia
+            </option>
+
+            <option value="barbeiro">
+                WhatsApp do barbeiro selecionado
+            </option>
+        </select>
+
+        <div
+            id="whatsappDestinationHelp"
+            style="font-size:12px;opacity:.68;line-height:1.45;margin-top:8px;"
+        ></div>
+    `;
+
+    const parent =
+        barbershopWhatsappInput.closest(".form-group") ||
+        barbershopWhatsappInput.parentElement;
+
+    if (parent && parent.parentElement) {
+        parent.parentElement.insertBefore(
+            wrapper,
+            parent.nextSibling
+        );
+    } else if (barbershopWhatsappInput.parentElement) {
+        barbershopWhatsappInput.parentElement.appendChild(
+            wrapper
+        );
+    }
+
+    const select =
+        document.getElementById("whatsappDestinationMode");
+
+    const help =
+        document.getElementById("whatsappDestinationHelp");
+
+    function updateHelp() {
+        const mode = select
+            ? select.value
+            : "barbearia";
+
+        if (help) {
+            help.textContent =
+                mode === "barbeiro"
+                    ? "A mensagem será enviada para o telefone cadastrado no perfil do barbeiro escolhido pelo cliente."
+                    : "A mensagem será enviada para o número da barbearia informado acima.";
+        }
+    }
+
+    if (select) {
+        select.value =
+            whatsappSettings.mode === "barbeiro"
+                ? "barbeiro"
+                : "barbearia";
+
+        select.addEventListener("change", () => {
+            whatsappSettings.mode =
+                select.value === "barbeiro"
+                    ? "barbeiro"
+                    : "barbearia";
+
+            updateHelp();
+            markSettingsDirty();
+        });
+    }
+
+    updateHelp();
+}
 
 
 function updateWhatsappSwitchUI() {
-    const enabled = Boolean(whatsappAfterBookingInput && whatsappAfterBookingInput.checked);
+    const enabled = Boolean(
+        whatsappAfterBookingInput &&
+        whatsappAfterBookingInput.checked
+    );
 
     if (whatsappAfterBookingSwitch) {
-        whatsappAfterBookingSwitch.setAttribute("aria-pressed", enabled ? "true" : "false");
-        whatsappAfterBookingSwitch.style.background = enabled ? "#d7b56d" : "transparent";
-        whatsappAfterBookingSwitch.style.color = enabled ? "#111" : "rgba(255,255,255,.72)";
-        whatsappAfterBookingSwitch.style.boxShadow = enabled
-            ? "0 0 0 1px rgba(215,181,109,.55), 0 4px 14px rgba(215,181,109,.18)"
-            : "inset 0 0 0 1px rgba(255,255,255,.22)";
+        whatsappAfterBookingSwitch.setAttribute(
+            "aria-pressed",
+            enabled ? "true" : "false"
+        );
+
+        whatsappAfterBookingSwitch.style.background =
+            enabled ? "#d7b56d" : "transparent";
+
+        whatsappAfterBookingSwitch.style.color =
+            enabled ? "#111" : "rgba(255,255,255,.72)";
+
+        whatsappAfterBookingSwitch.style.boxShadow =
+            enabled
+                ? "0 0 0 1px rgba(215,181,109,.55), 0 4px 14px rgba(215,181,109,.18)"
+                : "inset 0 0 0 1px rgba(255,255,255,.22)";
     }
 
     if (whatsappAfterBookingSwitchText) {
-        whatsappAfterBookingSwitchText.textContent = enabled ? "ON" : "OFF";
+        whatsappAfterBookingSwitchText.textContent =
+            enabled ? "ON" : "OFF";
     }
 
     if (whatsappAfterBookingSwitchKnob) {
-        whatsappAfterBookingSwitchKnob.style.background = enabled ? "#fff" : "rgba(255,255,255,.35)";
-        whatsappAfterBookingSwitchKnob.style.transform = "translateX(0)";
+        whatsappAfterBookingSwitchKnob.style.background =
+            enabled ? "#fff" : "rgba(255,255,255,.35)";
+
+        whatsappAfterBookingSwitchKnob.style.transform =
+            "translateX(0)";
     }
 }
+
 
 function normalizeWhatsappNumber(value) {
     return String(value || "").replace(/\D/g, "");
 }
 
+
 function loadWhatsappSettingsUI() {
+    ensureWhatsappDestinationControl();
+
     if (barbershopWhatsappInput) {
-        barbershopWhatsappInput.value = whatsappSettings.phone || barbershopWhatsappInput.value || "";
+        barbershopWhatsappInput.value =
+            whatsappSettings.phone ||
+            barbershopWhatsappInput.value ||
+            "";
     }
+
     if (whatsappAfterBookingInput) {
-        whatsappAfterBookingInput.checked = Boolean(whatsappSettings.enabled);
+        whatsappAfterBookingInput.checked =
+            Boolean(whatsappSettings.enabled);
     }
+
+    const destinationMode =
+        document.getElementById("whatsappDestinationMode");
+
+    if (destinationMode) {
+        destinationMode.value =
+            whatsappSettings.mode === "barbeiro"
+                ? "barbeiro"
+                : "barbearia";
+
+        const help =
+            document.getElementById("whatsappDestinationHelp");
+
+        if (help) {
+            help.textContent =
+                destinationMode.value === "barbeiro"
+                    ? "A mensagem será enviada para o telefone cadastrado no perfil do barbeiro escolhido pelo cliente."
+                    : "A mensagem será enviada para o número da barbearia informado acima.";
+        }
+    }
+
     updateWhatsappSwitchUI();
 }
 
-async function saveWhatsappSettings() {
-    const phone = barbershopWhatsappInput ? normalizeWhatsappNumber(barbershopWhatsappInput.value) : "";
-    const enabled = Boolean(whatsappAfterBookingInput && whatsappAfterBookingInput.checked);
 
-    if (enabled && phone.length < 10) {
-        alert("Informe um WhatsApp válido antes de ativar o redirecionamento.");
+async function saveWhatsappSettings() {
+    const phone = barbershopWhatsappInput
+        ? normalizeWhatsappNumber(
+            barbershopWhatsappInput.value
+        )
+        : "";
+
+    const enabled = Boolean(
+        whatsappAfterBookingInput &&
+        whatsappAfterBookingInput.checked
+    );
+
+    const destinationModeInput =
+        document.getElementById("whatsappDestinationMode");
+
+    const mode =
+        destinationModeInput &&
+        destinationModeInput.value === "barbeiro"
+            ? "barbeiro"
+            : "barbearia";
+
+    if (
+        enabled &&
+        mode === "barbearia" &&
+        phone.length < 10
+    ) {
+        alert(
+            "Informe um WhatsApp da barbearia válido antes de ativar o redirecionamento para a barbearia."
+        );
+
         return false;
     }
 
-    whatsappSettings = { phone, enabled };
-    await saveScheduleSettings();
-    if (barbershopWhatsappInput) barbershopWhatsappInput.value = phone;
+    whatsappSettings = {
+        phone,
+        enabled,
+        mode
+    };
+
+    const saved = await saveScheduleSettings();
+
+    if (!saved) {
+        return false;
+    }
+
+    if (barbershopWhatsappInput) {
+        barbershopWhatsappInput.value = phone;
+    }
+
     return true;
 }
 
@@ -4166,16 +5351,20 @@ if (whatsappAfterBookingSwitch) {
         }
 
         whatsappAfterBookingInput.checked = true;
+
         updateWhatsappSwitchUI();
         markSettingsDirty();
     });
 }
 
+
 if (whatsappAfterBookingInput) {
     whatsappAfterBookingInput.addEventListener("change", () => {
         updateWhatsappSwitchUI();
 
-        if (suppressWhatsappChange) return;
+        if (suppressWhatsappChange) {
+            return;
+        }
 
         if (!whatsappAfterBookingInput.checked) {
             openWhatsappDisableConfirmation();
@@ -4186,342 +5375,226 @@ if (whatsappAfterBookingInput) {
     });
 }
 
+
 if (barbershopWhatsappInput) {
-    barbershopWhatsappInput.addEventListener("input", markSettingsDirty);
+    barbershopWhatsappInput.addEventListener(
+        "input",
+        markSettingsDirty
+    );
 }
 
+
 if (saveSettingsButton) {
-    saveSettingsButton.addEventListener("click", async () => {
-        const saved = await saveWhatsappSettings();
-        if (saved) {
-            markSettingsClean();
-            alert("Configurações salvas com sucesso.");
+    saveSettingsButton.addEventListener(
+        "click",
+        async () => {
+            const saved = await saveWhatsappSettings();
+
+            if (saved) {
+                markSettingsClean();
+
+                alert(
+                    "Configurações salvas com sucesso."
+                );
+            }
         }
-    });
+    );
 }
+
 
 loadWhatsappSettingsUI();
 markSettingsClean();
 
 loadScheduleSettings();
-
-
+markHorariosClean();
 /* =========================================================
    DASHBOARD NOVO — INTEGRAÇÃO ISOLADA COM SUPABASE
-   NÃO ALTERA AS FUNÇÕES DOS OUTROS MÓDULOS
    ========================================================= */
 
 (function () {
-
     "use strict";
 
 
     function dashV3NormalizeStatus(value) {
-
-        return String(
-            value || "agendado"
-        )
+        return String(value || "agendado")
             .toLowerCase()
             .trim()
             .normalize("NFD")
-            .replace(
-                /[\u0300-\u036f]/g,
-                ""
-            )
-            .replace(
-                /\s+/g,
-                "_"
-            );
-
+            .replace(/[\u0300-\u036f]/g, "")
+            .replace(/\s+/g, "_");
     }
 
 
     function dashV3Today() {
+        const now = new Date();
 
-        const now =
-            new Date();
+        const year = now.getFullYear();
 
-        const year =
-            now.getFullYear();
+        const month = String(
+            now.getMonth() + 1
+        ).padStart(2, "0");
 
-        const month =
-            String(
-                now.getMonth() + 1
-            ).padStart(2, "0");
-
-        const day =
-            String(
-                now.getDate()
-            ).padStart(2, "0");
+        const day = String(
+            now.getDate()
+        ).padStart(2, "0");
 
         return `${year}-${month}-${day}`;
-
     }
 
 
     function dashV3Money(value) {
-
-        return Number(
-            value || 0
-        ).toLocaleString(
+        return Number(value || 0).toLocaleString(
             "pt-BR",
             {
                 style: "currency",
                 currency: "BRL"
             }
         );
-
     }
 
 
-    function dashV3Set(
-        id,
-        value
-    ) {
-
-        const element =
-            document.getElementById(id);
+    function dashV3Set(id, value) {
+        const element = document.getElementById(id);
 
         if (element) {
-
-            element.textContent =
-                value;
-
+            element.textContent = value;
         }
-
     }
 
 
-    function dashV3Initials(
-        name
-    ) {
-
-        return String(
-            name || "Barbeiro"
-        )
+    function dashV3Initials(name) {
+        return String(name || "Barbeiro")
             .trim()
             .split(/\s+/)
             .slice(0, 2)
-            .map(
-                word =>
-                    word
-                        .charAt(0)
-                        .toUpperCase()
-            )
+            .map(word => word.charAt(0).toUpperCase())
             .join("");
-
     }
 
 
-    function dashV3PeriodStart(
-        period
-    ) {
-
-        if (
-            period === "all"
-        ) {
-
+    function dashV3PeriodStart(period) {
+        if (period === "all") {
             return null;
-
         }
 
-
-        if (
-            period === "today"
-        ) {
-
+        if (period === "today") {
             return dashV3Today();
-
         }
 
+        const days = Number(period) || 30;
 
-        const days =
-            Number(
-                period
-            ) || 30;
+        const date = new Date();
 
-
-        const date =
-            new Date();
-
-
-        date.setHours(
-            0,
-            0,
-            0,
-            0
-        );
-
+        date.setHours(0, 0, 0, 0);
 
         date.setDate(
-            date.getDate() -
-            (days - 1)
+            date.getDate() - (days - 1)
         );
 
+        const year = date.getFullYear();
 
-        const year =
-            date.getFullYear();
+        const month = String(
+            date.getMonth() + 1
+        ).padStart(2, "0");
 
-        const month =
-            String(
-                date.getMonth() + 1
-            ).padStart(2, "0");
-
-        const day =
-            String(
-                date.getDate()
-            ).padStart(2, "0");
-
+        const day = String(
+            date.getDate()
+        ).padStart(2, "0");
 
         return `${year}-${month}-${day}`;
-
     }
 
 
     async function dashV3Load() {
-
-        if (
-            !window.supabaseClient
-        ) {
-
+        if (!window.supabaseClient) {
             console.error(
                 "Dashboard: Supabase não foi carregado."
             );
 
             return;
-
         }
-
 
         const dashboard =
-            document.getElementById(
-                "dashboard"
-            );
-
+            document.getElementById("dashboard");
 
         if (!dashboard) {
-
             return;
-
         }
 
-
         const periodSelect =
-            document.getElementById(
-                "dashv3Period"
-            );
+            document.getElementById("dashv3Period");
 
-
-        const period =
-            periodSelect
-                ? periodSelect.value
-                : "30";
-
+        const period = periodSelect
+            ? periodSelect.value
+            : "30";
 
         const startDate =
-            dashV3PeriodStart(
-                period
-            );
+            dashV3PeriodStart(period);
 
-
-        const today =
-            dashV3Today();
-
+        const today = dashV3Today();
 
         try {
-
             const [
                 appointmentsResponse,
                 clientsResponse,
                 barbersResponse,
                 servicesResponse
-            ] =
-                await Promise.all([
+            ] = await Promise.all([
+                window.supabaseClient
+                    .from("agendamentos")
+                    .select("*")
+                    .order("data", {
+                        ascending: true
+                    })
+                    .order("horario", {
+                        ascending: true
+                    }),
 
-                    window.supabaseClient
-                        .from("agendamentos")
-                        .select("*")
-                        .order(
-                            "data",
-                            {
-                                ascending: true
-                            }
-                        )
-                        .order(
-                            "horario",
-                            {
-                                ascending: true
-                            }
-                        ),
+                window.supabaseClient
+                    .from("clientes")
+                    .select("*"),
 
-                    window.supabaseClient
-                        .from("clientes")
-                        .select("*"),
+                window.supabaseClient
+                    .from("BARBEIROS")
+                    .select("*")
+                    .order("nome", {
+                        ascending: true
+                    }),
 
-                    window.supabaseClient
-                        .from("BARBEIROS")
-                        .select("*")
-                        .order(
-                            "nome",
-                            {
-                                ascending: true
-                            }
-                        ),
-
-                    window.supabaseClient
-                        .from("SERVIÇOS")
-                        .select("*")
-
-                ]);
+                window.supabaseClient
+                    .from("SERVIÇOS")
+                    .select("*")
+            ]);
 
 
-            if (
-                appointmentsResponse.error
-            ) {
-
+            if (appointmentsResponse.error) {
                 console.error(
                     "Dashboard - erro nos agendamentos:",
                     appointmentsResponse.error
                 );
 
                 return;
-
             }
 
-
-            if (
-                clientsResponse.error
-            ) {
-
+            if (clientsResponse.error) {
                 console.error(
                     "Dashboard - erro nos clientes:",
                     clientsResponse.error
                 );
-
             }
 
-
-            if (
-                barbersResponse.error
-            ) {
-
+            if (barbersResponse.error) {
                 console.error(
                     "Dashboard - erro nos barbeiros:",
                     barbersResponse.error
                 );
-
             }
 
-
-            if (
-                servicesResponse.error
-            ) {
-
+            if (servicesResponse.error) {
                 console.error(
                     "Dashboard - erro nos serviços:",
                     servicesResponse.error
                 );
-
             }
 
 
@@ -4538,322 +5611,178 @@ loadScheduleSettings();
                 servicesResponse.data || [];
 
 
-            /*
-             * MAPA DE CLIENTES
-             */
-
-            const clientMap =
-                new Map(
-                    clients.map(
-                        client => [
-
-                            String(
-                                client.id
-                            ),
-
-                            client
-
-                        ]
-                    )
-                );
-
-
-            /*
-             * MAPA DE BARBEIROS
-             */
-
-            const barberMap =
-                new Map(
-                    barbers.map(
-                        barber => [
-
-                            String(
-                                barber.id
-                            ),
-
-                            barber
-
-                        ]
-                    )
-                );
-
-
-            /*
-             * MAPA DE SERVIÇOS
-             */
-
-            const serviceMap =
-                new Map(
-                    services.map(
-                        service => [
-
-                            String(
-                                service.id
-                            ),
-
-                            service
-
-                        ]
-                    )
-                );
-
-
-            /*
-             * NORMALIZA OS AGENDAMENTOS
-             */
-
-            const appointments =
-                rawAppointments.map(
-                    appointment => {
-
-                        const date =
-                            String(
-                                appointment.data || ""
-                            ).substring(
-                                0,
-                                10
-                            );
-
-
-                        const time =
-                            String(
-                                appointment.horario || ""
-                            ).substring(
-                                0,
-                                5
-                            );
-
-
-                        const client =
-                            clientMap.get(
-                                String(
-                                    appointment.cliente_id
-                                )
-                            );
-
-
-                        const barber =
-                            barberMap.get(
-                                String(
-                                    appointment.barbeiro_id
-                                )
-                            );
-
-
-                        const service =
-                            serviceMap.get(
-                                String(
-                                    appointment.servico_id
-                                )
-                            );
-
-
-                        const price =
-                            Number(
-
-                                appointment.valor ??
-                                appointment.preco ??
-                                service?.["preço"] ??
-                                service?.preco ??
-                                0
-
-                            );
-
-
-                        return {
-
-                            id:
-                                appointment.id,
-
-                            date:
-
-                                date,
-
-                            time:
-
-                                time,
-
-                            status:
-
-                                dashV3NormalizeStatus(
-                                    appointment.status
-                                ),
-
-                            client:
-
-                                client?.nome ??
-                                client?.name ??
-                                "Cliente",
-
-                            barber:
-
-                                barber?.nome ??
-                                barber?.name ??
-                                "Barbeiro",
-
-                            service:
-
-                                service?.nome ??
-                                service?.name ??
-                                "Serviço",
-
-                            barberId:
-
-                                appointment.barbeiro_id,
-
-                            serviceId:
-
-                                appointment.servico_id,
-
-                            price:
-
-                                price
-
-                        };
-
-                    }
-                );
-
-
-            /*
-             * ORDENA
-             */
-
-            appointments.sort(
-                (
-                    first,
-                    second
-                ) => {
-
-                    const firstDate =
-                        `${first.date}T${first.time}`;
-
-                    const secondDate =
-                        `${second.date}T${second.time}`;
-
-                    return (
-                        new Date(firstDate) -
-                        new Date(secondDate)
-                    );
-
-                }
+            // MAPA DE CLIENTES
+            const clientMap = new Map(
+                clients.map(client => [
+                    String(client.id),
+                    client
+                ])
             );
 
 
-            /*
-             * FILTRO DO PERÍODO
-             */
+            // MAPA DE BARBEIROS
+            const barberMap = new Map(
+                barbers.map(barber => [
+                    String(barber.id),
+                    barber
+                ])
+            );
 
-            const periodAppointments =
-                appointments.filter(
-                    appointment => {
 
-                        if (
-                            !startDate
-                        ) {
+            // MAPA DE SERVIÇOS
+            const serviceMap = new Map(
+                services.map(service => [
+                    String(service.id),
+                    service
+                ])
+            );
 
-                            return true;
 
-                        }
+            // NORMALIZAR OS AGENDAMENTOS
+            const appointments =
+                rawAppointments.map(appointment => {
+                    const date = String(
+                        appointment.data || ""
+                    ).substring(0, 10);
 
-                        return (
-                            appointment.date >=
-                            startDate
-                        );
+                    const time = String(
+                        appointment.horario || ""
+                    ).substring(0, 5);
 
-                    }
+                    const client = clientMap.get(
+                        String(appointment.cliente_id)
+                    );
+
+                    const barber = barberMap.get(
+                        String(appointment.barbeiro_id)
+                    );
+
+                    const service = serviceMap.get(
+                        String(appointment.servico_id)
+                    );
+
+                    const price = Number(
+                        appointment.valor ??
+                        appointment.preco ??
+                        service?.["preço"] ??
+                        service?.preco ??
+                        0
+                    );
+
+                    return {
+                        id: appointment.id,
+                        date,
+                        time,
+
+                        status: dashV3NormalizeStatus(
+                            appointment.status
+                        ),
+
+                        client:
+                            client?.nome ??
+                            client?.name ??
+                            "Cliente",
+
+                        barber:
+                            barber?.nome ??
+                            barber?.name ??
+                            "Barbeiro",
+
+                        service:
+                            service?.nome ??
+                            service?.name ??
+                            "Serviço",
+
+                        barberId:
+                            appointment.barbeiro_id,
+
+                        serviceId:
+                            appointment.servico_id,
+
+                        price
+                    };
+                });
+
+
+            // ORDENAR POR DATA E HORÁRIO
+            appointments.sort((first, second) => {
+                const firstDate =
+                    `${first.date}T${first.time}`;
+
+                const secondDate =
+                    `${second.date}T${second.time}`;
+
+                return (
+                    new Date(firstDate) -
+                    new Date(secondDate)
                 );
+            });
 
 
-            /*
-             * AGENDA DE HOJE
-             */
+            // FILTRAR O PERÍODO SELECIONADO
+            const periodAppointments =
+                appointments.filter(appointment => {
+                    if (!startDate) {
+                        return true;
+                    }
 
+                    return appointment.date >= startDate;
+                });
+
+
+            // AGENDA DE HOJE
             const todayAppointments =
                 appointments.filter(
                     appointment =>
-                        appointment.date ===
-                        today
+                        appointment.date === today
                 );
 
 
-            /*
-             * FINALIZADOS
-             */
-
+            // ATENDIMENTOS FINALIZADOS
             const finalized =
                 periodAppointments.filter(
                     appointment =>
-                        appointment.status ===
-                        "finalizado"
+                        appointment.status === "finalizado"
                 );
 
 
-            /*
-             * FATURAMENTO
-             */
-
-            const revenue =
-                finalized.reduce(
-                    (
-                        total,
-                        appointment
-                    ) => {
-
-                        return (
-                            total +
-                            Number(
-                                appointment.price ||
-                                0
-                            )
-                        );
-
-                    },
-                    0
-                );
+            // FATURAMENTO DOS ATENDIMENTOS FINALIZADOS
+            const revenue = finalized.reduce(
+                (total, appointment) => {
+                    return total +
+                        Number(appointment.price || 0);
+                },
+                0
+            );
 
 
-            /*
-             * STATUS
-             */
-
+            // CONTADORES POR STATUS
             const pending =
                 periodAppointments.filter(
                     appointment =>
-                        appointment.status ===
-                        "pendente" ||
-                        appointment.status ===
-                        "agendado"
+                        appointment.status === "pendente" ||
+                        appointment.status === "agendado"
                 ).length;
-
 
             const confirmed =
                 periodAppointments.filter(
                     appointment =>
-                        appointment.status ===
-                        "confirmado"
+                        appointment.status === "confirmado"
                 ).length;
-
 
             const canceled =
                 periodAppointments.filter(
                     appointment =>
-                        appointment.status ===
-                        "cancelado" ||
-                        appointment.status ===
-                        "nao_compareceu"
+                        appointment.status === "cancelado" ||
+                        appointment.status === "nao_compareceu"
                 ).length;
 
 
-            /*
-             * CARDS
-             */
-
+            // ATUALIZAR OS CARDS DO DASHBOARD
             dashV3Set(
                 "dashv3TodayTotal",
                 todayAppointments.length
             );
-
 
             dashV3Set(
                 "dashv3TodayMeta",
@@ -4862,12 +5791,10 @@ loadScheduleSettings();
                     : `${todayAppointments.length} atendimentos hoje`
             );
 
-
             dashV3Set(
                 "dashv3Finalized",
                 finalized.length
             );
-
 
             dashV3Set(
                 "dashv3FinalizedMeta",
@@ -4876,20 +5803,15 @@ loadScheduleSettings();
                     : "Todo o período"
             );
 
-
             dashV3Set(
                 "dashv3Clients",
                 clients.length
             );
 
-
             dashV3Set(
                 "dashv3Revenue",
-                dashV3Money(
-                    revenue
-                )
+                dashV3Money(revenue)
             );
-
 
             dashV3Set(
                 "dashv3RevenueMeta",
@@ -4899,572 +5821,541 @@ loadScheduleSettings();
             );
 
 
-            /*
-             * STATUS NA TELA
-             */
+            // A continuação atualiza os demais indicadores
+            // e renderiza os próximos agendamentos.
+                        dashV3Set("dashv3Pending", pending);
+            dashV3Set("dashv3Confirmed", confirmed);
+            dashV3Set("dashv3StatusFinalized", finalized.length);
+            dashV3Set("dashv3Canceled", canceled);
 
-            dashV3Set(
-                "dashv3Pending",
-                pending
+            // BARBEIROS ATIVOS
+            const activeBarbers = barbers.filter(
+                barber => barber.ativo !== false
             );
-
-
-            dashV3Set(
-                "dashv3Confirmed",
-                confirmed
-            );
-
-
-            dashV3Set(
-                "dashv3StatusFinalized",
-                finalized.length
-            );
-
-
-            dashV3Set(
-                "dashv3Canceled",
-                canceled
-            );
-
-
-            /*
-             * BARBEIROS ATIVOS
-             */
-
-            const activeBarbers =
-                barbers.filter(
-                    barber =>
-                        barber.ativo !== false
-                );
-
 
             dashV3Set(
                 "dashv3ActiveBarbers",
                 `${activeBarbers.length} ativos`
             );
 
-
-            /*
-             * PRÓXIMOS AGENDAMENTOS
-             */
-
+            // PRÓXIMOS AGENDAMENTOS
             const upcomingContainer =
-                document.getElementById(
-                    "dashv3Upcoming"
+                document.getElementById("dashv3Upcoming");
+
+            if (upcomingContainer) {
+                const currentTime = new Date()
+                    .toTimeString()
+                    .substring(0, 5);
+
+                const futureToday = todayAppointments.filter(
+                    appointment => appointment.time >= currentTime
                 );
 
+                const nextAppointments = (
+                    futureToday.length
+                        ? futureToday
+                        : appointments.filter(
+                            appointment => appointment.date > today
+                        )
+                ).slice(0, 6);
 
-            if (
-                upcomingContainer
-            ) {
-
-                const futureToday =
-                    todayAppointments.filter(
-                        appointment =>
-                            appointment.time >=
-                            new Date()
-                                .toTimeString()
-                                .substring(
-                                    0,
-                                    5
-                                )
-                    );
-
-
-                const nextAppointments =
-                    (
-                        futureToday.length
-                            ? futureToday
-                            : appointments.filter(
-                                appointment =>
-                                    appointment.date >
-                                    today
-                            )
-                    ).slice(
-                        0,
-                        6
-                    );
-
-
-                if (
-                    nextAppointments.length === 0
-                ) {
-
+                if (nextAppointments.length === 0) {
                     upcomingContainer.innerHTML = `
                         <div class="dashv3-empty">
                             Nenhum próximo agendamento.
                         </div>
                     `;
-
                 } else {
-
                     upcomingContainer.innerHTML =
-                        nextAppointments
-                            .map(
-                                appointment => `
+                        nextAppointments.map(appointment => `
+                            <div class="dashv3-appointment">
+                                <div class="dashv3-time">
+                                    ${escapeHTML(appointment.time || "--:--")}
+                                </div>
 
-                                    <div
-                                        class="dashv3-appointment">
+                                <div class="dashv3-person">
+                                    <strong>
+                                        ${escapeHTML(appointment.client)}
+                                    </strong>
+                                    <span>
+                                        ${escapeHTML(appointment.service)}
+                                    </span>
+                                </div>
 
-                                        <div class="dashv3-time">
-                                            ${escapeHTML(
-                                                appointment.time ||
-                                                "--:--"
-                                            )}
-                                        </div>
+                                <div class="dashv3-barber">
+                                    ${escapeHTML(appointment.barber)}
+                                </div>
 
-                                        <div
-                                            class="dashv3-person">
-
-                                            <strong>
-                                                ${escapeHTML(
-                                                    appointment.client
-                                                )}
-                                            </strong>
-
-                                            <span>
-                                                ${escapeHTML(
-                                                    appointment.service
-                                                )}
-                                            </span>
-
-                                        </div>
-
-                                        <div
-                                            class="dashv3-barber">
-
-                                            ${escapeHTML(
-                                                appointment.barber
-                                            )}
-
-                                        </div>
-
-                                        <div
-                                            class="dashv3-badge">
-
-                                            ${escapeHTML(
-                                                appointment.status
-                                            )}
-
-                                        </div>
-
-                                    </div>
-
-                                `
-                            )
-                            .join("");
-
+                                <div class="dashv3-badge">
+                                    ${escapeHTML(appointment.status)}
+                                </div>
+                            </div>
+                        `).join("");
                 }
-
             }
 
-
-            /*
-             * DESEMPENHO DOS BARBEIROS
-             */
-
+            // DESEMPENHO DOS BARBEIROS
             const barberContainer =
-                document.getElementById(
-                    "dashv3Barbers"
+                document.getElementById("dashv3Barbers");
+
+            if (barberContainer) {
+                const barberStats = activeBarbers.map(barber => {
+                    const barberAppointments =
+                        periodAppointments.filter(
+                            appointment =>
+                                String(appointment.barberId) ===
+                                    String(barber.id) &&
+                                appointment.status === "finalizado"
+                        );
+
+                    const barberRevenue =
+                        barberAppointments.reduce(
+                            (total, appointment) =>
+                                total + Number(appointment.price || 0),
+                            0
+                        );
+
+                    return {
+                        name:
+                            barber.nome ??
+                            barber.name ??
+                            "Barbeiro",
+                        appointments: barberAppointments.length,
+                        revenue: barberRevenue
+                    };
+                }).sort(
+                    (first, second) =>
+                        second.appointments - first.appointments
                 );
 
+                const maximum = Math.max(
+                    1,
+                    ...barberStats.map(item => item.appointments)
+                );
 
-            if (
-                barberContainer
-            ) {
-
-                const barberStats =
-                    activeBarbers.map(
-                        barber => {
-
-                            const barberAppointments =
-                                periodAppointments.filter(
-                                    appointment =>
-                                        String(
-                                            appointment.barberId
-                                        ) ===
-                                        String(
-                                            barber.id
-                                        ) &&
-                                        appointment.status ===
-                                        "finalizado"
-                                );
-
-
-                            const barberRevenue =
-                                barberAppointments.reduce(
-                                    (
-                                        total,
-                                        appointment
-                                    ) =>
-                                        total +
-                                        Number(
-                                            appointment.price ||
-                                            0
-                                        ),
-                                    0
-                                );
-
-
-                            return {
-
-                                name:
-                                    barber.nome ??
-                                    barber.name ??
-                                    "Barbeiro",
-
-                                appointments:
-                                    barberAppointments.length,
-
-                                revenue:
-                                    barberRevenue
-
-                            };
-
-                        }
-                    )
-                    .sort(
-                        (
-                            first,
-                            second
-                        ) =>
-                            second.appointments -
-                            first.appointments
-                    );
-
-
-                const maximum =
-                    Math.max(
-                        1,
-                        ...barberStats.map(
-                            item =>
-                                item.appointments
-                        )
-                    );
-
-
-                if (
-                    barberStats.length === 0
-                ) {
-
+                if (barberStats.length === 0) {
                     barberContainer.innerHTML = `
                         <div class="dashv3-empty">
                             Nenhum barbeiro ativo.
                         </div>
                     `;
-
                 } else {
-
                     barberContainer.innerHTML =
-                        barberStats
-                            .map(
-                                item => `
+                        barberStats.map(item => `
+                            <div class="dashv3-team-row">
+                                <div class="dashv3-avatar">
+                                    ${escapeHTML(dashV3Initials(item.name))}
+                                </div>
 
-                                    <div
-                                        class="dashv3-team-row">
+                                <div class="dashv3-row-info">
+                                    <strong>
+                                        ${escapeHTML(item.name)}
+                                    </strong>
 
-                                        <div
-                                            class="dashv3-avatar">
+                                    <span>
+                                        ${item.appointments} atendimentos
+                                        · ${dashV3Money(item.revenue)}
+                                    </span>
 
-                                            ${escapeHTML(
-                                                dashV3Initials(
-                                                    item.name
-                                                )
-                                            )}
-
-                                        </div>
-
-                                        <div
-                                            class="dashv3-row-info">
-
-                                            <strong>
-                                                ${escapeHTML(
-                                                    item.name
-                                                )}
-                                            </strong>
-
-                                            <span>
-                                                ${item.appointments}
-                                                atendimentos
-                                                ·
-                                                ${dashV3Money(
-                                                    item.revenue
-                                                )}
-                                            </span>
-
-                                            <div
-                                                class="dashv3-bar">
-
-                                                <i
-                                                    style="width:${Math.round(
-                                                        (
-                                                            item.appointments /
-                                                            maximum
-                                                        ) * 100
-                                                    )}%;">
-                                                </i>
-
-                                            </div>
-
-                                        </div>
-
-                                        <span
-                                            class="dashv3-count">
-
-                                            ${item.appointments}
-
-                                        </span>
-
+                                    <div class="dashv3-bar">
+                                        <i style="width:${Math.round(
+                                            item.appointments / maximum * 100
+                                        )}%;"></i>
                                     </div>
+                                </div>
 
-                                `
-                            )
-                            .join("");
-
+                                <span class="dashv3-count">
+                                    ${item.appointments}
+                                </span>
+                            </div>
+                        `).join("");
                 }
-
             }
 
-
-            /*
-             * SERVIÇOS MAIS PROCURADOS
-             */
-
+            // SERVIÇOS MAIS PROCURADOS
             const serviceContainer =
-                document.getElementById(
-                    "dashv3Services"
-                );
+                document.getElementById("dashv3Services");
 
+            if (serviceContainer) {
+                const serviceStats = services
+                    .map(service => {
+                        const count = periodAppointments.filter(
+                            appointment =>
+                                String(appointment.serviceId) ===
+                                String(service.id)
+                        ).length;
 
-            if (
-                serviceContainer
-            ) {
-
-                const serviceStats =
-                    services
-                        .map(
-                            service => {
-
-                                const count =
-                                    periodAppointments.filter(
-                                        appointment =>
-                                            String(
-                                                appointment.serviceId
-                                            ) ===
-                                            String(
-                                                service.id
-                                            )
-                                    ).length;
-
-
-                                return {
-
-                                    name:
-                                        service.nome ??
-                                        service.name ??
-                                        "Serviço",
-
-                                    count
-
-                                };
-
-                            }
-                        )
-                        .filter(
-                            item =>
-                                item.count > 0
-                        )
-                        .sort(
-                            (
-                                first,
-                                second
-                            ) =>
-                                second.count -
-                                first.count
-                        )
-                        .slice(
-                            0,
-                            5
-                        );
-
+                        return {
+                            name:
+                                service.nome ??
+                                service.name ??
+                                "Serviço",
+                            count
+                        };
+                    })
+                    .filter(item => item.count > 0)
+                    .sort(
+                        (first, second) =>
+                            second.count - first.count
+                    )
+                    .slice(0, 5);
 
                 dashV3Set(
                     "dashv3ServiceCount",
                     `${services.filter(
-                        service =>
-                            service.ativo !== false
+                        service => service.ativo !== false
                     ).length} ativos`
                 );
 
-
-                if (
-                    serviceStats.length === 0
-                ) {
-
+                if (serviceStats.length === 0) {
                     serviceContainer.innerHTML = `
                         <div class="dashv3-empty">
                             Ainda não existem atendimentos no período.
                         </div>
                     `;
-
                 } else {
-
-                    const maxService =
-                        Math.max(
-                            1,
-                            ...serviceStats.map(
-                                item =>
-                                    item.count
-                            )
-                        );
-
+                    const maxService = Math.max(
+                        1,
+                        ...serviceStats.map(item => item.count)
+                    );
 
                     serviceContainer.innerHTML =
-                        serviceStats
-                            .map(
-                                item => `
+                        serviceStats.map(item => `
+                            <div class="dashv3-service-row">
+                                <div class="dashv3-row-info">
+                                    <strong>
+                                        ${escapeHTML(item.name)}
+                                    </strong>
 
-                                    <div
-                                        class="dashv3-service-row">
+                                    <span>
+                                        ${item.count}
+                                        ${item.count === 1
+                                            ? "atendimento"
+                                            : "atendimentos"}
+                                    </span>
+                                </div>
 
-                                        <div
-                                            class="dashv3-row-info">
+                                <div class="dashv3-bar">
+                                    <i style="width:${Math.round(
+                                        item.count / maxService * 100
+                                    )}%;"></i>
+                                </div>
 
-                                            <strong>
-                                                ${escapeHTML(
-                                                    item.name
-                                                )}
-                                            </strong>
-
-                                            <span>
-                                                ${item.count}
-                                                ${
-                                                    item.count === 1
-                                                        ? "atendimento"
-                                                        : "atendimentos"
-                                                }
-                                            </span>
-
-                                        </div>
-
-                                        <div
-                                            class="dashv3-bar">
-
-                                            <i
-                                                style="width:${Math.round(
-                                                    (
-                                                        item.count /
-                                                        maxService
-                                                    ) * 100
-                                                )}%;">
-                                            </i>
-
-                                        </div>
-
-                                        <span
-                                            class="dashv3-count">
-
-                                            ${item.count}
-
-                                        </span>
-
-                                    </div>
-
-                                `
-                            )
-                            .join("");
-
+                                <span class="dashv3-count">
+                                    ${item.count}
+                                </span>
+                            </div>
+                        `).join("");
                 }
-
             }
-
-        } catch (
-            error
-        ) {
-
-            console.error(
-                "Dashboard V3:",
-                error
-            );
-
+        } catch (error) {
+            console.error("Dashboard V3:", error);
         }
-
     }
 
-
     function dashV3Init() {
-
         const periodSelect =
-            document.getElementById(
-                "dashv3Period"
-            );
+            document.getElementById("dashv3Period");
 
-
-        if (
-            periodSelect
-        ) {
-
+        if (periodSelect) {
             periodSelect.addEventListener(
                 "change",
                 dashV3Load
             );
-
         }
-
 
         const agendaButton =
-            document.getElementById(
-                "dashv3OpenAgenda"
-            );
+            document.getElementById("dashv3OpenAgenda");
 
+        if (agendaButton) {
+            agendaButton.addEventListener("click", () => {
+                const agendaNav = document.querySelector(
+                    '[data-section="agenda"]'
+                );
 
-        if (
-            agendaButton
-        ) {
-
-            agendaButton.addEventListener(
-                "click",
-                () => {
-
-                    const agendaNav =
-                        document.querySelector(
-                            '[data-section="agenda"]'
-                        );
-
-
-                    if (
-                        agendaNav
-                    ) {
-
-                        agendaNav.click();
-
-                    }
-
+                if (agendaNav) {
+                    agendaNav.click();
                 }
-            );
-
+            });
         }
 
-
         dashV3Load();
-
     }
 
-
-    if (
-        document.readyState ===
-        "loading"
-    ) {
-
+    if (document.readyState === "loading") {
         document.addEventListener(
             "DOMContentLoaded",
             dashV3Init
         );
-
     } else {
-
         dashV3Init();
+    }
+})();
+/* =========================================================
+   CONFIGURAÇÕES — SWITCHES VISUAIS PREMIUM
+   ========================================================= */
 
+(function initSiteSettingsSwitches() {
+    function syncSwitch(checkbox) {
+        if (!checkbox) return;
+
+        const label = checkbox.closest(".site-settings-check");
+        if (!label) return;
+
+        const state = label.querySelector(
+            ".site-settings-switch-state"
+        );
+
+        if (state) {
+            state.textContent = checkbox.checked ? "ON" : "OFF";
+        }
+
+        label.classList.toggle("is-on", checkbox.checked);
     }
 
+    const ids = [
+        "siteMostrarServicos",
+        "siteMostrarPortfolio",
+        "siteMostrarEquipe",
+        "siteMostrarAvaliacoes",
+        "siteMostrarInstagram",
+        "siteMostrarLocalizacao",
+        "siteMostrarDireitos"
+    ];
+
+    ids.forEach(id => {
+        const checkbox = document.getElementById(id);
+        if (!checkbox) return;
+
+        syncSwitch(checkbox);
+
+        checkbox.addEventListener("change", () => {
+            syncSwitch(checkbox);
+
+            if (typeof markSettingsDirty === "function") {
+                markSettingsDirty();
+            }
+        });
+    });
+
+    const whatsappSwitch =
+        document.getElementById("whatsappAfterBookingSwitch");
+
+    const whatsappInput =
+        document.getElementById("whatsappAfterBooking");
+
+    if (whatsappSwitch && whatsappInput) {
+        const syncWhatsapp = () => {
+            whatsappSwitch.setAttribute(
+                "aria-pressed",
+                whatsappInput.checked ? "true" : "false"
+            );
+        };
+
+        syncWhatsapp();
+
+        whatsappInput.addEventListener(
+            "change",
+            syncWhatsapp
+        );
+    }
+})();
+
+
+/* =========================================================
+   CONFIGURAÇÕES — SELEÇÃO DE IMAGENS
+   Portfólio (até 4), Banner e Logo.
+   Prévia local; não faz upload para o Supabase.
+   ========================================================= */
+
+(function initSiteImagePickers() {
+    const MAX_FILE_BYTES = 5 * 1024 * 1024;
+
+    const portfolioFiles = new Map();
+    const imageObjectUrls = new Map();
+
+    function getFileSizeLabel(bytes) {
+        return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+    }
+
+    function setupPicker({
+        buttonId,
+        inputId,
+        previewId,
+        emptyId,
+        removeId,
+        statusId,
+        label,
+        maxBytes,
+        allowedTypes
+    }) {
+        const button = document.getElementById(buttonId);
+        const input = document.getElementById(inputId);
+        const preview = document.getElementById(previewId);
+        const empty = document.getElementById(emptyId);
+        const remove = document.getElementById(removeId);
+        const status = document.getElementById(statusId);
+
+        if (!button || !input || !preview || !empty || !remove) {
+            return;
+        }
+
+        const stateKey = inputId;
+
+        function clearObjectUrl() {
+            const current = imageObjectUrls.get(stateKey);
+
+            if (current) {
+                URL.revokeObjectURL(current);
+                imageObjectUrls.delete(stateKey);
+            }
+        }
+
+        function clearPreview(markDirty = true) {
+            clearObjectUrl();
+
+            preview.removeAttribute("src");
+            preview.hidden = true;
+            empty.hidden = false;
+            remove.hidden = true;
+            input.value = "";
+
+            if (status) {
+                status.textContent =
+                    `Escolha ${label.toLowerCase()} nos arquivos do computador ou celular.`;
+            }
+
+            if (
+                markDirty &&
+                typeof markSettingsDirty === "function"
+            ) {
+                markSettingsDirty();
+            }
+        }
+
+        function showFile(file) {
+            if (!file) return;
+
+            if (!allowedTypes.includes(file.type)) {
+                alert(
+                    `Formato inválido. Selecione ${
+                        allowedTypes
+                            .map(type =>
+                                type.replace("image/", "").toUpperCase()
+                            )
+                            .join(" ou ")
+                    }.`
+                );
+
+                input.value = "";
+                return;
+            }
+
+            if (file.size > maxBytes) {
+                alert(
+                    `${label} excede o limite recomendado de ${getFileSizeLabel(maxBytes)}.`
+                );
+
+                input.value = "";
+                return;
+            }
+
+            clearObjectUrl();
+
+            const objectUrl = URL.createObjectURL(file);
+
+            imageObjectUrls.set(stateKey, objectUrl);
+
+            preview.src = objectUrl;
+            preview.hidden = false;
+            empty.hidden = true;
+            remove.hidden = false;
+
+            if (status) {
+                status.textContent =
+                    `${file.name} • ${getFileSizeLabel(file.size)}`;
+            }
+
+            if (typeof markSettingsDirty === "function") {
+                markSettingsDirty();
+            }
+
+            if (inputId.startsWith("sitePortfolioFile")) {
+                portfolioFiles.set(inputId, file);
+                window.__sitePortfolioFiles = portfolioFiles;
+            } else {
+                window.__siteImageFiles =
+                    window.__siteImageFiles || {};
+
+                window.__siteImageFiles[inputId] = file;
+            }
+        }
+
+        button.addEventListener("click", event => {
+            event.preventDefault();
+            input.click();
+        });
+
+        input.addEventListener("change", () => {
+            showFile(input.files && input.files[0]);
+        });
+
+        remove.addEventListener("click", event => {
+            event.preventDefault();
+
+            if (inputId.startsWith("sitePortfolioFile")) {
+                portfolioFiles.delete(inputId);
+            }
+
+            if (window.__siteImageFiles) {
+                delete window.__siteImageFiles[inputId];
+            }
+
+            clearPreview(true);
+        });
+    }
+
+    // Quatro imagens de portfólio.
+    for (let i = 1; i <= 4; i++) {
+        setupPicker({
+            buttonId: `sitePortfolioUploadButton${i}`,
+            inputId: `sitePortfolioFile${i}`,
+            previewId: `sitePortfolioPreview${i}`,
+            emptyId: `sitePortfolioEmpty${i}`,
+            removeId: `sitePortfolioRemoveButton${i}`,
+            label: `a imagem do portfólio ${i}`,
+            maxBytes: MAX_FILE_BYTES,
+            allowedTypes: ["image/jpeg", "image/png"]
+        });
+    }
+
+    // Imagem principal do site.
+    setupPicker({
+        buttonId: "siteBannerUploadButton",
+        inputId: "siteBannerFile",
+        previewId: "siteBannerPreview",
+        emptyId: "siteBannerEmpty",
+        removeId: "siteBannerRemoveButton",
+        statusId: "siteBannerUploadStatus",
+        label: "a imagem principal",
+        maxBytes: MAX_FILE_BYTES,
+        allowedTypes: ["image/jpeg", "image/png"]
+    });
+
+    // Logo da barbearia.
+    setupPicker({
+        buttonId: "siteLogoUploadButton",
+        inputId: "siteLogoFile",
+        previewId: "siteLogoPreview",
+        emptyId: "siteLogoEmpty",
+        removeId: "siteLogoRemoveButton",
+        statusId: "siteLogoUploadStatus",
+        label: "a logo",
+        maxBytes: 2 * 1024 * 1024,
+        allowedTypes: [
+            "image/jpeg",
+            "image/png",
+            "image/svg+xml"
+        ]
+    });
 })();

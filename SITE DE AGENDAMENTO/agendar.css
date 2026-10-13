@@ -112,7 +112,7 @@ button {
 
 .booking-layout {
     display: grid;
-    grid-template-columns: 310px 1fr;
+    grid-template-columns: minmax(0, 1fr);
     gap: 25px;
     align-items: start;
 }
@@ -121,8 +121,7 @@ button {
 /* SUMMARY */
 
 .booking-summary {
-    position: sticky;
-    top: 25px;
+    position: static;
     background: var(--card);
     border: 1px solid var(--border);
     padding: 28px;
@@ -579,11 +578,6 @@ button {
 
     .booking-summary {
         position: static;
-        order: 2;
-    }
-
-    .booking-card {
-        order: 1;
     }
 
     .barbers-grid {
@@ -665,10 +659,8 @@ button {
         gap: 14px;
     }
 
-    /* RESUMO — aparece primeiro no celular */
+    /* RESUMO — fica depois dos dados e antes da confirmação */
     .booking-summary {
-        order: 1;
-        position: static;
         width: 100%;
         padding: 18px;
         border-radius: 8px;
@@ -929,4 +921,204 @@ button {
     .footer p {
         font-size: 11px;
     }
+}
+
+/* =========================================================
+   CORREÇÃO DESKTOP — AGENDAMENTO
+   Somente telas acima de 900px.
+   A versão mobile não é alterada.
+   ========================================================= */
+
+@media (min-width: 901px) {
+
+    .booking-layout {
+        display: block;
+        width: 100%;
+        max-width: none;
+    }
+
+    .booking-card {
+        display: block;
+        width: 100%;
+        max-width: none;
+        min-width: 0;
+    }
+
+    .booking-card .step {
+        width: 100%;
+    }
+
+    .booking-card .options-grid,
+    .booking-card .barbers-grid,
+    .booking-card .times-grid,
+    .booking-card .form-grid {
+        width: 100%;
+    }
+
+    .booking-card .times-grid {
+        grid-template-columns: repeat(5, minmax(0, 1fr));
+    }
+
+    .booking-card .form-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .booking-card .confirm-area {
+        width: 100%;
+    }
+
+    .booking-summary {
+        width: 100%;
+        max-width: none;
+    }
+}
+/* =========================================================
+   ETAPA 04 — BLOQUEIO PREMIUM
+   ========================================================= */
+
+.time-step-locked {
+    grid-column: 1 / -1;
+
+    width: 100%;
+    min-height: 180px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 18px;
+
+    padding: 32px 25px;
+
+    background:
+        radial-gradient(
+            circle at center,
+            rgba(201, 164, 92, 0.07) 0%,
+            rgba(201, 164, 92, 0.025) 35%,
+            transparent 72%
+        ),
+        #101010;
+
+    border: 1px solid rgba(201, 164, 92, 0.20);
+    border-radius: 10px;
+
+    text-align: left;
+
+    box-shadow:
+        inset 0 0 0 1px rgba(255, 255, 255, 0.015),
+        0 10px 35px rgba(0, 0, 0, 0.18);
+}
+
+
+/* ÍCONE */
+
+.time-step-locked-icon {
+    width: 48px;
+    height: 48px;
+    min-width: 48px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: rgba(201, 164, 92, 0.10);
+
+    border: 1px solid rgba(201, 164, 92, 0.28);
+    border-radius: 50%;
+
+    font-size: 20px;
+
+    box-shadow:
+        0 0 0 5px rgba(201, 164, 92, 0.025);
+}
+
+
+/* TÍTULO */
+
+.time-step-locked strong {
+    display: block;
+
+    color: #f5f5f5;
+
+    font-size: 15px;
+    font-weight: 700;
+
+    letter-spacing: 0.3px;
+
+    margin-bottom: 5px;
+}
+
+
+/* DESCRIÇÃO */
+
+.time-step-locked p {
+    margin: 0;
+
+    color: #888;
+
+    font-size: 12px;
+    line-height: 1.6;
+
+    max-width: 430px;
+}
+
+
+/* DESTAQUE DOS NÚMEROS */
+
+.time-step-locked p b {
+    color: var(--gold);
+    font-weight: 700;
+}
+
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 600px) {
+
+    .time-step-locked {
+
+        min-height: 165px;
+
+        flex-direction: column;
+
+        gap: 12px;
+
+        padding: 28px 18px;
+
+        text-align: center;
+
+        border-radius: 9px;
+    }
+
+
+    .time-step-locked-icon {
+
+        width: 44px;
+        height: 44px;
+        min-width: 44px;
+
+        font-size: 18px;
+    }
+
+
+    .time-step-locked strong {
+
+        font-size: 14px;
+
+        margin-bottom: 6px;
+    }
+
+
+    .time-step-locked p {
+
+        font-size: 10px;
+
+        line-height: 1.55;
+
+        max-width: 280px;
+
+        margin: 0 auto;
+    }
+
 }
