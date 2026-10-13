@@ -82,7 +82,7 @@
                    class="nav-item"
                    data-section="horarios">
                     <span>◷</span>
-                    Horários
+                    Horários/Dias
                 </a>
 
                 <a href="#configuracoes"
@@ -97,7 +97,7 @@
         </div>
 
         <button class="logout-button" id="logoutButton">
-            ↪ Sair
+                 ↪ Sair
         </button>
 
     </aside>
@@ -147,6 +147,10 @@
 
                 <select id="dashv3Period">
 
+                    <option value="all">
+                        Todo o período
+                    </option>
+
                     <option value="today">
                         Hoje
                     </option>
@@ -157,10 +161,6 @@
 
                     <option value="30" selected>
                         Últimos 30 dias
-                    </option>
-
-                    <option value="all">
-                        Todo o período
                     </option>
 
                 </select>
@@ -448,7 +448,7 @@
                 <a
                     class="primary-button agenda-new-button"
                     href="agendar.html">
-                    + Novo agendamento
+                    + NOVO AGENDAMENTO
                 </a>
 
             </div>
@@ -456,19 +456,19 @@
             <div class="agenda-toolbar-card">
 
                 <div class="agenda-period-tabs" role="group" aria-label="Período da agenda">
-                    <button type="button" class="agenda-period-button active" data-agenda-view="today">
-                        Hoje
-                    </button>
-                    <button type="button" class="agenda-period-button" data-agenda-view="tomorrow">
-                        Amanhã
-                    </button>
-                    <button type="button" class="agenda-period-button" data-agenda-view="week">
-                        Esta semana
-                    </button>
-                    <button type="button" class="agenda-period-button" data-agenda-view="14days">
-                        14 dias
-                    </button>
-                </div>
+    <button type="button" class="agenda-period-button active" data-agenda-view="all">
+        Todos
+    </button>
+    <button type="button" class="agenda-period-button" data-agenda-view="today">
+        Hoje
+    </button>
+    <button type="button" class="agenda-period-button" data-agenda-view="tomorrow">
+        Amanhã
+    </button>
+    <button type="button" class="agenda-period-button" data-agenda-view="week">
+        Esta semana
+    </button>
+</div>
 
                 <div class="agenda-filters">
 
@@ -559,7 +559,7 @@
 
             <!-- RESUMO DA EQUIPE -->
 
-            <div class="team-summary">
+            <div class="team-summary team-summary-equipe">
 
                 <div>
                     <span>Profissionais</span>
@@ -623,7 +623,7 @@
 
     <!-- RESUMO DOS SERVIÇOS -->
 
-    <div class="team-summary">
+    <div class="team-summary services-summary">
 
         <div>
             <span>Total de serviços</span>
@@ -785,24 +785,23 @@
                 Gerencie os clientes e acompanhe o histórico de atendimentos.
             </p>
         </div>
-
-        <button
-            class="primary-button"
-            id="addClientButton">
-
-            + ADICIONAR CLIENTE
-
-        </button>
-
-    </div>
+</div>
 
 
-    <!-- RESUMO -->
-
+    <!-- RESUMO + AÇÃO DE EXCLUSÃO -->
     <div class="client-summary">
 
-        <div class="client-summary-card">
-
+        <div class="client-summary-card client-total-card">
+            <span class="client-total-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="22" height="22" fill="none"
+                     stroke="currentColor" stroke-width="1.8"
+                     stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="9" cy="8" r="3"></circle>
+                    <path d="M3.5 19c.5-3 2.4-4.5 5.5-4.5s5 1.5 5.5 4.5"></path>
+                    <path d="M16 11a2.5 2.5 0 1 0-1.1-4.7"></path>
+                    <path d="M16 15c2.3.1 3.8 1.5 4.2 4"></path>
+                </svg>
+            </span>
             <span>
                 Total de clientes
             </span>
@@ -810,34 +809,26 @@
             <strong id="totalClients">
                 0
             </strong>
-
         </div>
 
-
-        <div class="client-summary-card">
-
-            <span>
-                Clientes ativos
+        <button
+            type="button"
+            class="delete-all-clients-button"
+            id="deleteAllClientsButton"
+            aria-label="Excluir todos os clientes">
+            <span class="delete-all-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="17" height="17" fill="none"
+                     stroke="currentColor" stroke-width="1.8"
+                     stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M3 6h18"></path>
+                    <path d="M8 6V4h8v2"></path>
+                    <path d="m19 6-1 14H6L5 6"></path>
+                    <path d="M10 10v6"></path>
+                    <path d="M14 10v6"></path>
+                </svg>
             </span>
-
-            <strong id="activeClients">
-                0
-            </strong>
-
-        </div>
-
-
-        <div class="client-summary-card">
-
-            <span>
-                Atendimentos
-            </span>
-
-            <strong id="totalClientAppointments">
-                0
-            </strong>
-
-        </div>
+            <span>EXCLUIR TODOS OS CLIENTES</span>
+        </button>
 
     </div>
 
@@ -1007,9 +998,9 @@
 
 <section id="horarios" class="page-section">
 
-    <div class="page-header">
+    <div class="page-header horarios-page-header">
 
-        <div>
+        <div class="horarios-page-title">
             <span class="eyebrow">
                 DISPONIBILIDADE
             </span>
@@ -1019,6 +1010,19 @@
             <p>
                 Controle o funcionamento e a disponibilidade da barbearia.
             </p>
+        </div>
+
+        <div class="horarios-save-actions" aria-label="Salvar configurações de horários">
+            <div class="horarios-save-status is-saved" id="horariosSaveStatus" role="status" aria-live="polite">
+                <span class="horarios-save-status-dot" aria-hidden="true"></span>
+                <span class="horarios-save-status-icon" aria-hidden="true">✓</span>
+                <span id="horariosSaveStatusText">Tudo salvo</span>
+            </div>
+
+            <button type="button" class="primary-button horarios-save-button" id="saveScheduleSettings">
+                <span class="horarios-save-button-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4h11l3 3v13H5z"/><path d="M8 4v6h8V4"/><path d="M9 20v-6h6v6"/></svg></span>
+                <span>SALVAR CONFIGURAÇÕES</span>
+            </button>
         </div>
 
     </div>
@@ -1139,6 +1143,28 @@
                     </option>
 
                 </select>
+
+            </div>
+
+            <div class="form-group booking-advance-group">
+
+                <label for="bookingAdvanceDays">
+                    Antecedência máxima para agendamento
+                </label>
+
+                <select id="bookingAdvanceDays">
+                    <option value="1">1 dia</option>
+                    <option value="7">7 dias</option>
+                    <option value="14" selected>14 dias</option>
+                    <option value="21">21 dias</option>
+                    <option value="30">30 dias</option>
+                    <option value="45">45 dias</option>
+                    <option value="60">60 dias</option>
+                </select>
+
+                <small class="booking-advance-help">
+                    Define até quantos dias à frente o cliente poderá realizar um agendamento.
+                </small>
 
             </div>
 
@@ -1364,7 +1390,7 @@
                 AGENDA
             </span>
 
-            <h2>
+            <h2 id="availabilityCalendarTitle">
                 Próximos 14 dias
             </h2>
 
@@ -1414,20 +1440,6 @@
 
     </div>
 
-
-    <!-- SALVAR -->
-
-    <div class="schedule-save-area">
-
-        <button
-            class="primary-button"
-            id="saveScheduleSettings">
-
-            Salvar configurações
-
-        </button>
-
-    </div>
 
 </section>
 
