@@ -386,7 +386,7 @@ button {
 
 .page-header h1 {
 
-    font-size: 30px;
+    font-size: 60px;
 
     margin-bottom: 7px;
 }
@@ -396,7 +396,7 @@ button {
     color:
         var(--muted);
 
-    font-size: 12px;
+    font-size: 16px;
 }
 
 .system-status {
@@ -775,13 +775,42 @@ button {
         1px solid;
 }
 
+/* Indicador de status do barbeiro */
+#barbeiros .barber-card {
+    position: relative !important;
+}
+
+#barbeiros .barber-card .barber-status {
+    position: absolute !important;
+    top: 30px !important;
+    right: 50px !important;
+    width: 50px !important;
+    height: 50px !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    border: none !important;
+    border-radius:   !important;
+    font-size: 0 !important;
+    line-height: 0 !important;
+}
+
+#barbeiros .barber-card .barber-status.active {
+    background: 
+    box-shadow: 0 0 8px rgba(34, 197, 94, 0.45) !important;
+}
+
+#barbeiros .barber-card .barber-status.inactive {
+    background: #ef4444 !important;
+    box-shadow: 0 0 8px rgba(239, 68, 68, 0.35) !important;
+}
+
 .barber-status.active {
 
     color:
-        var(--green);
+        var();
 
     border-color:
-        rgba(120,201,143,0.3);
+       
 }
 
 .barber-status.inactive {
@@ -5592,285 +5621,7 @@ button {
     }
 }
 
-/* =========================================================
-   MÓDULO SERVIÇOS — AJUSTE MOBILE PROFISSIONAL
-   Somente visual/CSS. Mantém os elementos e funções existentes.
-   ========================================================= */
-
-@media (max-width: 700px) {
-
-    /* Cabeçalho: botão compacto no canto direito */
-    #servicos .page-header {
-        flex-direction: row;
-        align-items: flex-start;
-        gap: 10px;
-        margin-bottom: 16px;
-    }
-
-    #servicos .page-header > div {
-        min-width: 0;
-        flex: 1;
-    }
-
-    #servicos .page-header .primary-button {
-        width: auto;
-        flex: 0 0 auto;
-        min-height: 40px;
-        height: 40px;
-        padding: 0 12px;
-        border-radius: 10px;
-        font-size: 9px;
-        white-space: nowrap;
-        margin-top: 2px;
-    }
-
-    #servicos .page-header h1 {
-        font-size: 27px;
-        line-height: 1.05;
-        margin-bottom: 5px;
-    }
-
-    #servicos .page-header p {
-        font-size: 10px;
-        line-height: 1.35;
-    }
-
-    /* Resumo: três cartões compactos, arredondados e alinhados */
-    #servicos .team-summary {
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-        gap: 7px;
-        margin-bottom: 12px;
-    }
-
-    #servicos .team-summary > div {
-        min-width: 0;
-        min-height: 70px;
-        padding: 10px 8px;
-        gap: 5px;
-        border-radius: 10px;
-        background: linear-gradient(145deg, rgba(255,255,255,.035), rgba(255,255,255,.018));
-        border: 1px solid rgba(255,255,255,.10);
-        box-shadow: inset 0 1px 0 rgba(255,255,255,.025);
-    }
-
-    #servicos .team-summary span {
-        font-size: 7px;
-        line-height: 1.2;
-        letter-spacing: .5px;
-        white-space: normal;
-    }
-
-    #servicos .team-summary strong {
-        font-size: 19px;
-        line-height: 1;
-    }
-
-    /* Lista em uma coluna, sem cartões gigantes */
-    #servicos .services-grid {
-        grid-template-columns: 1fr;
-        gap: 9px;
-        width: 100%;
-    }
-
-    #servicos .service-card {
-        min-width: 0;
-        padding: 12px;
-        border-radius: 12px;
-        background: linear-gradient(145deg, rgba(255,255,255,.035), rgba(255,255,255,.015));
-        border: 1px solid rgba(255,255,255,.10);
-        box-shadow: inset 0 1px 0 rgba(255,255,255,.025);
-        display: grid;
-        grid-template-columns: minmax(0, 1fr) auto;
-        column-gap: 10px;
-        row-gap: 0;
-        overflow: hidden;
-    }
-
-    /* Ícone à esquerda + nome do serviço */
-    #servicos .service-card-header {
-        grid-column: 1 / -1;
-        display: grid;
-        grid-template-columns: 40px minmax(0, 1fr);
-        align-items: center;
-        gap: 9px;
-        margin: 0 0 8px;
-        min-width: 0;
-    }
-
-    #servicos .service-card-header > div:first-child {
-        min-width: 0;
-    }
-
-    #servicos .service-icon {
-        grid-column: 1;
-        grid-row: 1;
-        width: 40px;
-        height: 40px;
-        border-radius: 50%;
-        flex: 0 0 40px;
-        background: rgba(214,179,106,.13);
-        border: 1px solid rgba(214,179,106,.20);
-        color: var(--gold-light);
-        font-size: 15px;
-    }
-
-    #servicos .service-card-header > div:first-child {
-        grid-column: 2;
-        grid-row: 1;
-    }
-
-    #servicos .service-card h3 {
-        font-size: 12px;
-        line-height: 1.2;
-        margin: 0 0 3px;
-    }
-
-    #servicos .service-description {
-        font-size: 8px;
-        line-height: 1.25;
-    }
-
-    /* Preço e duração na mesma faixa */
-    #servicos .service-price {
-        grid-column: 1;
-        font-size: 18px;
-        line-height: 1.1;
-        margin: 0;
-        align-self: center;
-    }
-
-    #servicos .service-duration {
-        grid-column: 2;
-        align-self: center;
-        justify-self: end;
-        font-size: 8px;
-        white-space: nowrap;
-        color: var(--secondary);
-    }
-
-    /* Status compacto */
-    #servicos .service-info {
-        grid-column: 1 / -1;
-        padding: 7px 0;
-        margin-top: 8px;
-        border-top: 1px solid rgba(255,255,255,.08);
-        border-bottom: 1px solid rgba(255,255,255,.08);
-    }
-
-    #servicos .service-status {
-        min-height: 22px;
-        padding: 0 7px;
-        border-radius: 7px;
-        font-size: 7px;
-        align-items: center;
-    }
-
-    /* Ações compactas e arredondadas */
-    #servicos .service-actions {
-        grid-column: 1 / -1;
-        display: grid;
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-        gap: 6px;
-        margin-top: 8px;
-    }
-
-    #servicos .service-actions button {
-        min-width: 0;
-        width: 100%;
-        height: 34px;
-        min-height: 34px;
-        padding: 0 5px;
-        border-radius: 8px;
-        font-size: 7px;
-        font-weight: 800;
-        letter-spacing: .25px;
-    }
-}
-
-@media (max-width: 380px) {
-
-    #servicos .page-header {
-        gap: 8px;
-    }
-
-    #servicos .page-header .primary-button {
-        min-height: 38px;
-        height: 38px;
-        padding: 0 10px;
-        font-size: 8px;
-        border-radius: 9px;
-    }
-
-    #servicos .page-header h1 {
-        font-size: 25px;
-    }
-
-    #servicos .page-header p {
-        font-size: 9px;
-    }
-
-    #servicos .team-summary {
-        gap: 6px;
-    }
-
-    #servicos .team-summary > div {
-        min-height: 66px;
-        padding: 9px 6px;
-        border-radius: 9px;
-    }
-
-    #servicos .team-summary span {
-        font-size: 6.5px;
-    }
-
-    #servicos .team-summary strong {
-        font-size: 18px;
-    }
-
-    #servicos .service-card {
-        padding: 11px;
-        border-radius: 11px;
-    }
-
-    #servicos .service-card-header {
-        grid-template-columns: 38px minmax(0, 1fr);
-        gap: 8px;
-    }
-
-    #servicos .service-icon {
-        width: 38px;
-        height: 38px;
-        flex-basis: 38px;
-        font-size: 14px;
-    }
-
-    #servicos .service-card h3 {
-        font-size: 11px;
-    }
-
-    #servicos .service-description {
-        font-size: 7px;
-    }
-
-    #servicos .service-price {
-        font-size: 17px;
-    }
-
-    #servicos .service-duration {
-        font-size: 7px;
-    }
-
-    #servicos .service-actions {
-        gap: 5px;
-    }
-
-    #servicos .service-actions button {
-        height: 32px;
-        min-height: 32px;
-        font-size: 6.5px;
-        border-radius: 7px;
-    }
-}
+/* Regras antigas duplicadas específicas de Serviços removidas; novo bloco consolidado no final. */
 
 /* =========================================================
    CORREÇÃO MOBILE — SEM CORTE LATERAL + DASHBOARD
@@ -6077,437 +5828,852 @@ button {
 
 
 /* =========================================================
-   MÓDULO CLIENTES — LAYOUT DE REFERÊNCIA
-   ---------------------------------------------------------
-   Somente o módulo #clientes.
-   Não altera os demais módulos.
+   MÓDULO CLIENTES — AJUSTE PREMIUM FINAL
+   Escopo restrito a #clientes: fundo azul-grafite, cartões uniformes,
+   dashboard compacto e ícones desenhados em CSS.
    ========================================================= */
 
-/* Remove o botão grande de adicionar cliente */
-#clientes .page-header .primary-button {
-    display: none !important;
-}
-
-/* Cabeçalho mais limpo */
+/* Cabeçalho: manter a hierarquia geral do painel, com espaçamento compacto */
 #clientes .page-header {
-    margin-bottom: 16px;
+    margin-bottom: 15px !important;
 }
 
 #clientes .page-header h1 {
-    font-size: 30px;
+    font-size: 30px !important;
+    line-height: 1.12 !important;
+    margin-bottom: 5px !important;
 }
 
 #clientes .page-header p {
-    font-size: 11px;
+    font-size: 12px !important;
+    line-height: 1.45 !important;
 }
 
-/* Área superior: Total + Pesquisa */
+/* Cores locais — nada aqui altera os outros módulos */
+#clientes {
+    --client-panel: #111d2d;
+    --client-panel-deep: #0d1725;
+    --client-border: rgba(112, 151, 194, 0.25);
+    --client-border-hover: rgba(125, 169, 218, 0.48);
+    --client-text: #f4f7fb;
+    --client-muted: #a9bad0;
+    --client-blue: #75a9df;
+    --client-red: #ff6979;
+    --client-green: #35d6a0;
+}
+
+/* Dashboard compacto + botão menor lado a lado */
 #clientes .client-summary {
-    display: grid;
-    grid-template-columns: 180px minmax(0, 1fr);
-    gap: 10px;
-    margin-bottom: 14px;
+    display: grid !important;
+    grid-template-columns: minmax(210px, 260px) 150px !important;
+    align-items: stretch !important;
+    justify-content: start !important;
+    gap: 9px !important;
+    margin: 0 0 13px !important;
 }
 
-/* Só o TOTAL DE CLIENTES aparece */
-#clientes .client-summary-card {
-    min-height: 72px;
-    padding: 12px 14px;
-    border-radius: 12px;
-    flex-direction: row;
-    align-items: center;
-    gap: 12px;
+#clientes .client-summary > .client-summary-card {
+    display: grid !important;
+    grid-template-columns: 38px minmax(0, 1fr) !important;
+    grid-template-rows: auto auto !important;
+    grid-template-areas: "icon label" "icon number" !important;
+    align-content: center !important;
+    align-items: center !important;
+    column-gap: 11px !important;
+    row-gap: 4px !important;
+    min-width: 0 !important;
+    width: 100% !important;
+    height: 64px !important;
+    min-height: 64px !important;
+    padding: 9px 12px !important;
+    border: 1px solid var(--client-border) !important;
+    border-radius: 12px !important;
+    background: linear-gradient(135deg, rgba(23, 39, 59, .98), rgba(15, 26, 41, .98)) !important;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.025) !important;
+    box-sizing: border-box !important;
 }
 
-#clientes .client-summary-card:nth-child(n + 2) {
-    display: none !important;
+#clientes .client-summary > .client-summary-card::before {
+    content: "" !important;
+    grid-area: icon !important;
+    width: 38px !important;
+    height: 38px !important;
+    display: block !important;
+    border: 1px solid rgba(112, 151, 194, .18) !important;
+    border-radius: 10px !important;
+    background-color: rgba(88, 133, 184, .12) !important;
+    background-image:
+        radial-gradient(circle at 50% 34%, #efc66d 0 4px, transparent 4.7px),
+        radial-gradient(ellipse at 50% 79%, #efc66d 0 8px, transparent 8.7px) !important;
+    color: transparent !important;
+    font-size: 0 !important;
+    box-sizing: border-box !important;
 }
 
-#clientes .client-summary-card::before {
-    content: "♟";
-    width: 40px;
-    height: 40px;
-    flex: 0 0 40px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 10px;
-    background: rgba(214,179,106,0.10);
-    color: var(--gold);
-    font-size: 21px;
+#clientes .client-summary > .client-summary-card span {
+    grid-area: label !important;
+    align-self: end !important;
+    margin: 0 !important;
+    color: var(--client-muted) !important;
+    font-size: 8px !important;
+    line-height: 1.2 !important;
+    font-weight: 700 !important;
+    letter-spacing: .45px !important;
+    text-transform: uppercase !important;
+    white-space: nowrap !important;
 }
 
-#clientes .client-summary-card span {
-    margin: 0 0 4px;
-    font-size: 8px;
-    letter-spacing: .7px;
+#clientes .client-summary > .client-summary-card strong {
+    grid-area: number !important;
+    align-self: start !important;
+    color: var(--client-text) !important;
+    font-size: 22px !important;
+    line-height: 1 !important;
+    font-weight: 800 !important;
+    margin: 0 !important;
 }
 
-#clientes .client-summary-card strong {
-    font-size: 23px;
-    line-height: 1;
+/* Botão de exclusão geral: menor que o dashboard e visualmente secundário */
+#clientes .delete-all-clients-button {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 8px !important;
+    width: 150px !important;
+    min-width: 150px !important;
+    max-width: 150px !important;
+    height: 64px !important;
+    min-height: 64px !important;
+    margin: 0 !important;
+    padding: 8px 10px !important;
+    border: 1px solid rgba(255, 105, 121, .38) !important;
+    border-radius: 12px !important;
+    background: linear-gradient(135deg, rgba(75, 29, 43, .30), rgba(26, 23, 37, .7)) !important;
+    color: var(--client-red) !important;
+    font-size: 8px !important;
+    line-height: 1.25 !important;
+    font-weight: 800 !important;
+    letter-spacing: .25px !important;
+    text-align: center !important;
+    white-space: normal !important;
+    box-shadow: none !important;
+    box-sizing: border-box !important;
+    transition: background .18s ease, border-color .18s ease, transform .18s ease !important;
 }
 
-/* Pesquisa compacta */
+#clientes .delete-all-clients-button:hover {
+    background: rgba(255, 105, 121, .10) !important;
+    border-color: rgba(255, 105, 121, .62) !important;
+    transform: translateY(-1px) !important;
+}
+
+#clientes .delete-all-clients-button:active {
+    transform: translateY(0) !important;
+}
+
+#clientes .delete-all-clients-button:focus-visible,
+#clientes .client-delete-button:focus-visible {
+    outline: 2px solid rgba(117, 169, 223, .8) !important;
+    outline-offset: 3px !important;
+}
+
+/* Ícone de lixeira do botão geral */
+#clientes .delete-all-icon {
+    position: relative !important;
+    display: inline-block !important;
+    flex: 0 0 16px !important;
+    width: 16px !important;
+    height: 18px !important;
+    font-size: 0 !important;
+    color: currentColor !important;
+}
+
+#clientes .delete-all-icon::before {
+    content: "" !important;
+    position: absolute !important;
+    left: 3px !important;
+    top: 5px !important;
+    width: 10px !important;
+    height: 11px !important;
+    border: 1.7px solid currentColor !important;
+    border-top: 0 !important;
+    border-radius: 0 0 3px 3px !important;
+    background: repeating-linear-gradient(90deg, transparent 0 2px, currentColor 2px 3px, transparent 3px 5px) center 3px / 5px 6px no-repeat !important;
+    box-sizing: border-box !important;
+}
+
+#clientes .delete-all-icon::after {
+    content: "" !important;
+    position: absolute !important;
+    left: 1px !important;
+    top: 2px !important;
+    width: 14px !important;
+    height: 2px !important;
+    border-radius: 2px !important;
+    background: currentColor !important;
+    box-shadow: 4px -2px 0 -0.3px currentColor !important;
+}
+
+/* Pesquisa: painel azul discreto com lupa construída em CSS */
 #clientes .client-search-card {
-    min-width: 0;
-    min-height: 72px;
-    padding: 10px 14px;
-    margin: 0;
-    border-radius: 12px;
-    justify-content: center;
-    gap: 5px;
+    position: relative !important;
+    display: block !important;
+    min-width: 0 !important;
+    min-height: 0 !important;
+    margin: 0 0 13px !important;
+    padding: 8px !important;
+    border: 1px solid var(--client-border) !important;
+    border-radius: 13px !important;
+    background: linear-gradient(135deg, rgba(19, 33, 51, .96), rgba(14, 25, 40, .96)) !important;
+    box-shadow: none !important;
+    box-sizing: border-box !important;
 }
 
 #clientes .client-search-card label {
-    display: none;
+    display: none !important;
 }
 
 #clientes .client-search-input {
-    width: 100%;
-    max-width: none;
-    height: 44px;
-    margin: 0;
-    padding: 0 14px 0 42px;
-    border-radius: 10px;
-    font-size: 10px;
-    background: #101010;
-    position: relative;
+    display: block !important;
+    width: 100% !important;
+    max-width: none !important;
+    height: 43px !important;
+    margin: 0 !important;
+    padding: 0 13px 0 40px !important;
+    border: 1px solid rgba(112, 151, 194, .12) !important;
+    border-radius: 9px !important;
+    outline: none !important;
+    background: #0d1725 !important;
+    color: var(--client-text) !important;
+    font-size: 10px !important;
+    box-shadow: inset 0 1px 4px rgba(0,0,0,.16) !important;
+    box-sizing: border-box !important;
 }
 
-#clientes .client-search-card {
-    position: relative;
+#clientes .client-search-input::placeholder {
+    color: #91a6bf !important;
+    opacity: 1 !important;
+}
+
+#clientes .client-search-input:focus {
+    border-color: rgba(117, 169, 223, .6) !important;
+    box-shadow: 0 0 0 3px rgba(117, 169, 223, .08) !important;
 }
 
 #clientes .client-search-card::before {
-    content: "⌕";
-    position: absolute;
-    left: 27px;
-    top: 50%;
-    transform: translateY(-50%);
-    z-index: 2;
-    color: var(--gold);
-    font-size: 24px;
-    line-height: 1;
-    pointer-events: none;
+    content: "" !important;
+    position: absolute !important;
+    z-index: 2 !important;
+    left: 21px !important;
+    top: 20px !important;
+    width: 12px !important;
+    height: 12px !important;
+    border: 2px solid #eac36b !important;
+    border-radius: 50% !important;
+    background: transparent !important;
+    box-sizing: border-box !important;
+    transform: none !important;
+    pointer-events: none !important;
 }
 
-/* Cards dos clientes — dois lado a lado */
+#clientes .client-search-card::after {
+    content: "" !important;
+    position: absolute !important;
+    z-index: 2 !important;
+    left: 32px !important;
+    top: 32px !important;
+    width: 7px !important;
+    height: 2px !important;
+    border-radius: 2px !important;
+    background: #eac36b !important;
+    transform: rotate(45deg) !important;
+    transform-origin: left center !important;
+    pointer-events: none !important;
+}
+
+/* Grade de cartões: duas colunas e altura igual em cada linha */
 #clientes .clients-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 12px;
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    grid-auto-flow: row !important;
+    align-items: stretch !important;
+    gap: 10px !important;
 }
 
 #clientes .client-card {
-    min-width: 0;
-    padding: 14px;
-    border-radius: 12px;
-    overflow: hidden;
+    display: flex !important;
+    flex-direction: column !important;
+    align-self: stretch !important;
+    width: 100% !important;
+    height: 100% !important;
+    min-width: 0 !important;
+    min-height: 154px !important;
+    padding: 12px !important;
+    border: 1px solid var(--client-border) !important;
+    border-radius: 13px !important;
+    background: linear-gradient(145deg, rgba(20, 36, 55, .98), rgba(13, 24, 39, .98)) !important;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.025) !important;
+    overflow: hidden !important;
+    box-sizing: border-box !important;
+    transition: border-color .18s ease, background .18s ease, transform .18s ease !important;
 }
 
-/* Cabeçalho do cliente */
+#clientes .client-card:hover {
+    border-color: var(--client-border-hover) !important;
+    background: linear-gradient(145deg, rgba(23, 41, 62, .99), rgba(14, 26, 43, .99)) !important;
+}
+
 #clientes .client-card-header {
-    gap: 10px;
-    margin-bottom: 10px;
+    display: flex !important;
+    align-items: center !important;
+    min-width: 0 !important;
+    gap: 9px !important;
+    margin: 0 0 8px !important;
 }
 
 #clientes .client-avatar {
-    width: 48px;
-    height: 48px;
-    flex: 0 0 48px;
-    font-size: 13px;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    flex: 0 0 42px !important;
+    width: 42px !important;
+    height: 42px !important;
+    border: 1px solid rgba(239, 198, 109, .28) !important;
+    border-radius: 50% !important;
+    background: linear-gradient(145deg, #edc66d, #d9a947) !important;
+    color: #152033 !important;
+    font-size: 12px !important;
+    font-weight: 800 !important;
+    box-shadow: 0 3px 10px rgba(0,0,0,.15) !important;
+}
+
+#clientes .client-card-identity {
+    flex: 1 1 auto !important;
+    min-width: 0 !important;
 }
 
 #clientes .client-card-header h3 {
-    font-size: 13px;
-    margin-bottom: 3px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    margin: 0 0 3px !important;
+    overflow: hidden !important;
+    color: var(--client-text) !important;
+    font-size: 12px !important;
+    font-weight: 800 !important;
+    line-height: 1.2 !important;
+    text-overflow: ellipsis !important;
+    white-space: nowrap !important;
 }
 
 #clientes .client-card-header p {
-    font-size: 8px;
+    overflow: hidden !important;
+    color: var(--client-muted) !important;
+    font-size: 8px !important;
+    line-height: 1.3 !important;
+    text-overflow: ellipsis !important;
+    white-space: nowrap !important;
 }
 
-/* WhatsApp */
+/* Telefone e botão individual ficam na mesma linha, sem sobreposição */
+#clientes .client-phone-row {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    gap: 7px !important;
+    min-width: 0 !important;
+    padding: 0 0 8px !important;
+    margin: 0 !important;
+    border-bottom: 1px solid rgba(127, 157, 190, .18) !important;
+}
+
 #clientes .client-phone {
-    position: relative;
-    padding: 0 0 10px 22px;
-    margin: 0;
-    border-bottom: 1px solid var(--border);
-    font-size: 9px;
+    display: flex !important;
+    align-items: center !important;
+    flex: 1 1 auto !important;
+    gap: 6px !important;
+    min-width: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: 0 !important;
+    color: #c1d1e3 !important;
+    font-size: 9px !important;
+    font-weight: 600 !important;
+    line-height: 1.25 !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
 }
 
-#clientes .client-phone::before {
-    content: "◉";
-    position: absolute;
-    left: 1px;
-    top: 0;
-    color: #78c98f;
-    font-size: 10px;
+#clientes .client-phone > span:last-child {
+    min-width: 0 !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
 }
 
-/* Informações inferiores em duas colunas */
+#clientes .client-phone-status {
+    display: inline-block !important;
+    flex: 0 0 5px !important;
+    width: 5px !important;
+    height: 5px !important;
+    border-radius: 50% !important;
+    background: var(--client-green) !important;
+    box-shadow: 0 0 7px rgba(53, 214, 160, .35) !important;
+}
+
+#clientes .client-phone-icon {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    flex: 0 0 20px !important;
+    width: 20px !important;
+    height: 20px !important;
+    border: 1px solid rgba(53, 214, 160, .38) !important;
+    border-radius: 50% !important;
+    background: rgba(53, 214, 160, .08) !important;
+    color: var(--client-green) !important;
+    font-size: 0 !important;
+    line-height: 1 !important;
+}
+
+#clientes .client-phone-icon::before {
+    content: "☎" !important;
+    display: block !important;
+    color: var(--client-green) !important;
+    font-size: 12px !important;
+    font-weight: 700 !important;
+}
+
+/* Botão de lixeira individual: compacto e centralizado */
+#clientes .client-delete-button {
+    position: relative !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    flex: 0 0 31px !important;
+    width: 31px !important;
+    min-width: 31px !important;
+    max-width: 31px !important;
+    height: 31px !important;
+    min-height: 31px !important;
+    max-height: 31px !important;
+    padding: 0 !important;
+    border: 1px solid rgba(255, 105, 121, .42) !important;
+    border-radius: 9px !important;
+    background: rgba(255, 105, 121, .055) !important;
+    color: var(--client-red) !important;
+    font-size: 0 !important;
+    line-height: 1 !important;
+    box-shadow: none !important;
+    cursor: pointer !important;
+    transition: background .18s ease, border-color .18s ease, transform .18s ease !important;
+}
+
+#clientes .client-delete-button:hover {
+    background: rgba(255, 105, 121, .13) !important;
+    border-color: rgba(255, 105, 121, .72) !important;
+    transform: translateY(-1px) !important;
+}
+
+#clientes .client-delete-button > span {
+    font-size: 0 !important;
+}
+
+#clientes .client-delete-button::before {
+    content: "" !important;
+    position: absolute !important;
+    left: 10px !important;
+    top: 11px !important;
+    width: 9px !important;
+    height: 11px !important;
+    border: 1.6px solid currentColor !important;
+    border-top: 0 !important;
+    border-radius: 0 0 2px 2px !important;
+    box-sizing: border-box !important;
+}
+
+#clientes .client-delete-button::after {
+    content: "" !important;
+    position: absolute !important;
+    left: 8px !important;
+    top: 8px !important;
+    width: 13px !important;
+    height: 2px !important;
+    border-radius: 2px !important;
+    background: currentColor !important;
+    box-shadow: 4px -2px 0 -0.4px currentColor !important;
+}
+
+/* Informações: calendário e relógio, alinhados no rodapé de cada cartão */
 #clientes .client-data {
-    grid-template-columns: 1fr 1fr;
-    gap: 8px;
-    padding: 11px 0 0;
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) !important;
+    align-items: start !important;
+    gap: 8px !important;
+    min-width: 0 !important;
+    padding: 10px 0 0 !important;
+    margin-top: auto !important;
 }
 
 #clientes .client-data > div {
-    min-width: 0;
-    position: relative;
-    padding-left: 27px;
+    position: relative !important;
+    min-width: 0 !important;
+    padding: 1px 0 0 22px !important;
 }
 
-/* Ícone de calendário */
 #clientes .client-data > div:first-child::before {
-    content: "▦";
-    position: absolute;
-    left: 0;
-    top: 0;
-    color: var(--gold);
-    font-size: 21px;
-    line-height: 1;
+    content: "▦" !important;
+    position: absolute !important;
+    left: 0 !important;
+    top: 0 !important;
+    color: #eac36b !important;
+    font-size: 17px !important;
+    line-height: 1 !important;
 }
 
-/* Ícone de relógio */
 #clientes .client-data > div:nth-child(2)::before {
-    content: "◷";
-    position: absolute;
-    left: 0;
-    top: -1px;
-    color: var(--gold);
-    font-size: 22px;
-    line-height: 1;
+    content: "◷" !important;
+    position: absolute !important;
+    left: 0 !important;
+    top: 0 !important;
+    color: #eac36b !important;
+    font-size: 18px !important;
+    line-height: 1 !important;
 }
 
 #clientes .client-data span {
-    font-size: 7px;
-    margin-bottom: 4px;
-    white-space: nowrap;
+    display: block !important;
+    margin: 0 0 4px !important;
+    color: var(--client-muted) !important;
+    font-size: 7.5px !important;
+    line-height: 1.25 !important;
+    white-space: normal !important;
 }
 
 #clientes .client-data strong {
-    font-size: 10px;
-    white-space: nowrap;
+    display: block !important;
+    color: var(--client-text) !important;
+    font-size: 10px !important;
+    line-height: 1.25 !important;
+    font-weight: 800 !important;
+    white-space: nowrap !important;
 }
 
-/* Caso o HTML use o bloco separado de último atendimento */
-#clientes .client-last-visit {
-    display: none;
+/* Nenhuma ação ou informação deve alterar o tamanho dos cartões vizinhos */
+#clientes .clients-grid > .client-card {
+    box-sizing: border-box !important;
+    min-height: 154px !important;
 }
 
-/* Os botões não aparecem no card da referência */
-#clientes .client-actions {
-    display: none;
-}
-
-/* Arredondamento geral */
-#clientes .client-summary-card,
-#clientes .client-search-card,
-#clientes .client-card {
-    box-shadow: none;
-}
-
-/* =========================================================
-   MOBILE — MESMA COMPOSIÇÃO DA IMAGEM DE REFERÊNCIA
-   ========================================================= */
-
+/* Ajustes responsivos — preserva 2 colunas também em telas pequenas */
 @media (max-width: 700px) {
-
     #clientes .page-header {
-        gap: 6px;
-        margin-bottom: 13px;
+        margin-bottom: 12px !important;
     }
 
     #clientes .page-header h1 {
-        font-size: 26px;
+        font-size: 27px !important;
     }
 
     #clientes .page-header p {
-        font-size: 9px;
-        line-height: 1.4;
+        font-size: 10px !important;
     }
 
     #clientes .client-summary {
-        grid-template-columns: 0.9fr 1.45fr;
-        gap: 8px;
-        margin-bottom: 12px;
+        grid-template-columns: minmax(0, 1fr) 138px !important;
+        gap: 7px !important;
+        margin-bottom: 11px !important;
     }
 
-    #clientes .client-summary-card {
-        min-height: 68px;
-        padding: 9px;
-        border-radius: 11px;
-        gap: 8px;
+    #clientes .client-summary > .client-summary-card {
+        height: 62px !important;
+        min-height: 62px !important;
+        padding: 8px 9px !important;
+        column-gap: 8px !important;
     }
 
-    #clientes .client-summary-card::before {
-        width: 34px;
-        height: 34px;
-        flex-basis: 34px;
-        border-radius: 9px;
-        font-size: 18px;
+    #clientes .client-summary > .client-summary-card::before {
+        width: 32px !important;
+        height: 32px !important;
     }
 
-    #clientes .client-summary-card span {
-        font-size: 7px;
-        letter-spacing: .4px;
+    #clientes .client-summary > .client-summary-card span {
+        font-size: 7px !important;
+        letter-spacing: .25px !important;
     }
 
-    #clientes .client-summary-card strong {
-        font-size: 19px;
+    #clientes .client-summary > .client-summary-card strong {
+        font-size: 20px !important;
+    }
+
+    #clientes .delete-all-clients-button {
+        width: 138px !important;
+        min-width: 138px !important;
+        max-width: 138px !important;
+        height: 62px !important;
+        min-height: 62px !important;
+        padding: 7px !important;
+        gap: 6px !important;
+        font-size: 7.5px !important;
     }
 
     #clientes .client-search-card {
-        min-height: 68px;
-        padding: 8px;
-        border-radius: 11px;
+        margin-bottom: 11px !important;
+        padding: 7px !important;
     }
 
     #clientes .client-search-input {
-        height: 48px;
-        border-radius: 9px;
-        padding-left: 36px;
-        font-size: 8px;
+        height: 42px !important;
+        padding-left: 36px !important;
+        font-size: 9px !important;
     }
 
     #clientes .client-search-card::before {
-        left: 20px;
-        font-size: 21px;
+        left: 19px !important;
+        top: 18px !important;
+    }
+
+    #clientes .client-search-card::after {
+        left: 30px !important;
+        top: 30px !important;
     }
 
     #clientes .clients-grid {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 8px;
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+        gap: 8px !important;
     }
 
     #clientes .client-card {
-        padding: 10px;
-        border-radius: 11px;
+        min-height: 150px !important;
+        padding: 9px !important;
+        border-radius: 11px !important;
     }
 
     #clientes .client-card-header {
-        gap: 7px;
-        margin-bottom: 8px;
+        gap: 7px !important;
+        margin-bottom: 7px !important;
     }
 
     #clientes .client-avatar {
-        width: 40px;
-        height: 40px;
-        flex-basis: 40px;
-        font-size: 11px;
+        flex-basis: 36px !important;
+        width: 36px !important;
+        height: 36px !important;
+        font-size: 11px !important;
     }
 
     #clientes .client-card-header h3 {
-        font-size: 10px;
+        font-size: 10px !important;
     }
 
     #clientes .client-card-header p {
-        display: none;
+        font-size: 7px !important;
+    }
+
+    #clientes .client-phone-row {
+        gap: 5px !important;
+        padding-bottom: 7px !important;
     }
 
     #clientes .client-phone {
-        padding-left: 18px;
-        padding-bottom: 8px;
-        font-size: 7px;
+        gap: 4px !important;
+        font-size: 8px !important;
     }
 
-    #clientes .client-phone::before {
-        font-size: 8px;
+    #clientes .client-phone-icon {
+        flex-basis: 18px !important;
+        width: 18px !important;
+        height: 18px !important;
+    }
+
+    #clientes .client-phone-icon::before {
+        font-size: 11px !important;
+    }
+
+    #clientes .client-delete-button {
+        flex-basis: 28px !important;
+        width: 28px !important;
+        min-width: 28px !important;
+        max-width: 28px !important;
+        height: 28px !important;
+        min-height: 28px !important;
+        max-height: 28px !important;
+        border-radius: 8px !important;
+    }
+
+    #clientes .client-delete-button::before {
+        left: 9px !important;
+        top: 10px !important;
+        width: 8px !important;
+        height: 10px !important;
+    }
+
+    #clientes .client-delete-button::after {
+        left: 7px !important;
+        top: 7px !important;
+        width: 12px !important;
     }
 
     #clientes .client-data {
-        gap: 5px;
-        padding-top: 9px;
+        gap: 5px !important;
+        padding-top: 8px !important;
     }
 
     #clientes .client-data > div {
-        padding-left: 20px;
+        padding-left: 18px !important;
     }
 
-    #clientes .client-data > div:first-child::before,
+    #clientes .client-data > div:first-child::before {
+        font-size: 15px !important;
+    }
+
     #clientes .client-data > div:nth-child(2)::before {
-        font-size: 17px;
+        font-size: 16px !important;
     }
 
     #clientes .client-data span {
-        font-size: 6px;
-        margin-bottom: 3px;
+        font-size: 6.7px !important;
+        margin-bottom: 3px !important;
     }
 
     #clientes .client-data strong {
-        font-size: 8px;
+        font-size: 8.5px !important;
+        letter-spacing: -.1px !important;
     }
 }
 
 @media (max-width: 380px) {
-
     #clientes .client-summary {
-        gap: 6px;
+        grid-template-columns: minmax(0, 1fr) 122px !important;
+        gap: 6px !important;
     }
 
-    #clientes .client-summary-card {
-        padding: 7px;
+    #clientes .client-summary > .client-summary-card {
+        column-gap: 6px !important;
+        padding: 7px !important;
     }
 
-    #clientes .client-summary-card::before {
-        width: 30px;
-        height: 30px;
-        flex-basis: 30px;
-        font-size: 16px;
+    #clientes .client-summary > .client-summary-card::before {
+        width: 29px !important;
+        height: 29px !important;
     }
 
-    #clientes .client-summary-card span {
-        font-size: 6px;
+    #clientes .client-summary > .client-summary-card span {
+        font-size: 6.2px !important;
     }
 
-    #clientes .client-summary-card strong {
-        font-size: 17px;
+    #clientes .client-summary > .client-summary-card strong {
+        font-size: 18px !important;
     }
 
-    #clientes .client-search-card {
-        padding: 6px;
+    #clientes .delete-all-clients-button {
+        width: 122px !important;
+        min-width: 122px !important;
+        max-width: 122px !important;
+        padding: 6px !important;
+        font-size: 6.8px !important;
     }
 
-    #clientes .client-search-input {
-        height: 44px;
-        font-size: 7px;
+    #clientes .delete-all-icon {
+        flex-basis: 14px !important;
+        width: 14px !important;
     }
 
     #clientes .clients-grid {
-        gap: 6px;
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+        gap: 6px !important;
     }
 
     #clientes .client-card {
-        padding: 8px;
+        min-height: 146px !important;
+        padding: 7px !important;
+    }
+
+    #clientes .client-card-header {
+        gap: 5px !important;
     }
 
     #clientes .client-avatar {
-        width: 36px;
-        height: 36px;
-        flex-basis: 36px;
+        flex-basis: 31px !important;
+        width: 31px !important;
+        height: 31px !important;
+        font-size: 10px !important;
     }
 
     #clientes .client-card-header h3 {
-        font-size: 9px;
+        font-size: 9px !important;
+    }
+
+    #clientes .client-card-header p {
+        display: none !important;
+    }
+
+    #clientes .client-phone-row {
+        gap: 3px !important;
     }
 
     #clientes .client-phone {
-        font-size: 6.5px;
+        gap: 3px !important;
+        font-size: 7px !important;
+    }
+
+    #clientes .client-phone-status {
+        display: none !important;
+    }
+
+    #clientes .client-phone-icon {
+        flex-basis: 16px !important;
+        width: 16px !important;
+        height: 16px !important;
+    }
+
+    #clientes .client-phone-icon::before {
+        font-size: 10px !important;
+    }
+
+    #clientes .client-delete-button {
+        flex-basis: 25px !important;
+        width: 25px !important;
+        min-width: 25px !important;
+        max-width: 25px !important;
+        height: 25px !important;
+        min-height: 25px !important;
+        max-height: 25px !important;
+    }
+
+    #clientes .client-delete-button::before {
+        left: 8px !important;
+        top: 9px !important;
+        width: 7px !important;
+        height: 9px !important;
+    }
+
+    #clientes .client-delete-button::after {
+        left: 6px !important;
+        top: 6px !important;
+        width: 11px !important;
+    }
+
+    #clientes .client-data {
+        gap: 4px !important;
+        padding-top: 7px !important;
+    }
+
+    #clientes .client-data > div {
+        padding-left: 15px !important;
+    }
+
+    #clientes .client-data > div:first-child::before {
+        font-size: 13px !important;
+    }
+
+    #clientes .client-data > div:nth-child(2)::before {
+        font-size: 14px !important;
     }
 
     #clientes .client-data span {
-        font-size: 5.5px;
+        font-size: 5.8px !important;
     }
 
     #clientes .client-data strong {
-        font-size: 7.5px;
+        font-size: 7.5px !important;
     }
 }
-
 
 /* =========================================================
    BARBEIROS — VERSÃO FINAL DE REFERÊNCIA
@@ -6519,24 +6685,41 @@ button {
    ÍCONES + CARDS COMPACTOS + BOTÕES PROPORCIONAIS
    ========================================================= */
 
-/* Remove o botão gigante de adicionar */
+/* Botão adicionar barbeiro — pequeno e no canto superior direito */
 #barbeiros .page-header .primary-button {
-    display: none !important;
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+    width: auto !important;
+    min-width: max-content !important;
+    height: 36px !important;
+    min-height: 36px !important;
+    padding: 0 14px !important;
+    flex: 0 0 auto !important;
+    white-space: nowrap;
+    font-size: 10px !important;
 }
 
-/* Cabeçalho */
+
+/* Cabeçalho dos barbeiros — espaçamento compacto */
 #barbeiros .page-header {
-    margin-bottom: 16px !important;
+    margin-bottom: 4px !important;
+    padding-bottom: 0 !important;
 }
 
 #barbeiros .page-header h1 {
     font-size: 30px !important;
-    line-height: 1.08;
+    line-height: 1.08 !important;
+    margin-bottom: 4px !important;
 }
 
 #barbeiros .page-header p {
-    font-size: 11px !important;
+    font-size: 14px !important;
+    line-height: 1.3 !important;
+    margin-top: 0 !important;
+    margin-bottom: 4px !important;
 }
+
 
 /* =========================================================
    TOTAL DE BARBEIROS + DISPLAY DE PESQUISA
@@ -6739,6 +6922,11 @@ button {
 
 /* Botões */
 #barbeiros .barber-actions {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) !important;
+    grid-template-areas:
+        "edit delete"
+        ". toggle";
     gap: 7px !important;
     margin-top: 10px !important;
 }
@@ -6752,11 +6940,43 @@ button {
     font-size: 8px !important;
 }
 
+/* Mantém EDITAR exatamente na posição original */
+#barbeiros .barber-actions .edit-button {
+    grid-area: edit;
+}
+
+/* Mantém DESATIVAR no lado direito, abaixo de EXCLUIR */
+#barbeiros .barber-actions .toggle-button {
+    grid-area: toggle;
+}
+
+/* Única novidade: EXCLUIR fica acima de DESATIVAR */
+#barbeiros .barber-actions .delete-button {
+    grid-area: delete;
+    height: 36px !important;
+    min-height: 36px !important;
+    padding: 0 8px !important;
+    border-radius: 9px !important;
+    background: transparent;
+    color: var(--red);
+    border: 1px solid rgba(223,114,114,0.25);
+    font-size: 8px !important;
+}
+
 /* =========================================================
    MOBILE — MANTER 2 COLUNAS
    ========================================================= */
 
 @media (max-width: 700px) {
+
+    #barbeiros .page-header .primary-button {
+        width: auto !important;
+        min-width: max-content !important;
+        height: 34px !important;
+        min-height: 34px !important;
+        padding: 0 11px !important;
+        font-size: 9px !important;
+    }
 
     #barbeiros .page-header {
         margin-bottom: 13px !important;
@@ -6886,6 +7106,10 @@ button {
     }
 
     #barbeiros .barber-actions {
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) !important;
+        grid-template-areas:
+            "edit delete"
+            ". toggle";
         gap: 5px !important;
         margin-top: 8px !important;
     }
@@ -6901,6 +7125,15 @@ button {
 
 /* Celulares muito estreitos: continua em 2 colunas */
 @media (max-width: 380px) {
+
+    #barbeiros .page-header .primary-button {
+        width: auto !important;
+        min-width: max-content !important;
+        height: 32px !important;
+        min-height: 32px !important;
+        padding: 0 9px !important;
+        font-size: 8px !important;
+    }
 
     #barbeiros .barbers-grid {
         grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
@@ -7952,3 +8185,4334 @@ button {
 #configuracoes .settings-disabled-note strong{display:block;color:#ff8b8b;margin-bottom:2px;}
 #configuracoes .settings-disabled-note span:not(.settings-disabled-note-icon){display:block;color:#d99a9a;}
 @media(max-width:700px){#configuracoes .settings-save-after-whatsapp{justify-content:stretch;}#configuracoes .settings-save-after-whatsapp .primary-button{width:100%;}}
+
+/* =========================================================
+   HORÁRIOS — AJUSTE PROFISSIONAL + MOBILE SEM DESLOCAMENTO
+   Somente #horarios. Não altera os demais módulos.
+   ========================================================= */
+
+#horarios,
+#horarios * {
+    box-sizing: border-box;
+}
+
+#horarios {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    overflow-x: hidden;
+}
+
+#horarios .page-header,
+#horarios .page-header > div,
+#horarios .content-card,
+#horarios .schedule-summary,
+#horarios .schedule-settings-grid,
+#horarios .week-days,
+#horarios .scheduling-mode-card,
+#horarios .scheduling-mode-control,
+#horarios .availability-calendar,
+#horarios .schedule-slots,
+#horarios .schedule-save-area {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+}
+
+#horarios .content-card,
+#horarios .schedule-summary-card,
+#horarios .scheduling-mode-card {
+    overflow: hidden;
+}
+
+#horarios .schedule-summary {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+#horarios .schedule-summary-card {
+    min-width: 0;
+    padding: 14px;
+    border-radius: 14px;
+}
+
+#horarios .schedule-summary-card strong {
+    display: block;
+    min-width: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+#horarios .schedule-settings-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+#horarios .schedule-settings-grid .form-group {
+    min-width: 0;
+}
+
+#horarios .schedule-settings-grid input,
+#horarios .schedule-settings-grid select {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    height: 44px;
+}
+
+#horarios .week-days {
+    grid-template-columns: repeat(7, minmax(0, 1fr));
+}
+
+#horarios .day-option {
+    min-width: 0;
+    width: 100%;
+}
+
+#horarios .day-option span {
+    width: 100%;
+    min-width: 0;
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 5px 4px;
+    border-radius: 10px;
+    white-space: nowrap;
+}
+
+#horarios .scheduling-mode-card {
+    max-width: 100% !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+}
+
+#horarios .scheduling-mode-control {
+    gap: 12px !important;
+}
+
+#horarios .scheduling-mode-copy {
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+#horarios .scheduling-mode-copy strong,
+#horarios .scheduling-mode-copy span {
+    min-width: 0;
+    overflow-wrap: anywhere;
+}
+
+#horarios .scheduling-mode-switch {
+    flex: 0 0 88px !important;
+    width: 88px !important;
+    min-width: 88px !important;
+}
+
+#horarios .availability-calendar {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+#horarios .availability-day {
+    width: 100%;
+    min-width: 0;
+    min-height: 78px;
+    padding: 9px;
+    border-radius: 12px;
+}
+
+#horarios .availability-day .day-name,
+#horarios .availability-day .day-status {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+#horarios .schedule-slots {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+#horarios .schedule-slot {
+    width: 100%;
+    min-width: 0;
+    min-height: 44px;
+    padding: 8px 6px;
+    border-radius: 10px;
+    white-space: nowrap;
+}
+
+#horarios #toggleDateAvailability {
+    max-width: 100%;
+    min-height: 44px;
+    padding: 9px 16px;
+    border-radius: 10px;
+    white-space: normal;
+}
+
+#horarios .schedule-save-area .primary-button {
+    width: 100%;
+    max-width: 100%;
+    min-height: 46px;
+    border-radius: 11px;
+}
+
+@media (max-width: 700px) {
+    #horarios {
+        overflow-x: hidden !important;
+    }
+
+    #horarios .page-header {
+        margin-bottom: 14px;
+    }
+
+    #horarios .page-header h1 {
+        font-size: clamp(28px, 8vw, 36px);
+        line-height: 1.05;
+    }
+
+    #horarios .page-header p {
+        max-width: 100%;
+        overflow-wrap: anywhere;
+    }
+
+    #horarios .schedule-summary {
+        grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+        gap: 7px !important;
+    }
+
+    #horarios .schedule-summary-card {
+        min-height: 68px !important;
+        padding: 10px 8px !important;
+        border-radius: 12px !important;
+    }
+
+    #horarios .schedule-summary-card span {
+        font-size: 6.5px !important;
+        line-height: 1.2;
+    }
+
+    #horarios .schedule-summary-card strong {
+        font-size: 15px !important;
+        line-height: 1.15;
+    }
+
+    #horarios .schedule-settings-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+        gap: 7px !important;
+    }
+
+    #horarios .schedule-settings-grid input,
+    #horarios .schedule-settings-grid select {
+        height: 40px !important;
+        padding-left: 7px !important;
+        padding-right: 7px !important;
+        font-size: 8px !important;
+    }
+
+    #horarios .schedule-settings-grid label {
+        font-size: 7px !important;
+    }
+
+    #horarios .week-days {
+        grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+        gap: 6px !important;
+    }
+
+    #horarios .day-option span {
+        min-height: 44px !important;
+        padding: 5px 3px !important;
+        font-size: 7px !important;
+        border-radius: 10px !important;
+    }
+
+    #horarios .scheduling-mode-card {
+        padding: 13px !important;
+        border-radius: 12px !important;
+    }
+
+    #horarios .scheduling-mode-control {
+        gap: 8px !important;
+    }
+
+    #horarios .scheduling-mode-copy strong {
+        font-size: 10px !important;
+    }
+
+    #horarios .scheduling-mode-copy span {
+        font-size: 7px !important;
+        line-height: 1.35;
+    }
+
+    #horarios .scheduling-mode-switch {
+        flex-basis: 82px !important;
+        width: 82px !important;
+        min-width: 82px !important;
+        height: 40px !important;
+    }
+
+    #horarios .availability-calendar {
+        grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+        gap: 6px !important;
+    }
+
+    #horarios .availability-day {
+        min-height: 72px !important;
+        padding: 7px !important;
+        border-radius: 10px !important;
+    }
+
+    #horarios .availability-day .day-name {
+        font-size: 6px !important;
+        margin-bottom: 5px !important;
+    }
+
+    #horarios .availability-day .day-number {
+        font-size: 17px !important;
+        margin-bottom: 4px !important;
+    }
+
+    #horarios .availability-day .day-status {
+        font-size: 6px !important;
+    }
+
+    #horarios .schedule-slots {
+        grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+        gap: 6px !important;
+    }
+
+    #horarios .schedule-slot {
+        min-height: 44px !important;
+        padding: 7px 4px !important;
+        font-size: 7px !important;
+        border-radius: 9px !important;
+    }
+
+    #horarios .empty-schedule {
+        max-width: 100%;
+        overflow-wrap: anywhere;
+    }
+
+    #horarios #toggleDateAvailability {
+        min-height: 42px !important;
+        padding: 8px 12px !important;
+        font-size: 8px !important;
+    }
+
+    #horarios .schedule-save-area {
+        margin-top: 12px !important;
+        margin-bottom: 20px !important;
+    }
+
+    #horarios .schedule-save-area .primary-button {
+        min-height: 46px !important;
+        font-size: 9px !important;
+        border-radius: 11px !important;
+    }
+}
+
+@media (max-width: 380px) {
+    #horarios .schedule-summary-card {
+        min-height: 64px !important;
+        padding: 9px 6px !important;
+    }
+
+    #horarios .schedule-summary-card span {
+        font-size: 6px !important;
+    }
+
+    #horarios .schedule-summary-card strong {
+        font-size: 14px !important;
+    }
+
+    #horarios .week-days {
+        gap: 4px !important;
+    }
+
+    #horarios .day-option span {
+        min-height: 42px !important;
+        font-size: 6.5px !important;
+    }
+
+    #horarios .availability-calendar {
+        gap: 5px !important;
+    }
+
+    #horarios .availability-day {
+        min-height: 68px !important;
+        padding: 6px !important;
+    }
+
+    #horarios .schedule-slots {
+        gap: 5px !important;
+    }
+
+    #horarios .schedule-slot {
+        min-height: 42px !important;
+        font-size: 6.5px !important;
+    }
+}
+
+
+/* =========================================================
+   HORÁRIOS — ACABAMENTO PREMIUM FINAL
+   Somente #horarios. Não altera os demais módulos.
+   ========================================================= */
+
+#horarios .horarios-page-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 18px;
+    width: 100%;
+    min-width: 0;
+    margin-bottom: 18px;
+}
+
+#horarios .horarios-page-title {
+    min-width: 0;
+    flex: 1 1 auto;
+}
+
+#horarios .horarios-save-actions {
+    flex: 0 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 9px;
+    min-width: 0;
+    padding-top: 2px;
+}
+
+#horarios .horarios-save-status {
+    min-height: 42px;
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 0 12px;
+    border: 1px solid rgba(35, 211, 124, .45);
+    border-radius: 13px;
+    background: rgba(35, 211, 124, .07);
+    color: #dfffea;
+    font-size: 9px;
+    font-weight: 700;
+    line-height: 1.15;
+    white-space: nowrap;
+    box-shadow: inset 0 0 0 1px rgba(255,255,255,.025), 0 8px 22px rgba(0,0,0,.12);
+}
+
+#horarios .horarios-save-status-dot {
+    width: 10px;
+    height: 10px;
+    flex: 0 0 10px;
+    border-radius: 50%;
+    background: #20d47a;
+    box-shadow: 0 0 0 3px rgba(32,212,122,.10), 0 0 12px rgba(32,212,122,.45);
+}
+
+#horarios .horarios-save-status-icon {
+    width: 20px;
+    height: 20px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid rgba(32,212,122,.45);
+    border-radius: 50%;
+    color: #54e99b;
+    font-size: 11px;
+    font-weight: 900;
+}
+
+#horarios .horarios-save-status.is-dirty {
+    border-color: rgba(239, 75, 75, .48);
+    background: rgba(239, 75, 75, .07);
+    color: #ffdede;
+}
+
+#horarios .horarios-save-status.is-dirty .horarios-save-status-dot {
+    background: #ef4b4b;
+    box-shadow: 0 0 0 3px rgba(239,75,75,.10), 0 0 12px rgba(239,75,75,.42);
+}
+
+#horarios .horarios-save-status.is-dirty .horarios-save-status-icon {
+    border-color: rgba(239,75,75,.45);
+    color: #ff7777;
+}
+
+#horarios .horarios-save-button {
+    min-height: 42px;
+    width: auto;
+    min-width: 178px;
+    padding: 0 15px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    border-radius: 13px !important;
+    border: 1px solid rgba(255,224,163,.55);
+    background: linear-gradient(180deg, #ffe4ad 0%, #e6bd72 100%);
+    color: #17130d;
+    font-size: 9px;
+    font-weight: 900;
+    letter-spacing: .1px;
+    box-shadow: 0 8px 22px rgba(215,181,109,.18), inset 0 1px 0 rgba(255,255,255,.42);
+    transition: transform .18s ease, box-shadow .18s ease, filter .18s ease;
+}
+
+#horarios .horarios-save-button:hover {
+    transform: translateY(-1px);
+    filter: brightness(1.03);
+    box-shadow: 0 11px 26px rgba(215,181,109,.25), inset 0 1px 0 rgba(255,255,255,.48);
+}
+
+#horarios .horarios-save-button:active {
+    transform: translateY(0);
+}
+
+#horarios .horarios-save-button-icon {
+    width: 19px;
+    height: 19px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 6px;
+    line-height: 1;
+}
+
+#horarios .horarios-save-button-icon svg {
+    width: 17px;
+    height: 17px;
+    display: block;
+}
+
+#horarios .content-card,
+#horarios .schedule-summary-card,
+#horarios .scheduling-mode-card,
+#horarios .availability-day,
+#horarios .schedule-slot,
+#horarios .day-option span,
+#horarios .schedule-settings-grid input,
+#horarios .schedule-settings-grid select {
+    border-radius: 14px !important;
+}
+
+#horarios .content-card {
+    border: 1px solid rgba(255,255,255,.08);
+    box-shadow: 0 10px 28px rgba(0,0,0,.12), inset 0 1px 0 rgba(255,255,255,.018);
+}
+
+#horarios .schedule-summary-card {
+    border: 1px solid rgba(255,255,255,.08);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.02);
+}
+
+#horarios .availability-day,
+#horarios .schedule-slot,
+#horarios .day-option span,
+#horarios .schedule-settings-grid input,
+#horarios .schedule-settings-grid select {
+    overflow: hidden;
+}
+
+#horarios .schedule-slots,
+#horarios .availability-calendar,
+#horarios .week-days,
+#horarios .schedule-summary,
+#horarios .schedule-settings-grid {
+    min-width: 0;
+    width: 100%;
+}
+
+#horarios .schedule-slots > *,
+#horarios .availability-calendar > *,
+#horarios .week-days > *,
+#horarios .schedule-summary > *,
+#horarios .schedule-settings-grid > * {
+    min-width: 0;
+    max-width: 100%;
+}
+
+@media (max-width: 700px) {
+    #horarios .horarios-page-header {
+        align-items: stretch;
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    #horarios .horarios-save-actions {
+        width: 100%;
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1.35fr);
+        gap: 7px;
+        padding-top: 0;
+    }
+
+    #horarios .horarios-save-status,
+    #horarios .horarios-save-button {
+        width: 100%;
+        min-width: 0;
+    }
+
+    #horarios .horarios-save-status {
+        min-height: 42px;
+        padding: 0 9px;
+        font-size: 7.5px;
+    }
+
+    #horarios .horarios-save-status-icon {
+        width: 18px;
+        height: 18px;
+        font-size: 10px;
+    }
+
+    #horarios .horarios-save-button {
+        min-height: 42px;
+        padding: 0 8px;
+        font-size: 8px;
+    }
+
+    #horarios .horarios-save-button-icon {
+        width: 17px;
+        height: 17px;
+    }
+
+    #horarios .horarios-save-button-icon svg {
+        width: 15px;
+        height: 15px;
+    }
+
+    #horarios .content-card,
+    #horarios .schedule-summary-card,
+    #horarios .scheduling-mode-card,
+    #horarios .availability-day,
+    #horarios .schedule-slot,
+    #horarios .day-option span,
+    #horarios .schedule-settings-grid input,
+    #horarios .schedule-settings-grid select {
+        border-radius: 12px !important;
+    }
+}
+
+@media (max-width: 380px) {
+    #horarios .horarios-save-actions {
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr);
+    }
+
+    #horarios .horarios-save-status {
+        padding: 0 7px;
+        gap: 5px;
+        font-size: 6.8px;
+    }
+
+    #horarios .horarios-save-status-dot {
+        width: 8px;
+        height: 8px;
+        flex-basis: 8px;
+    }
+
+    #horarios .horarios-save-button {
+        font-size: 7.2px;
+        padding: 0 6px;
+    }
+}
+
+
+/* =========================================================
+   HORÁRIOS — ANTECEDÊNCIA MÁXIMA PARA AGENDAMENTO
+   ========================================================= */
+#horarios .booking-advance-group {
+    min-width: 0;
+}
+
+#horarios .booking-advance-group select {
+    width: 100%;
+}
+
+#horarios .booking-advance-help {
+    display: block;
+    margin-top: 8px;
+    color: rgba(255,255,255,.52);
+    font-size: 12px;
+    line-height: 1.5;
+}
+
+#horarios .horarios-save-status {
+    transition: .2s ease;
+}
+
+#horarios .horarios-save-status.is-saved {
+    background: rgba(54, 179, 126, .08);
+    border-color: rgba(54, 179, 126, .22);
+    color: #43c98d;
+}
+
+#horarios .horarios-save-status.is-saved .horarios-save-status-dot {
+    background: #43c98d;
+    box-shadow: 0 0 0 4px rgba(67,201,141,.10);
+}
+
+#horarios .horarios-save-status.is-error {
+    background: rgba(223, 114, 114, .08);
+    border-color: rgba(223, 114, 114, .28);
+    color: #ff8b8b;
+}
+
+@media (max-width: 700px) {
+    #horarios .booking-advance-help {
+        font-size: 11px;
+    }
+}
+/* =========================================================
+   BARBEIROS — VISUAL PREMIUM
+   ========================================================= */
+
+/* ---------------------------------------------------------
+   BOTÃO + ADICIONAR BARBEIRO
+   --------------------------------------------------------- */
+
+#addBarberButton {
+    width: fit-content;
+    min-width: 0;
+    padding: 12px 20px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+
+    border-radius: 14px;
+
+    border: 1px solid rgba(255, 223, 161, 0.75);
+
+    background: linear-gradient(
+        135deg,
+        #ffdfa1 0%,
+        #e8bd6b 100%
+    );
+
+    color: #171717;
+
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 0.3px;
+
+    box-shadow:
+        0 8px 20px rgba(0, 0, 0, 0.22),
+        inset 0 1px 0 rgba(255, 255, 255, 0.35);
+
+    cursor: pointer;
+
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease,
+        filter 0.2s ease;
+}
+
+#addBarberButton:hover {
+    transform: translateY(-2px);
+
+    box-shadow:
+        0 12px 28px rgba(0, 0, 0, 0.30),
+        0 0 0 1px rgba(255, 223, 161, 0.15);
+
+    filter: brightness(1.04);
+}
+
+#addBarberButton:active {
+    transform: translateY(0);
+}
+
+
+/* =========================================================
+   ÁREA DOS BOTÕES DO CARD
+   ========================================================= */
+
+.barber-actions {
+    display: grid;
+
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+
+    gap: 10px;
+
+    align-items: stretch;
+
+    width: 100%;
+}
+
+
+/* ---------------------------------------------------------
+   EDITAR
+   Fica SEMPRE à esquerda
+   --------------------------------------------------------- */
+
+.barber-actions .edit-button {
+    grid-column: 1;
+    grid-row: 1 / span 2;
+
+    width: 100%;
+    min-height: 48px;
+
+    align-self: center;
+
+    border-radius: 12px;
+
+    border: 1px solid rgba(255, 223, 161, 0.65);
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(255, 223, 161, 0.08),
+            rgba(255, 223, 161, 0.02)
+        );
+
+    color: #f5f5f5;
+
+    font-size: 11px;
+    font-weight: 800;
+
+    letter-spacing: 0.4px;
+
+    cursor: pointer;
+
+    transition:
+        background 0.2s ease,
+        border-color 0.2s ease,
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.barber-actions .edit-button::before {
+    content: "✎";
+
+    display: inline-block;
+
+    margin-right: 7px;
+
+    color: #ffdfa1;
+
+    font-size: 15px;
+    font-weight: 700;
+}
+
+.barber-actions .edit-button:hover {
+    background:
+        linear-gradient(
+            135deg,
+            rgba(255, 223, 161, 0.16),
+            rgba(255, 223, 161, 0.05)
+        );
+
+    border-color: #ffdfa1;
+
+    transform: translateY(-1px);
+
+    box-shadow:
+        0 8px 20px rgba(0, 0, 0, 0.20);
+}
+
+
+/* =========================================================
+   GRUPO DA DIREITA
+   EXCLUIR
+   DESATIVAR
+   ========================================================= */
+
+.barber-toggle-group {
+    grid-column: 2;
+    grid-row: 1 / span 2;
+
+    display: flex;
+
+    flex-direction: column;
+
+    justify-content: center;
+
+    gap: 8px;
+
+    width: 100%;
+}
+
+
+/* ---------------------------------------------------------
+   EXCLUIR
+   --------------------------------------------------------- */
+
+.barber-actions .delete-button {
+    width: 100%;
+
+    min-height: 42px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 12px;
+
+    border: 1px solid rgba(255, 91, 91, 0.75);
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(120, 25, 25, 0.30),
+            rgba(70, 15, 15, 0.22)
+        );
+
+    color: #ff8c8c;
+
+    font-size: 11px;
+    font-weight: 800;
+
+    letter-spacing: 0.5px;
+
+    cursor: pointer;
+
+    transition:
+        background 0.2s ease,
+        border-color 0.2s ease,
+        color 0.2s ease,
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.barber-actions .delete-button::before {
+    content: "♜";
+
+    margin-right: 7px;
+
+    font-size: 14px;
+
+    color: #ff7777;
+}
+
+.barber-actions .delete-button:hover {
+    background:
+        linear-gradient(
+            135deg,
+            rgba(180, 40, 40, 0.42),
+            rgba(100, 20, 20, 0.30)
+        );
+
+    border-color: #ff6666;
+
+    color: #ffffff;
+
+    transform: translateY(-1px);
+
+    box-shadow:
+        0 8px 20px rgba(255, 60, 60, 0.10);
+}
+
+
+/* ---------------------------------------------------------
+   DESATIVAR / ATIVAR
+   --------------------------------------------------------- */
+
+.barber-actions .toggle-button {
+    width: 100%;
+
+    min-height: 42px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 12px;
+
+    border: 1px solid rgba(160, 170, 185, 0.55);
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(90, 100, 115, 0.16),
+            rgba(50, 55, 65, 0.12)
+        );
+
+    color: #d7dbe1;
+
+    font-size: 11px;
+    font-weight: 800;
+
+    letter-spacing: 0.5px;
+
+    cursor: pointer;
+
+    transition:
+        background 0.2s ease,
+        border-color 0.2s ease,
+        color 0.2s ease,
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.barber-actions .toggle-button::before {
+    content: "◉";
+
+    margin-right: 7px;
+
+    font-size: 12px;
+
+    color: #c9ced6;
+}
+
+.barber-actions .toggle-button:hover {
+    background:
+        linear-gradient(
+            135deg,
+            rgba(120, 130, 145, 0.24),
+            rgba(70, 75, 85, 0.18)
+        );
+
+    border-color: rgba(220, 225, 235, 0.75);
+
+    color: #ffffff;
+
+    transform: translateY(-1px);
+
+    box-shadow:
+        0 8px 18px rgba(0, 0, 0, 0.20);
+}
+
+
+/* ---------------------------------------------------------
+   QUANDO ESTIVER ATIVANDO
+   --------------------------------------------------------- */
+
+.barber-actions .toggle-button.activate {
+    border-color: rgba(255, 223, 161, 0.75);
+
+    background:
+        linear-gradient(
+            135deg,
+            #d4aa58,
+            #a9823d
+        );
+
+    color: #171717;
+
+    box-shadow:
+        0 6px 18px rgba(214, 170, 88, 0.18);
+}
+
+.barber-actions .toggle-button.activate::before {
+    color: #171717;
+}
+
+
+/* =========================================================
+   AJUSTE DOS CARDS
+   ========================================================= */
+
+.barber-card {
+    border-radius: 18px;
+    overflow: hidden;
+
+    transition:
+        transform 0.2s ease,
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.barber-card:hover {
+    transform: translateY(-2px);
+
+    border-color: rgba(255, 223, 161, 0.18);
+
+    box-shadow:
+        0 14px 35px rgba(0, 0, 0, 0.22);
+}
+
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 600px) {
+
+    .barber-actions {
+        grid-template-columns:
+            minmax(0, 1fr)
+            minmax(0, 1fr);
+
+        gap: 8px;
+    }
+
+    .barber-actions .edit-button,
+    .barber-actions .delete-button,
+    .barber-actions .toggle-button {
+        font-size: 10px;
+    }
+
+    .barber-actions .edit-button {
+        min-height: 44px;
+    }
+
+    .barber-actions .delete-button,
+    .barber-actions .toggle-button {
+        min-height: 38px;
+    }
+
+    #addBarberButton {
+        padding: 11px 17px;
+
+        font-size: 11px;
+
+        border-radius: 13px;
+    }
+}
+
+/* =========================================================
+   NAVALHA DE OURO — REFINO PREMIUM DO MÓDULO BARBEIROS
+   Somente estilos dentro de #barbeiros.
+   Mantém HTML, JavaScript, dados e os demais módulos intactos.
+   ========================================================= */
+
+/* Cabeçalho do módulo */
+#barbeiros .page-header {
+    align-items: center !important;
+    gap: 18px !important;
+    margin-bottom: 20px !important;
+}
+
+#barbeiros .page-header h1 {
+    font-size: clamp(27px, 3vw, 34px) !important;
+    line-height: 1.08 !important;
+    letter-spacing: -0.7px;
+}
+
+#barbeiros .page-header p {
+    color: #aeb4bf !important;
+    font-size: 12px !important;
+    line-height: 1.5;
+}
+
+#barbeiros #addBarberButton {
+    min-height: 42px !important;
+    padding: 0 17px !important;
+    border: 1px solid rgba(255, 223, 161, 0.8) !important;
+    border-radius: 12px !important;
+    background: linear-gradient(135deg, #ffe2a5 0%, #d9ad59 100%) !important;
+    color: #17130d !important;
+    box-shadow: 0 7px 20px rgba(214, 179, 106, 0.12), inset 0 1px 0 rgba(255,255,255,0.4) !important;
+    font-size: 10px !important;
+    font-weight: 800 !important;
+    letter-spacing: 0.35px;
+}
+
+#barbeiros #addBarberButton:hover {
+    filter: brightness(1.05);
+    transform: translateY(-1px);
+}
+
+/* Três cartões de resumo: mantém os três indicadores e os números dinâmicos */
+#barbeiros .team-summary.team-summary-equipe {
+    display: grid !important;
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    gap: 10px !important;
+    width: 100% !important;
+    margin: 0 0 17px !important;
+}
+
+#barbeiros .team-summary.team-summary-equipe > div {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 5px !important;
+    min-width: 0 !important;
+    min-height: 84px !important;
+    height: 84px !important;
+    padding: 8px 5px !important;
+    border: 1px solid rgba(214, 179, 106, 0.24) !important;
+    border-radius: 14px !important;
+    box-sizing: border-box !important;
+    background: linear-gradient(145deg, #1d1d1d 0%, #131517 100%) !important;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.035), 0 7px 18px rgba(0,0,0,0.10) !important;
+    text-align: center !important;
+    overflow: hidden;
+}
+
+/* Reexibe Ativos e Inativos caso uma regra anterior os tenha ocultado */
+#barbeiros .team-summary.team-summary-equipe > div:nth-child(2),
+#barbeiros .team-summary.team-summary-equipe > div:nth-child(3) {
+    display: flex !important;
+}
+
+/* Remove ícone antigo em caixa e a barra de pesquisa falsa criada por pseudo-elemento */
+#barbeiros .team-summary.team-summary-equipe > div::before {
+    content: none !important;
+    display: none !important;
+}
+
+#barbeiros .team-summary.team-summary-equipe::after {
+    content: none !important;
+    display: none !important;
+}
+
+/* Ícones pequenos e consistentes acima dos rótulos */
+#barbeiros .team-summary.team-summary-equipe > div::after {
+    display: block !important;
+    order: 0 !important;
+    margin: 0 0 1px !important;
+    color: #e7c477 !important;
+    font-size: 16px !important;
+    line-height: 1 !important;
+}
+
+#barbeiros .team-summary.team-summary-equipe > div:nth-child(1)::after {
+    content: "♟" !important;
+}
+
+#barbeiros .team-summary.team-summary-equipe > div:nth-child(2)::after {
+    content: "✓" !important;
+    color: #48d99a !important;
+}
+
+#barbeiros .team-summary.team-summary-equipe > div:nth-child(3)::after {
+    content: "⊘" !important;
+    color: #f07178 !important;
+}
+
+#barbeiros .team-summary.team-summary-equipe > div > span {
+    display: block !important;
+    order: 1 !important;
+    width: 100% !important;
+    margin: 0 !important;
+    color: #b9c0ca !important;
+    font-size: 9px !important;
+    line-height: 1.2 !important;
+    font-weight: 600 !important;
+    letter-spacing: 0.7px !important;
+    text-align: center !important;
+    white-space: normal;
+}
+
+#barbeiros .team-summary.team-summary-equipe > div > strong {
+    display: block !important;
+    order: 2 !important;
+    width: 100% !important;
+    margin: 0 !important;
+    color: #fff !important;
+    font-size: 23px !important;
+    line-height: 1 !important;
+    font-weight: 800 !important;
+    text-align: center !important;
+}
+
+#barbeiros .team-summary.team-summary-equipe > div:hover {
+    border-color: rgba(255, 223, 161, 0.48) !important;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.05), 0 8px 22px rgba(0,0,0,0.18) !important;
+}
+
+/* Lista: cartões de barbeiro em linhas largas, com aparência SaaS */
+#barbeiros .barbers-grid {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) !important;
+    gap: 11px !important;
+    width: 100% !important;
+}
+
+#barbeiros .barber-card {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, 1.15fr) minmax(86px, 0.55fr) minmax(150px, 0.82fr) !important;
+    grid-template-rows: auto auto !important;
+    grid-template-areas:
+        "identity metrics status actions"
+        "phone   metrics status actions" !important;
+    align-items: center !important;
+    gap: 7px 18px !important;
+    min-width: 0 !important;
+    padding: 15px 17px !important;
+    border: 1px solid rgba(255,255,255,0.09) !important;
+    border-radius: 16px !important;
+    background: linear-gradient(135deg, rgba(28,31,35,0.98) 0%, rgba(16,18,21,0.98) 100%) !important;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.025), 0 8px 24px rgba(0,0,0,0.12) !important;
+    box-sizing: border-box !important;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease !important;
+}
+
+#barbeiros .barber-card:hover {
+    transform: translateY(-1px) !important;
+    border-color: rgba(214,179,106,0.34) !important;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.035), 0 12px 28px rgba(0,0,0,0.2) !important;
+}
+
+#barbeiros .barber-card.inactive {
+    opacity: 0.76;
+}
+
+#barbeiros .barber-card-header {
+    grid-area: identity !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 12px !important;
+    min-width: 0 !important;
+    margin: 0 !important;
+}
+
+/* Mantém o avatar/letras já existentes; não adiciona imagens */
+#barbeiros .barber-avatar {
+    width: 52px !important;
+    height: 52px !important;
+    flex: 0 0 52px !important;
+    border: 2px solid #d8b565 !important;
+    border-radius: 50% !important;
+    background: linear-gradient(145deg, #f3d48b, #b98b3e) !important;
+    color: #19140c !important;
+    box-shadow: 0 0 0 3px rgba(214,179,106,0.08), inset 0 1px 0 rgba(255,255,255,0.25) !important;
+    font-size: 12px !important;
+    font-weight: 800 !important;
+}
+
+#barbeiros .barber-card-header > div,
+#barbeiros .barber-card-header h3,
+#barbeiros .barber-card-header p {
+    min-width: 0;
+}
+
+#barbeiros .barber-card-header h3 {
+    margin: 0 0 4px !important;
+    color: #f7f7f7 !important;
+    font-size: 14px !important;
+    line-height: 1.25 !important;
+    font-weight: 800 !important;
+    letter-spacing: -0.15px;
+}
+
+#barbeiros .barber-card-header p {
+    margin: 0 !important;
+    color: #aeb5bf !important;
+    font-size: 10px !important;
+    line-height: 1.35 !important;
+}
+
+/* Telefone/contato */
+#barbeiros .barber-phone {
+    grid-area: phone !important;
+    position: relative !important;
+    min-width: 0 !important;
+    margin: 0 !important;
+    padding: 0 0 0 21px !important;
+    border: 0 !important;
+    color: #c9d0d9 !important;
+    font-size: 10px !important;
+    line-height: 1.4 !important;
+    overflow-wrap: anywhere;
+}
+
+#barbeiros .barber-phone::before {
+    content: "◉" !important;
+    position: absolute !important;
+    left: 0 !important;
+    top: 0 !important;
+    color: #37d795 !important;
+    font-size: 13px !important;
+    line-height: 1.1 !important;
+}
+
+/* Atendimento e faturamento em dois blocos equilibrados */
+#barbeiros .barber-data {
+    grid-area: metrics !important;
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    align-items: center !important;
+    gap: 10px !important;
+    min-width: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+#barbeiros .barber-data > div {
+    min-width: 0 !important;
+    position: relative !important;
+    padding: 2px 0 2px 27px !important;
+}
+
+#barbeiros .barber-data > div:first-child::before {
+    content: "▦" !important;
+    position: absolute !important;
+    left: 0 !important;
+    top: 2px !important;
+    color: #a9b7ca !important;
+    font-size: 19px !important;
+    line-height: 1 !important;
+}
+
+#barbeiros .barber-data > div:nth-child(2)::before {
+    content: "$" !important;
+    position: absolute !important;
+    left: 0 !important;
+    top: 1px !important;
+    width: 21px !important;
+    height: 21px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    border: 1.5px solid #dfb95f !important;
+    border-radius: 50% !important;
+    color: #f1cd78 !important;
+    font-size: 11px !important;
+    font-weight: 800 !important;
+    box-sizing: border-box !important;
+}
+
+#barbeiros .barber-data span {
+    display: block !important;
+    margin: 0 0 5px !important;
+    color: #aeb5bf !important;
+    font-size: 9px !important;
+    line-height: 1.25 !important;
+}
+
+#barbeiros .barber-data strong {
+    display: block !important;
+    color: #f5f5f5 !important;
+    font-size: 12px !important;
+    line-height: 1.25 !important;
+    font-weight: 800 !important;
+    white-space: nowrap;
+}
+
+/* Status claro e legível */
+#barbeiros .barber-status {
+    grid-area: status !important;
+    justify-self: center !important;
+    align-self: center !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 5px !important;
+    min-height: 29px !important;
+    padding: 0 11px !important;
+    border: 1px solid rgba(54,217,151,0.35) !important;
+    border-radius: 999px !important;
+    background: rgba(0,190,113,0.09) !important;
+    color: #45e5a1 !important;
+    font-size: 9px !important;
+    font-weight: 800 !important;
+    letter-spacing: 0.45px;
+    white-space: nowrap;
+}
+
+#barbeiros .barber-status.active::before {
+    content: "" !important;
+    display: inline-block !important;
+    width: 7px !important;
+    height: 7px !important;
+    margin: 0 !important;
+    border-radius: 50% !important;
+    background: #28d990 !important;
+    box-shadow: 0 0 8px rgba(40,217,144,0.24);
+}
+
+#barbeiros .barber-status.inactive {
+    border-color: rgba(240,113,120,0.32) !important;
+    background: rgba(240,113,120,0.08) !important;
+    color: #ff858b !important;
+}
+
+/* Ações compactas. Editar, excluir e ativar/desativar continuam funcionando. */
+#barbeiros .barber-actions {
+    grid-area: actions !important;
+    display: grid !important;
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+grid-template-rows: 36px !important;
+grid-template-areas: "edit delete toggle" !important;
+    align-items: stretch !important;
+    gap: 6px !important;
+    min-width: 0 !important;
+    width: 100% !important;
+    margin: 0 !important;
+}
+
+#barbeiros .barber-actions > .edit-button {
+    grid-area: edit !important;
+}
+
+#barbeiros .barber-actions > .delete-button {
+    grid-area: delete !important;
+}
+
+#barbeiros .barber-actions > .toggle-button {
+    grid-area: toggle !important;
+}
+
+/* Compatível com a versão que agrupa Excluir e Desativar no mesmo contêiner */
+#barbeiros .barber-actions:has(> .barber-toggle-group) {
+    display: grid !important;
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    grid-template-rows: 36px !important;
+    grid-template-areas: "edit group group" !important;
+    gap: 6px !important;
+    align-items: center !important;
+}
+
+#barbeiros .barber-actions > .edit-button {
+    grid-area: edit !important;
+}
+
+#barbeiros .barber-actions > .barber-toggle-group {
+    grid-area: group !important;
+    display: flex !important;
+    flex-direction: row !important;
+    gap: 6px !important;
+    min-width: 0 !important;
+    width: 100% !important;
+}
+
+#barbeiros .barber-actions > .barber-toggle-group button {
+    flex: 1 1 0 !important;
+    min-width: 0 !important;
+    padding: 0 4px !important;
+    font-size: 8px !important;
+}
+
+#barbeiros .barber-actions button {
+    min-width: 0 !important;
+    min-height: 34px !important;
+    height: 34px !important;
+    padding: 0 8px !important;
+    border-radius: 9px !important;
+    font-size: 8px !important;
+    font-weight: 800 !important;
+    letter-spacing: 0.2px;
+    line-height: 1 !important;
+    transition: background 0.18s ease, border-color 0.18s ease, color 0.18s ease, transform 0.18s ease !important;
+}
+
+#barbeiros .barber-actions .edit-button {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    border: 1px solid rgba(214,179,106,0.4) !important;
+    background: linear-gradient(145deg, rgba(214,179,106,0.11), rgba(214,179,106,0.035)) !important;
+    color: #f0d18a !important;
+}
+
+#barbeiros .barber-actions .edit-button:hover {
+    border-color: rgba(255,223,161,0.8) !important;
+    background: rgba(214,179,106,0.16) !important;
+}
+
+#barbeiros .barber-actions .delete-button {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    border: 1px solid rgba(240,93,100,0.32) !important;
+    background: rgba(171,39,47,0.15) !important;
+    color: #ff9297 !important;
+}
+
+#barbeiros .barber-actions .delete-button:hover {
+    border-color: rgba(255,111,119,0.72) !important;
+    background: rgba(171,39,47,0.28) !important;
+}
+
+#barbeiros .barber-actions .toggle-button {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    border: 1px solid rgba(166,176,190,0.22) !important;
+    background: rgba(117,128,144,0.12) !important;
+    color: #d1d7df !important;
+}
+
+#barbeiros .barber-actions .toggle-button.activate {
+    border-color: rgba(214,179,106,0.6) !important;
+    background: linear-gradient(135deg, #d4aa58, #a9823d) !important;
+    color: #17130d !important;
+}
+
+#barbeiros .barber-actions button:hover {
+    transform: translateY(-1px);
+}
+
+/* Tablet: compacta a linha sem esmagar os textos */
+@media (max-width: 1100px) {
+    #barbeiros .barber-card {
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) !important;
+        grid-template-rows: auto auto auto !important;
+        grid-template-areas:
+            "identity phone"
+            "metrics metrics"
+            "status actions" !important;
+        gap: 12px !important;
+        padding: 14px !important;
+    }
+
+    #barbeiros .barber-data {
+        padding: 10px 0 !important;
+        border-top: 1px solid rgba(255,255,255,0.07);
+        border-bottom: 1px solid rgba(255,255,255,0.07);
+    }
+
+    #barbeiros .barber-actions {
+        grid-template-rows: minmax(32px, 1fr) minmax(32px, 1fr) !important;
+    }
+}
+
+/* Celular: cartões de largura total, com dados legíveis */
+@media (max-width: 600px) {
+    #barbeiros .page-header {
+        align-items: flex-start !important;
+        gap: 10px !important;
+    }
+
+    #barbeiros .page-header h1 {
+        font-size: 27px !important;
+    }
+
+    #barbeiros .page-header p {
+        max-width: 240px;
+        font-size: 10px !important;
+    }
+
+    #barbeiros #addBarberButton {
+        min-height: 37px !important;
+        padding: 0 10px !important;
+        border-radius: 10px !important;
+        font-size: 8px !important;
+        white-space: nowrap;
+    }
+
+    #barbeiros .team-summary.team-summary-equipe {
+        gap: 6px !important;
+        margin-bottom: 12px !important;
+    }
+
+    #barbeiros .team-summary.team-summary-equipe > div {
+        height: 78px !important;
+        min-height: 78px !important;
+        padding: 6px 3px !important;
+        gap: 4px !important;
+        border-radius: 11px !important;
+    }
+
+    #barbeiros .team-summary.team-summary-equipe > div::after {
+        font-size: 14px !important;
+    }
+
+    #barbeiros .team-summary.team-summary-equipe > div > span {
+        font-size: 7px !important;
+        letter-spacing: 0.35px !important;
+    }
+
+    #barbeiros .team-summary.team-summary-equipe > div > strong {
+        font-size: 20px !important;
+    }
+
+    #barbeiros .barbers-grid {
+        grid-template-columns: minmax(0, 1fr) !important;
+        gap: 10px !important;
+    }
+
+    #barbeiros .barber-card {
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) !important;
+        grid-template-rows: auto auto auto auto !important;
+        grid-template-areas:
+            "identity identity"
+            "phone phone"
+            "metrics metrics"
+            "status actions" !important;
+        gap: 10px !important;
+        padding: 13px !important;
+        border-radius: 13px !important;
+    }
+
+    #barbeiros .barber-card-header {
+        gap: 10px !important;
+    }
+
+    #barbeiros .barber-avatar {
+        width: 44px !important;
+        height: 44px !important;
+        flex-basis: 44px !important;
+        font-size: 11px !important;
+    }
+
+    #barbeiros .barber-card-header h3 {
+        font-size: 12px !important;
+    }
+
+    #barbeiros .barber-card-header p {
+        font-size: 9px !important;
+    }
+
+    #barbeiros .barber-phone {
+        padding: 8px 0 0 21px !important;
+        border-top: 1px solid rgba(255,255,255,0.07) !important;
+        font-size: 9px !important;
+    }
+
+    #barbeiros .barber-data {
+        gap: 8px !important;
+        padding: 10px 0 !important;
+    }
+
+    #barbeiros .barber-data > div {
+        padding-left: 24px !important;
+    }
+
+    #barbeiros .barber-data span {
+        font-size: 8px !important;
+    }
+
+    #barbeiros .barber-data strong {
+        font-size: 10px !important;
+    }
+
+    #barbeiros .barber-status {
+        justify-self: start !important;
+        padding: 0 9px !important;
+        font-size: 8px !important;
+    }
+
+    #barbeiros .barber-actions {
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) !important;
+        gap: 5px !important;
+    }
+
+    #barbeiros .barber-actions button {
+        min-height: 31px !important;
+        height: 31px !important;
+        padding: 0 5px !important;
+        border-radius: 8px !important;
+        font-size: 7px !important;
+    }
+}
+
+/* Tela muito estreita */
+@media (max-width: 380px) {
+    #barbeiros .page-header {
+        flex-wrap: wrap !important;
+    }
+
+    #barbeiros #addBarberButton {
+        width: 100% !important;
+    }
+
+    #barbeiros .barber-data {
+        gap: 5px !important;
+    }
+
+    #barbeiros .barber-data > div {
+        padding-left: 21px !important;
+    }
+
+    #barbeiros .barber-data span {
+        font-size: 7px !important;
+    }
+
+    #barbeiros .barber-data strong {
+        font-size: 9px !important;
+    }
+}
+
+/* =========================================================
+   NAVALHA DE OURO — AJUSTE FINO MOBILE + ÍCONES VETORIAIS
+   CSS somente no módulo #barbeiros; preserva os demais módulos
+   e os três cartões de resumo.
+   ========================================================= */
+
+/* Menos espaço vazio entre cartões da lista */
+@media (max-width: 600px) {
+    #barbeiros .barbers-grid {
+        gap: 8px !important;
+    }
+
+    #barbeiros .barber-card {
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) !important;
+        grid-template-rows: auto auto auto auto !important;
+        grid-template-areas:
+            "identity identity"
+            "phone phone"
+            "metrics metrics"
+            "status actions" !important;
+        gap: 6px 8px !important;
+        padding: 10px 11px !important;
+        border-radius: 12px !important;
+    }
+
+    #barbeiros .barber-card-header {
+        gap: 8px !important;
+        margin: 0 !important;
+    }
+
+    #barbeiros .barber-avatar {
+        width: 40px !important;
+        height: 40px !important;
+        flex-basis: 40px !important;
+        border-width: 1.5px !important;
+        box-shadow: 0 0 0 2px rgba(214,179,106,0.07), inset 0 1px 0 rgba(255,255,255,0.22) !important;
+        font-size: 10px !important;
+    }
+
+    #barbeiros .barber-card-header h3 {
+        font-size: 12px !important;
+        margin-bottom: 3px !important;
+    }
+
+    #barbeiros .barber-card-header p {
+        font-size: 8.5px !important;
+        line-height: 1.25 !important;
+    }
+
+    #barbeiros .barber-phone {
+        padding: 5px 0 0 19px !important;
+        border-top: 1px solid rgba(255,255,255,0.065) !important;
+        font-size: 8px !important;
+        line-height: 1.25 !important;
+    }
+
+    #barbeiros .barber-phone::before {
+        font-size: 11px !important;
+    }
+
+    #barbeiros .barber-data {
+        gap: 7px !important;
+        padding: 6px 0 !important;
+        border-top: 1px solid rgba(255,255,255,0.06) !important;
+        border-bottom: 1px solid rgba(255,255,255,0.06) !important;
+    }
+
+    #barbeiros .barber-data > div {
+        padding: 1px 0 1px 21px !important;
+    }
+
+    #barbeiros .barber-data > div:first-child::before {
+        top: 1px !important;
+        font-size: 15px !important;
+    }
+
+    #barbeiros .barber-data > div:nth-child(2)::before {
+        width: 17px !important;
+        height: 17px !important;
+        font-size: 9px !important;
+    }
+
+    #barbeiros .barber-data span {
+        margin-bottom: 3px !important;
+        font-size: 7px !important;
+        line-height: 1.2 !important;
+    }
+
+    #barbeiros .barber-data strong {
+        font-size: 10px !important;
+        line-height: 1.15 !important;
+    }
+
+    #barbeiros .barber-status {
+        min-height: 26px !important;
+        padding: 0 8px !important;
+        font-size: 7.5px !important;
+        letter-spacing: 0.2px !important;
+        gap: 4px !important;
+    }
+
+    #barbeiros .barber-status.active::before {
+        width: 6px !important;
+        height: 6px !important;
+    }
+
+    #barbeiros .barber-actions {
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) !important;
+        grid-template-rows: minmax(28px, 1fr) minmax(28px, 1fr) !important;
+        gap: 4px !important;
+        align-self: center !important;
+    }
+
+    #barbeiros .barber-actions > .barber-toggle-group {
+        gap: 4px !important;
+    }
+
+    #barbeiros .barber-actions button,
+    #barbeiros .barber-actions > .barber-toggle-group button {
+        min-height: 28px !important;
+        height: 28px !important;
+        padding: 0 4px !important;
+        border-radius: 8px !important;
+        font-size: 7.5px !important;
+        letter-spacing: 0 !important;
+        line-height: 1 !important;
+        gap: 4px !important;
+    }
+}
+
+/* Ícones de ação: desenho vetorial limpo, sem emoji ou glifo improvisado. */
+#barbeiros .barber-actions .edit-button::before,
+#barbeiros .barber-actions .delete-button::before,
+#barbeiros .barber-actions .toggle-button::before {
+    content: "" !important;
+    display: inline-block !important;
+    flex: 0 0 13px !important;
+    width: 13px !important;
+    height: 13px !important;
+    margin: 0 5px 0 0 !important;
+    padding: 0 !important;
+    font-size: 0 !important;
+    line-height: 0 !important;
+    color: currentColor !important;
+    background-color: currentColor !important;
+    background-image: none !important;
+    -webkit-mask-repeat: no-repeat !important;
+    mask-repeat: no-repeat !important;
+    -webkit-mask-position: center !important;
+    mask-position: center !important;
+    -webkit-mask-size: contain !important;
+    mask-size: contain !important;
+}
+
+#barbeiros .barber-actions .edit-button::before {
+    -webkit-mask-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22black%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22M12%2020h9%22%2F%3E%3Cpath%20d%3D%22M16.5%203.5a2.1%202.1%200%200%201%203%203L9%2017l-4%201%201-4Z%22%2F%3E%3C%2Fsvg%3E") !important;
+    mask-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22black%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22M12%2020h9%22%2F%3E%3Cpath%20d%3D%22M16.5%203.5a2.1%202.1%200%200%201%203%203L9%2017l-4%201%201-4Z%22%2F%3E%3C%2Fsvg%3E") !important;
+}
+
+#barbeiros .barber-actions .delete-button::before {
+    -webkit-mask-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22black%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22M3%206h18%22%2F%3E%3Cpath%20d%3D%22M8%206V4h8v2%22%2F%3E%3Cpath%20d%3D%22m19%206-1%2014H6L5%206%22%2F%3E%3Cpath%20d%3D%22M10%2011v5M14%2011v5%22%2F%3E%3C%2Fsvg%3E") !important;
+    mask-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22black%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22M3%206h18%22%2F%3E%3Cpath%20d%3D%22M8%206V4h8v2%22%2F%3E%3Cpath%20d%3D%22m19%206-1%2014H6L5%206%22%2F%3E%3Cpath%20d%3D%22M10%2011v5M14%2011v5%22%2F%3E%3C%2Fsvg%3E") !important;
+}
+
+#barbeiros .barber-actions .toggle-button::before {
+    -webkit-mask-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22black%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22M12%202v10%22%2F%3E%3Cpath%20d%3D%22M18.4%205.6a8%208%200%201%201-12.8%200%22%2F%3E%3C%2Fsvg%3E") !important;
+    mask-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22black%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22M12%202v10%22%2F%3E%3Cpath%20d%3D%22M18.4%205.6a8%208%200%201%201-12.8%200%22%2F%3E%3C%2Fsvg%3E") !important;
+}
+
+/* Ícones e texto ficam alinhados mesmo em botões estreitos. */
+#barbeiros .barber-actions .edit-button,
+#barbeiros .barber-actions .delete-button,
+#barbeiros .barber-actions .toggle-button {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    white-space: nowrap !important;
+}
+
+@media (max-width: 380px) {
+    #barbeiros .barber-actions .edit-button::before,
+    #barbeiros .barber-actions .delete-button::before,
+    #barbeiros .barber-actions .toggle-button::before {
+        flex-basis: 11px !important;
+        width: 11px !important;
+        height: 11px !important;
+        margin-right: 3px !important;
+    }
+}
+
+
+
+/* =========================================================
+   NAVALHA DE OURO — AJUSTE FINAL COMPACTO DO MÓDULO BARBEIROS
+   Escopo exclusivo: #barbeiros. Não altera outros módulos.
+   ========================================================= */
+
+#barbeiros .page-header {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: flex-end !important;
+    justify-content: space-between !important;
+    gap: 16px !important;
+}
+
+#barbeiros #addBarberButton {
+    flex: 0 0 auto !important;
+    width: auto !important;
+    min-height: 40px !important;
+    padding: 0 17px !important;
+    margin-left: auto !important;
+    border-radius: 10px !important;
+    white-space: nowrap !important;
+}
+
+#barbeiros .team-summary.team-summary-equipe {
+    gap: 9px !important;
+    margin-bottom: 13px !important;
+}
+
+#barbeiros .team-summary.team-summary-equipe > div {
+    min-height: 72px !important;
+    height: 72px !important;
+    padding: 8px 5px !important;
+    gap: 4px !important;
+    border-radius: 12px !important;
+}
+
+/* Cartão de barbeiro: menos altura e melhor distribuição horizontal */
+#barbeiros .barbers-grid {
+    grid-template-columns: minmax(0, 1fr) !important;
+    gap: 9px !important;
+}
+
+#barbeiros .barber-card {
+    display: grid !important;
+    grid-template-columns: minmax(150px, 1.05fr) minmax(190px, 1.2fr) minmax(180px, .95fr) !important;
+    grid-template-rows: auto auto auto !important;
+    grid-template-areas:
+        "identity metrics actions"
+        "phone    metrics actions"
+        "status   metrics actions" !important;
+    align-items: center !important;
+    column-gap: 18px !important;
+    row-gap: 5px !important;
+    padding: 12px 15px !important;
+    border-radius: 13px !important;
+}
+
+#barbeiros .barber-card-header {
+    gap: 9px !important;
+    margin: 0 !important;
+}
+
+#barbeiros .barber-avatar {
+    width: 43px !important;
+    height: 43px !important;
+    flex-basis: 43px !important;
+}
+
+#barbeiros .barber-card-header h3 {
+    margin-bottom: 3px !important;
+    font-size: 13px !important;
+}
+
+#barbeiros .barber-card-header p {
+    font-size: 9px !important;
+}
+
+#barbeiros .barber-phone {
+    align-self: center !important;
+    padding: 0 0 0 19px !important;
+    border: 0 !important;
+    font-size: 9px !important;
+    line-height: 1.25 !important;
+}
+
+#barbeiros .barber-data {
+    align-self: stretch !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 10px !important;
+    padding: 3px 0 !important;
+    margin: 0 !important;
+    border-left: 1px solid rgba(255,255,255,.07) !important;
+    border-right: 1px solid rgba(255,255,255,.07) !important;
+    padding-left: 13px !important;
+    padding-right: 10px !important;
+}
+
+#barbeiros .barber-data > div {
+    padding-left: 23px !important;
+}
+
+#barbeiros .barber-data > div:first-child::before {
+    font-size: 16px !important;
+}
+
+#barbeiros .barber-data > div:nth-child(2)::before {
+    width: 18px !important;
+    height: 18px !important;
+    font-size: 10px !important;
+}
+
+#barbeiros .barber-data span {
+    margin-bottom: 3px !important;
+    font-size: 8px !important;
+}
+
+#barbeiros .barber-data strong {
+    font-size: 11px !important;
+}
+
+/* Status sai da área dos botões e fica discreto abaixo dos dados de contato */
+#barbeiros .barber-status {
+    justify-self: start !important;
+    align-self: center !important;
+    min-height: 24px !important;
+    padding: 0 9px !important;
+    font-size: 8px !important;
+}
+
+/* Botões retos, compactos e alinhados em uma única linha */
+#barbeiros .barber-actions {
+    display: flex !important;
+    flex-direction: column !important;
+    align-self: center !important;
+    justify-content: center !important;
+    gap: 6px !important;
+    width: 100% !important;
+    margin: 0 !important;
+}
+
+#barbeiros .barber-actions > .edit-button,
+#barbeiros .barber-actions > .delete-button,
+#barbeiros .barber-actions > .toggle-button {
+    grid-area: auto !important;
+    width: 100% !important;
+}
+
+#barbeiros .barber-actions > .barber-toggle-group {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 6px !important;
+    width: 100% !important;
+}
+
+#barbeiros .barber-actions button,
+#barbeiros .barber-actions > .barber-toggle-group button {
+    min-height: 30px !important;
+    height: 30px !important;
+    padding: 0 9px !important;
+    border-radius: 7px !important;
+    font-size: 8px !important;
+}
+
+#barbeiros .barber-actions .edit-button::before,
+#barbeiros .barber-actions .delete-button::before,
+#barbeiros .barber-actions .toggle-button::before {
+    flex-basis: 12px !important;
+    width: 12px !important;
+    height: 12px !important;
+    margin-right: 5px !important;
+}
+
+/* Tablet: evita apertar demais as colunas */
+@media (max-width: 1050px) and (min-width: 601px) {
+    #barbeiros .barber-card {
+        grid-template-columns: minmax(135px, 1fr) minmax(170px, 1.1fr) minmax(145px, .85fr) !important;
+        column-gap: 10px !important;
+        padding: 11px !important;
+    }
+
+    #barbeiros .barber-data {
+        gap: 5px !important;
+        padding-left: 8px !important;
+        padding-right: 6px !important;
+    }
+
+    #barbeiros .barber-data > div {
+        padding-left: 20px !important;
+    }
+}
+
+/* Mobile: mantém cartões empilhados e ações compactas */
+@media (max-width: 600px) {
+    #barbeiros .page-header {
+        align-items: flex-start !important;
+        flex-direction: column !important;
+        gap: 12px !important;
+    }
+
+    #barbeiros #addBarberButton {
+        width: auto !important;
+        align-self: flex-end !important;
+        min-height: 38px !important;
+    }
+
+    #barbeiros .team-summary.team-summary-equipe > div {
+        min-height: 68px !important;
+        height: 68px !important;
+        padding: 7px 3px !important;
+    }
+
+    #barbeiros .barber-card {
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) !important;
+        grid-template-rows: auto auto auto auto !important;
+        grid-template-areas:
+            "identity identity"
+            "phone phone"
+            "metrics metrics"
+            "status actions" !important;
+        gap: 6px 9px !important;
+        padding: 10px 11px !important;
+    }
+
+    #barbeiros .barber-data {
+        border-left: 0 !important;
+        border-right: 0 !important;
+        border-top: 1px solid rgba(255,255,255,.06) !important;
+        border-bottom: 1px solid rgba(255,255,255,.06) !important;
+        padding: 7px 0 !important;
+    }
+
+    #barbeiros .barber-actions {
+        display: grid !important;
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+        grid-template-rows: repeat(2, minmax(28px, auto)) !important;
+        gap: 4px !important;
+    }
+
+    #barbeiros .barber-actions > .edit-button {
+        grid-column: 1 !important;
+        grid-row: 1 / span 2 !important;
+        height: 100% !important;
+    }
+
+    #barbeiros .barber-actions > .delete-button {
+        grid-column: 2 !important;
+        grid-row: 1 !important;
+    }
+
+    #barbeiros .barber-actions > .toggle-button {
+        grid-column: 2 !important;
+        grid-row: 2 !important;
+    }
+
+    #barbeiros .barber-actions > .barber-toggle-group {
+        grid-column: 2 !important;
+        grid-row: 1 / span 2 !important;
+    }
+
+    #barbeiros .barber-actions button,
+    #barbeiros .barber-actions > .barber-toggle-group button {
+        min-height: 28px !important;
+        height: 28px !important;
+        padding: 0 4px !important;
+        font-size: 7.5px !important;
+    }
+}
+
+
+/* =====================================================
+   NAVALHA DE OURO — BARBEIROS PREMIUM
+   Ajustes exclusivos do módulo #barbeiros
+   ===================================================== */
+
+/* ---------- 1. CARTÕES DE RESUMO ---------- */
+
+#barbeiros .team-summary.team-summary-equipe {
+    gap: 9px !important;
+    margin-bottom: 14px !important;
+}
+
+#barbeiros .team-summary.team-summary-equipe > div {
+    min-height: 72px !important;
+    height: 72px !important;
+    padding: 8px 5px !important;
+    gap: 4px !important;
+    border: 1px solid rgba(255, 193, 79, 0.38) !important;
+    border-radius: 13px !important;
+    box-sizing: border-box !important;
+}
+
+/* ---------- 2. LISTA DE BARBEIROS ---------- */
+
+#barbeiros .barbers-grid {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) !important;
+    gap: 10px !important;
+}
+
+#barbeiros .barber-card {
+    position: relative !important;
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr) !important;
+    grid-template-areas:
+        "identity status"
+        "phone revenue"
+        "divider divider"
+        "metrics actions" !important;
+    align-items: center !important;
+    column-gap: 14px !important;
+    row-gap: 8px !important;
+    padding: 14px 15px !important;
+    border: 1px solid rgba(255, 193, 79, 0.55) !important;
+    border-radius: 15px !important;
+    background: linear-gradient(
+        145deg,
+        #191b1d 0%,
+        #111315 100%
+    ) !important;
+    box-shadow: 0 5px 18px rgba(0, 0, 0, 0.18) !important;
+    box-sizing: border-box !important;
+}
+
+/* ---------- 3. IDENTIFICAÇÃO ---------- */
+
+#barbeiros .barber-card-header {
+    grid-area: identity !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 10px !important;
+    margin: 0 !important;
+    min-width: 0 !important;
+}
+
+#barbeiros .barber-avatar {
+    width: 46px !important;
+    height: 46px !important;
+    min-width: 46px !important;
+    flex: 0 0 46px !important;
+    border: 2px solid #e9b957 !important;
+    box-shadow: 0 0 10px rgba(233, 185, 87, 0.15) !important;
+}
+
+#barbeiros .barber-card-header h3 {
+    margin: 0 0 3px !important;
+    color: #ffffff !important;
+    font-size: 14px !important;
+    font-weight: 700 !important;
+}
+
+#barbeiros .barber-card-header p {
+    margin: 0 !important;
+    color: #b9c6d5 !important;
+    font-size: 11px !important;
+}
+
+/* ---------- 4. TELEFONE ---------- */
+
+#barbeiros .barber-phone {
+    grid-area: phone !important;
+    align-self: start !important;
+    min-width: 0 !important;
+    margin: 0 !important;
+    padding: 0 0 0 21px !important;
+    border: 0 !important;
+    color: #b9c6d5 !important;
+    font-size: 10px !important;
+    overflow-wrap: anywhere !important;
+}
+
+/* ---------- 5. STATUS ATIVO ---------- */
+
+#barbeiros .barber-status {
+    grid-area: status !important;
+    justify-self: end !important;
+    align-self: center !important;
+    min-height: 27px !important;
+    padding: 4px 11px !important;
+    border: 1px solid rgba(0, 220, 155, 0.48) !important;
+    border-radius: 20px !important;
+    background: rgba(0, 220, 155, 0.09) !important;
+    color: #19e6a5 !important;
+    font-size: 9px !important;
+    font-weight: 700 !important;
+    white-space: nowrap !important;
+}
+
+/* ---------- 6. FATURAMENTO E ATENDIMENTOS ---------- */
+
+#barbeiros .barber-data {
+    grid-area: metrics !important;
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 8px !important;
+    margin: 0 !important;
+    padding: 8px 0 0 !important;
+    border-top: 1px solid rgba(164, 184, 204, 0.20) !important;
+    border-left: 0 !important;
+    border-right: 0 !important;
+    min-width: 0 !important;
+}
+
+#barbeiros .barber-data > div {
+    min-width: 0 !important;
+    padding-left: 21px !important;
+}
+
+#barbeiros .barber-data > div:first-child::before {
+    color: #a9bfd6 !important;
+    font-size: 16px !important;
+}
+
+#barbeiros .barber-data > div:nth-child(2)::before {
+    color: #ffca61 !important;
+    border-color: #ffca61 !important;
+}
+
+#barbeiros .barber-data span {
+    display: block !important;
+    margin-bottom: 3px !important;
+    color: #b9c6d5 !important;
+    font-size: 9px !important;
+}
+
+#barbeiros .barber-data strong {
+    color: #ffffff !important;
+    font-size: 12px !important;
+    font-weight: 700 !important;
+}
+
+/* ---------- 7. BOTÕES DE AÇÃO ---------- */
+
+#barbeiros .barber-actions {
+    grid-area: actions !important;
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+    justify-content: flex-end !important;
+    align-items: center !important;
+    gap: 7px !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    margin: 0 !important;
+}
+
+#barbeiros .barber-actions > .edit-button,
+#barbeiros .barber-actions > .delete-button,
+#barbeiros .barber-actions > .toggle-button {
+    flex: 1 1 0 !important;
+    width: auto !important;
+    min-width: 0 !important;
+}
+
+#barbeiros .barber-actions > .barber-toggle-group {
+    display: flex !important;
+    flex: 1 1 0 !important;
+    flex-direction: row !important;
+    width: auto !important;
+    min-width: 0 !important;
+}
+
+#barbeiros .barber-actions button,
+#barbeiros .barber-actions > .barber-toggle-group button {
+    display: inline-flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    gap: 5px !important;
+    min-height: 38px !important;
+    height: 38px !important;
+    padding: 0 8px !important;
+    border-radius: 9px !important;
+    font-size: 9px !important;
+    font-weight: 700 !important;
+    white-space: nowrap !important;
+    transition:
+        background 0.2s ease,
+        border-color 0.2s ease,
+        transform 0.2s ease !important;
+}
+
+/* Editar — dourado */
+
+#barbeiros .barber-actions .edit-button {
+    color: #ffce70 !important;
+    border: 1px solid #b78b35 !important;
+    background: rgba(255, 193, 79, 0.08) !important;
+}
+
+/* Excluir — vermelho */
+
+#barbeiros .barber-actions .delete-button {
+    color: #ff5966 !important;
+    border: 1px solid #c72d40 !important;
+    background: rgba(255, 45, 65, 0.08) !important;
+}
+
+/* Desativar — azul grafite */
+
+#barbeiros .barber-actions .toggle-button,
+#barbeiros .barber-actions > .barber-toggle-group button {
+    color: #b9cce0 !important;
+    border: 1px solid #536b82 !important;
+    background: rgba(94, 126, 157, 0.10) !important;
+}
+
+/* Ícones dos botões */
+
+#barbeiros .barber-actions .edit-button::before,
+#barbeiros .barber-actions .delete-button::before,
+#barbeiros .barber-actions .toggle-button::before {
+    flex: 0 0 15px !important;
+    width: 15px !important;
+    height: 15px !important;
+    margin: 0 !important;
+    background-position: center !important;
+    background-repeat: no-repeat !important;
+    background-size: contain !important;
+}
+
+/* Efeito discreto ao passar o mouse */
+
+#barbeiros .barber-actions button:hover {
+    transform: translateY(-1px) !important;
+    filter: brightness(1.15) !important;
+}
+
+/* ---------- 8. REMOVER OS TRÊS PONTINHOS ---------- */
+
+/* Oculta controles de menu de opções dentro dos cartões,
+   sem esconder Editar, Excluir ou Desativar. */
+
+#barbeiros .barber-card button[aria-label*="opções" i],
+#barbeiros .barber-card button[aria-label*="opcoes" i],
+#barbeiros .barber-card button[title*="opções" i],
+#barbeiros .barber-card button[title*="opcoes" i],
+#barbeiros .barber-card button[aria-label*="mais opções" i],
+#barbeiros .barber-card button[aria-label*="more options" i],
+#barbeiros .barber-card button:has(svg.lucide-ellipsis-vertical),
+#barbeiros .barber-card button:has(svg.lucide-ellipsis),
+#barbeiros .barber-card button:has(svg[data-lucide="ellipsis-vertical"]),
+#barbeiros .barber-card button:has(svg[data-lucide="more-vertical"]) {
+    display: none !important;
+}
+
+/* ---------- 9. CELULAR ---------- */
+
+@media (max-width: 600px) {
+    #barbeiros .barber-card {
+        grid-template-columns: minmax(0, 1fr) !important;
+        grid-template-areas:
+            "identity"
+            "status"
+            "phone"
+            "metrics"
+            "actions" !important;
+        gap: 8px !important;
+        padding: 12px !important;
+    }
+
+    #barbeiros .barber-status {
+        justify-self: start !important;
+    }
+
+    #barbeiros .barber-data {
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    }
+
+    #barbeiros .barber-actions {
+        display: grid !important;
+        grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+        gap: 5px !important;
+    }
+
+    #barbeiros .barber-actions button,
+    #barbeiros .barber-actions > .barber-toggle-group button {
+        min-height: 35px !important;
+        height: auto !important;
+        min-width: 0 !important;
+        padding: 5px 3px !important;
+        font-size: 8px !important;
+        white-space: normal !important;
+    }
+}
+
+/* =========================================================
+   NAVALHA DE OURO — CARTÃO HORIZONTAL CONSOLIDADO
+   Este é o único bloco final de layout dos cartões.
+   Preserva os estilos dos outros módulos e a lógica JS.
+   ========================================================= */
+
+#barbeiros .barbers-grid {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 12px !important;
+    width: 100% !important;
+}
+
+#barbeiros .barber-card {
+    display: grid !important;
+    grid-template-columns:
+        minmax(230px, 1.4fr)
+        minmax(115px, 0.55fr)
+        minmax(170px, 0.95fr) !important;
+    grid-template-rows: auto auto minmax(48px, auto) !important;
+    grid-template-areas:
+        "identity status revenue"
+        "phone    status ."
+        "appointments actions actions" !important;
+    align-items: center !important;
+    gap: 8px 14px !important;
+    min-width: 0 !important;
+    width: 100% !important;
+    min-height: 100px !important;
+    padding: 10px 12px !important;
+    border-radius: 15px !important;
+    box-sizing: border-box !important;
+}
+
+/* Identidade: avatar, nome e especialidade */
+#barbeiros .barber-card-header {
+    grid-area: identity !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 12px !important;
+    min-width: 0 !important;
+    margin: 0 !important;
+}
+
+#barbeiros .barber-card-header > div:last-child {
+    min-width: 0 !important;
+}
+
+#barbeiros .barber-card-header h3 {
+    margin: 0 0 4px !important;
+    font-size: 14px !important;
+    line-height: 1.25 !important;
+}
+
+#barbeiros .barber-card-header p {
+    margin: 0 !important;
+    font-size: 10px !important;
+    line-height: 1.35 !important;
+}
+
+/* WhatsApp: o ícone vem do SVG no template JavaScript */
+#barbeiros .barber-phone {
+    grid-area: phone !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 9px !important;
+    min-width: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: 0 !important;
+    font-size: 10px !important;
+    line-height: 1.35 !important;
+    overflow-wrap: anywhere !important;
+}
+
+/* Desativa o ícone decorativo antigo para não duplicar o WhatsApp */
+#barbeiros .barber-phone::before {
+    content: none !important;
+    display: none !important;
+}
+
+#barbeiros .barber-phone .whatsapp-icon {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    flex: 0 0 20px !important;
+    width: 20px !important;
+    height: 20px !important;
+    color: #20d9a0 !important;
+}
+
+#barbeiros .barber-phone .whatsapp-icon svg {
+    display: block !important;
+    width: 20px !important;
+    height: 20px !important;
+}
+
+#barbeiros .barber-phone-number {
+    min-width: 0 !important;
+    overflow-wrap: anywhere !important;
+}
+
+/* Permite que Atendimento e Faturamento sejam colocados
+   em áreas diferentes do cartão, sem mudar a estrutura JS. */
+#barbeiros .barber-data {
+    display: contents !important;
+}
+
+/* Atendimento: parte inferior esquerda */
+#barbeiros .barber-data > div:first-child {
+    grid-area: appointments !important;
+    position: relative !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    justify-content: center !important;
+    align-self: stretch !important;
+    min-width: 0 !important;
+    margin: 0 !important;
+    padding: 9px 12px 4px 30px !important;
+    border-top: 1px solid rgba(255,255,255,.09) !important;
+    border-right: 1px solid rgba(255,255,255,.12) !important;
+}
+
+/* Faturamento: topo à direita, ao lado do status */
+#barbeiros .barber-data > div:nth-child(2) {
+    grid-area: revenue !important;
+    position: relative !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+    align-self: stretch !important;
+    min-width: 0 !important;
+    margin: 0 !important;
+    padding: 4px 0 4px 31px !important;
+}
+
+#barbeiros .barber-data span {
+    display: block !important;
+    margin: 0 0 4px !important;
+    font-size: 9px !important;
+    line-height: 1.3 !important;
+}
+
+#barbeiros .barber-data strong {
+    display: block !important;
+    font-size: 12px !important;
+    line-height: 1.25 !important;
+    white-space: nowrap !important;
+}
+
+/* Mantém os ícones das métricas na posição correta */
+#barbeiros .barber-data > div:first-child::before {
+    left: 0 !important;
+    top: 50% !important;
+    transform: translateY(-50%) !important;
+}
+
+#barbeiros .barber-data > div:nth-child(2)::before {
+    left: 0 !important;
+    top: 50% !important;
+    transform: translateY(-50%) !important;
+}
+
+/* Status no topo, ao centro */
+#barbeiros .barber-status {
+    grid-area: status !important;
+    justify-self: center !important;
+    align-self: center !important;
+    margin: 0 !important;
+    white-space: nowrap !important;
+}
+
+/* Botões: os três em uma linha, na parte inferior direita */
+#barbeiros .barber-actions {
+    grid-area: actions !important;
+    display: grid !important;
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    grid-template-rows: auto !important;
+    grid-template-areas: none !important;
+    align-items: center !important;
+    gap: 80px !important;
+    width: 10% !important;
+    min-width: 0 !important;
+    align-self: stretch !important;
+    margin: 0 !important;
+    padding-top: 9px !important;
+    border-top: 1px solid rgba(255,255,255,.12) !important;
+}
+
+/* Os botões Excluir e Ativar/Desativar são filhos deste grupo.
+   display:contents põe os três botões na mesma grade sem mudar
+   seus data-action/data-id ou os eventos do JavaScript. */
+#barbeiros .barber-actions > .barber-toggle-group {
+    display: contents !important;
+}
+
+/* Dimensões dos botões */
+#barbeiros .barber-actions .edit-button,
+#barbeiros .barber-actions .delete-button,
+#barbeiros .barber-actions .toggle-button {
+    grid-area: auto !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 60% !important;
+    height: 36px !important;
+    min-height: 36px !important;
+    padding: 0 6px !important;
+    border-radius: 9px !important;
+    font-size: 8px !important;
+    line-height: 1 !important;
+    letter-spacing: 0 !important;
+    white-space: nowrap !important;
+    box-sizing: border-box !important;
+}
+
+#barbeiros .barber-actions .edit-button::before,
+#barbeiros .barber-actions .delete-button::before,
+#barbeiros .barber-actions .toggle-button::before {
+    flex: 0 0 13px !important;
+    width: 13px !important;
+    height: 13px !important;
+    margin: 0 4px 0 0 !important;
+}
+
+/* Tablet / janela mais estreita: conserva o retângulo horizontal */
+@media (min-width: 601px) and (max-width: 900px) {
+    #barbeiros .barber-card {
+        grid-template-columns:
+            minmax(180px, 1.2fr)
+            minmax(95px, .55fr)
+            minmax(155px, .95fr) !important;
+        gap: 8px 9px !important;
+        padding: 12px !important;
+        min-height: 160px !important;
+    }
+
+    #barbeiros .barber-actions {
+        gap: 5px !important;
+    }
+
+    #barbeiros .barber-actions .edit-button,
+    #barbeiros .barber-actions .delete-button,
+    #barbeiros .barber-actions .toggle-button {
+        padding: 0 3px !important;
+        font-size: 7px !important;
+    }
+
+    #barbeiros .barber-actions .edit-button::before,
+    #barbeiros .barber-actions .delete-button::before,
+    #barbeiros .barber-actions .toggle-button::before {
+        flex-basis: 10px !important;
+        width: 10px !important;
+        height: 10px !important;
+        margin-right: 3px !important;
+    }
+}
+
+/* Celulares: reorganiza sem esmagar os três botões */
+@media (max-width: 600px) {
+    #barbeiros .barber-card {
+        grid-template-columns: minmax(0, 1fr) minmax(112px, auto) !important;
+        grid-template-rows: auto auto auto auto !important;
+        grid-template-areas:
+            "identity status"
+            "phone revenue"
+            "appointments appointments"
+            "actions actions" !important;
+        gap: 9px 10px !important;
+        padding: 12px !important;
+        min-height: 0 !important;
+    }
+
+    #barbeiros .barber-card-header {
+        gap: 9px !important;
+    }
+
+    #barbeiros .barber-avatar {
+        width: 40px !important;
+        height: 40px !important;
+        flex: 0 0 40px !important;
+    }
+
+    #barbeiros .barber-card-header h3 {
+        font-size: 12px !important;
+    }
+
+    #barbeiros .barber-card-header p {
+        font-size: 8px !important;
+    }
+
+    #barbeiros .barber-phone {
+        font-size: 8px !important;
+        gap: 6px !important;
+    }
+
+    #barbeiros .barber-phone .whatsapp-icon,
+    #barbeiros .barber-phone .whatsapp-icon svg {
+        width: 18px !important;
+        height: 18px !important;
+    }
+
+    #barbeiros .barber-data > div:first-child {
+        padding: 9px 8px 8px 27px !important;
+        border-right: 0 !important;
+    }
+
+    #barbeiros .barber-data > div:nth-child(2) {
+        padding-left: 25px !important;
+    }
+
+    #barbeiros .barber-data span {
+        font-size: 8px !important;
+    }
+
+    #barbeiros .barber-data strong {
+        font-size: 10px !important;
+    }
+
+    #barbeiros .barber-actions {
+        gap: 5px !important;
+        padding-top: 8px !important;
+    }
+
+    #barbeiros .barber-actions .edit-button,
+    #barbeiros .barber-actions .delete-button,
+    #barbeiros .barber-actions .toggle-button {
+        height: 100px !important;
+        min-height: 34px !important;
+        padding: 0 3px !important;
+        font-size: 7px !important;
+    }
+}
+
+@media (max-width: 380px) {
+    #barbeiros .barber-card {
+        grid-template-columns: minmax(0, 1fr) minmax(100px, auto) !important;
+        gap: 7px 6px !important;
+        padding: 10px !important;
+    }
+
+    #barbeiros .barber-actions {
+        gap: 4px !important;
+    }
+
+    #barbeiros .barber-actions .edit-button,
+    #barbeiros .barber-actions .delete-button,
+    #barbeiros .barber-actions .toggle-button {
+        padding: 0 2px !important;
+        font-size: 6.5px !important;
+    }
+
+    #barbeiros .barber-actions .edit-button::before,
+    #barbeiros .barber-actions .delete-button::before,
+    #barbeiros .barber-actions .toggle-button::before {
+        flex-basis: 9px !important;
+        width: 9px !important;
+        height: 9px !important;
+        margin-right: 2px !important;
+    }
+}
+
+
+/* BOTÕES PREMIUM — três botões alinhados e com largura equilibrada */
+#barbeiros .barber-card {
+    grid-template-areas:
+        "identity status revenue"
+        "phone status revenue"
+        "appointments actions actions" !important;
+}
+
+#barbeiros .barber-actions {
+    grid-area: actions !important;
+    display: grid !important;
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    grid-template-rows: 36px !important;
+    grid-template-areas: none !important;
+    gap: 8px !important;
+    align-items: center !important;
+    align-self: center !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border-top: 0 !important;
+}
+
+/* Faz Excluir e Ativar/Desativar participarem da mesma grade */
+#barbeiros .barber-actions > .barber-toggle-group {
+    display: contents !important;
+}
+
+#barbeiros .barber-actions .edit-button,
+#barbeiros .barber-actions .delete-button,
+#barbeiros .barber-actions .toggle-button {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: none !important;
+    height: 36px !important;
+    min-height: 36px !important;
+    padding: 0 7px !important;
+    margin: 0 !important;
+    border-radius: 9px !important;
+    font-size: 8px !important;
+    line-height: 1 !important;
+    letter-spacing: 0 !important;
+    white-space: nowrap !important;
+    box-sizing: border-box !important;
+    overflow: hidden !important;
+}
+
+#barbeiros .barber-actions .edit-button::before,
+#barbeiros .barber-actions .delete-button::before,
+#barbeiros .barber-actions .toggle-button::before {
+    flex: 0 0 12px !important;
+    width: 12px !important;
+    height: 12px !important;
+    margin: 0 4px 0 0 !important;
+}
+
+@media (max-width: 600px) {
+    #barbeiros .barber-actions {
+        grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+        gap: 5px !important;
+    }
+
+    #barbeiros .barber-actions .edit-button,
+    #barbeiros .barber-actions .delete-button,
+    #barbeiros .barber-actions .toggle-button {
+        height: 34px !important;
+        min-height: 34px !important;
+        padding: 0 3px !important;
+        font-size: 7px !important;
+    }
+
+    #barbeiros .barber-actions .edit-button::before,
+    #barbeiros .barber-actions .delete-button::before,
+    #barbeiros .barber-actions .toggle-button::before {
+        flex-basis: 10px !important;
+        width: 10px !important;
+        height: 10px !important;
+        margin-right: 3px !important;
+    }
+}
+
+@media (max-width: 380px) {
+    #barbeiros .barber-actions {
+        gap: 4px !important;
+    }
+
+    #barbeiros .barber-actions .edit-button,
+    #barbeiros .barber-actions .delete-button,
+    #barbeiros .barber-actions .toggle-button {
+        padding: 0 2px !important;
+        font-size: 6.5px !important;
+    }
+}
+
+
+
+/* CORREÇÃO DO INDICADOR DE STATUS DOS BARBEIROS */
+
+#barbeiros .barber-card {
+    position: relative !important;
+}
+
+#barbeiros .barber-card .barber-status {
+    position: absolute !important;
+
+    /* Posição: canto superior direito */
+    top: 18px !important;
+    right: 18px !important;
+    left: auto !important;
+    bottom: auto !important;
+
+    /* Tamanho da bolinha */
+    width: 6px !important;
+    height: 6px !important;
+    min-width: 6px !important;
+    min-height: 6px !important;
+
+    /* Remover a mancha e o brilho grande */
+    padding: 0 !important;
+    margin: 0 !important;
+    border: none !important;
+    border-radius: 50% !important;
+    box-shadow: none !important;
+    filter: none !important;
+    text-shadow: none !important;
+
+    /* Esconder qualquer texto */
+    font-size: 0 !important;
+    line-height: 0 !important;
+
+    /* Impedir efeitos decorativos grandes */
+    transform: none !important;
+    outline: none !important;
+    z-index: 5 !important;
+}
+
+#barbeiros .barber-card .barber-status::before,
+#barbeiros .barber-card .barber-status::after {
+    content: none !important;
+    display: none !important;
+}
+
+#barbeiros .barber-card .barber-status.active {
+    background-color: #22c55e !important;
+}
+
+#barbeiros .barber-card .barber-status.inactive {
+    background-color: #ef4444 !important;
+}
+
+
+
+
+
+
+
+/* ==========================================
+   BARBEIROS — REDUZIR ESPAÇAMENTO DO CABEÇALHO
+   ========================================== */
+
+
+#barbeiros .team-summary-equipe {
+    transform: translateY(-45px) !important;
+    position: relative !important;
+    z-index: 1 !important;
+}
+
+#barbeiros .barbers-grid {
+    transform: translateY(-50px) !important;
+}
+
+
+/* Subir o botão Adicionar barbeiro */
+#barbeiros #addBarberButton {
+    transform: translateY(-65px) !important;
+}
+
+/* Remover espaço inferior desnecessário do cabeçalho */
+#barbeiros .page-header {
+    margin-bottom: 0 !important;
+    padding-bottom: 0 !important;
+}
+
+/* Aproximar a lista dos quadros de estatísticas */
+#barbeiros .barbers-grid {
+    margin-top: 5px !important;
+}
+
+/* ======================================================================
+   MÓDULO SERVIÇOS — RESUMO IGUAL AO MÓDULO BARBEIROS
+   - Três quadros com ícone centralizado acima do título e do valor
+   - Cores e bordas no mesmo padrão visual do resumo de Barbeiros
+   - Mantém o valor do preço com peso regular, sem engrossar a fonte
+   - Cartões de serviço com status acima do tempo, divisória preservada
+   ====================================================================== */
+
+/* Cabeçalho do módulo Serviços */
+#servicos .page-header {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: flex-start !important;
+    justify-content: space-between !important;
+    gap: 12px !important;
+    margin-bottom: 8px !important;
+    padding-bottom: 0 !important;
+}
+
+#servicos .page-header > div {
+    flex: 1 1 auto !important;
+    min-width: 0 !important;
+}
+
+#servicos .page-header .eyebrow {
+    display: block !important;
+    margin-bottom: 7px !important;
+    color: var(--gold-light) !important;
+    font-size: 10px !important;
+    font-weight: 800 !important;
+    letter-spacing: 2px !important;
+}
+
+#servicos .page-header h1 {
+    margin: 0 0 7px !important;
+    color: #f7f7f7 !important;
+    font-size: clamp(30px, 3.3vw, 44px) !important;
+    line-height: 1.06 !important;
+    letter-spacing: -0.6px !important;
+}
+
+#servicos .page-header p {
+    margin: 0 !important;
+    color: #aeb5bf !important;
+    font-size: 13px !important;
+    line-height: 1.45 !important;
+}
+
+#servicos .page-header #addServiceButton,
+#servicos .page-header .primary-button {
+    display: inline-flex !important;
+    flex: 0 0 auto !important;
+    align-items: center !important;
+    justify-content: center !important;
+    min-height: 44px !important;
+    padding: 0 18px !important;
+    border: 1px solid #d8b565 !important;
+    border-radius: 11px !important;
+    background: linear-gradient(145deg, #f3d48b, #b98b3e) !important;
+    color: #19140c !important;
+    font-size: 10px !important;
+    font-weight: 800 !important;
+    letter-spacing: .35px !important;
+    white-space: nowrap !important;
+    box-shadow: none !important;
+    transform: none !important;
+}
+
+#servicos .page-header #addServiceButton:hover,
+#servicos .page-header .primary-button:hover {
+    filter: brightness(1.04) !important;
+}
+
+/* ---------- QUADROS DE RESUMO: MESMO ARRANJO DO MÓDULO BARBEIROS ---------- */
+#servicos .team-summary.services-summary {
+    display: grid !important;
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    gap: 9px !important;
+    width: 100% !important;
+    margin: 0 0 11px !important;
+    padding: 0 !important;
+    transform: none !important;
+}
+
+#servicos .team-summary.services-summary > div {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    min-width: 0 !important;
+    min-height: 72px !important;
+    height: 72px !important;
+    padding: 8px 5px !important;
+    gap: 4px !important;
+    border: 1px solid rgba(255, 193, 79, .38) !important;
+    border-radius: 13px !important;
+    background: linear-gradient(145deg, #191b1d 0%, #111315 100%) !important;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.025) !important;
+    box-sizing: border-box !important;
+    text-align: center !important;
+    overflow: hidden !important;
+}
+
+/* Remove os ícones antigos posicionados à esquerda e usa o mesmo ícone em cima. */
+#servicos .team-summary.services-summary > div::before {
+    content: none !important;
+    display: none !important;
+}
+
+#servicos .team-summary.services-summary > div::after {
+    display: block !important;
+    order: 0 !important;
+    margin: 0 0 1px !important;
+    color: #e7c477 !important;
+    font-size: 16px !important;
+    font-weight: 400 !important;
+    line-height: 1 !important;
+}
+
+/* Mesmo conjunto de ícones e cores de Barbeiros: dourado, verde e vermelho. */
+#servicos .team-summary.services-summary > div:nth-child(1)::after {
+    content: "♟" !important;
+    color: #e7c477 !important;
+}
+
+#servicos .team-summary.services-summary > div:nth-child(2)::after {
+    content: "✓" !important;
+    color: #48d99a !important;
+}
+
+#servicos .team-summary.services-summary > div:nth-child(3)::after {
+    content: "⊘" !important;
+    color: #f07178 !important;
+}
+
+#servicos .team-summary.services-summary > div > span {
+    display: block !important;
+    order: 1 !important;
+    width: 100% !important;
+    margin: 0 !important;
+    color: #b9c0ca !important;
+    font-size: 9px !important;
+    font-weight: 600 !important;
+    line-height: 1.2 !important;
+    letter-spacing: .7px !important;
+    text-align: center !important;
+    text-transform: uppercase !important;
+    white-space: normal !important;
+}
+
+#servicos .team-summary.services-summary > div > strong {
+    display: block !important;
+    order: 2 !important;
+    width: 100% !important;
+    margin: 0 !important;
+    color: #fff !important;
+    font-size: 23px !important;
+    font-weight: 800 !important;
+    line-height: 1 !important;
+    text-align: center !important;
+}
+
+#servicos .team-summary.services-summary > div:hover {
+    border-color: rgba(255, 223, 161, .48) !important;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.05), 0 8px 22px rgba(0,0,0,.18) !important;
+}
+
+/* ---------- CARTÕES DE SERVIÇOS: DISCRETOS, ESCUROS E DOURADOS ---------- */
+#servicos .services-grid {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) !important;
+    gap: 10px !important;
+    width: 100% !important;
+}
+
+#servicos .service-card {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) minmax(112px, auto) !important;
+    grid-template-rows: auto 27px 27px 1px auto !important;
+    grid-template-areas:
+        "header header"
+        "price status"
+        "price duration"
+        "divider divider"
+        "actions actions" !important;
+    align-items: center !important;
+    column-gap: 12px !important;
+    row-gap: 0 !important;
+    min-width: 0 !important;
+    padding: 15px 17px 12px !important;
+    border: 1px solid rgba(255, 193, 79, .48) !important;
+    border-radius: 15px !important;
+    background: linear-gradient(145deg, #191b1d 0%, #111315 100%) !important;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.025), 0 5px 18px rgba(0,0,0,.14) !important;
+    box-sizing: border-box !important;
+    opacity: 1 !important;
+    overflow: hidden !important;
+}
+
+#servicos .service-card:hover {
+    border-color: rgba(255, 223, 161, .58) !important;
+}
+
+#servicos .service-card.inactive {
+    opacity: .82 !important;
+}
+
+#servicos .service-card-header {
+    grid-area: header !important;
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    gap: 11px !important;
+    min-width: 0 !important;
+    margin: 0 0 9px !important;
+}
+
+#servicos .service-icon {
+    order: -1 !important;
+    display: flex !important;
+    flex: 0 0 46px !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 46px !important;
+    height: 46px !important;
+    border: 1px solid rgba(255, 193, 79, .72) !important;
+    border-radius: 50% !important;
+    background: rgba(214, 179, 106, .035) !important;
+    color: #e7c477 !important;
+    font-size: 18px !important;
+    font-weight: 400 !important;
+    line-height: 1 !important;
+    box-shadow: none !important;
+}
+
+#servicos .service-card-header > div:first-child {
+    flex: 1 1 auto !important;
+    min-width: 0 !important;
+}
+
+#servicos .service-card h3 {
+    margin: 0 0 4px !important;
+    color: #f5f6f8 !important;
+    font-size: 15px !important;
+    font-weight: 700 !important;
+    line-height: 1.25 !important;
+}
+
+#servicos .service-description {
+    margin: 0 !important;
+    color: #aeb5bf !important;
+    font-size: 10px !important;
+    line-height: 1.35 !important;
+}
+
+/* Preço: retorna ao peso regular, mantendo a elegância da fonte original. */
+#servicos .service-price {
+    grid-area: price !important;
+    justify-self: start !important;
+    align-self: center !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    color: var(--gold-light) !important;
+    font-size: 25px !important;
+    font-weight: 400 !important;
+    line-height: 1.15 !important;
+    letter-spacing: 0 !important;
+}
+
+/* ATIVO/INATIVO ocupa somente a linha superior direita. */
+#servicos .service-info {
+    grid-area: status !important;
+    position: static !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: flex-end !important;
+    width: auto !important;
+    min-width: 0 !important;
+    height: auto !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: 0 !important;
+    background: transparent !important;
+    overflow: visible !important;
+}
+
+#servicos .service-status {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    min-height: 22px !important;
+    padding: 3px 9px !important;
+    border: 1px solid rgba(31, 190, 132, .58) !important;
+    border-radius: 999px !important;
+    background: rgba(12, 153, 105, .08) !important;
+    color: #48d9a5 !important;
+    font-size: 9px !important;
+    font-weight: 600 !important;
+    line-height: 1 !important;
+    white-space: nowrap !important;
+}
+
+#servicos .service-status.inactive {
+    border-color: rgba(223, 114, 114, .42) !important;
+    background: rgba(223, 114, 114, .06) !important;
+    color: #e7777d !important;
+}
+
+#servicos .service-duration {
+    grid-area: duration !important;
+    position: static !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: flex-end !important;
+    gap: 5px !important;
+    min-width: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    color: #b9c0ca !important;
+    font-size: 11px !important;
+    font-weight: 400 !important;
+    line-height: 1.2 !important;
+    white-space: nowrap !important;
+}
+
+/* Linha divisória continua presente, separando os dados dos botões. */
+#servicos .service-card::after {
+    content: "" !important;
+    grid-area: divider !important;
+    display: block !important;
+    width: 100% !important;
+    height: 1px !important;
+    align-self: center !important;
+    border-top: 1px solid rgba(255, 255, 255, .09) !important;
+}
+
+#servicos .service-actions {
+    grid-area: actions !important;
+    display: grid !important;
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    align-items: stretch !important;
+    gap: 9px !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    margin: 8px 0 0 !important;
+    padding: 0 !important;
+}
+
+#servicos .service-actions button {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 6px !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    min-height: 38px !important;
+    height: 38px !important;
+    padding: 0 8px !important;
+    border-radius: 9px !important;
+    background: rgba(10, 14, 18, .24) !important;
+    font-size: 9px !important;
+    font-weight: 700 !important;
+    line-height: 1 !important;
+    letter-spacing: .1px !important;
+    white-space: nowrap !important;
+    box-shadow: none !important;
+}
+
+#servicos .service-edit-button {
+    border: 1px solid rgba(214, 179, 106, .68) !important;
+    color: var(--gold-light) !important;
+}
+
+#servicos .service-edit-button::before {
+    content: "✎" !important;
+    font-size: 14px !important;
+    font-weight: 400 !important;
+    line-height: 1 !important;
+}
+
+#servicos .service-toggle-button {
+    border: 1px solid rgba(142, 169, 198, .55) !important;
+    color: #b1c0d1 !important;
+}
+
+#servicos .service-toggle-button::before {
+    content: "⏻" !important;
+    font-size: 14px !important;
+    font-weight: 400 !important;
+    line-height: 1 !important;
+}
+
+#servicos .service-toggle-button.activate {
+    border-color: rgba(56, 217, 160, .50) !important;
+    color: #48dda7 !important;
+}
+
+#servicos .service-delete-button {
+    border: 1px solid rgba(221, 62, 76, .68) !important;
+    color: #e7777d !important;
+}
+
+#servicos .service-delete-button::before {
+    content: "▤" !important;
+    font-size: 13px !important;
+    font-weight: 400 !important;
+    line-height: 1 !important;
+}
+
+#servicos .service-edit-button:hover,
+#servicos .service-toggle-button:hover,
+#servicos .service-delete-button:hover {
+    background: rgba(255, 255, 255, .035) !important;
+}
+
+/* Responsivo: preserva os três quadros lado a lado, como em Barbeiros. */
+@media (max-width: 600px) {
+    #servicos .page-header {
+        flex-direction: row !important;
+        align-items: flex-start !important;
+        gap: 10px !important;
+        margin-bottom: 8px !important;
+    }
+
+    #servicos .page-header h1 {
+        font-size: 30px !important;
+    }
+
+    #servicos .page-header p {
+        font-size: 11px !important;
+    }
+
+    #servicos .page-header #addServiceButton,
+    #servicos .page-header .primary-button {
+        min-height: 36px !important;
+        padding: 0 10px !important;
+        font-size: 8px !important;
+        border-radius: 8px !important;
+    }
+
+    #servicos .team-summary.services-summary {
+        grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+        gap: 7px !important;
+        margin-bottom: 12px !important;
+    }
+
+    #servicos .team-summary.services-summary > div {
+        min-height: 68px !important;
+        height: 68px !important;
+        padding: 7px 3px !important;
+        gap: 3px !important;
+        border-radius: 12px !important;
+    }
+
+    #servicos .team-summary.services-summary > div::after {
+        font-size: 14px !important;
+    }
+
+    #servicos .team-summary.services-summary > div > span {
+        font-size: 7px !important;
+        line-height: 1.2 !important;
+        letter-spacing: .35px !important;
+    }
+
+    #servicos .team-summary.services-summary > div > strong {
+        font-size: 20px !important;
+    }
+
+    #servicos .service-card {
+        grid-template-columns: minmax(0, 1fr) minmax(102px, auto) !important;
+        grid-template-rows: auto 23px 23px 1px auto !important;
+        column-gap: 8px !important;
+        padding: 13px 13px 11px !important;
+        border-radius: 13px !important;
+    }
+
+    #servicos .service-card-header {
+        gap: 9px !important;
+        margin-bottom: 8px !important;
+    }
+
+    #servicos .service-icon {
+        flex-basis: 40px !important;
+        width: 40px !important;
+        height: 40px !important;
+        font-size: 16px !important;
+    }
+
+    #servicos .service-card h3 {
+        font-size: 13px !important;
+    }
+
+    #servicos .service-description {
+        font-size: 8.5px !important;
+    }
+
+    #servicos .service-price {
+        font-size: 22px !important;
+        font-weight: 400 !important;
+    }
+
+    #servicos .service-status {
+        min-height: 20px !important;
+        padding: 3px 7px !important;
+        font-size: 8px !important;
+    }
+
+    #servicos .service-duration {
+        gap: 4px !important;
+        font-size: 9px !important;
+    }
+
+    #servicos .service-actions {
+        gap: 5px !important;
+        margin-top: 7px !important;
+    }
+
+    #servicos .service-actions button {
+        min-height: 34px !important;
+        height: 34px !important;
+        gap: 4px !important;
+        padding: 0 4px !important;
+        border-radius: 7px !important;
+        font-size: 7px !important;
+        letter-spacing: 0 !important;
+    }
+
+    #servicos .service-edit-button::before,
+    #servicos .service-toggle-button::before,
+    #servicos .service-delete-button::before {
+        font-size: 12px !important;
+    }
+}
+
+@media (max-width: 380px) {
+    #servicos .page-header {
+        flex-wrap: wrap !important;
+    }
+
+    #servicos .team-summary.services-summary > div > span {
+        font-size: 6.5px !important;
+        letter-spacing: .15px !important;
+    }
+
+    #servicos .service-card {
+        grid-template-columns: minmax(0, 1fr) minmax(94px, auto) !important;
+        grid-template-rows: auto 21px 21px 1px auto !important;
+        column-gap: 6px !important;
+        padding: 11px !important;
+    }
+
+    #servicos .service-price {
+        font-size: 19px !important;
+        font-weight: 400 !important;
+    }
+
+    #servicos .service-duration {
+        font-size: 8px !important;
+    }
+
+    #servicos .service-actions {
+        gap: 4px !important;
+    }
+
+    #servicos .service-actions button {
+        gap: 3px !important;
+        padding: 0 2px !important;
+        font-size: 6.5px !important;
+    }
+}
+
+
+/* =====================================================================
+   AÇÕES PRINCIPAIS — PADRÃO ÚNICO ENTRE OS MÓDULOS
+   Agenda, Barbeiros, Serviços, Horários e Configurações.
+   Mesma altura, largura-base, cor e tipografia; mantém os textos originais.
+   ===================================================================== */
+#agenda .page-header .agenda-new-button,
+#barbeiros .page-header #addBarberButton,
+#servicos .page-header #addServiceButton,
+#horarios .horarios-page-header #saveScheduleSettings,
+#configuracoes .settings-save-after-whatsapp #saveSettings {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    flex: 0 0 auto !important;
+    width: 184px !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+    height: 36px !important;
+    min-height: 36px !important;
+    max-height: 36px !important;
+    padding: 0 10px !important;
+    border: 1px solid var(--gold) !important;
+    border-radius: 9px !important;
+    background: var(--gold) !important;
+    color: #111111 !important;
+    font-family: inherit !important;
+    font-size: 9px !important;
+    font-weight: 800 !important;
+    line-height: 1 !important;
+    letter-spacing: 0.25px !important;
+    text-align: center !important;
+    text-decoration: none !important;
+    white-space: nowrap !important;
+    box-shadow: none !important;
+}
+
+#agenda .page-header .agenda-new-button:hover,
+#barbeiros .page-header #addBarberButton:hover,
+#servicos .page-header #addServiceButton:hover,
+#horarios .horarios-page-header #saveScheduleSettings:hover,
+#configuracoes .settings-save-after-whatsapp #saveSettings:hover {
+    background: var(--gold-light) !important;
+    border-color: var(--gold-light) !important;
+    color: #111111 !important;
+    filter: none !important;
+}
+
+/* Cabeçalho de Serviços: botão compacto à direita e indicadores mais próximos da descrição. */
+#servicos .page-header {
+    flex-direction: row !important;
+    align-items: flex-start !important;
+    justify-content: space-between !important;
+    gap: 12px !important;
+    margin-bottom: 7px !important;
+    padding-bottom: 0 !important;
+}
+
+#servicos .page-header > div {
+    flex: 1 1 auto !important;
+    min-width: 0 !important;
+}
+
+#servicos .page-header #addServiceButton {
+    align-self: flex-start !important;
+    margin: 0 !important;
+}
+
+#servicos .team-summary.services-summary {
+    margin-top: 0 !important;
+    margin-bottom: 11px !important;
+}
+
+/* Em telas estreitas, os botões continuam compactos e não ultrapassam o cabeçalho. */
+@media (max-width: 600px) {
+    #agenda .page-header .agenda-new-button,
+    #barbeiros .page-header #addBarberButton,
+    #servicos .page-header #addServiceButton,
+    #horarios .horarios-page-header #saveScheduleSettings,
+    #configuracoes .settings-save-after-whatsapp #saveSettings {
+        width: 184px !important;
+        max-width: 48% !important;
+        height: 36px !important;
+        min-height: 36px !important;
+        padding: 0 7px !important;
+        font-size: 8px !important;
+        letter-spacing: 0 !important;
+    }
+
+    #servicos .page-header {
+        flex-direction: row !important;
+        flex-wrap: nowrap !important;
+        align-items: flex-start !important;
+        gap: 8px !important;
+        margin-bottom: 7px !important;
+    }
+
+    #servicos .page-header h1 {
+        font-size: 30px !important;
+    }
+
+    #servicos .page-header p {
+        font-size: 10px !important;
+        line-height: 1.35 !important;
+    }
+}
+
+@media (max-width: 380px) {
+    #agenda .page-header .agenda-new-button,
+    #barbeiros .page-header #addBarberButton,
+    #servicos .page-header #addServiceButton,
+    #horarios .horarios-page-header #saveScheduleSettings,
+    #configuracoes .settings-save-after-whatsapp #saveSettings {
+        width: auto !important;
+        min-width: 0 !important;
+        max-width: 100% !important;
+        padding: 0 8px !important;
+        font-size: 7.5px !important;
+    }
+
+    #servicos .page-header {
+        flex-wrap: wrap !important;
+    }
+
+    #servicos .page-header #addServiceButton {
+        margin-left: auto !important;
+    }
+}
+
+
+
+
+/* AJUSTE FINAL — POSIÇÃO DO BOTÃO ADICIONAR SERVIÇO */
+#servicos .page-header #addServiceButton {
+    transform: translateY(5px) !important;
+}
+
+/* AJUSTE DE POSIÇÃO DO BOTÃO ADICIONAR SERVIÇO */
+#servicos .page-header #addServiceButton {
+    transform: translateY(36px) !important;
+    position: relative !important;
+    z-index: 10 !important;
+}
+
+/* =====================================================================
+   AJUSTE PRECISO DOS ÍCONES — MÓDULO CLIENTES
+   Corrige o posicionamento do ícone de total e remove os símbolos antigos
+   que ficavam sobrepostos ao SVG do WhatsApp. Escopo exclusivo: #clientes.
+   ===================================================================== */
+
+/* Cartão de total: ícone real no espaço da esquerda; texto e número à direita. */
+#clientes .client-summary > .client-summary-card {
+    grid-template-columns: 38px minmax(0, 1fr) !important;
+    grid-template-rows: auto auto !important;
+    grid-template-areas: "icon label" "icon number" !important;
+    align-items: center !important;
+    align-content: center !important;
+    column-gap: 11px !important;
+    row-gap: 4px !important;
+}
+
+/* Desliga o desenho antigo feito com pseudo-elemento, que duplicava o ícone. */
+#clientes .client-summary > .client-summary-card::before {
+    content: none !important;
+    display: none !important;
+    background: none !important;
+    border: 0 !important;
+    box-shadow: none !important;
+}
+
+/* O SVG de pessoas passa a ser o único ícone, alinhado e centralizado. */
+#clientes .client-summary > .client-summary-card > .client-total-icon {
+    grid-area: icon !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    justify-self: center !important;
+    align-self: center !important;
+    flex: 0 0 38px !important;
+    width: 38px !important;
+    height: 38px !important;
+    min-width: 38px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: 1px solid rgba(112, 151, 194, .22) !important;
+    border-radius: 10px !important;
+    background: rgba(88, 133, 184, .12) !important;
+    color: #efc66d !important;
+    line-height: 0 !important;
+    text-transform: none !important;
+    box-sizing: border-box !important;
+}
+
+#clientes .client-summary > .client-summary-card > .client-total-icon svg {
+    display: block !important;
+    width: 22px !important;
+    height: 22px !important;
+    flex: 0 0 22px !important;
+    margin: 0 !important;
+    overflow: visible !important;
+}
+
+/* Só o segundo span é o rótulo: ele não pode capturar o ícone SVG. */
+#clientes .client-summary > .client-summary-card > span:not(.client-total-icon) {
+    grid-area: label !important;
+    display: block !important;
+    align-self: end !important;
+    min-width: 0 !important;
+    margin: 0 !important;
+    color: var(--client-muted, #a9bad0) !important;
+    font-size: 8px !important;
+    line-height: 1.2 !important;
+    font-weight: 700 !important;
+    letter-spacing: .45px !important;
+    text-transform: uppercase !important;
+    white-space: nowrap !important;
+}
+
+#clientes .client-summary > .client-summary-card > strong#totalClients {
+    grid-area: number !important;
+    display: block !important;
+    align-self: start !important;
+    margin: 0 !important;
+    color: var(--client-text, #f4f7fb) !important;
+    font-size: 22px !important;
+    line-height: 1 !important;
+    font-weight: 800 !important;
+}
+
+/* WhatsApp: mantém apenas o SVG atual e alinha com o número do cliente. */
+#clientes .client-phone {
+    display: inline-flex !important;
+    align-items: center !important;
+    align-self: center !important;
+    gap: 6px !important;
+    min-height: 22px !important;
+    line-height: 1.25 !important;
+}
+
+#clientes .client-phone-icon {
+    position: relative !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    flex: 0 0 20px !important;
+    width: 20px !important;
+    min-width: 20px !important;
+    height: 20px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    line-height: 0 !important;
+    vertical-align: middle !important;
+    box-sizing: border-box !important;
+}
+
+/* Remove o telefone antigo em CSS, que aparecia por cima do WhatsApp em SVG. */
+#clientes .client-phone-icon::before,
+#clientes .client-phone-icon::after {
+    content: none !important;
+    display: none !important;
+}
+
+#clientes .client-phone-icon svg {
+    display: block !important;
+    flex: 0 0 18px !important;
+    width: 18px !important;
+    height: 18px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: visible !important;
+}
+
+#clientes .client-phone > span:last-child {
+    display: block !important;
+    align-self: center !important;
+    min-width: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    line-height: 1.25 !important;
+    transform: none !important;
+}
+
+/* Mesmo alinhamento em telas menores, sem mexer no botão de lixeira. */
+@media (max-width: 700px) {
+    #clientes .client-summary > .client-summary-card {
+        grid-template-columns: 32px minmax(0, 1fr) !important;
+        column-gap: 8px !important;
+    }
+
+    #clientes .client-summary > .client-summary-card > .client-total-icon {
+        flex-basis: 32px !important;
+        width: 32px !important;
+        min-width: 32px !important;
+        height: 32px !important;
+        border-radius: 9px !important;
+    }
+
+    #clientes .client-summary > .client-summary-card > .client-total-icon svg {
+        flex-basis: 20px !important;
+        width: 20px !important;
+        height: 20px !important;
+    }
+
+    #clientes .client-phone-icon {
+        flex-basis: 18px !important;
+        width: 18px !important;
+        min-width: 18px !important;
+        height: 18px !important;
+    }
+
+    #clientes .client-phone-icon svg {
+        flex-basis: 16px !important;
+        width: 16px !important;
+        height: 16px !important;
+    }
+}
+
+@media (max-width: 380px) {
+    #clientes .client-summary > .client-summary-card {
+        grid-template-columns: 29px minmax(0, 1fr) !important;
+        column-gap: 6px !important;
+    }
+
+    #clientes .client-summary > .client-summary-card > .client-total-icon {
+        flex-basis: 29px !important;
+        width: 29px !important;
+        min-width: 29px !important;
+        height: 29px !important;
+        border-radius: 8px !important;
+    }
+
+    #clientes .client-summary > .client-summary-card > .client-total-icon svg {
+        flex-basis: 18px !important;
+        width: 18px !important;
+        height: 18px !important;
+    }
+
+    #clientes .client-phone-icon {
+        flex-basis: 16px !important;
+        width: 16px !important;
+        min-width: 16px !important;
+        height: 16px !important;
+    }
+
+    #clientes .client-phone-icon svg {
+        flex-basis: 14px !important;
+        width: 14px !important;
+        height: 14px !important;
+    }
+}
+
+
+/* =====================================================================
+   NAVALHA DE OURO — ACABAMENTO FINAL DO MÓDULO CLIENTES
+   Escopo exclusivo: #clientes. Não altera Serviços, Barbeiros ou demais módulos.
+   ===================================================================== */
+
+#clientes {
+    --client-panel: #171717 !important;
+    --client-panel-deep: #111111 !important;
+    --client-border: rgba(214, 179, 106, .42) !important;
+    --client-border-hover: rgba(255, 223, 161, .68) !important;
+    --client-text: #f5f2eb !important;
+    --client-muted: #bcb6a8 !important;
+    --client-blue: #d6b36a !important;
+}
+
+/* Cartão de total e busca: grafite/preto, contorno dourado discreto. */
+#clientes .client-summary > .client-summary-card,
+#clientes .client-search-card {
+    border-color: rgba(214, 179, 106, .42) !important;
+    background: linear-gradient(145deg, #1b1b1b 0%, #111111 100%) !important;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.025) !important;
+}
+
+#clientes .client-summary > .client-summary-card:hover,
+#clientes .client-search-card:hover {
+    border-color: rgba(255, 223, 161, .58) !important;
+}
+
+/* Ícone de pessoas: remove o desenho legado e mantém apenas o SVG atual. */
+#clientes .client-summary > .client-summary-card::before {
+    content: none !important;
+    display: none !important;
+    background: none !important;
+    background-image: none !important;
+    border: 0 !important;
+    box-shadow: none !important;
+}
+
+#clientes .client-summary > .client-summary-card > .client-total-icon {
+    border-color: rgba(214, 179, 106, .45) !important;
+    background: rgba(214, 179, 106, .075) !important;
+    color: #e9c978 !important;
+}
+
+/* Campo de pesquisa e borda interna sem o tom azul forte. */
+#clientes .client-search-input {
+    border-color: rgba(214, 179, 106, .22) !important;
+    background: #101010 !important;
+    color: var(--client-text) !important;
+}
+
+#clientes .client-search-input::placeholder {
+    color: #b8b0a0 !important;
+}
+
+#clientes .client-search-input:focus {
+    border-color: rgba(214, 179, 106, .72) !important;
+    box-shadow: 0 0 0 2px rgba(214, 179, 106, .10) !important;
+}
+
+/* Cartões dos clientes no mesmo acabamento grafite + dourado de Serviços. */
+#clientes .client-card {
+    border-color: rgba(214, 179, 106, .40) !important;
+    background: linear-gradient(145deg, #1b1b1b 0%, #111111 100%) !important;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.025), 0 5px 18px rgba(0,0,0,.14) !important;
+}
+
+#clientes .client-card:hover {
+    border-color: rgba(255, 223, 161, .65) !important;
+    background: linear-gradient(145deg, #202020 0%, #131313 100%) !important;
+}
+
+#clientes .client-phone-row {
+    border-bottom-color: rgba(214, 179, 106, .22) !important;
+}
+
+#clientes .client-phone {
+    color: #ddd6c8 !important;
+}
+
+/* WhatsApp: desativa ícones antigos em texto/CSS e mantém exclusivamente o SVG. */
+#clientes .client-phone-icon {
+    border-color: rgba(53, 214, 160, .35) !important;
+    background: rgba(53, 214, 160, .055) !important;
+    color: #48d4a0 !important;
+}
+
+#clientes .client-phone-icon::before,
+#clientes .client-phone-icon::after {
+    content: none !important;
+    display: none !important;
+    background: none !important;
+    border: 0 !important;
+    box-shadow: none !important;
+}
+
+#clientes .client-phone-icon svg {
+    display: block !important;
+    width: 18px !important;
+    height: 18px !important;
+}
+
+/*
+   Lixeiras: remove as duas versões antigas desenhadas com ::before/::after.
+   Como o HTML antigo ainda contém um caractere de substituição dentro dos spans,
+   os spans recebem um único SVG limpo via background-image, sem alterar o JS.
+*/
+#clientes .client-delete-button::before,
+#clientes .client-delete-button::after,
+#clientes .delete-all-icon::before,
+#clientes .delete-all-icon::after {
+    content: none !important;
+    display: none !important;
+    background: none !important;
+    background-image: none !important;
+    border: 0 !important;
+    box-shadow: none !important;
+}
+
+#clientes .client-delete-button {
+    border-color: rgba(214, 179, 106, .62) !important;
+    background: rgba(214, 179, 106, .075) !important;
+    color: #e9c978 !important;
+}
+
+#clientes .client-delete-button:hover {
+    border-color: rgba(255, 223, 161, .9) !important;
+    background: rgba(214, 179, 106, .15) !important;
+}
+
+#clientes .client-delete-button > span {
+    display: block !important;
+    flex: 0 0 18px !important;
+    width: 18px !important;
+    height: 18px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+    font-size: 0 !important;
+    line-height: 0 !important;
+    color: transparent !important;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23e9c978' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 6h18'/%3E%3Cpath d='M8 6V4h8v2'/%3E%3Cpath d='M19 6l-1 14H6L5 6'/%3E%3Cpath d='M10 11v5M14 11v5'/%3E%3C/svg%3E") !important;
+    background-repeat: no-repeat !important;
+    background-position: center !important;
+    background-size: contain !important;
+}
+
+#clientes .delete-all-clients-button {
+    border-color: rgba(214, 179, 106, .48) !important;
+    background: linear-gradient(145deg, rgba(214, 179, 106, .075), rgba(20, 20, 20, .88)) !important;
+    color: #e6c574 !important;
+}
+
+#clientes .delete-all-clients-button:hover {
+    border-color: rgba(255, 223, 161, .78) !important;
+    background: rgba(214, 179, 106, .12) !important;
+}
+
+#clientes .delete-all-icon {
+    display: inline-block !important;
+    flex: 0 0 18px !important;
+    width: 18px !important;
+    height: 18px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    font-size: 0 !important;
+    line-height: 0 !important;
+    color: transparent !important;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23e6c574' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 6h18'/%3E%3Cpath d='M8 6V4h8v2'/%3E%3Cpath d='M19 6l-1 14H6L5 6'/%3E%3Cpath d='M10 11v5M14 11v5'/%3E%3C/svg%3E") !important;
+    background-repeat: no-repeat !important;
+    background-position: center !important;
+    background-size: contain !important;
+}
+
+/* Divisórias/detalhes de informação também deixam de puxar para azul. */
+#clientes .client-data > div {
+    color: var(--client-muted) !important;
+}
+
+#clientes .client-data > div:first-child::before,
+#clientes .client-data > div:nth-child(2)::before {
+    color: #d6b36a !important;
+}
+
+#clientes .client-summary > .client-summary-card > span:not(.client-total-icon) {
+    color: #bcb6a8 !important;
+}
+
+#clientes .client-summary > .client-summary-card > strong#totalClients {
+    color: #f5f2eb !important;
+}
+
+#clientes .client-delete-button:focus-visible,
+#clientes .delete-all-clients-button:focus-visible {
+    outline: 2px solid rgba(214, 179, 106, .82) !important;
+    outline-offset: 3px !important;
+}
+
+
+/* =========================================================
+   HORÁRIOS — INDICADOR COMPACTO E BOTÃO DE SALVAR
+   Alterações limitadas ao módulo #horarios.
+   ========================================================= */
+#horarios .horarios-page-header {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: flex-end !important;
+    justify-content: space-between !important;
+    gap: 16px !important;
+}
+
+#horarios .horarios-page-header > div:first-child {
+    flex: 1 1 auto !important;
+    min-width: 0 !important;
+}
+
+#horarios .horarios-save-actions {
+    display: flex !important;
+    flex: 0 0 auto !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    justify-content: flex-end !important;
+    gap: 10px !important;
+    width: auto !important;
+    min-width: 0 !important;
+    margin-left: auto !important;
+    padding: 0 !important;
+}
+
+/* Status: somente o ícone, sem a frase longa e sem o bloco verde grande. */
+#horarios .horarios-save-status {
+    display: inline-flex !important;
+    flex: 0 0 36px !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 36px !important;
+    min-width: 36px !important;
+    max-width: 36px !important;
+    height: 36px !important;
+    min-height: 36px !important;
+    padding: 0 !important;
+    gap: 0 !important;
+    border: 1px solid rgba(216, 177, 97, .55) !important;
+    border-radius: 50% !important;
+    background: rgba(216, 177, 97, .07) !important;
+    color: #d8b161 !important;
+    box-shadow: none !important;
+    font-size: 0 !important;
+    line-height: 1 !important;
+}
+
+#horarios .horarios-save-status-dot,
+#horarios .horarios-save-status > span:first-child {
+    display: none !important;
+}
+
+#horarios .horarios-save-status-icon {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 22px !important;
+    height: 22px !important;
+    margin: 0 !important;
+    border: 1px solid currentColor !important;
+    border-radius: 50% !important;
+    background: transparent !important;
+    color: inherit !important;
+    font-size: 14px !important;
+    font-weight: 800 !important;
+    line-height: 1 !important;
+    box-shadow: none !important;
+}
+
+#horarios #horariosSaveStatusText {
+    display: none !important;
+}
+
+#horarios .horarios-save-status.is-saved {
+    border-color: rgba(216, 177, 97, .55) !important;
+    background: rgba(216, 177, 97, .07) !important;
+    color: #d8b161 !important;
+}
+
+#horarios .horarios-save-status.is-saved .horarios-save-status-icon {
+    color: #d8b161 !important;
+}
+
+#horarios .horarios-save-status.is-dirty {
+    border-color: rgba(216, 177, 97, .8) !important;
+    background: rgba(216, 177, 97, .10) !important;
+    color: #f0c978 !important;
+}
+
+#horarios .horarios-save-status.is-error {
+    border-color: rgba(225, 91, 91, .75) !important;
+    background: rgba(225, 91, 91, .08) !important;
+    color: #f07878 !important;
+}
+
+/* Botão dimensionado pelo texto e alinhado à direita do indicador. */
+#horarios .horarios-page-header #saveScheduleSettings {
+    display: inline-flex !important;
+    flex: 0 0 auto !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: auto !important;
+    min-width: 184px !important;
+    max-width: 100% !important;
+    height: 40px !important;
+    min-height: 40px !important;
+    padding: 0 16px !important;
+    gap: 8px !important;
+    white-space: nowrap !important;
+    font-size: 10px !important;
+}
+
+@media (max-width: 700px) {
+    #horarios .horarios-page-header {
+        flex-direction: row !important;
+        flex-wrap: wrap !important;
+        align-items: flex-end !important;
+        gap: 12px !important;
+    }
+
+    #horarios .horarios-save-actions {
+        width: 100% !important;
+        justify-content: flex-end !important;
+        gap: 9px !important;
+        margin-left: 0 !important;
+    }
+
+    #horarios .horarios-page-header #saveScheduleSettings {
+        width: auto !important;
+        min-width: 184px !important;
+        max-width: calc(100% - 46px) !important;
+        height: 40px !important;
+        min-height: 40px !important;
+        padding: 0 12px !important;
+        font-size: 9px !important;
+    }
+
+    #horarios .horarios-save-status {
+        flex-basis: 36px !important;
+        width: 36px !important;
+        min-width: 36px !important;
+        max-width: 36px !important;
+        height: 36px !important;
+        min-height: 36px !important;
+    }
+}
