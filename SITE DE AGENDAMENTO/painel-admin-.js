@@ -5388,14 +5388,31 @@ if (saveSettingsButton) {
     saveSettingsButton.addEventListener(
         "click",
         async () => {
-            const saved = await saveWhatsappSettings();
+            if (saveSettingsButton.disabled) return;
 
-            if (saved) {
-                markSettingsClean();
+            saveSettingsButton.disabled = true;
 
-                alert(
-                    "Configurações salvas com sucesso."
-                );
+            try {
+                // Conteúdo do site (configuracoes_site + imagens).
+                const siteSaved =
+                    typeof window.saveSiteSettings === "function"
+                        ? await window.saveSiteSettings()
+                        : true;
+
+                if (!siteSaved) return;
+
+                // WhatsApp (configuracoes_horarios).
+                const saved = await saveWhatsappSettings();
+
+                if (saved) {
+                    markSettingsClean();
+
+                    alert(
+                        "Configurações salvas com sucesso. O site já mostra as alterações."
+                    );
+                }
+            } finally {
+                saveSettingsButton.disabled = false;
             }
         }
     );
@@ -6358,4 +6375,577 @@ markHorariosClean();
             "image/svg+xml"
         ]
     });
+})();
+
+
+/* =========================================================
+   CONFIGURAÇÕES DO SITE — INTEGRAÇÃO COM SUPABASE
+   Lê e grava a tabela configuracoes_site e envia as
+   imagens (logo, banner, portfólio) para o bucket
+   "site-imagens". O site público (index.html) lê esses
+   dados por site-config.js.
+   ========================================================= */
+
+(function initSiteContentSettings() {
+    "use strict";
+
+    const TABLE = "configuracoes_site";
+    const BUCKET = "site-imagens";
+    const PADRAO = window.SITE_PADRAO || {};
+
+    // id do campo no painel → coluna na tabela
+    const TEXT_FIELDS = {
+        barbershopName: "nome_barbearia",
+        siteTextoIdentificacao: "texto_identificacao",
+        siteTituloPrincipal: "titulo_principal",
+        siteDescricaoPrincipal: "descricao_principal",
+        siteTextoBotaoPrincipal: "texto_botao_principal",
+        siteLinkBotaoPrincipal: "link_botao_principal",
+        siteTextoBotaoSecundario: "texto_botao_secundario",
+        siteLinkBotaoSecundario: "link_botao_secundario",
+        siteTextoBotaoCabecalho: "texto_botao_cabecalho",
+        siteTituloPagina: "titulo_pagina",
+        siteDescricaoSeo: "descricao_curta",
+
+        siteEstatistica1Numero: "estatistica_1_numero",
+        siteEstatistica1Texto: "estatistica_1_texto",
+        siteEstatistica2Numero: "estatistica_2_numero",
+        siteEstatistica2Texto: "estatistica_2_texto",
+        siteEstatistica3Numero: "estatistica_3_numero",
+        siteEstatistica3Texto: "estatistica_3_texto",
+
+        siteServicosTitulo: "servicos_titulo",
+        siteServicosDescricao: "servicos_descricao",
+        sitePortfolioTitulo: "portfolio_titulo",
+        sitePortfolioDescricao: "portfolio_descricao",
+        siteEquipeTitulo: "equipe_titulo",
+        siteEquipeDescricao: "equipe_descricao",
+
+        siteAvaliacaoTitulo: "avaliacoes_titulo",
+        siteAvaliacaoDescricao: "avaliacoes_descricao",
+        siteTextoBotaoAvaliacao: "texto_botao_avaliacao",
+        siteTextoBotaoGoogle: "texto_botao_google",
+        siteLinkAvaliacaoGoogle: "link_avaliacao_google",
+
+        siteCorPrincipal: "cor_principal",
+        siteCorFundo: "cor_fundo",
+        siteCorDestaque: "cor_destaque",
+        siteFonte: "fonte",
+
+        siteEndereco: "endereco",
+        siteCidade: "cidade",
+        siteEstado: "estado",
+        siteCep: "cep",
+        siteTelefone: "telefone",
+        siteGoogleMapsLink: "google_maps_link",
+
+        siteInstagram: "instagram",
+        siteInstagramDescricao: "instagram_descricao",
+        siteInstagramLink: "instagram_link",
+        siteTextoBotaoInstagram: "texto_botao_instagram",
+
+        siteTextoRodape: "texto_rodape",
+        siteTextoDireitosAutorais: "texto_direitos_autorais"
+    };
+
+    const LINK_FIELDS = {
+        siteLinkBotaoPrincipal: "Destino do botão principal",
+        siteLinkBotaoSecundario: "Destino do botão secundário",
+        siteLinkAvaliacaoGoogle: "Link para avaliação no Google",
+        siteGoogleMapsLink: "Link do Google Maps",
+        siteInstagramLink: "Link do Instagram"
+    };
+
+    const COLOR_FIELDS = {
+        siteCorPrincipal: "Cor principal",
+        siteCorFundo: "Cor de fundo",
+        siteCorDestaque: "Cor de destaque"
+    };
+
+    const CHECK_FIELDS = {
+        siteMostrarServicos: "mostrar_servicos",
+        siteMostrarPortfolio: "mostrar_portfolio",
+        siteMostrarEquipe: "mostrar_equipe",
+        siteMostrarAvaliacoes: "mostrar_avaliacoes",
+        siteMostrarInstagram: "mostrar_instagram",
+        siteMostrarLocalizacao: "mostrar_localizacao",
+        siteMostrarDireitos: "mostrar_direitos"
+    };
+
+    // Imagens: id do <input type=file> → configuração do slot
+    const IMAGE_SLOTS = [
+        { inputId: "siteLogoFile", column: "logo_url", folder: "logo", prefix: "siteLogo", label: "Logo" },
+        { inputId: "siteBannerFile", column: "banner_url", folder: "banner", prefix: "siteBanner", label: "Imagem principal" },
+        { inputId: "sitePortfolioFile1", portfolio: 0, folder: "portfolio", prefix: "sitePortfolio", n: 1, label: "Portfólio 1" },
+        { inputId: "sitePortfolioFile2", portfolio: 1, folder: "portfolio", prefix: "sitePortfolio", n: 2, label: "Portfólio 2" },
+        { inputId: "sitePortfolioFile3", portfolio: 2, folder: "portfolio", prefix: "sitePortfolio", n: 3, label: "Portfólio 3" },
+        { inputId: "sitePortfolioFile4", portfolio: 3, folder: "portfolio", prefix: "sitePortfolio", n: 4, label: "Portfólio 4" }
+    ];
+
+    let siteRowId = null;
+
+    // URL salva de cada imagem (null = sem imagem)
+    const savedImageUrls = {};
+
+    function $(id) {
+        return document.getElementById(id);
+    }
+
+    function clean(value) {
+        return String(value ?? "").trim();
+    }
+
+    function markDirty() {
+        if (typeof markSettingsDirty === "function") markSettingsDirty();
+    }
+
+    function markClean() {
+        if (typeof markSettingsClean === "function") markSettingsClean();
+    }
+
+    function isValidLink(value) {
+        if (!value) return true;
+        if (/^#[\w-]*$/.test(value)) return true;
+        if (/^[\w-]+\.html(#[\w-]+)?$/.test(value)) return true;
+
+        try {
+            const url = new URL(value);
+            return url.protocol === "https:" || url.protocol === "http:";
+        } catch {
+            return false;
+        }
+    }
+
+    function parseJSON(value, fallback) {
+        if (value && typeof value === "object") return value;
+        if (typeof value !== "string") return fallback;
+
+        try {
+            return JSON.parse(value);
+        } catch {
+            return fallback;
+        }
+    }
+
+    // ------------------------------------------
+    // PRÉ-VISUALIZAÇÃO DE IMAGEM JÁ SALVA
+    // ------------------------------------------
+
+    function slotIds(slot) {
+        const n = slot.n || "";
+
+        return {
+            preview: $(`${slot.prefix}Preview${n}`),
+            empty: $(`${slot.prefix}Empty${n}`),
+            remove: $(`${slot.prefix}RemoveButton${n}`),
+            status: $(`${slot.prefix}UploadStatus${n}`)
+        };
+    }
+
+    function showSavedImage(slot, url) {
+        const el = slotIds(slot);
+
+        savedImageUrls[slot.inputId] = url || null;
+
+        if (!el.preview || !el.empty || !el.remove) return;
+
+        if (url) {
+            el.preview.src = url;
+            el.preview.hidden = false;
+            el.empty.hidden = true;
+            el.remove.hidden = false;
+
+            if (el.status) el.status.textContent = "Imagem atual do site.";
+        } else {
+            el.preview.removeAttribute("src");
+            el.preview.hidden = true;
+            el.empty.hidden = false;
+            el.remove.hidden = true;
+        }
+    }
+
+    function pendingFile(slot) {
+        if (slot.portfolio !== undefined) {
+            const map = window.__sitePortfolioFiles;
+            return map && typeof map.get === "function" ? map.get(slot.inputId) : null;
+        }
+
+        return window.__siteImageFiles ? window.__siteImageFiles[slot.inputId] : null;
+    }
+
+    function clearPendingFile(slot) {
+        if (slot.portfolio !== undefined) {
+            const map = window.__sitePortfolioFiles;
+            if (map && typeof map.delete === "function") map.delete(slot.inputId);
+        } else if (window.__siteImageFiles) {
+            delete window.__siteImageFiles[slot.inputId];
+        }
+    }
+
+    // ------------------------------------------
+    // PREENCHER O FORMULÁRIO
+    // ------------------------------------------
+
+    function fillForm(row) {
+        row = row || {};
+
+        Object.entries(TEXT_FIELDS).forEach(([id, column]) => {
+            const el = $(id);
+            if (!el) return;
+
+            const value = row[column];
+            el.value = clean(value) || clean(PADRAO[column]);
+        });
+
+        Object.entries(CHECK_FIELDS).forEach(([id, column]) => {
+            const el = $(id);
+            if (!el) return;
+
+            el.checked = typeof row[column] === "boolean"
+                ? row[column]
+                : PADRAO[column] !== false;
+
+            // Atualiza o visual ON/OFF do switch.
+            el.dispatchEvent(new Event("change"));
+        });
+
+        // Portfólio
+        const savedPortfolio = parseJSON(row.portfolio_itens, null);
+        const portfolio = Array.isArray(savedPortfolio)
+            ? savedPortfolio
+            : (PADRAO.portfolio_itens || []);
+
+        for (let i = 0; i < 4; i++) {
+            const item = portfolio[i] || {};
+            const legenda = $(`sitePortfolioLegenda${i + 1}`);
+
+            if (legenda) legenda.value = clean(item.legenda);
+        }
+
+        IMAGE_SLOTS.forEach(slot => {
+            const url = slot.portfolio !== undefined
+                ? (portfolio[slot.portfolio] || {}).url
+                : row[slot.column];
+
+            showSavedImage(slot, clean(url) || null);
+        });
+
+        // Avaliações
+        const savedReviews = parseJSON(row.avaliacoes, null);
+        const reviews = Array.isArray(savedReviews)
+            ? savedReviews
+            : (PADRAO.avaliacoes || []);
+
+        for (let i = 0; i < 5; i++) {
+            const review = reviews[i] || {};
+            const stars = $(`siteAvaliacao${i + 1}Estrelas`);
+            const nome = $(`siteAvaliacao${i + 1}Nome`);
+            const texto = $(`siteAvaliacao${i + 1}Texto`);
+
+            if (stars) {
+                const n = Math.min(5, Math.max(1, Number(review.estrelas) || 5));
+                stars.value = String(n);
+            }
+
+            if (nome) nome.value = clean(review.nome);
+            if (texto) texto.value = clean(review.texto);
+        }
+
+        updateGoogleTestButton();
+        markClean();
+    }
+
+    async function loadSiteSettings() {
+        if (!window.supabaseClient) return;
+
+        const { data, error } = await window.supabaseClient
+            .from(TABLE)
+            .select("*")
+            .order("id", { ascending: true })
+            .limit(1)
+            .maybeSingle();
+
+        if (error) {
+            console.error("Erro ao carregar configurações do site:", error);
+            return;
+        }
+
+        siteRowId = data ? data.id : null;
+        fillForm(data);
+    }
+
+    // ------------------------------------------
+    // VALIDAR E MONTAR OS DADOS
+    // ------------------------------------------
+
+    function validate() {
+        for (const [id, label] of Object.entries(LINK_FIELDS)) {
+            const el = $(id);
+            const value = el ? clean(el.value) : "";
+
+            if (!isValidLink(value)) {
+                alert(`${label}: informe um link válido (https://...), uma página (agendar.html) ou uma seção (#servicos).`);
+                if (el) el.focus();
+                return false;
+            }
+        }
+
+        for (const [id, label] of Object.entries(COLOR_FIELDS)) {
+            const el = $(id);
+            const value = el ? clean(el.value) : "";
+
+            if (value && !/^#([0-9a-f]{3}|[0-9a-f]{6})$/i.test(value)) {
+                alert(`${label}: use o formato hexadecimal, por exemplo #C9A45C.`);
+                if (el) el.focus();
+                return false;
+            }
+        }
+
+        const fonte = $("siteFonte");
+
+        if (fonte && clean(fonte.value) && !/^[A-Za-z0-9 ]{2,40}$/.test(clean(fonte.value))) {
+            alert("Fonte: use apenas o nome da fonte do Google Fonts, por exemplo Inter ou Poppins.");
+            fonte.focus();
+            return false;
+        }
+
+        return true;
+    }
+
+    function buildPayload(imageUrls) {
+        const payload = {};
+
+        Object.entries(TEXT_FIELDS).forEach(([id, column]) => {
+            const el = $(id);
+            if (!el) return;
+
+            payload[column] = clean(el.value) || null;
+        });
+
+        Object.entries(CHECK_FIELDS).forEach(([id, column]) => {
+            const el = $(id);
+            if (el) payload[column] = Boolean(el.checked);
+        });
+
+        IMAGE_SLOTS.forEach(slot => {
+            if (slot.column) payload[slot.column] = imageUrls[slot.inputId] || null;
+        });
+
+        payload.portfolio_itens = [1, 2, 3, 4].map(n => ({
+            url: imageUrls[`sitePortfolioFile${n}`] || null,
+            legenda: clean(($(`sitePortfolioLegenda${n}`) || {}).value) || null
+        }));
+
+        payload.avaliacoes = [1, 2, 3, 4, 5]
+            .map(n => ({
+                estrelas: Number(($(`siteAvaliacao${n}Estrelas`) || {}).value) || 5,
+                nome: clean(($(`siteAvaliacao${n}Nome`) || {}).value),
+                texto: clean(($(`siteAvaliacao${n}Texto`) || {}).value)
+            }))
+            .filter(review => review.nome || review.texto);
+
+        return payload;
+    }
+
+    // ------------------------------------------
+    // UPLOAD DAS IMAGENS
+    // ------------------------------------------
+
+    async function uploadImage(slot, file) {
+        const ext = (file.name.split(".").pop() || "png")
+            .toLowerCase()
+            .replace(/[^a-z0-9]/g, "") || "png";
+
+        const path =
+            `${slot.folder}/${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
+
+        const { error } = await window.supabaseClient
+            .storage
+            .from(BUCKET)
+            .upload(path, file, {
+                cacheControl: "3600",
+                contentType: file.type,
+                upsert: false
+            });
+
+        if (error) throw Object.assign(error, { slotLabel: slot.label });
+
+        const { data } = window.supabaseClient
+            .storage
+            .from(BUCKET)
+            .getPublicUrl(path);
+
+        return data.publicUrl;
+    }
+
+    function explainError(error) {
+        const message = String((error && error.message) || error || "");
+        const lower = message.toLowerCase();
+
+        if (lower.includes("bucket not found")) {
+            return "O armazenamento de imagens ainda não foi criado. Rode o arquivo sql/configuracoes_site.sql no Supabase.";
+        }
+
+        if (lower.includes("column") || (error && error.code === "PGRST204")) {
+            return "A tabela configuracoes_site ainda não tem todas as colunas. Rode o arquivo sql/configuracoes_site.sql no Supabase.";
+        }
+
+        if (lower.includes("row-level security") || lower.includes("unauthorized") || lower.includes("permission")) {
+            return "Sem permissão para salvar. Entre novamente com a conta de administrador.";
+        }
+
+        if (lower.includes("failed to fetch") || lower.includes("network")) {
+            return "Sem conexão com o servidor. Verifique a internet e tente de novo.";
+        }
+
+        return message || "Erro desconhecido.";
+    }
+
+    // ------------------------------------------
+    // SALVAR
+    // ------------------------------------------
+
+    async function saveSiteSettings() {
+        if (!window.supabaseClient) {
+            alert("Supabase não foi carregado. Atualize a página.");
+            return false;
+        }
+
+        if (!validate()) return false;
+
+        // 1) Enviar imagens novas
+        const imageUrls = { ...savedImageUrls };
+        const uploaded = [];
+
+        try {
+            for (const slot of IMAGE_SLOTS) {
+                const file = pendingFile(slot);
+
+                if (file) {
+                    imageUrls[slot.inputId] = await uploadImage(slot, file);
+                    uploaded.push(slot);
+                }
+            }
+        } catch (error) {
+            console.error("Erro ao enviar imagem:", error);
+            alert(`Não foi possível enviar a imagem (${error.slotLabel || "imagem"}): ${explainError(error)}`);
+            return false;
+        }
+
+        // 2) Gravar a linha de configuração
+        const payload = buildPayload(imageUrls);
+
+        const query = siteRowId !== null
+            ? window.supabaseClient.from(TABLE).update(payload).eq("id", siteRowId).select("id")
+            : window.supabaseClient.from(TABLE).insert(payload).select("id");
+
+        const { data, error } = await query;
+
+        if (error) {
+            console.error("Erro ao salvar configurações do site:", error);
+            alert(`Não foi possível salvar as configurações do site: ${explainError(error)}`);
+            return false;
+        }
+
+        // Update bloqueado pelo RLS volta sem linhas, sem erro.
+        if (!data || data.length === 0) {
+            alert("As configurações não foram gravadas: sem permissão. Entre novamente com a conta de administrador.");
+            return false;
+        }
+
+        siteRowId = data[0].id;
+
+        // 3) Sucesso: imagens enviadas viram as "imagens atuais"
+        uploaded.forEach(slot => clearPendingFile(slot));
+
+        IMAGE_SLOTS.forEach(slot => {
+            savedImageUrls[slot.inputId] = imageUrls[slot.inputId] || null;
+        });
+
+        uploaded.forEach(slot => {
+            const el = slotIds(slot);
+            if (el.status) el.status.textContent = "Imagem atual do site.";
+        });
+
+        return true;
+    }
+
+    // ------------------------------------------
+    // LINK DE AVALIAÇÃO — BOTÃO DE TESTE
+    // ------------------------------------------
+
+    function updateGoogleTestButton() {
+        const input = $("siteLinkAvaliacaoGoogle");
+        const button = $("testGoogleReviewLink");
+
+        if (!input || !button) return;
+
+        const value = clean(input.value);
+        button.disabled = !(value && /^https?:/.test(value) && isValidLink(value));
+    }
+
+    // ------------------------------------------
+    // EVENTOS
+    // ------------------------------------------
+
+    function bindEvents() {
+        const ids = [
+            ...Object.keys(TEXT_FIELDS),
+            "sitePortfolioLegenda1",
+            "sitePortfolioLegenda2",
+            "sitePortfolioLegenda3",
+            "sitePortfolioLegenda4"
+        ];
+
+        for (let n = 1; n <= 5; n++) {
+            ids.push(`siteAvaliacao${n}Estrelas`, `siteAvaliacao${n}Nome`, `siteAvaliacao${n}Texto`);
+        }
+
+        ids.forEach(id => {
+            const el = $(id);
+            if (!el) return;
+
+            el.addEventListener("input", markDirty);
+            el.addEventListener("change", markDirty);
+        });
+
+        // Remover imagem: deixa de usar a imagem salva.
+        IMAGE_SLOTS.forEach(slot => {
+            const remove = slotIds(slot).remove;
+
+            if (remove) {
+                remove.addEventListener("click", () => {
+                    savedImageUrls[slot.inputId] = null;
+                });
+            }
+        });
+
+        const googleInput = $("siteLinkAvaliacaoGoogle");
+        const googleButton = $("testGoogleReviewLink");
+
+        if (googleInput) googleInput.addEventListener("input", updateGoogleTestButton);
+
+        if (googleButton) {
+            googleButton.addEventListener("click", () => {
+                const value = clean(googleInput && googleInput.value);
+
+                if (/^https?:/.test(value) && isValidLink(value)) {
+                    window.open(value, "_blank", "noopener");
+                }
+            });
+        }
+    }
+
+    window.saveSiteSettings = saveSiteSettings;
+
+    function init() {
+        bindEvents();
+        loadSiteSettings();
+    }
+
+    if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", init);
+    } else {
+        init();
+    }
 })();

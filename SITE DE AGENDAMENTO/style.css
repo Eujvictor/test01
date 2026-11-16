@@ -1121,3 +1121,25 @@ img {
 .btn-area-equipe {
     /* estilo do Painel do Barbeiro */
 }
+
+/* =========================================================
+   CONFIGURAÇÕES DO PAINEL (site-config.js)
+   ========================================================= */
+
+/* Seções desligadas no painel precisam sumir mesmo com display próprio. */
+[hidden] {
+    display: none !important;
+}
+
+/* Logo enviada pelo painel (cabeçalho e rodapé). */
+.logo .logo-img {
+    width: auto;
+    height: 44px;
+    max-width: 180px;
+    object-fit: contain;
+}
+
+.reviews .center p {
+    color: var(--muted);
+    margin-bottom: 8px;
+}

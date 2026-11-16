@@ -211,6 +211,34 @@ document.addEventListener(
                 }
             );
 
+
+            // ==========================================
+            // RODAPÉ — mesma lista, sem nova consulta
+            // ==========================================
+
+            const footerServices =
+                document.getElementById("footerServices");
+
+            if (footerServices) {
+
+                footerServices.innerHTML = "";
+
+                services.slice(0, 6).forEach(
+                    function (service) {
+
+                        const link =
+                            document.createElement("a");
+
+                        link.href = "#servicos";
+                        link.textContent = service.nome ?? "";
+
+                        footerServices.appendChild(link);
+
+                    }
+                );
+
+            }
+
         }
 
 

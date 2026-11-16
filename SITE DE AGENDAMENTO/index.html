@@ -22,22 +22,22 @@
     <header class="header">
         <div class="container header-content">
 
-            <a href="#" class="logo">
+            <a href="#" class="logo" data-site-logo>
                 NAVALHA DE OURO
             </a>
 
             <nav class="nav">
-                <a href="#servicos">Serviços</a>
-                <a href="#portfolio">Portfólio</a>
-                <a href="#equipe">Equipe</a>
-                <a href="#avaliacoes">Avaliações</a>
-                <a href="#localizacao">Localização</a>
+                <a href="#servicos" data-site-nav="servicos">Serviços</a>
+                <a href="#portfolio" data-site-nav="portfolio">Portfólio</a>
+                <a href="#equipe" data-site-nav="equipe">Equipe</a>
+                <a href="#avaliacoes" data-site-nav="avaliacoes">Avaliações</a>
+                <a href="#localizacao" data-site-nav="localizacao">Localização</a>
                 <a href="area-equipe.html" class="btn-area-equipe">
                     Área da equipe
                 </a>
             </nav>
 
-            <a href="agendar.html" class="btn btn-header">
+            <a href="agendar.html" class="btn btn-header" data-site-btn="cabecalho">
                 Agendar
             </a>
 
@@ -53,22 +53,22 @@
 
     <main>
 
-        <section class="hero">
+        <section class="hero" data-site-banner>
 
             <div class="hero-overlay"></div>
 
             <div class="container hero-content">
 
-                <span class="eyebrow">
+                <span class="eyebrow" data-site="texto_identificacao">
                     BARBEARIA PREMIUM · SÃO PAULO
                 </span>
 
-                <h1>
+                <h1 data-site="titulo_principal">
                     Seu estilo<br>
                     começa aqui.
                 </h1>
 
-                <p>
+                <p data-site="descricao_principal">
                     Barbearia premium para o homem que valoriza detalhe
                     e presença. Cortes precisos, barba desenhada e um
                     ambiente pensado para você sair com a melhor versão de si.
@@ -76,11 +76,11 @@
 
                 <div class="hero-buttons">
 
-                    <a href="agendar.html" class="btn btn-primary">
+                    <a href="agendar.html" class="btn btn-primary" data-site-btn="principal">
                         Agendar horário
                     </a>
 
-                    <a href="#servicos" class="btn btn-outline">
+                    <a href="#servicos" class="btn btn-outline" data-site-btn="secundario">
                         Ver serviços
                     </a>
 
@@ -98,18 +98,18 @@
             <div class="container stats-grid">
 
                 <div class="stat">
-                    <strong>+8</strong>
-                    <span>anos de estrada</span>
+                    <strong data-site="estatistica_1_numero">+8</strong>
+                    <span data-site="estatistica_1_texto">anos de estrada</span>
                 </div>
 
                 <div class="stat">
-                    <strong>+12 mil</strong>
-                    <span>cortes feitos</span>
+                    <strong data-site="estatistica_2_numero">+12 mil</strong>
+                    <span data-site="estatistica_2_texto">cortes feitos</span>
                 </div>
 
                 <div class="stat">
-                    <strong>4,9</strong>
-                    <span>de avaliação</span>
+                    <strong data-site="estatistica_3_numero">4,9</strong>
+                    <span data-site="estatistica_3_texto">de avaliação</span>
                 </div>
 
             </div>
@@ -119,7 +119,7 @@
 
         <!-- ================= SERVIÇOS ================= -->
 
-        <section class="section" id="servicos">
+        <section class="section" id="servicos" data-site-secao="servicos">
 
             <div class="container">
 
@@ -129,11 +129,11 @@
                         SERVIÇOS
                     </span>
 
-                    <h2>
+                    <h2 data-site="servicos_titulo">
                         O que fazemos
                     </h2>
 
-                    <p>
+                    <p data-site="servicos_descricao">
                         Preços justos, tempo respeitado e acabamento
                         de barbearia premium.
                     </p>
@@ -153,7 +153,7 @@
 
         <!-- ================= PORTFÓLIO ================= -->
 
-        <section class="section section-dark" id="portfolio">
+        <section class="section section-dark" id="portfolio" data-site-secao="portfolio">
 
             <div class="container">
 
@@ -163,18 +163,18 @@
                         PORTFÓLIO
                     </span>
 
-                    <h2>
+                    <h2 data-site="portfolio_titulo">
                         Nossos trabalhos
                     </h2>
 
-                    <p>
+                    <p data-site="portfolio_descricao">
                         Um pouco do que sai das nossas cadeiras toda semana.
                     </p>
 
                 </div>
 
 
-                <div class="portfolio-grid">
+                <div class="portfolio-grid" id="portfolioGrid">
 
                     <div class="portfolio-item">
                         <img
@@ -217,6 +217,7 @@
                         target="_blank"
                         rel="noopener noreferrer"
                         class="text-link"
+                        data-site-link-instagram
                     >
                         Ver mais no Instagram →
                     </a>
@@ -229,7 +230,7 @@
 
         <!-- ================= EQUIPE ================= -->
 
-        <section class="section" id="equipe">
+        <section class="section" id="equipe" data-site-secao="equipe">
 
             <div class="container">
 
@@ -239,11 +240,11 @@
                         EQUIPE
                     </span>
 
-                    <h2>
+                    <h2 data-site="equipe_titulo">
                         Nossa equipe
                     </h2>
 
-                    <p>
+                    <p data-site="equipe_descricao">
                         Barbeiros especializados, cada um com a sua assinatura.
                     </p>
 
@@ -263,7 +264,7 @@
 
         <!-- ================= AVALIAÇÕES ================= -->
 
-        <section class="section reviews" id="avaliacoes">
+        <section class="section reviews" id="avaliacoes" data-site-secao="avaliacoes">
 
             <div class="container">
 
@@ -273,14 +274,16 @@
                         AVALIAÇÕES
                     </span>
 
-                    <h2>
+                    <h2 data-site="avaliacoes_titulo">
                         O que nossos clientes dizem
                     </h2>
+
+                    <p data-site="avaliacoes_descricao" hidden></p>
 
                 </div>
 
 
-                <div class="reviews-grid">
+                <div class="reviews-grid" id="reviewsGrid">
 
                     <article class="review-card">
 
@@ -334,11 +337,15 @@
 
                 <div class="center">
 
+                    <p data-site="texto_botao_avaliacao" hidden></p>
+
                     <a
                         href="https://www.google.com/"
                         target="_blank"
                         rel="noopener noreferrer"
                         class="text-link"
+                        data-site="texto_botao_google"
+                        data-site-link-google
                     >
                         Ver no Google →
                     </a>
@@ -352,7 +359,7 @@
 
         <!-- ================= INSTAGRAM ================= -->
 
-        <section class="instagram-section">
+        <section class="instagram-section" id="instagram" data-site-secao="instagram">
 
             <div class="container instagram-content">
 
@@ -360,11 +367,11 @@
                     INSTAGRAM
                 </span>
 
-                <h2>
+                <h2 data-site="instagram">
                     @navalhadeouro
                 </h2>
 
-                <p>
+                <p data-site="instagram_descricao">
                     Acompanhe os cortes do dia, novidades e promoções
                     exclusivas para quem segue.
                 </p>
@@ -374,6 +381,8 @@
                     target="_blank"
                     rel="noopener noreferrer"
                     class="btn btn-primary"
+                    data-site="texto_botao_instagram"
+                    data-site-link-instagram
                 >
                     Seguir no Instagram
                 </a>
@@ -385,7 +394,7 @@
 
         <!-- ================= LOCALIZAÇÃO ================= -->
 
-        <section class="section" id="localizacao">
+        <section class="section" id="localizacao" data-site-secao="localizacao">
 
             <div class="container">
 
@@ -410,7 +419,7 @@
 
                             <span>ENDEREÇO</span>
 
-                            <p>
+                            <p data-site="endereco_completo">
                                 Rua Augusta, 1024 — Consolação,
                                 São Paulo — SP
                             </p>
@@ -422,7 +431,7 @@
 
                             <span>TELEFONE</span>
 
-                            <p>
+                            <p data-site="telefone">
                                 (11) 4002-8922
                             </p>
 
@@ -433,13 +442,17 @@
 
                             <span>HORÁRIO</span>
 
-                            <p>
-                                Terça a Sexta · 09:00 — 20:00
-                            </p>
+                            <div data-site-horarios="localizacao">
 
-                            <p>
-                                Sábado · 08:00 — 19:00
-                            </p>
+                                <p>
+                                    Terça a Sexta · 09:00 — 20:00
+                                </p>
+
+                                <p>
+                                    Sábado · 08:00 — 19:00
+                                </p>
+
+                            </div>
 
                         </div>
 
@@ -451,6 +464,7 @@
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 class="btn btn-dark"
+                                data-site-link-maps
                             >
                                 Como chegar
                             </a>
@@ -460,6 +474,7 @@
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 class="btn btn-whatsapp"
+                                data-site-link-whatsapp
                             >
                                 WhatsApp
                             </a>
@@ -475,11 +490,11 @@
                             📍
                         </span>
 
-                        <strong>
+                        <strong data-site-nome>
                             Navalha de Ouro
                         </strong>
 
-                        <p>
+                        <p data-site="endereco">
                             Rua Augusta, 1024
                         </p>
 
@@ -502,27 +517,29 @@
 
             <div>
 
-                <a href="#" class="logo">
+                <a href="#" class="logo" data-site-logo>
                     NAVALHA DE OURO
                 </a>
 
-                <p>
+                <p data-site="texto_rodape">
                     Seu estilo começa aqui.
                 </p>
 
             </div>
 
 
-            <div>
+            <div data-site-secao="servicos">
 
                 <h3>Serviços</h3>
 
-                <a href="#servicos">Corte Masculino</a>
-                <a href="#servicos">Corte + Barba</a>
-                <a href="#servicos">Barba</a>
-                <a href="#servicos">Sobrancelha</a>
-                <a href="#servicos">Pigmentação</a>
-                <a href="#servicos">Corte Infantil</a>
+                <div id="footerServices">
+                    <a href="#servicos">Corte Masculino</a>
+                    <a href="#servicos">Corte + Barba</a>
+                    <a href="#servicos">Barba</a>
+                    <a href="#servicos">Sobrancelha</a>
+                    <a href="#servicos">Pigmentação</a>
+                    <a href="#servicos">Corte Infantil</a>
+                </div>
 
             </div>
 
@@ -531,15 +548,15 @@
 
                 <h3>Contato</h3>
 
-                <p>
+                <p data-site="endereco">
                     Rua Augusta, 1024 — Consolação
                 </p>
 
-                <p>
+                <p data-site="telefone">
                     (11) 4002-8922
                 </p>
 
-                <a href="https://wa.me/551140028922">
+                <a href="https://wa.me/551140028922" data-site-link-whatsapp>
                     WhatsApp
                 </a>
 
@@ -549,6 +566,8 @@
             <div>
 
                 <h3>Horário</h3>
+
+                <div data-site-horarios="rodape">
 
                 <p>
                     Terça a Sexta<br>
@@ -560,6 +579,8 @@
                     08:00 — 19:00
                 </p>
 
+                </div>
+
             </div>
 
         </div>
@@ -567,7 +588,7 @@
 
         <div class="container footer-bottom">
 
-            <span>
+            <span data-site-direitos>
                 © 2026 Navalha de Ouro. Todos os direitos reservados.
             </span>
 
@@ -585,6 +606,8 @@
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="supabese.js"></script>
+<script src="site-padrao.js"></script>
+<script src="site-config.js"></script>
 <script src="js/script.js"></script>
 <script src="servicos-home.js"></script>
     
