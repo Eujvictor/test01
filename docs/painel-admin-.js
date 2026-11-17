@@ -1,0 +1,6951 @@
+// ==========================================
+// VERIFICA SE É O ADMINISTRADOR
+// ==========================================
+
+document.addEventListener("DOMContentLoaded", async function () {
+
+    const {
+        data: { user },
+        error
+    } = await window.supabaseClient.auth.getUser();
+
+    if (error || !user) {
+
+        window.location.href = "area-equipe.html";
+
+        return;
+
+    }
+
+    const adminEmail = "navalhadeouro@gmail.com";
+
+    if (user.email !== adminEmail) {
+
+        await window.supabaseClient.auth.signOut();
+
+        window.location.href = "area-equipe.html";
+
+        return;
+
+    }
+
+});
+
+
+// ==========================================
+// ADMINISTRADOR AUTORIZADO
+// ==========================================
+
+
+
+// ==========================================
+// RESTANTE DO CÓDIGO DO PAINEL
+// ==========================================
+
+
+
+
+function escapeHTML(value) {
+
+    return String(value)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+
+}
+
+
+function formatMoney(value) {
+
+    return Number(value)
+        .toLocaleString(
+            "pt-BR",
+            {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            }
+        );
+
+}
+
+
+document.addEventListener(
+    "DOMContentLoaded",
+    () => {
+
+
+    /*
+    ==========================================
+    MÓDULO 06
+    GERENCIAMENTO DE BARBEIROS
+    ==========================================
+    */
+
+
+    // ==========================================
+    // DADOS DOS BARBEIROS — SUPABASE
+    // ==========================================
+
+    let barbers = [];
+
+
+    async function loadBarbers() {
+
+    const { data, error } = await window.supabaseClient
+    .from("configuracoes_horarios")
+    .select("*")
+    .order("id", { ascending: false })
+    .limit(1)
+    .maybeSingle();
+
+
+    if (error) {
+
+        console.error(
+            "Erro ao carregar barbeiros:",
+            error
+        );
+
+        return;
+
+    }
+
+
+    barbers =
+        (data || []).map(
+            barber => {
+
+                return {
+
+                    id:
+                        barber.id,
+
+                    name:
+                        barber.nome ?? "",
+
+                    specialty:
+                        barber.especialidade ?? "",
+
+                    phone:
+                        barber.telefone ?? "",
+
+                    active:
+                        barber.ativo !== false
+
+                };
+
+            }
+        );
+
+
+    renderBarbers();
+
+}
+
+
+    // ==========================================
+    // ELEMENTOS
+    // ==========================================
+
+    const sidebar =
+        document.getElementById("sidebar");
+
+    const menuButton =
+        document.getElementById("menuButton");
+
+    const navItems =
+        document.querySelectorAll(".nav-item");
+
+    const sections =
+        document.querySelectorAll(".page-section");
+
+
+    const barbersGrid =
+        document.getElementById("barbersGrid");
+
+    const addBarberButton =
+        document.getElementById(
+            "addBarberButton"
+        );
+
+
+    const barberModal =
+        document.getElementById(
+            "barberModal"
+        );
+
+    const closeBarberModal =
+        document.getElementById(
+            "closeBarberModal"
+        );
+
+    const cancelBarber =
+        document.getElementById(
+            "cancelBarber"
+        );
+
+
+    const barberForm =
+        document.getElementById(
+            "barberForm"
+        );
+
+
+    const modalTitle =
+        document.getElementById(
+            "modalTitle"
+        );
+
+
+    const submitBarberText =
+        document.getElementById(
+            "submitBarberText"
+        );
+
+
+    const editingBarberId =
+        document.getElementById(
+            "editingBarberId"
+        );
+
+
+    const barberName =
+        document.getElementById(
+            "barberName"
+        );
+
+
+    const barberSpecialty =
+        document.getElementById(
+            "barberSpecialty"
+        );
+
+
+    const barberPhone =
+        document.getElementById(
+            "barberPhone"
+        );
+
+
+    // ==========================================
+    // CARREGAR BARBEIROS E ESTATÍSTICAS — SUPABASE
+    // ==========================================
+
+    async function loadBarbers() {
+
+        if (!window.supabaseClient) {
+            console.error("Supabase não foi carregado.");
+            return;
+        }
+
+        const [
+            barbersResponse,
+            appointmentsResponse,
+            servicesResponse
+        ] = await Promise.all([
+
+            window.supabaseClient
+                .from("BARBEIROS")
+                .select("id, nome, especialidade, telefone, ativo")
+                .order("nome", { ascending: true }),
+
+            window.supabaseClient
+                .from("agendamentos")
+                .select("barbeiro_id, servico_id, status")
+                .neq("status", "cancelado"),
+
+            window.supabaseClient
+                .from("SERVIÇOS")
+                .select('id, "preço"')
+
+        ]);
+
+        if (barbersResponse.error) {
+
+            console.error(
+                "Erro ao carregar barbeiros:",
+                barbersResponse.error
+            );
+
+            if (barbersGrid) {
+                barbersGrid.innerHTML =
+                    "<p>Não foi possível carregar os barbeiros.</p>";
+            }
+
+            return;
+        }
+
+        if (appointmentsResponse.error) {
+            console.error(
+                "Erro ao carregar agendamentos dos barbeiros:",
+                appointmentsResponse.error
+            );
+        }
+
+        if (servicesResponse.error) {
+            console.error(
+                "Erro ao carregar serviços para estatísticas:",
+                servicesResponse.error
+            );
+        }
+
+        const servicePrices = new Map(
+            (servicesResponse.data || []).map(service => [
+                String(service.id),
+                Number(service["preço"] ?? 0)
+            ])
+        );
+
+        barbers = (barbersResponse.data || []).map(barber => {
+
+            const barberAppointments = (appointmentsResponse.data || [])
+                .filter(appointment =>
+                    String(appointment.barbeiro_id) === String(barber.id)
+                );
+
+            const revenue = barberAppointments.reduce(
+                (total, appointment) =>
+                    total + Number(
+                        servicePrices.get(String(appointment.servico_id)) ?? 0
+                    ),
+                0
+            );
+
+            return {
+                id: barber.id,
+                name: barber.nome ?? "",
+                specialty: barber.especialidade ?? "",
+                phone: barber.telefone ?? "",
+                active: barber.ativo !== false,
+                appointments: barberAppointments.length,
+                revenue
+            };
+
+        });
+
+        renderBarbers();
+    }
+
+
+    // ==========================================
+    // DATA ATUAL
+    // ==========================================
+
+    const currentDate =
+        document.getElementById(
+            "currentDate"
+        );
+
+
+    currentDate.textContent =
+        capitalize(
+            new Date().toLocaleDateString(
+                "pt-BR",
+                {
+                    weekday: "long",
+                    day: "2-digit",
+                    month: "long",
+                    year: "numeric"
+                }
+            )
+        );
+
+
+    // ==========================================
+    // NAVEGAÇÃO
+    // ==========================================
+
+    function showSection(sectionId) {
+
+        sections.forEach(
+            section => {
+
+                section.classList.remove(
+                    "active"
+                );
+
+            }
+        );
+
+
+        navItems.forEach(
+            item => {
+
+                item.classList.remove(
+                    "active"
+                );
+
+            }
+        );
+
+
+        const section =
+            document.getElementById(
+                sectionId
+            );
+
+
+        const navItem =
+            document.querySelector(
+                `[data-section="${sectionId}"]`
+            );
+
+
+        if (section) {
+
+            section.classList.add(
+                "active"
+            );
+
+        }
+
+
+        if (navItem) {
+
+            navItem.classList.add(
+                "active"
+            );
+
+        }
+
+
+        if (window.innerWidth <= 850) {
+
+            sidebar.classList.remove(
+                "open"
+            );
+
+        }
+
+    }
+
+
+    navItems.forEach(
+        item => {
+
+            item.addEventListener(
+                "click",
+                event => {
+
+                    event.preventDefault();
+
+                    showSection(
+                        item.dataset.section
+                    );
+
+                    history.replaceState(
+                        null,
+                        "",
+                        "#" +
+                        item.dataset.section
+                    );
+
+                }
+            );
+
+        }
+    );
+
+
+    // ==========================================
+    // MENU MOBILE
+    // ==========================================
+
+    menuButton.addEventListener(
+        "click",
+        () => {
+
+            sidebar.classList.toggle(
+                "open"
+            );
+
+        }
+    );
+
+
+    // ==========================================
+    // INICIAIS
+    // ==========================================
+
+    function getInitials(name) {
+
+        return name
+            .trim()
+            .split(/\s+/)
+            .slice(0, 2)
+            .map(
+                word =>
+                    word
+                        .charAt(0)
+                        .toUpperCase()
+            )
+            .join("");
+
+    }
+
+
+    function capitalize(text) {
+
+        return text.charAt(0).toUpperCase()
+            + text.slice(1);
+
+    }
+
+
+    // ==========================================
+    // RENDERIZA BARBEIROS
+    // ==========================================
+
+    function renderBarbers() {
+
+        barbersGrid.innerHTML = "";
+
+
+        if (barbers.length === 0) {
+
+            barbersGrid.innerHTML = `
+
+                <div class="content-card">
+
+                    <p>
+                        Nenhum barbeiro cadastrado.
+                    </p>
+
+                </div>
+
+            `;
+
+            updateTeamSummary();
+
+            return;
+
+        }
+
+
+        barbers.forEach(
+            barber => {
+
+                const card =
+                    document.createElement(
+                        "div"
+                    );
+
+
+                card.className =
+                    "barber-card" +
+                    (
+                        barber.active
+                            ? ""
+                            : " inactive"
+                    );
+
+
+                card.innerHTML = `
+
+                    <div class="barber-card-header">
+
+                        <div class="barber-avatar">
+
+                            ${getInitials(
+                                barber.name
+                            )}
+
+                        </div>
+
+                        <div>
+
+                            <h3>
+                                ${escapeHTML(
+                                    barber.name
+                                )}
+                            </h3>
+
+                            <p>
+                                ${escapeHTML(
+                                    barber.specialty
+                                )}
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="barber-phone">
+
+                        <span class="whatsapp-icon" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M20.4 11.6a8.4 8.4 0 0 1-12.4 7.4L4 20l1-3.8a8.4 8.4 0 1 1 15.4-4.6Z"
+                                    fill="none" stroke="currentColor" stroke-width="1.8"
+                                    stroke-linecap="round" stroke-linejoin="round" />
+                                <path d="M8.5 8.2c.2-.4.4-.4.7-.4h.4c.2 0 .4.1.5.4l.6 1.5c.1.3.1.5-.1.7l-.5.6c-.2.2-.2.3-.1.6.4.7 1 1.4 1.6 1.9.5.4 1 .7 1.5.9.3.1.5.1.7-.1l.7-.8c.2-.2.4-.3.7-.2l1.5.7c.3.1.4.3.4.5 0 .3-.1 1-.6 1.4-.5.4-1.2.7-1.8.6-1 0-2.3-.5-3.8-1.8-1.6-1.4-2.6-3.1-2.9-4.1-.3-1.1-.1-1.9.3-2.4Z"
+                                    fill="currentColor" />
+                            </svg>
+                        </span>
+
+                        <span class="barber-phone-number">
+                            ${escapeHTML(barber.phone)}
+                        </span>
+
+                    </div>
+
+
+                    <div class="barber-data">
+
+                        <div>
+
+                            <span>
+                                Atendimentos
+                            </span>
+
+                            <strong>
+                                ${barber.appointments}
+                            </strong>
+
+                        </div>
+
+
+                        <div>
+
+                            <span>
+                                Faturamento
+                            </span>
+
+                            <strong>
+                                R$ ${formatMoney(
+                                    barber.revenue
+                                )}
+                            </strong>
+
+                        </div>
+
+                    </div>
+
+
+                    <span class="
+    barber-status
+    ${barber.active
+        ? "active"
+        : "inactive"}
+" aria-label="${barber.active ? "Ativo" : "Inativo"}"
+  title="${barber.active ? "Ativo" : "Inativo"}">
+</span>
+
+
+                    <div class="barber-actions">
+
+                        <button
+                            class="edit-button"
+                            data-action="edit"
+                            data-id="${barber.id}">
+
+                            EDITAR
+
+                        </button>
+
+
+                        <div class="barber-toggle-group">
+
+                            <button
+                                class="delete-button"
+                                data-action="delete"
+                                data-id="${barber.id}">
+
+                                EXCLUIR
+
+                            </button>
+
+
+                            <button
+                                class="toggle-button
+                                ${barber.active
+                                    ? ""
+                                    : "activate"}"
+                                data-action="toggle"
+                                data-id="${barber.id}">
+
+                                ${barber.active
+                                    ? "DESATIVAR"
+                                    : "ATIVAR"}
+
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                `;
+
+
+                barbersGrid.appendChild(
+                    card
+                );
+
+            }
+        );
+
+
+        updateTeamSummary();
+
+    }
+
+
+    // ==========================================
+    // RESUMO DA EQUIPE
+    // ==========================================
+
+    function updateTeamSummary() {
+
+        const total =
+            barbers.length;
+
+
+        const active =
+            barbers.filter(
+                barber =>
+                    barber.active
+            ).length;
+
+
+        const inactive =
+            total - active;
+
+
+        document.getElementById(
+            "totalBarbers"
+        ).textContent = total;
+
+
+        document.getElementById(
+            "activeBarbers"
+        ).textContent = active;
+
+
+        document.getElementById(
+            "inactiveBarbers"
+        ).textContent = inactive;
+
+
+        const dashboardBarberCount =
+            document.getElementById("dashboardBarberCount");
+
+        if (dashboardBarberCount) {
+            dashboardBarberCount.textContent = active;
+        }
+
+
+        renderDashboardTeam();
+
+    }
+
+
+    // ==========================================
+    // EVENTOS DOS CARDS
+    // ==========================================
+
+    barbersGrid.addEventListener(
+        "click",
+        event => {
+
+            const button =
+                event.target.closest(
+                    "button"
+                );
+
+
+            if (!button) {
+                return;
+            }
+
+
+            const id =
+                button.dataset.id;
+
+
+            const action =
+                button.dataset.action;
+
+
+            if (action === "edit") {
+
+                openEditModal(id);
+
+            }
+
+
+            if (action === "toggle") {
+
+                toggleBarber(id);
+
+            }
+
+
+            if (action === "delete") {
+
+                deleteBarber(id);
+
+            }
+
+        }
+    );
+
+
+    // ==========================================
+    // ABRIR MODAL — NOVO
+    // ==========================================
+
+    addBarberButton.addEventListener(
+        "click",
+        () => {
+
+            openAddModal();
+
+        }
+    );
+
+
+    function openAddModal() {
+
+        barberForm.reset();
+
+        editingBarberId.value = "";
+
+        modalTitle.textContent =
+            "Adicionar barbeiro";
+
+
+        submitBarberText.textContent =
+            "Adicionar barbeiro";
+
+
+        barberModal.classList.add(
+            "active"
+        );
+
+
+        setTimeout(
+            () => barberName.focus(),
+            100
+        );
+
+    }
+
+
+    // ==========================================
+    // ABRIR MODAL — EDITAR
+    // ==========================================
+
+    function openEditModal(id) {
+
+        const barber =
+            barbers.find(
+                item =>
+                    String(item.id) === String(id)
+            );
+
+
+        if (!barber) {
+            return;
+        }
+
+
+        editingBarberId.value =
+            barber.id;
+
+
+        barberName.value =
+            barber.name;
+
+
+        barberSpecialty.value =
+            barber.specialty;
+
+
+        barberPhone.value =
+            barber.phone;
+
+
+        modalTitle.textContent =
+            "Editar barbeiro";
+
+
+        submitBarberText.textContent =
+            "Salvar alterações";
+
+
+        barberModal.classList.add(
+            "active"
+        );
+
+
+        setTimeout(
+            () => barberName.focus(),
+            100
+        );
+
+    }
+
+
+    // ==========================================
+    // FECHAR MODAL
+    // ==========================================
+
+    function closeModal() {
+
+        barberModal.classList.remove(
+            "active"
+        );
+
+        barberForm.reset();
+
+        editingBarberId.value = "";
+
+    }
+
+
+    closeBarberModal.addEventListener(
+        "click",
+        closeModal
+    );
+
+
+    cancelBarber.addEventListener(
+        "click",
+        closeModal
+    );
+
+
+    barberModal.addEventListener(
+        "click",
+        event => {
+
+            if (
+                event.target ===
+                barberModal
+            ) {
+
+                closeModal();
+
+            }
+
+        }
+    );
+
+
+    // ==========================================
+    // SALVAR / EDITAR — SUPABASE
+    // ==========================================
+
+    barberForm.addEventListener(
+        "submit",
+        async event => {
+
+            event.preventDefault();
+
+            const name = barberName.value.trim();
+            const specialty = barberSpecialty.value.trim();
+            const phone = barberPhone.value.trim();
+            const id = editingBarberId.value;
+
+            if (!name || !specialty || !phone) {
+                alert("Preencha todos os campos.");
+                return;
+            }
+
+            if (!window.supabaseClient) {
+                alert("Supabase não foi carregado.");
+                return;
+            }
+
+            let response;
+
+            if (id) {
+
+                response = await window.supabaseClient
+                    .from("BARBEIROS")
+                    .update({
+                        nome: name,
+                        especialidade: specialty,
+                        telefone: phone
+                    })
+                    .eq("id", id);
+
+            } else {
+
+                response = await window.supabaseClient
+                    .from("BARBEIROS")
+                    .insert({
+                        nome: name,
+                        especialidade: specialty,
+                        telefone: phone,
+                        ativo: true
+                    });
+
+            }
+
+            if (response.error) {
+
+                console.error(
+                    "Erro ao salvar barbeiro:",
+                    response.error
+                );
+
+                alert(
+                    "Não foi possível salvar o barbeiro."
+                );
+
+                return;
+
+            }
+
+            closeModal();
+
+            await loadBarbers();
+
+            await loadDashboardAndAgenda();
+
+        }
+    );
+
+
+    // ==========================================
+    // ATIVAR / DESATIVAR — SUPABASE
+    // ==========================================
+
+    async function toggleBarber(id) {
+
+        const barber = barbers.find(
+            item =>
+                String(item.id) === String(id)
+        );
+                if (!barber) {
+            return;
+        }
+
+        if (barber.active) {
+            const confirmed = confirm(
+                `Deseja desativar ${barber.name}?`
+            );
+            if (!confirmed) {
+                return;
+            }
+        }
+
+        if (!window.supabaseClient) {
+            alert("Supabase não foi carregado.");
+            return;
+        }
+
+        const { error } = await window.supabaseClient
+            .from("BARBEIROS")
+            .update({ ativo: !barber.active })
+            .eq("id", id);
+
+        if (error) {
+            console.error(
+                "Erro ao alterar status do barbeiro:",
+                error
+            );
+            alert("Não foi possível alterar o status do barbeiro.");
+            return;
+        }
+
+        await loadBarbers();
+        await loadDashboardAndAgenda();
+    }
+
+
+    // ==========================================
+    // EXCLUIR BARBEIRO — SUPABASE
+    // ==========================================
+
+    async function deleteBarber(id) {
+
+        const barber = barbers.find(
+            item => String(item.id) === String(id)
+        );
+
+        if (!barber) {
+            return;
+        }
+
+
+        const confirmed = confirm(
+            `Deseja realmente excluir o barbeiro ${barber.name}?`
+        );
+
+        if (!confirmed) {
+            return;
+        }
+
+
+        if (!window.supabaseClient) {
+
+            alert(
+                "Supabase não foi carregado."
+            );
+
+            return;
+        }
+
+
+        const { error } = await window.supabaseClient
+            .from("BARBEIROS")
+            .delete()
+            .eq("id", id);
+
+
+        if (error) {
+
+            console.error(
+                "Erro ao excluir barbeiro:",
+                error
+            );
+
+            alert(
+                "Não foi possível excluir o barbeiro."
+            );
+
+            return;
+        }
+
+
+        await loadBarbers();
+
+        await loadDashboardAndAgenda();
+
+    }
+
+
+    // ==========================================
+    // DASHBOARD — EQUIPE
+    // ==========================================
+
+    function renderDashboardTeam() {
+
+        const container =
+            document.getElementById(
+                "dashboardTeam"
+            );
+
+
+        if (!container) {
+            return;
+        }
+
+
+        const active =
+            barbers.filter(
+                barber =>
+                    barber.active
+            );
+
+
+        if (active.length === 0) {
+
+            container.innerHTML = `
+                <p>
+                    Nenhum barbeiro ativo.
+                </p>
+            `;
+
+            return;
+
+        }
+
+
+        container.innerHTML =
+            active.map(
+                barber => `
+
+                    <div class="simple-list">
+
+                        <div>
+
+                            <strong>
+                                ${escapeHTML(
+                                    barber.name
+                                )}
+                            </strong>
+
+                            <span>
+                                ${barber.appointments}
+                                atendimentos
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                `
+            ).join("");
+
+    }
+
+
+    // ==========================================
+// AGENDA — DADOS REAIS DO SUPABASE
+// ==========================================
+
+let appointments = [];
+
+
+function formatToday() {
+
+    const now = new Date();
+
+    const year =
+        now.getFullYear();
+
+    const month =
+        String(
+            now.getMonth() + 1
+        ).padStart(2, "0");
+
+    const day =
+        String(
+            now.getDate()
+        ).padStart(2, "0");
+
+    return `${year}-${month}-${day}`;
+
+}
+
+
+// ==========================================
+// RENDERIZAR AGENDA DE HOJE — DASHBOARD
+// ==========================================
+
+function renderDashboardAppointments() {
+
+    const container =
+        document.getElementById(
+            "dashboardAppointments"
+        );
+
+
+    if (!container) {
+        return;
+    }
+
+
+    const today =
+        formatToday();
+
+
+    const todayAppointments =
+        appointments.filter(
+            appointment =>
+                appointment.date === today
+        );
+
+
+    if (
+        todayAppointments.length === 0
+    ) {
+
+        container.innerHTML = `
+            <p>
+                Nenhum agendamento para hoje.
+            </p>
+        `;
+
+        return;
+
+    }
+
+
+    container.innerHTML =
+        todayAppointments.map(
+            appointment => `
+
+                <div class="simple-list">
+
+                    <div>
+
+                        <strong>
+                            ${appointment.time}
+                            —
+                            ${appointment.client}
+                        </strong>
+
+                        <span>
+                            ${appointment.service}
+                            ·
+                            ${appointment.barber}
+                        </span>
+
+                    </div>
+
+                </div>
+
+            `
+        ).join("");
+
+}
+
+
+// ==========================================
+// RENDERIZAR AGENDA COMPLETA
+// ==========================================
+
+let agendaViewMode = "all";
+let agendaSelectedDate = formatToday();
+let agendaFiltersInitialized = false;
+
+function getLocalDateKey(date) {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+}
+
+function getTomorrowKey() {
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    return getLocalDateKey(tomorrow);
+}
+
+function getWeekRange() {
+    const start = new Date();
+    start.setHours(0, 0, 0, 0);
+
+    const day = start.getDay();
+    const distanceToMonday = day === 0 ? 6 : day - 1;
+    start.setDate(start.getDate() - distanceToMonday);
+
+    const end = new Date(start);
+    end.setDate(start.getDate() + 6);
+
+    return {
+        start: getLocalDateKey(start),
+        end: getLocalDateKey(end)
+    };
+}
+
+function formatAgendaDate(date) {
+    if (!date) return "Data não informada";
+
+    const [year, month, day] = String(date).split("-");
+
+    if (!year || !month || !day) return date;
+
+    const localDate = new Date(Number(year), Number(month) - 1, Number(day));
+
+    return localDate.toLocaleDateString("pt-BR", {
+        weekday: "long",
+        day: "2-digit",
+        month: "long",
+        year: "numeric"
+    });
+}
+
+function normalizeStatus(status) {
+    return String(status || "agendado")
+        .trim()
+        .toLowerCase();
+}
+
+function formatStatus(status) {
+    const labels = {
+        agendado: "AGENDADO",
+        pendente: "PENDENTE",
+        confirmado: "CONFIRMADO",
+        finalizado: "FINALIZADO",
+        cancelado: "CANCELADO"
+    };
+
+    const normalized = normalizeStatus(status);
+
+    return labels[normalized] || normalized.toUpperCase();
+}
+
+function getStatusClass(status) {
+    const normalized = normalizeStatus(status);
+
+    if (["pendente", "confirmado", "finalizado", "cancelado", "agendado"].includes(normalized)) {
+        return normalized;
+    }
+
+    return "agendado";
+}
+
+function getAgendaPeriodTitle() {
+    if (agendaViewMode === "all") {
+        return "Todos os agendamentos";
+    }
+
+    if (agendaViewMode === "tomorrow") {
+        return "Agendamentos de amanhã";
+    }
+
+    if (agendaViewMode === "week") {
+        return "Agendamentos desta semana";
+    }
+
+    if (agendaViewMode === "date") {
+        return `Agenda de ${formatAgendaDate(agendaSelectedDate)}`;
+    }
+
+    return "Agendamentos de hoje";
+}
+
+function getFilteredAppointments() {
+    const barberFilter = document.getElementById("agendaBarberFilter")?.value || "";
+    const statusFilter = document.getElementById("agendaStatusFilter")?.value || "";
+    const search = (document.getElementById("agendaSearchInput")?.value || "")
+        .trim()
+        .toLowerCase();
+
+    const week = getWeekRange();
+
+    return appointments.filter(appointment => {
+        const appointmentDate = appointment.date;
+
+        if (agendaViewMode === "today" && appointmentDate !== formatToday()) return false;
+        if (agendaViewMode === "tomorrow" && appointmentDate !== getTomorrowKey()) return false;
+        if (agendaViewMode === "date" && appointmentDate !== agendaSelectedDate) return false;
+        if (agendaViewMode === "week" && (appointmentDate < week.start || appointmentDate > week.end)) return false;
+
+        if (barberFilter && String(appointment.barberId) !== String(barberFilter)) return false;
+        if (statusFilter && normalizeStatus(appointment.status) !== normalizeStatus(statusFilter)) return false;
+
+        if (search) {
+            const searchable = [
+                appointment.client,
+                appointment.barber,
+                appointment.service,
+                appointment.time,
+                formatAgendaDate(appointment.date)
+            ].join(" ").toLowerCase();
+
+            if (!searchable.includes(search)) return false;
+        }
+
+        return true;
+    });
+}
+
+function populateAgendaBarberFilter() {
+    const select = document.getElementById("agendaBarberFilter");
+
+    if (!select) return;
+
+    const currentValue = select.value;
+    const activeBarbers = [...new Map(
+        appointments
+            .filter(appointment => appointment.barberId)
+            .map(appointment => [String(appointment.barberId), appointment.barber])
+    )];
+
+    select.innerHTML = '<option value="">Todos os barbeiros</option>' +
+        activeBarbers.map(([id, name]) =>
+            `<option value="${escapeHTML(id)}">${escapeHTML(name || "Barbeiro")}</option>`
+        ).join("");
+
+    if ([...select.options].some(option => option.value === currentValue)) {
+        select.value = currentValue;
+    }
+}
+
+function renderAdminAppointments() {
+    const container = document.getElementById("adminAppointments");
+    const countElement = document.getElementById("agendaFilteredCount");
+    const titleElement = document.getElementById("agendaPeriodTitle");
+
+    if (!container) return;
+
+    if (titleElement) titleElement.textContent = getAgendaPeriodTitle();
+
+    const filteredAppointments = getFilteredAppointments();
+
+    if (countElement) {
+        countElement.textContent = `${filteredAppointments.length} ${filteredAppointments.length === 1 ? "agendamento" : "agendamentos"}`;
+    }
+
+    if (filteredAppointments.length === 0) {
+        container.innerHTML = `
+            <div class="agenda-empty-state">
+                <strong>Nenhum agendamento encontrado.</strong>
+                <span>Altere os filtros ou escolha outro período para visualizar os atendimentos.</span>
+            </div>
+        `;
+        return;
+    }
+
+    const grouped = filteredAppointments.reduce((groups, appointment) => {
+        if (!groups[appointment.date]) groups[appointment.date] = [];
+        groups[appointment.date].push(appointment);
+        return groups;
+    }, {});
+
+    container.innerHTML = Object.entries(grouped).map(([date, items]) => `
+        <div class="agenda-day-group">
+            <div class="agenda-day-header">
+                <span>${escapeHTML(formatAgendaDate(date))}</span>
+                <small>${items.length} ${items.length === 1 ? "agendamento" : "agendamentos"}</small>
+            </div>
+
+            <div class="agenda-table-header">
+                <span>Horário</span>
+                <span>Cliente</span>
+                <span>Serviço</span>
+                <span>Barbeiro</span>
+                <span>Status</span>
+                <span>Ações</span>
+            </div>
+
+            <div class="agenda-rows">
+                ${items.map(appointment => `
+                    <div class="agenda-row" data-appointment-id="${escapeHTML(String(appointment.id))}">
+                        <div class="agenda-time-cell">${escapeHTML(appointment.time || "—")}</div>
+
+                        <div class="agenda-client-cell">
+                            <span class="agenda-client-avatar">${escapeHTML(getInitials(appointment.client || "Cliente"))}</span>
+                            <div>
+                                <strong>${escapeHTML(appointment.client || "Cliente")}</strong>
+                                <small>${escapeHTML(appointment.clientPhone || "Sem telefone")}</small>
+                            </div>
+                        </div>
+
+                        <div class="agenda-service-cell">
+                            <strong>${escapeHTML(appointment.service || "Serviço")}</strong>
+                            <small>R$ ${formatMoney(appointment.price || 0)}</small>
+                        </div>
+
+                        <div class="agenda-barber-cell">${escapeHTML(appointment.barber || "Barbeiro")}</div>
+
+                        <div>
+                            <span class="agenda-status-badge ${getStatusClass(appointment.status)}">
+                                ${formatStatus(appointment.status)}
+                            </span>
+                        </div>
+
+                        <div class="agenda-actions-cell">
+                            <button type="button" class="agenda-details-button" data-action="details" data-id="${escapeHTML(String(appointment.id))}">
+                                Ver detalhes
+                            </button>
+                            <select class="agenda-status-select" data-action="status" data-id="${escapeHTML(String(appointment.id))}" aria-label="Alterar status do agendamento">
+                                ${["agendado", "pendente", "confirmado", "finalizado", "cancelado"].map(status => `
+                                    <option value="${status}" ${normalizeStatus(appointment.status) === status ? "selected" : ""}>
+                                        ${formatStatus(status)}
+                                    </option>
+                                `).join("")}
+                            </select>
+                        </div>
+                    </div>
+                `).join("")}
+            </div>
+        </div>
+    `).join("");
+}
+
+function openAppointmentDetails(id) {
+    const appointment = appointments.find(item => String(item.id) === String(id));
+    const modal = document.getElementById("appointmentDetailsModal");
+    const content = document.getElementById("appointmentDetailsContent");
+
+    if (!appointment || !modal || !content) return;
+
+    content.innerHTML = `
+        <div class="appointment-details-status">
+            <span class="agenda-status-badge ${getStatusClass(appointment.status)}">${formatStatus(appointment.status)}</span>
+        </div>
+
+        <div class="appointment-details-grid">
+            <div><span>Data</span><strong>${escapeHTML(formatAgendaDate(appointment.date))}</strong></div>
+            <div><span>Horário</span><strong>${escapeHTML(appointment.time || "—")}</strong></div>
+            <div><span>Cliente</span><strong>${escapeHTML(appointment.client || "Cliente")}</strong></div>
+            <div><span>Telefone</span><strong>${escapeHTML(appointment.clientPhone || "Não informado")}</strong></div>
+            <div><span>Serviço</span><strong>${escapeHTML(appointment.service || "Serviço")}</strong></div>
+            <div><span>Valor</span><strong>R$ ${formatMoney(appointment.price || 0)}</strong></div>
+            <div><span>Barbeiro</span><strong>${escapeHTML(appointment.barber || "Barbeiro")}</strong></div>
+            <div><span>Status</span><strong>${escapeHTML(formatStatus(appointment.status))}</strong></div>
+        </div>
+    `;
+
+    modal.classList.add("active");
+}
+
+async function updateAppointmentStatus(id, status) {
+    if (!window.supabaseClient) {
+        alert("Supabase não foi carregado.");
+        return;
+    }
+
+    const normalizedStatus = normalizeStatus(status);
+
+    const { error } = await window.supabaseClient
+        .from("agendamentos")
+        .update({ status: normalizedStatus })
+        .eq("id", id);
+
+    if (error) {
+        console.error("Erro ao atualizar status do agendamento:", error);
+        alert("Não foi possível atualizar o status do agendamento.");
+        renderAdminAppointments();
+        return;
+    }
+
+    await loadDashboardAndAgenda();
+    await loadAdminClients();
+}
+
+function setupAgendaFilters() {
+    if (agendaFiltersInitialized) return;
+    agendaFiltersInitialized = true;
+
+    const dateInput = document.getElementById("agendaDateFilter");
+    const barberFilter = document.getElementById("agendaBarberFilter");
+    const statusFilter = document.getElementById("agendaStatusFilter");
+    const searchInput = document.getElementById("agendaSearchInput");
+    const periodButtons = document.querySelectorAll(".agenda-period-button");
+    const container = document.getElementById("adminAppointments");
+    const detailsModal = document.getElementById("appointmentDetailsModal");
+
+    if (dateInput) {
+        dateInput.value = agendaSelectedDate;
+        dateInput.addEventListener("change", () => {
+            if (!dateInput.value) return;
+            agendaSelectedDate = dateInput.value;
+            agendaViewMode = "date";
+            periodButtons.forEach(button => button.classList.remove("active"));
+            renderAdminAppointments();
+        });
+    }
+
+    periodButtons.forEach(button => {
+        button.addEventListener("click", () => {
+            agendaViewMode = button.dataset.agendaView || "all";
+
+            if (agendaViewMode === "today") {
+                agendaSelectedDate = formatToday();
+            }
+
+            if (agendaViewMode === "tomorrow") {
+                agendaSelectedDate = getTomorrowKey();
+            }
+
+            if (agendaViewMode === "all") {
+                if (dateInput) {
+                    dateInput.value = "";
+                }
+            } else if (dateInput && agendaViewMode !== "week") {
+                dateInput.value = agendaSelectedDate;
+            }
+
+            periodButtons.forEach(item =>
+                item.classList.toggle("active", item === button)
+            );
+
+            renderAdminAppointments();
+        });
+    });
+
+    [barberFilter, statusFilter].filter(Boolean).forEach(element => {
+        element.addEventListener("change", renderAdminAppointments);
+    });
+
+    if (searchInput) searchInput.addEventListener("input", renderAdminAppointments);
+
+    if (container) {
+        container.addEventListener("click", event => {
+            const button = event.target.closest("button[data-action='details']");
+            if (button) openAppointmentDetails(button.dataset.id);
+        });
+
+        container.addEventListener("change", event => {
+            const select = event.target.closest("select[data-action='status']");
+            if (select) updateAppointmentStatus(select.dataset.id, select.value);
+        });
+    }
+
+    ["closeAppointmentDetailsModal", "closeAppointmentDetailsButton"].forEach(id => {
+        const button = document.getElementById(id);
+        if (button) button.addEventListener("click", () => detailsModal?.classList.remove("active"));
+    });
+
+    if (detailsModal) {
+        detailsModal.addEventListener("click", event => {
+            if (event.target === detailsModal) detailsModal.classList.remove("active");
+        });
+    }
+}
+
+// ==========================================
+// RENDERIZAR AGENDA COMPLETA
+// ==========================================
+
+// ==========================================
+// CARREGAR AGENDA DO SUPABASE
+// ==========================================
+
+async function loadDashboardAndAgenda() {
+
+    if (!window.supabaseClient) {
+
+        console.error(
+            "Supabase não foi carregado."
+        );
+
+        return;
+
+    }
+
+
+    const [
+        appointmentsResponse,
+        clientsResponse,
+        barbersResponse,
+        servicesResponse
+    ] = await Promise.all([
+
+        window.supabaseClient
+            .from("agendamentos")
+            .select("*")
+            .neq(
+                "status",
+                "cancelado"
+            ),
+
+        window.supabaseClient
+            .from("clientes")
+            .select("*"),
+
+        window.supabaseClient
+            .from("BARBEIROS")
+            .select("*"),
+
+        window.supabaseClient
+            .from("SERVIÇOS")
+            .select("*")
+
+    ]);
+
+
+    if (
+        appointmentsResponse.error
+    ) {
+
+        console.error(
+            "Erro ao carregar agendamentos:",
+            appointmentsResponse.error
+        );
+
+        return;
+
+    }
+
+
+    const clientsMap =
+        new Map(
+            (
+                clientsResponse.data || []
+            ).map(
+                client => [
+
+                    String(
+                        client.id
+                    ),
+
+                    {
+                        nome: client.nome ?? client.name ?? "Cliente",
+                        telefone: client.telefone ?? client.phone ?? client.whatsapp ?? ""
+                    }
+
+                ]
+            )
+        );
+
+
+    const barbersMap =
+        new Map(
+            (
+                barbersResponse.data || []
+            ).map(
+                barber => [
+
+                    String(
+                        barber.id
+                    ),
+
+                    barber.nome ??
+                    barber.name ??
+                    "Barbeiro"
+
+                ]
+            )
+        );
+
+
+   const servicesMap =
+    new Map(
+        (
+            servicesResponse.data || []
+        ).map(
+            service => [
+
+                String(
+                    service.id
+                ),
+
+                {
+                    nome:
+                        service.nome ??
+                        service.name ??
+                        "Serviço",
+
+                    preco:
+                        Number(
+                            service["preço"] ?? 0
+                        )
+                }
+
+            ]
+        )
+    );
+
+
+    appointments =
+        (
+            appointmentsResponse.data || []
+        ).map(
+            appointment => ({
+
+                id:
+                    appointment.id,
+
+                date:
+                    String(
+                        appointment.data ?? ""
+                    ).substring(0, 10),
+
+                time:
+                    String(
+                        appointment.horario ?? ""
+                    ).substring(0, 5),
+
+                status:
+                       appointment.status ??
+                               "agendado",
+
+                clientId:
+                    appointment.cliente_id ?? null,
+
+                barberId:
+                    appointment.barbeiro_id ?? null,
+
+                serviceId:
+                    appointment.servico_id ?? null,
+
+                client:
+                    clientsMap.get(
+                        String(
+                            appointment.cliente_id
+                        )
+                    )?.nome ??
+                    "Cliente",
+
+                clientPhone:
+                    clientsMap.get(
+                        String(
+                            appointment.cliente_id
+                        )
+                    )?.telefone ??
+                    "",
+
+                barber:
+                    barbersMap.get(
+                        String(
+                            appointment.barbeiro_id
+                        )
+                    ) ??
+                    "Barbeiro",
+
+                service:
+    servicesMap.get(
+        String(
+            appointment.servico_id
+        )
+    )?.nome ??
+    "Serviço",
+
+price:
+    servicesMap.get(
+        String(
+            appointment.servico_id
+        )
+    )?.preco ??
+    0,
+
+            })
+        );
+
+
+    appointments.sort(
+        (a, b) => {
+
+            const first =
+                `${a.date}T${a.time}`;
+
+            const second =
+                `${b.date}T${b.time}`;
+
+            return (
+                new Date(first) -
+                new Date(second)
+            );
+
+        }
+    );
+
+
+    populateAgendaBarberFilter();
+
+    renderDashboardAppointments();
+
+    renderAdminAppointments();
+
+    const today =
+    formatToday();
+
+
+const finalizedAppointments =
+    appointments.filter(
+        appointment =>
+            appointment.status === "finalizado" &&
+            appointment.date === today
+    );
+
+
+const revenue =
+    finalizedAppointments.reduce(
+        (total, appointment) =>
+            total + Number(appointment.price || 0),
+        0
+    );
+
+
+const revenueElement =
+    document.getElementById(
+        "dashboardRevenue"
+    );
+
+
+if (revenueElement) {
+
+    revenueElement.textContent =
+        `R$ ${revenue.toFixed(2).replace(".", ",")}`;
+
+}
+
+ const dashboardToday =
+    formatToday();
+
+
+const todayAppointments =
+    appointments.filter(
+        appointment =>
+            appointment.date === dashboardToday
+    );
+
+
+const appointmentCount =
+    document.getElementById(
+        "dashboardAppointmentCount"
+    );
+
+
+if (appointmentCount) {
+
+    appointmentCount.textContent =
+        todayAppointments.length;
+
+}
+
+}
+
+// ==========================================
+// MÓDULO CLIENTES
+// ==========================================
+
+const clientsGrid =
+    document.getElementById("clientsGrid");
+
+const clientSearch =
+    document.getElementById("clientSearch");
+
+const totalClientsElement =
+    document.getElementById("totalClients");
+
+const activeClientsElement =
+    document.getElementById("activeClients");
+
+const totalClientAppointmentsElement =
+    document.getElementById(
+        "totalClientAppointments"
+    );
+
+const deleteAllClientsButton =
+    document.getElementById(
+        "deleteAllClientsButton"
+    );
+
+
+let adminClients = [];
+
+
+async function loadAdminClients() {
+
+    if (!window.supabaseClient) {
+        console.error(
+            "Supabase não foi carregado."
+        );
+        return;
+    }
+
+
+    if (clientsGrid) {
+
+        clientsGrid.innerHTML =
+            "<p>Carregando clientes...</p>";
+
+    }
+
+
+    const [
+        clientsResponse,
+        appointmentsResponse
+    ] = await Promise.all([
+                window.supabaseClient
+            .from("clientes")
+            .select("*")
+            .order(
+                "nome",
+                {
+                    ascending: true
+                }
+            ),
+
+        window.supabaseClient
+            .from("agendamentos")
+            .select("*")
+            .neq(
+                "status",
+                "cancelado"
+            )
+
+    ]);
+
+
+    if (clientsResponse.error) {
+
+        console.error(
+            "Erro ao carregar clientes:",
+            clientsResponse.error
+        );
+
+        if (clientsGrid) {
+
+            clientsGrid.innerHTML =
+                "<p>Não foi possível carregar os clientes.</p>";
+
+        }
+
+        return;
+    }
+
+
+    const clientsData =
+        clientsResponse.data || [];
+
+    const appointmentsData =
+        appointmentsResponse.data || [];
+
+
+    adminClients =
+        clientsData.map(client => {
+
+            const clientAppointments =
+                appointmentsData.filter(
+                    appointment =>
+                        String(
+                            appointment.cliente_id
+                        ) === String(client.id)
+                );
+
+
+            clientAppointments.sort(
+                (a, b) => {
+
+                    const first =
+                        `${a.data}T${a.horario || "00:00"}`;
+
+                    const second =
+                        `${b.data}T${b.horario || "00:00"}`;
+
+                    return (
+                        new Date(second) -
+                        new Date(first)
+                    );
+
+                }
+            );
+
+
+            return {
+
+                id:
+                    client.id,
+
+                name:
+                    client.nome ??
+                    client.name ??
+                    "Cliente",
+
+                phone:
+                    client.telefone ??
+                    client.phone ??
+                    "",
+
+                active:
+                    client.ativo !== false,
+
+                appointments:
+                    clientAppointments.length,
+
+                lastAppointment:
+                    clientAppointments.length > 0
+                        ? clientAppointments[0].data
+                        : null
+
+            };
+
+        });
+
+
+    updateAdminClientsSummary();
+
+    renderAdminClients();
+
+}
+
+
+function updateAdminClientsSummary() {
+
+    if (totalClientsElement) {
+
+        totalClientsElement.textContent =
+            adminClients.length;
+
+    }
+
+
+    if (activeClientsElement) {
+
+        activeClientsElement.textContent =
+            adminClients.filter(
+                client =>
+                    client.active
+            ).length;
+
+    }
+
+
+    if (totalClientAppointmentsElement) {
+
+        totalClientAppointmentsElement.textContent =
+            adminClients.reduce(
+                (
+                    total,
+                    client
+                ) =>
+                    total +
+                    client.appointments,
+                0
+            );
+
+    }
+
+}
+
+
+function renderAdminClients(
+    search = ""
+) {
+
+    if (!clientsGrid) {
+        return;
+    }
+
+
+    const query =
+        String(search)
+            .toLowerCase()
+            .trim();
+
+
+    const filteredClients =
+        adminClients.filter(
+            client => {
+
+                const name =
+                    String(
+                        client.name
+                    ).toLowerCase();
+
+                const phone =
+                    String(
+                        client.phone
+                    ).toLowerCase();
+
+
+                return (
+                    name.includes(query) ||
+                    phone.includes(query)
+                );
+
+            }
+        );
+
+
+    if (
+        filteredClients.length === 0
+    ) {
+
+        clientsGrid.innerHTML =
+            `
+            <div class="content-card">
+
+                <p>
+                    Nenhum cliente encontrado.
+                </p>
+
+            </div>
+            `;
+
+        return;
+
+    }
+
+
+    clientsGrid.innerHTML =
+        filteredClients.map(
+            client => {
+
+                const lastAppointment =
+                    client.lastAppointment
+                        ? formatDateForClient(
+                            client.lastAppointment
+                        )
+                        : "Nenhum";
+
+
+                return `
+                    <div class="client-card">
+
+                        <div class="client-card-header">
+
+                            <div class="client-avatar">
+                                ${getInitials(
+                                    client.name
+                                )}
+                            </div>
+
+                            <div class="client-card-identity">
+
+                                <h3>
+                                    ${escapeHTML(
+                                        client.name
+                                    )}
+                                </h3>
+
+                                <p>
+                                    ${client.active
+                                        ? "Cliente ativo"
+                                        : "Cliente inativo"}
+                                </p>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="client-phone-row">
+
+                            <div class="client-phone">
+
+                                <span class="client-phone-status"></span>
+
+                               <span class="client-phone-icon" aria-hidden="true">
+    <svg viewBox="0 0 24 24" width="18" height="18"
+         fill="none" stroke="currentColor" stroke-width="2"
+         stroke-linecap="round" stroke-linejoin="round">
+        <path d="M21 11.5a8.4 8.4 0 0 1-12.4 7.4L3 20l1.2-5.3A8.4 8.4 0 1 1 21 11.5Z"/>
+        <path d="M8.5 8.5c.3-.6.6-.6 1-.6l.7 1.6c.1.2 0 .4-.2.6l-.5.5c.5 1 1.3 1.8 2.3 2.3l.5-.5c.2-.2.4-.3.6-.2l1.6.7c0 .4 0 .7-.6 1-1 .5-2.7-.2-4.2-1.7s-2.2-3.2-1.2-4.2Z"/>
+    </svg>
+</span>
+
+                                <span>
+                                    ${escapeHTML(
+                                        client.phone
+                                    )}
+                                </span>
+
+                            </div>
+
+                            <button
+                                type="button"
+                                class="client-delete-button"
+                                data-client-action="delete"
+                                data-id="${client.id}"
+                                aria-label="Excluir ${escapeHTML(client.name)}"
+                                title="Excluir cliente">
+                                <svg
+                                    viewBox="0 0 24 24"
+                                    width="17"
+                                    height="17"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    stroke-width="1.8"
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    aria-hidden="true">
+                                    <path d="M3 6h18" />
+                                    <path d="M8 6V4h8v2" />
+                                    <path d="m19 6-1 14H6L5 6" />
+                                    <path d="M10 10v6M14 10v6" />
+                                </svg>
+                            </button>
+
+                        </div>
+
+
+                        <div class="client-data">
+
+                            <div>
+
+                                <span>
+                                    Atendimentos
+                                </span>
+
+                                <strong>
+                                    ${client.appointments}
+                                </strong>
+
+                            </div>
+
+
+                            <div>
+
+                                <span>
+                                    Último atendimento
+                                </span>
+
+                                <strong>
+                                    ${lastAppointment}
+                                </strong>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+                `;
+
+            }
+        ).join("");
+
+}
+
+
+function formatDateForClient(
+    date
+) {
+
+    if (!date) {
+        return "Nenhum";
+    }
+
+
+    const parts =
+        String(date).split("-");
+
+
+    if (
+        parts.length !== 3
+    ) {
+
+        return date;
+
+    }
+
+
+    return `${parts[2]}/${parts[1]}/${parts[0]}`;
+
+}
+
+
+
+async function deleteAdminClient(clientId) {
+
+    if (!window.supabaseClient) {
+        alert("Supabase não foi carregado.");
+        return;
+    }
+
+    const client = adminClients.find(
+        item => String(item.id) === String(clientId)
+    );
+
+    if (!client) {
+        return;
+    }
+
+    const confirmed = confirm(
+        `Deseja excluir o cliente "${client.name}" e o histórico de agendamentos dele?`
+    );
+
+    if (!confirmed) {
+        return;
+    }
+
+    const appointmentsDeleteResponse =
+        await window.supabaseClient
+            .from("agendamentos")
+            .delete()
+            .eq("cliente_id", clientId);
+
+    if (appointmentsDeleteResponse.error) {
+        console.error(
+            "Erro ao excluir agendamentos do cliente:",
+            appointmentsDeleteResponse.error
+        );
+        alert(
+            "Não foi possível excluir o histórico de agendamentos deste cliente."
+        );
+        return;
+    }
+
+    
+
+    const clientDeleteResponse =
+        await window.supabaseClient
+            .from("clientes")
+            .delete()
+            .eq("id", clientId);
+
+   
+    if (clientDeleteResponse.error) {
+        console.error(
+            "Erro ao excluir cliente:",
+            clientDeleteResponse.error
+        );
+
+        alert(
+            "Não foi possível excluir o cliente."
+        );
+
+        return;
+    }
+
+
+    await loadAdminClients();
+    await loadDashboardAndAgenda();
+}
+
+
+async function deleteAllAdminClients() {
+
+    if (!window.supabaseClient) {
+        alert("Supabase não foi carregado.");
+        return;
+    }
+
+    if (adminClients.length === 0) {
+        alert("Não há clientes para excluir.");
+        return;
+    }
+
+    const confirmed = confirm(
+        `Deseja excluir TODOS os ${adminClients.length} clientes e todos os agendamentos relacionados? Esta ação não pode ser desfeita.`
+    );
+
+    if (!confirmed) {
+        return;
+    }
+
+    deleteAllClientsButton.disabled = true;
+
+    try {
+
+        const appointmentsDeleteResponse =
+            await window.supabaseClient
+                .from("agendamentos")
+                .delete()
+                .not("id", "is", null);
+
+        if (appointmentsDeleteResponse.error) {
+            console.error(
+                "Erro ao excluir agendamentos:",
+                appointmentsDeleteResponse.error
+            );
+            alert(
+                "Não foi possível excluir os agendamentos."
+            );
+            return;
+        }
+
+        const clientsDeleteResponse =
+            await window.supabaseClient
+                .from("clientes")
+                .delete()
+                .not("id", "is", null);
+
+        if (clientsDeleteResponse.error) {
+            console.error(
+                "Erro ao excluir clientes:",
+                clientsDeleteResponse.error
+            );
+            alert(
+                "Não foi possível excluir os clientes."
+            );
+            return;
+        }
+
+        await loadAdminClients();
+        await loadDashboardAndAgenda();
+
+    } finally {
+
+        deleteAllClientsButton.disabled = false;
+
+    }
+}
+
+
+if (clientsGrid) {
+
+    clientsGrid.addEventListener(
+        "click",
+        event => {
+
+            const button =
+                event.target.closest(
+                    "[data-client-action='delete']"
+                );
+
+            if (!button) {
+                return;
+            }
+
+            deleteAdminClient(
+                button.dataset.id
+            );
+
+        }
+    );
+
+}
+
+
+if (deleteAllClientsButton) {
+
+    deleteAllClientsButton.addEventListener(
+        "click",
+        deleteAllAdminClients
+    );
+
+}
+
+
+if (clientSearch) {
+
+    clientSearch.addEventListener(
+        "input",
+        () => {
+
+            renderAdminClients(
+                clientSearch.value
+            );
+
+        }
+    );
+
+}
+
+
+loadAdminClients();
+    // ==========================================
+    // INICIALIZAÇÃO
+    // ==========================================
+
+setupAgendaFilters();
+
+loadBarbers();
+
+loadDashboardAndAgenda();
+
+    // ==========================================
+    // ABRIR HASH
+    // ==========================================
+
+    const hash =
+        window.location.hash
+            .replace("#", "");
+
+
+    if (
+        hash &&
+        document.getElementById(hash)
+    ) {
+
+        showSection(hash);
+
+    }
+
+
+    // ==========================================
+    // BOTÃO SAIR — VOLTAR PARA ÁREA DA EQUIPE
+    // ==========================================
+
+    const logoutButton =
+        document.getElementById("logoutButton");
+
+    if (logoutButton) {
+
+        logoutButton.addEventListener(
+            "click",
+            async event => {
+
+                event.preventDefault();
+
+                logoutButton.disabled = true;
+
+                try {
+
+                    if (window.supabaseClient) {
+
+                        await window.supabaseClient.auth.signOut();
+
+                    }
+
+                } catch (error) {
+
+                    console.error(
+                        "Erro ao sair:",
+                        error
+                    );
+
+                } finally {
+
+                    window.location.href =
+                        "area-equipe.html";
+
+                }
+
+            }
+        );
+
+    }
+});
+
+/* ==========================================
+   MÓDULO 07
+   SERVIÇOS — SUPABASE
+   ========================================== */
+
+let services = [];
+
+
+// ==========================================
+// ELEMENTOS
+// ==========================================
+
+const servicesGrid =
+    document.getElementById("servicesGrid");
+
+const addServiceButton =
+    document.getElementById("addServiceButton");
+
+const serviceModal =
+    document.getElementById("serviceModal");
+
+const closeServiceModal =
+    document.getElementById("closeServiceModal");
+
+const cancelService =
+    document.getElementById("cancelService");
+
+const serviceForm =
+    document.getElementById("serviceForm");
+
+const serviceModalTitle =
+    document.getElementById("serviceModalTitle");
+
+const submitServiceText =
+    document.getElementById("submitServiceText");
+
+const editingServiceId =
+    document.getElementById("editingServiceId");
+
+const serviceName =
+    document.getElementById("serviceName");
+
+const servicePrice =
+    document.getElementById("servicePrice");
+
+const serviceDuration =
+    document.getElementById("serviceDuration");
+
+const totalServicesElement =
+    document.getElementById("totalServices");
+
+const activeServicesElement =
+    document.getElementById("activeServices");
+
+const inactiveServicesElement =
+    document.getElementById("inactiveServices");
+
+
+// ==========================================
+// CARREGAR SERVIÇOS DO SUPABASE
+// ==========================================
+
+async function loadServices() {
+
+    if (!window.supabaseClient) {
+
+        console.error(
+            "Supabase não foi carregado."
+        );
+
+        return;
+    }
+
+
+    if (servicesGrid) {
+
+        servicesGrid.innerHTML =
+            "<p>Carregando serviços...</p>";
+
+    }
+
+
+    const {
+        data,
+        error
+    } =
+        await window.supabaseClient
+            .from("SERVIÇOS")
+            .select("*")
+            .order(
+                "id",
+                {
+                    ascending: true
+                }
+            );
+
+
+    if (error) {
+
+        console.error(
+            "Erro ao carregar serviços:",
+            error
+        );
+
+
+        if (servicesGrid) {
+
+            servicesGrid.innerHTML =
+                "<p>Não foi possível carregar os serviços.</p>";
+
+        }
+
+        return;
+    }
+
+
+    services =
+        data || [];
+
+
+    renderServices();
+
+}
+
+
+// ==========================================
+// RESUMO DOS SERVIÇOS
+// ==========================================
+
+function updateServiceSummary() {
+
+    const total =
+        services.length;
+
+    const active =
+        services.filter(
+            service => Boolean(service.ativo)
+        ).length;
+
+    const inactive =
+        total - active;
+
+
+    if (totalServicesElement) {
+
+        totalServicesElement.textContent =
+            total;
+
+    }
+
+
+    if (activeServicesElement) {
+
+        activeServicesElement.textContent =
+            active;
+
+    }
+
+
+    if (inactiveServicesElement) {
+
+        inactiveServicesElement.textContent =
+            inactive;
+
+    }
+
+}
+
+
+// ==========================================
+// RENDERIZAR SERVIÇOS
+// ==========================================
+
+function renderServices() {
+
+    updateServiceSummary();
+
+
+    if (!servicesGrid) {
+        return;
+    }
+
+
+    servicesGrid.innerHTML = "";
+
+
+    if (services.length === 0) {
+
+        servicesGrid.innerHTML = `
+
+            <div class="content-card">
+
+                <p>
+                    Nenhum serviço cadastrado.
+                </p>
+
+            </div>
+
+        `;
+
+        return;
+    }
+
+
+    services.forEach(
+        service => {
+
+            const card =
+                document.createElement(
+                    "div"
+                );
+
+
+            card.className =
+                "service-card" +
+                (
+                    service.ativo
+                        ? ""
+                        : " inactive"
+                );
+
+
+            card.innerHTML = `
+
+                <div class="service-card-header">
+
+                    <div>
+
+                        <h3>
+                            ${escapeHTML(
+                                service.nome ?? ""
+                            )}
+                        </h3>
+
+                        <p class="service-description">
+                            Serviço da barbearia
+                        </p>
+
+                    </div>
+
+
+                    <div class="service-icon">
+                        ✂
+                    </div>
+
+                </div>
+
+
+                <div class="service-price">
+
+                    R$ ${formatMoney(
+                        Number(
+                            service["preço"] ?? 0
+                        )
+                    )}
+
+                </div>
+
+
+                <div class="service-duration">
+
+                    ⏱
+                    ${Number(
+                        service["duraçao"]?? 0
+                    )}
+                    minutos
+
+                </div>
+
+
+                <div class="service-info">
+
+                    <span class="
+                        service-status
+                        ${service.ativo
+                            ? "active"
+                            : "inactive"}
+                    ">
+
+                        ${service.ativo
+                            ? "● ATIVO"
+                            : "● INATIVO"}
+
+                    </span>
+
+                </div>
+
+
+                <div class="service-actions">
+
+                    <button
+                        class="service-edit-button"
+                        data-action="edit-service"
+                        data-id="${service.id}">
+
+                        EDITAR
+
+                    </button>
+
+
+                    <button
+                        class="
+                            service-toggle-button
+                            ${service.ativo
+                                ? ""
+                                : "activate"}
+                        "
+                        data-action="toggle-service"
+                        data-id="${service.id}">
+
+                        ${service.ativo
+                            ? "DESATIVAR"
+                            : "ATIVAR"}
+
+                    </button>
+
+
+                    <button
+                        class="service-delete-button"
+                        data-action="delete-service"
+                        data-id="${service.id}">
+
+                        EXCLUIR
+
+                    </button>
+
+                </div>
+
+            `;
+
+
+            servicesGrid.appendChild(
+                card
+            );
+
+        }
+    );
+
+}
+// ==========================================
+// ABRIR — ADICIONAR
+// ==========================================
+
+if (addServiceButton) {
+
+    addServiceButton.addEventListener(
+        "click",
+        () => {
+
+            if (serviceForm) {
+                serviceForm.reset();
+            }
+
+
+            if (editingServiceId) {
+                editingServiceId.value = "";
+            }
+
+
+            if (serviceModalTitle) {
+
+                serviceModalTitle.textContent =
+                    "Adicionar serviço";
+
+            }
+
+
+            if (submitServiceText) {
+
+                submitServiceText.textContent =
+                    "Adicionar serviço";
+
+            }
+
+
+            if (serviceModal) {
+
+                serviceModal.classList.add(
+                    "active"
+                );
+
+            }
+
+        }
+    );
+
+}
+
+
+// ==========================================
+// EDITAR SERVIÇO
+// ==========================================
+
+function openEditServiceModal(id) {
+
+    const service =
+        services.find(
+            item =>
+                String(item.id) ===
+                String(id)
+        );
+
+
+    if (!service) {
+        return;
+    }
+
+
+    if (editingServiceId) {
+
+        editingServiceId.value =
+            service.id;
+
+    }
+
+
+    if (serviceName) {
+
+        serviceName.value =
+            service.nome ?? "";
+
+    }
+
+
+    if (servicePrice) {
+
+        servicePrice.value =
+            Number(
+                service["preço"] ?? 0
+            );
+
+    }
+
+
+    if (serviceDuration) {
+
+        serviceDuration.value =
+            Number(
+                service.sduraçao ?? 0
+            );
+
+    }
+
+
+    if (serviceModalTitle) {
+
+        serviceModalTitle.textContent =
+            "Editar serviço";
+
+    }
+
+
+    if (submitServiceText) {
+
+        submitServiceText.textContent =
+            "Salvar alterações";
+
+    }
+
+
+    if (serviceModal) {
+
+        serviceModal.classList.add(
+            "active"
+        );
+
+    }
+
+}
+
+
+// ==========================================
+// FECHAR MODAL
+// ==========================================
+
+function closeServiceModalWindow() {
+
+    if (serviceModal) {
+
+        serviceModal.classList.remove(
+            "active"
+        );
+
+    }
+
+
+    if (serviceForm) {
+        serviceForm.reset();
+    }
+
+
+    if (editingServiceId) {
+        editingServiceId.value = "";
+    }
+
+}
+
+
+if (closeServiceModal) {
+
+    closeServiceModal.addEventListener(
+        "click",
+        closeServiceModalWindow
+    );
+
+}
+
+
+if (cancelService) {
+
+    cancelService.addEventListener(
+        "click",
+        closeServiceModalWindow
+    );
+
+}
+
+
+if (serviceModal) {
+
+    serviceModal.addEventListener(
+        "click",
+        event => {
+
+            if (
+                event.target ===
+                serviceModal
+            ) {
+
+                closeServiceModalWindow();
+
+            }
+
+        }
+    );
+
+}
+// ==========================================
+// SALVAR / EDITAR SERVIÇO
+// ==========================================
+
+if (serviceForm) {
+
+    serviceForm.addEventListener(
+        "submit",
+        async event => {
+
+            event.preventDefault();
+
+
+            const name =
+                serviceName
+                    ? serviceName.value.trim()
+                    : "";
+
+
+            const price =
+                servicePrice
+                    ? Number(
+                        servicePrice.value
+                    )
+                    : NaN;
+
+
+            const duration =
+                serviceDuration
+                    ? Number(
+                        serviceDuration.value
+                    )
+                    : NaN;
+
+
+            if (!name) {
+
+                alert(
+                    "Digite o nome do serviço."
+                );
+
+                return;
+
+            }
+
+
+            if (
+                Number.isNaN(price) ||
+                price < 0
+            ) {
+
+                alert(
+                    "Digite um preço válido."
+                );
+
+                return;
+
+            }
+
+
+            if (
+                Number.isNaN(duration) ||
+                duration <= 0
+            ) {
+
+                alert(
+                    "Digite uma duração válida."
+                );
+
+                return;
+
+            }
+
+
+            const id =
+                editingServiceId
+                    ? editingServiceId.value
+                    : "";
+
+
+            const serviceData = {
+
+                nome:
+                    name,
+
+                "preço":
+                    price,
+
+                "duraçao":
+                    duration
+
+            };
+
+
+            let response;
+
+
+            if (id) {
+
+                response =
+                    await window.supabaseClient
+                        .from("SERVIÇOS")
+                        .update(
+                            serviceData
+                        )
+                        .eq(
+                            "id",
+                            id
+                        );
+
+            } else {
+
+                response =
+                    await window.supabaseClient
+                        .from("SERVIÇOS")
+                        .insert([
+                            {
+                                ...serviceData,
+                                ativo: true
+                            }
+                        ]);
+
+            }
+
+
+            if (response.error) {
+
+                console.error(
+                    "Erro ao salvar serviço:",
+                    response.error
+                );
+
+                alert(
+                    "Não foi possível salvar o serviço."
+                );
+
+                return;
+
+            }
+
+
+            closeServiceModalWindow();
+
+            await loadServices();
+
+        }
+    );
+
+}
+
+
+// ==========================================
+// BOTÕES DOS SERVIÇOS
+// ==========================================
+
+if (servicesGrid) {
+
+    servicesGrid.addEventListener(
+        "click",
+        async event => {
+
+            const button =
+                event.target.closest(
+                    "button"
+                );
+
+
+            if (!button) {
+                return;
+            }
+
+
+            const id =
+                button.dataset.id;
+
+
+            const action =
+                button.dataset.action;
+
+
+            if (
+                action ===
+                "edit-service"
+            ) {
+
+                openEditServiceModal(id);
+
+                return;
+
+            }
+
+
+            if (
+                action ===
+                "toggle-service"
+            ) {
+
+                const service =
+                    services.find(
+                        item =>
+                            String(item.id) ===
+                            String(id)
+                    );
+
+
+                if (!service) {
+                    return;
+                }
+
+
+                const newStatus =
+                    !Boolean(
+                        service.ativo
+                    );
+
+
+                const {
+                    error
+                } =
+                    await window.supabaseClient
+                        .from("SERVIÇOS")
+                        .update({
+                            ativo:
+                                newStatus
+                        })
+                        .eq(
+                            "id",
+                            id
+                        );
+
+
+                if (error) {
+
+                    console.error(
+                        "Erro ao alterar status do serviço:",
+                        error
+                    );
+
+                    alert(
+                        "Não foi possível alterar o status do serviço."
+                    );
+
+                    return;
+
+                }
+
+
+                await loadServices();
+
+                return;
+
+            }
+
+
+            if (
+                action ===
+                "delete-service"
+            ) {
+
+                const service =
+                    services.find(
+                        item =>
+                            String(item.id) ===
+                            String(id)
+                    );
+
+
+                if (!service) {
+                    return;
+                }
+
+
+                const serviceNameText =
+                    service.nome ??
+                    "este serviço";
+
+
+                const confirmed =
+                    confirm(
+                        `Deseja excluir o serviço "${serviceNameText}"?`
+                    );
+
+
+                if (!confirmed) {
+                    return;
+                }
+
+
+                // ==========================================
+                // VERIFICAR AGENDAMENTOS VINCULADOS
+                // ==========================================
+
+                const appointmentsResponse =
+                    await window.supabaseClient
+                        .from("agendamentos")
+                        .select("id")
+                        .eq(
+                            "servico_id",
+                            id
+                        )
+                        .limit(1);
+
+
+                if (
+                    appointmentsResponse.error
+                ) {
+
+                    console.error(
+                        "Erro ao verificar agendamentos do serviço:",
+                        appointmentsResponse.error
+                    );
+
+                    alert(
+                        "Não foi possível verificar os agendamentos deste serviço."
+                    );
+
+                    return;
+                }
+
+
+                const hasAppointments =
+                    (
+                        appointmentsResponse.data ||
+                        []
+                    ).length > 0;
+
+
+                // ==========================================
+                // COM HISTÓRICO:
+                // DESATIVA PARA PRESERVAR AGENDAMENTOS
+                // ==========================================
+
+                if (hasAppointments) {
+
+                    const {
+                        error
+                    } =
+                        await window.supabaseClient
+                            .from("SERVIÇOS")
+                            .update({
+                                ativo: false
+                            })
+                            .eq(
+                                "id",
+                                id
+                            );
+
+
+                    if (error) {
+
+                        console.error(
+                            "Erro ao desativar serviço com histórico:",
+                            error
+                        );
+
+                        alert(
+                            "Não foi possível desativar o serviço."
+                        );
+
+                        return;
+                    }
+
+
+                    alert(
+                        `O serviço "${serviceNameText}" possui agendamentos registrados e não pode ser excluído. Ele foi desativado para preservar o histórico.`
+                    );
+
+
+                    await loadServices();
+
+                    return;
+                }
+
+
+                // ==========================================
+                // SEM HISTÓRICO:
+                // EXCLUIR DEFINITIVAMENTE
+                // ==========================================
+
+                const {
+                    error
+                } =
+                    await window.supabaseClient
+                        .from("SERVIÇOS")
+                        .delete()
+                        .eq(
+                            "id",
+                            id
+                        );
+
+
+                if (error) {
+
+                    console.error(
+                        "Erro ao excluir serviço:",
+                        error
+                    );
+
+                    alert(
+                        "Não foi possível excluir o serviço."
+                    );
+
+                    return;
+                }
+
+
+                await loadServices();
+
+            }
+
+        }
+    );
+
+}
+// ==========================================
+// INICIALIZAÇÃO DOS SERVIÇOS
+// ==========================================
+
+loadServices();
+
+
+/* ==========================================
+   MÓDULO 08
+   HORÁRIOS E DISPONIBILIDADE
+   ========================================== */
+
+const defaultScheduleSettings = {
+    openingTime: "09:00",
+    closingTime: "19:00",
+    interval: 60,
+    workingDays: [
+        "segunda",
+        "terca",
+        "quarta",
+        "quinta",
+        "sexta",
+        "sabado"
+    ],
+    blockedDates: [],
+    blockedSlots: {},
+    considerServiceDuration: false,
+    smartToleranceMinutes: 5,
+    diasAntecedencia: 14
+};
+
+let scheduleSettings = { ...defaultScheduleSettings };
+
+let whatsappSettings = {
+    phone: "",
+    enabled: false,
+    mode: "barbearia"
+};
+
+let selectedScheduleDateKey = null;
+
+const openingTimeInput =
+    document.getElementById("openingTime");
+
+const closingTimeInput =
+    document.getElementById("closingTime");
+
+const slotIntervalInput =
+    document.getElementById("slotInterval");
+
+const bookingAdvanceDaysInput =
+    document.getElementById("bookingAdvanceDays");
+
+const availabilityCalendar =
+    document.getElementById("availabilityCalendar");
+
+const scheduleSlots =
+    document.getElementById("scheduleSlots");
+
+const selectedScheduleDate =
+    document.getElementById("selectedScheduleDate");
+
+const saveScheduleButton =
+    document.getElementById("saveScheduleSettings");
+
+const horariosSaveStatus =
+    document.getElementById("horariosSaveStatus");
+
+const horariosSaveStatusText =
+    document.getElementById("horariosSaveStatusText");
+
+const modeIntervalInput =
+    document.getElementById("modeInterval");
+
+const modeDurationInput =
+    document.getElementById("modeDuration");
+
+const schedulingModeSwitch =
+    document.getElementById("schedulingModeSwitch");
+
+const schedulingModeSwitchText =
+    document.getElementById("schedulingModeSwitchText");
+
+const schedulingModeTitle =
+    document.getElementById("schedulingModeTitle");
+
+const schedulingModeDescription =
+    document.getElementById("schedulingModeDescription");
+
+
+const WEEKDAY_KEYS = [
+    "domingo",
+    "segunda",
+    "terca",
+    "quarta",
+    "quinta",
+    "sexta",
+    "sabado"
+];
+
+const WEEKDAY_LABELS = {
+    domingo: "Domingo",
+    segunda: "Segunda-feira",
+    terca: "Terça-feira",
+    quarta: "Quarta-feira",
+    quinta: "Quinta-feira",
+    sexta: "Sexta-feira",
+    sabado: "Sábado"
+};
+
+
+function normalizeWorkingDays(value) {
+    if (Array.isArray(value)) {
+        return value;
+    }
+
+    if (typeof value === "string") {
+        try {
+            const parsed = JSON.parse(value);
+
+            return Array.isArray(parsed)
+                ? parsed
+                : value
+                    .split(",")
+                    .map(item => item.trim())
+                    .filter(Boolean);
+
+        } catch {
+            return value
+                .split(",")
+                .map(item => item.trim())
+                .filter(Boolean);
+        }
+    }
+
+    return [...defaultScheduleSettings.workingDays];
+}
+
+
+function normalizeBlockedDates(value) {
+    if (Array.isArray(value)) {
+        return value;
+    }
+
+    if (typeof value === "string") {
+        try {
+            const parsed = JSON.parse(value);
+            return Array.isArray(parsed) ? parsed : [];
+        } catch {
+            return [];
+        }
+    }
+
+    return [];
+}
+
+
+function normalizeBlockedSlots(value) {
+    if (
+        value &&
+        typeof value === "object" &&
+        !Array.isArray(value)
+    ) {
+        return value;
+    }
+
+    if (typeof value === "string") {
+        try {
+            const parsed = JSON.parse(value);
+
+            return (
+                parsed &&
+                typeof parsed === "object" &&
+                !Array.isArray(parsed)
+            )
+                ? parsed
+                : {};
+
+        } catch {
+            return {};
+        }
+    }
+
+    return {};
+}
+
+
+function loadScheduleFromLocalStorage() {
+    try {
+        const saved = localStorage.getItem(
+            "navalha_schedule_settings"
+        );
+
+        if (!saved) return;
+
+        const parsed = JSON.parse(saved);
+
+        scheduleSettings = {
+            ...defaultScheduleSettings,
+            ...parsed,
+
+            workingDays:
+                normalizeWorkingDays(parsed.workingDays),
+
+            blockedDates:
+                normalizeBlockedDates(parsed.blockedDates),
+
+            blockedSlots:
+                normalizeBlockedSlots(parsed.blockedSlots),
+
+            smartToleranceMinutes:
+                [5, 10, 15].includes(
+                    Number(parsed.smartToleranceMinutes)
+                )
+                    ? Number(parsed.smartToleranceMinutes)
+                    : 5,
+
+            diasAntecedencia: Math.min(
+                365,
+                Math.max(
+                    1,
+                    Number(
+                        parsed.diasAntecedencia ?? 14
+                    ) || 14
+                )
+            )
+        };
+
+    } catch (error) {
+        console.warn(
+            "Não foi possível carregar os horários salvos localmente.",
+            error
+        );
+    }
+}
+
+
+function saveScheduleToLocalStorage() {
+    scheduleSettings.smartToleranceMinutes =
+        ensureSmartToleranceValue(
+            scheduleSettings.smartToleranceMinutes
+        );
+
+    localStorage.setItem(
+        "navalha_schedule_settings",
+        JSON.stringify(scheduleSettings)
+    );
+}
+
+
+async function loadScheduleSettings() {
+    loadScheduleFromLocalStorage();
+
+    if (!window.supabaseClient) {
+        loadScheduleInputs();
+        updateScheduleSummary();
+        renderAvailabilityCalendar();
+        return;
+    }
+
+    const {
+        data,
+        error
+    } = await window.supabaseClient
+        .from("configuracoes_horarios")
+        .select("*")
+        .order("id", {
+            ascending: false
+        })
+        .limit(1);
+
+    if (error) {
+        console.error(
+            "Erro ao carregar horários:",
+            error
+        );
+
+        loadScheduleInputs();
+        updateScheduleSummary();
+        renderAvailabilityCalendar();
+        return;
+    }
+
+    const settings =
+        data && data.length > 0
+            ? data[0]
+            : null;
+
+    if (settings) {
+        scheduleSettings = {
+            openingTime:
+                settings.horario_abertura ??
+                settings.opening_time ??
+                defaultScheduleSettings.openingTime,
+
+            closingTime:
+                settings.horario_fechamento ??
+                settings.closing_time ??
+                defaultScheduleSettings.closingTime,
+
+            interval: Number(
+                settings.intervalo ??
+                settings.interval ??
+                defaultScheduleSettings.interval
+            ),
+
+            workingDays: normalizeWorkingDays(
+                settings.dias_funcionamento ??
+                settings.working_days
+            ),
+
+            blockedDates: normalizeBlockedDates(
+                settings.datas_bloqueadas ??
+                settings.blocked_dates
+            ),
+
+            blockedSlots: normalizeBlockedSlots(
+                settings.horarios_bloqueados ??
+                settings.blocked_slots
+            ),
+
+            considerServiceDuration:
+                settings.considerar_duracao_servicos ??
+                false,
+
+            // A coluna correta do Supabase:
+            diasAntecedencia: Math.min(
+                365,
+                Math.max(
+                    1,
+                    Number(
+                        settings.dias_maximos_agendamento ?? 14
+                    ) || 14
+                )
+            ),
+
+            smartToleranceMinutes: 5
+        };
+
+        // Configuração de tolerância entre atendimentos.
+        const savedSmartConfig =
+            scheduleSettings.blockedSlots &&
+            scheduleSettings.blockedSlots.__smart_config;
+
+        if (
+            savedSmartConfig &&
+            typeof savedSmartConfig === "object"
+        ) {
+            const tolerance =
+                Number(savedSmartConfig.toleranceMinutes);
+
+            if ([5, 10, 15].includes(tolerance)) {
+                scheduleSettings.smartToleranceMinutes =
+                    tolerance;
+            }
+        }
+
+        // Configuração do WhatsApp.
+        const savedWhatsappConfig =
+            scheduleSettings.blockedSlots &&
+            scheduleSettings.blockedSlots.__whatsapp_config;
+
+        if (
+            savedWhatsappConfig &&
+            typeof savedWhatsappConfig === "object"
+        ) {
+            whatsappSettings = {
+                phone: String(
+                    savedWhatsappConfig.phone || ""
+                ),
+                enabled: Boolean(
+                    savedWhatsappConfig.enabled
+                ),
+                mode:
+                    savedWhatsappConfig.mode === "barbeiro"
+                        ? "barbeiro"
+                        : "barbearia"
+            };
+        }
+
+        saveScheduleToLocalStorage();
+    }
+
+    loadScheduleInputs();
+    updateScheduleSummary();
+    renderAvailabilityCalendar();
+    loadWhatsappSettingsUI();
+}
+function ensureSmartToleranceValue(value) {
+    const numeric = Number(value);
+
+    return [5, 10, 15].includes(numeric)
+        ? numeric
+        : 5;
+}
+
+
+function getSmartToleranceMinutes() {
+    return ensureSmartToleranceValue(
+        scheduleSettings.smartToleranceMinutes
+    );
+}
+
+
+function setupSmartToleranceControl() {
+    if (
+        !schedulingModeSwitch ||
+        document.getElementById("smartToleranceControl")
+    ) {
+        return;
+    }
+
+    const wrapper = document.createElement("div");
+
+    wrapper.id = "smartToleranceControl";
+
+    wrapper.style.cssText =
+        "margin-top:10px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;";
+
+    wrapper.innerHTML = `
+        <label
+            for="smartToleranceSelect"
+            style="font-size:14px;"
+        >
+            Tolerância entre atendimentos
+        </label>
+
+        <select
+            id="smartToleranceSelect"
+            style="padding:6px 8px;border-radius:8px;"
+        >
+            <option value="5">5 min</option>
+            <option value="10">10 min</option>
+            <option value="15">15 min</option>
+        </select>
+    `;
+
+    const parent = schedulingModeSwitch.parentElement;
+
+    if (parent) {
+        parent.appendChild(wrapper);
+    } else {
+        schedulingModeSwitch.insertAdjacentElement(
+            "afterend",
+            wrapper
+        );
+    }
+
+    const select =
+        document.getElementById("smartToleranceSelect");
+
+    if (select) {
+        select.value = String(
+            getSmartToleranceMinutes()
+        );
+
+        select.addEventListener("change", () => {
+            scheduleSettings.smartToleranceMinutes =
+                ensureSmartToleranceValue(select.value);
+
+            previewScheduleSettings();
+        });
+    }
+}
+
+
+function updateSmartToleranceUI() {
+    setupSmartToleranceControl();
+
+    const wrapper =
+        document.getElementById("smartToleranceControl");
+
+    const select =
+        document.getElementById("smartToleranceSelect");
+
+    const visible =
+        Boolean(scheduleSettings.considerServiceDuration);
+
+    if (wrapper) {
+        wrapper.style.display =
+            visible ? "flex" : "none";
+    }
+
+    if (select) {
+        select.value = String(
+            getSmartToleranceMinutes()
+        );
+    }
+}
+
+
+async function saveScheduleSettings() {
+    saveScheduleToLocalStorage();
+
+    if (!window.supabaseClient) {
+        updateScheduleSaveIndicator(false, true);
+
+        alert(
+            "As configurações ficaram salvas neste navegador, " +
+            "mas o Supabase não está conectado."
+        );
+
+        return false;
+    }
+
+    const blockedSlotsForStorage = {
+        ...scheduleSettings.blockedSlots,
+
+        __smart_config: {
+            toleranceMinutes:
+                getSmartToleranceMinutes()
+        },
+
+        __whatsapp_config: {
+            phone: String(whatsappSettings.phone || ""),
+            enabled: Boolean(whatsappSettings.enabled),
+            mode:
+                whatsappSettings.mode === "barbeiro"
+                    ? "barbeiro"
+                    : "barbearia"
+        }
+    };
+
+    const diasMaximos = Math.min(
+        365,
+        Math.max(
+            1,
+            Number(scheduleSettings.diasAntecedencia || 14)
+        )
+    );
+
+    const payload = {
+        horario_abertura:
+            scheduleSettings.openingTime,
+
+        horario_fechamento:
+            scheduleSettings.closingTime,
+
+        intervalo:
+            scheduleSettings.interval,
+
+        dias_funcionamento:
+            scheduleSettings.workingDays,
+
+        datas_bloqueadas:
+            scheduleSettings.blockedDates,
+
+        horarios_bloqueados:
+            blockedSlotsForStorage,
+
+        considerar_duracao_servicos:
+            scheduleSettings.considerServiceDuration,
+
+        // Campo oficial para o prazo máximo de agendamento.
+        dias_maximos_agendamento:
+            diasMaximos
+    };
+
+    const {
+        data: existing,
+        error: existingError
+    } = await window.supabaseClient
+        .from("configuracoes_horarios")
+        .select("id")
+        .order("id", {
+            ascending: false
+        })
+        .limit(1)
+        .maybeSingle();
+
+    if (existingError) {
+        console.error(
+            "Erro ao verificar configurações:",
+            existingError
+        );
+
+        updateScheduleSaveIndicator(false, true);
+
+        alert(
+            "Não foi possível verificar as configurações no Supabase. " +
+            "Confira o console e tente novamente."
+        );
+
+        return false;
+    }
+
+    const response = existing
+        ? await window.supabaseClient
+            .from("configuracoes_horarios")
+            .update(payload)
+            .eq("id", existing.id)
+        : await window.supabaseClient
+            .from("configuracoes_horarios")
+            .insert(payload);
+
+    if (response.error) {
+        console.error(
+            "Erro ao salvar horários no Supabase:",
+            response.error
+        );
+
+        updateScheduleSaveIndicator(false, true);
+
+        alert(
+            "Não foi possível sincronizar as configurações com o Supabase. " +
+            "Verifique se a coluna dias_maximos_agendamento existe " +
+            "na tabela configuracoes_horarios."
+        );
+
+        return false;
+    }
+
+    markHorariosClean();
+
+    return true;
+}
+function updateSchedulingModeUI() {
+    const durationMode =
+        Boolean(scheduleSettings.considerServiceDuration);
+
+    if (modeIntervalInput) {
+        modeIntervalInput.checked = !durationMode;
+    }
+
+    if (modeDurationInput) {
+        modeDurationInput.checked = durationMode;
+    }
+
+    if (slotIntervalInput) {
+        slotIntervalInput.disabled = durationMode;
+    }
+
+    if (schedulingModeSwitch) {
+        schedulingModeSwitch.classList.toggle(
+            "active",
+            durationMode
+        );
+
+        schedulingModeSwitch.style.background =
+            durationMode ? "#d7b56d" : "transparent";
+
+        schedulingModeSwitch.style.color =
+            durationMode ? "#111" : "rgba(255,255,255,.72)";
+
+        schedulingModeSwitch.style.boxShadow =
+            durationMode
+                ? "0 0 0 1px rgba(215,181,109,.55), 0 4px 14px rgba(215,181,109,.18)"
+                : "inset 0 0 0 1px rgba(255,255,255,.22)";
+
+        schedulingModeSwitch.setAttribute(
+            "aria-pressed",
+            durationMode ? "true" : "false"
+        );
+    }
+
+    if (schedulingModeSwitchText) {
+        schedulingModeSwitchText.textContent =
+            durationMode ? "ON" : "OFF";
+
+        schedulingModeSwitchText.style.fontWeight = "800";
+        schedulingModeSwitchText.style.fontSize = "12px";
+        schedulingModeSwitchText.style.letterSpacing = ".06em";
+    }
+
+    const schedulingModeKnob = schedulingModeSwitch
+        ? schedulingModeSwitch.querySelector(
+            ".scheduling-mode-switch-knob"
+        )
+        : null;
+
+    if (schedulingModeKnob) {
+        schedulingModeKnob.style.width = "28px";
+        schedulingModeKnob.style.height = "28px";
+        schedulingModeKnob.style.borderRadius = "50%";
+        schedulingModeKnob.style.display = "block";
+
+        schedulingModeKnob.style.background =
+            durationMode ? "#fff" : "rgba(255,255,255,.35)";
+
+        schedulingModeKnob.style.boxShadow =
+            "0 1px 5px rgba(0,0,0,.25)";
+
+        schedulingModeKnob.style.transform = "translateX(0)";
+        schedulingModeKnob.style.transition = ".2s ease";
+    }
+
+    if (schedulingModeTitle) {
+        schedulingModeTitle.textContent =
+            durationMode
+                ? "Considerar duração dos serviços"
+                : "Intervalo entre horários";
+    }
+
+    if (schedulingModeDescription) {
+        schedulingModeDescription.textContent =
+            durationMode
+                ? "Cada atendimento respeita o tempo definido no serviço."
+                : "Os horários seguem o intervalo definido acima.";
+    }
+
+    updateSmartToleranceUI();
+}
+
+
+if (modeIntervalInput) {
+    modeIntervalInput.addEventListener("change", () => {
+        scheduleSettings.considerServiceDuration = false;
+
+        updateSchedulingModeUI();
+        previewScheduleSettings();
+    });
+}
+
+
+if (modeDurationInput) {
+    modeDurationInput.addEventListener("change", () => {
+        scheduleSettings.considerServiceDuration = true;
+
+        updateSchedulingModeUI();
+        previewScheduleSettings();
+    });
+}
+
+
+if (schedulingModeSwitch) {
+    schedulingModeSwitch.addEventListener("click", () => {
+        scheduleSettings.considerServiceDuration =
+            !scheduleSettings.considerServiceDuration;
+
+        updateSchedulingModeUI();
+        previewScheduleSettings();
+    });
+}
+
+
+function loadScheduleInputs() {
+    if (openingTimeInput) {
+        openingTimeInput.value = scheduleSettings.openingTime;
+    }
+
+    if (closingTimeInput) {
+        closingTimeInput.value = scheduleSettings.closingTime;
+    }
+
+    if (slotIntervalInput) {
+        slotIntervalInput.value =
+            String(scheduleSettings.interval);
+    }
+
+    if (bookingAdvanceDaysInput) {
+        bookingAdvanceDaysInput.value =
+            String(scheduleSettings.diasAntecedencia || 14);
+
+        bookingAdvanceDaysInput.min = "1";
+        bookingAdvanceDaysInput.max = "365";
+    }
+
+    document.querySelectorAll(".day-option input").forEach(
+        checkbox => {
+            checkbox.checked =
+                scheduleSettings.workingDays.includes(
+                    checkbox.value
+                );
+        }
+    );
+
+    updateSchedulingModeUI();
+}
+
+
+function getSelectedWorkingDays() {
+    return [
+        ...document.querySelectorAll(
+            ".day-option input:checked"
+        )
+    ].map(input => input.value);
+}
+
+
+function formatDateKey(date) {
+    const year = date.getFullYear();
+
+    const month = String(
+        date.getMonth() + 1
+    ).padStart(2, "0");
+
+    const day = String(
+        date.getDate()
+    ).padStart(2, "0");
+
+    return `${year}-${month}-${day}`;
+}
+
+
+function generateSlots() {
+    const slots = [];
+
+    const [openHour, openMinute] =
+        scheduleSettings.openingTime.split(":").map(Number);
+
+    const [closeHour, closeMinute] =
+        scheduleSettings.closingTime.split(":").map(Number);
+
+    let current = openHour * 60 + openMinute;
+
+    const closing = closeHour * 60 + closeMinute;
+
+    const interval = Math.max(
+        1,
+        Number(scheduleSettings.interval || 60)
+    );
+
+    while (current < closing) {
+        const hour = String(
+            Math.floor(current / 60)
+        ).padStart(2, "0");
+
+        const minute = String(
+            current % 60
+        ).padStart(2, "0");
+
+        slots.push(`${hour}:${minute}`);
+
+        current += interval;
+    }
+
+    return slots;
+}
+
+
+function renderAvailabilityCalendar() {
+    if (!availabilityCalendar) return;
+
+    availabilityCalendar.innerHTML = "";
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    // O limite máximo agora é de 365 dias.
+    const configuredDays = Math.min(
+        365,
+        Math.max(
+            1,
+            Number(scheduleSettings.diasAntecedencia || 14)
+        )
+    );
+
+    const title = document.getElementById(
+        "availabilityCalendarTitle"
+    );
+
+    if (title) {
+        title.textContent =
+            `Próximos ${configuredDays} ` +
+            `${configuredDays === 1 ? "dia" : "dias"}`;
+    }
+
+    for (let i = 0; i < configuredDays; i++) {
+        const date = new Date(today);
+
+        date.setDate(today.getDate() + i);
+
+        const key = formatDateKey(date);
+
+        const weekdayKey = WEEKDAY_KEYS[date.getDay()];
+
+        const weekdayLabel = WEEKDAY_LABELS[weekdayKey];
+
+        const unavailable =
+            !scheduleSettings.workingDays.includes(weekdayKey) ||
+            scheduleSettings.blockedDates.includes(key);
+
+        const button = document.createElement("button");
+
+        button.type = "button";
+
+        button.className =
+            `availability-day ${unavailable ? "closed" : "open"}` +
+            `${selectedScheduleDateKey === key ? " selected" : ""}`;
+
+        button.dataset.date = key;
+
+        button.innerHTML = `
+            <span class="day-name">${weekdayLabel}</span>
+            <strong class="day-number">
+                ${String(date.getDate()).padStart(2, "0")}
+            </strong>
+            <span class="day-status">
+                ${unavailable ? "INDISPONÍVEL" : "DISPONÍVEL"}
+            </span>
+        `;
+
+        button.addEventListener("click", () => {
+            selectedScheduleDateKey = key;
+
+            renderAvailabilityCalendar();
+            renderScheduleSlots(key, date);
+        });
+
+        availabilityCalendar.appendChild(button);
+    }
+}
+function renderScheduleSlots(dateKey, date) {
+    if (selectedScheduleDate) {
+        selectedScheduleDate.textContent =
+            date.toLocaleDateString("pt-BR", {
+                weekday: "long",
+                day: "2-digit",
+                month: "2-digit",
+                year: "numeric"
+            });
+    }
+
+    if (!scheduleSlots) return;
+
+    const weekday = WEEKDAY_KEYS[date.getDay()];
+
+    const outsideWorkingDays =
+        !scheduleSettings.workingDays.includes(weekday);
+
+    const manuallyBlocked =
+        scheduleSettings.blockedDates.includes(dateKey);
+
+    if (outsideWorkingDays || manuallyBlocked) {
+        const message = outsideWorkingDays
+            ? "Este dia está fora do funcionamento da barbearia."
+            : "Este dia foi bloqueado manualmente.";
+
+        scheduleSlots.innerHTML = `
+            <p class="empty-schedule">
+                ${message}
+
+                ${
+                    manuallyBlocked
+                        ? '<button type="button" id="toggleDateAvailability">DESBLOQUEAR DIA</button>'
+                        : ""
+                }
+            </p>
+        `;
+
+        const toggle = document.getElementById(
+            "toggleDateAvailability"
+        );
+
+        if (toggle) {
+            toggle.addEventListener("click", () => {
+                toggleDateBlock(dateKey);
+            });
+        }
+
+        return;
+    }
+
+    const blocked =
+        scheduleSettings.blockedSlots[dateKey] || [];
+
+    const isDateBlocked =
+        scheduleSettings.blockedDates.includes(dateKey);
+
+    scheduleSlots.innerHTML =
+        generateSlots().map(time => `
+            <button
+                type="button"
+                class="schedule-slot${
+                    blocked.includes(time)
+                        ? " blocked"
+                        : " available"
+                }"
+                data-time="${time}"
+            >
+                ${time}${
+                    blocked.includes(time)
+                        ? " · BLOQUEADO"
+                        : " · DISPONÍVEL"
+                }
+            </button>
+        `).join("") + `
+            <button
+                type="button"
+                id="toggleDateAvailability"
+                class="schedule-day-action"
+            >
+                ${
+                    isDateBlocked
+                        ? "DESBLOQUEAR DIA"
+                        : "BLOQUEAR DIA"
+                }
+            </button>
+        `;
+
+    scheduleSlots
+        .querySelectorAll(".schedule-slot")
+        .forEach(button => {
+            button.addEventListener("click", () => {
+                toggleSlot(
+                    dateKey,
+                    button.dataset.time,
+                    date
+                );
+            });
+        });
+
+    const toggleDateAvailability =
+        document.getElementById(
+            "toggleDateAvailability"
+        );
+
+    if (toggleDateAvailability) {
+        toggleDateAvailability.addEventListener("click", () => {
+            toggleDateBlock(dateKey);
+        });
+    }
+}
+
+
+async function toggleSlot(dateKey, time, date) {
+    if (!scheduleSettings.blockedSlots[dateKey]) {
+        scheduleSettings.blockedSlots[dateKey] = [];
+    }
+
+    const blocked =
+        scheduleSettings.blockedSlots[dateKey];
+
+    const index = blocked.indexOf(time);
+
+    if (index === -1) {
+        blocked.push(time);
+    } else {
+        blocked.splice(index, 1);
+    }
+
+    markHorariosDirty();
+
+    renderScheduleSlots(dateKey, date);
+    renderAvailabilityCalendar();
+}
+
+
+async function toggleDateBlock(dateKey) {
+    const index =
+        scheduleSettings.blockedDates.indexOf(dateKey);
+
+    if (index === -1) {
+        scheduleSettings.blockedDates.push(dateKey);
+    } else {
+        scheduleSettings.blockedDates.splice(index, 1);
+    }
+
+    markHorariosDirty();
+    renderAvailabilityCalendar();
+
+    if (selectedScheduleDateKey === dateKey) {
+        const [year, month, day] =
+            dateKey.split("-").map(Number);
+
+        renderScheduleSlots(
+            dateKey,
+            new Date(year, month - 1, day)
+        );
+    }
+}
+
+
+function updateActiveDaysCount() {
+    const element =
+        document.getElementById("activeDaysCount");
+
+    if (element) {
+        element.textContent =
+            scheduleSettings.workingDays.length;
+    }
+}
+
+
+function updateIntervalDisplay() {
+    const element =
+        document.getElementById("slotIntervalDisplay");
+
+    if (element) {
+        element.textContent =
+            `${scheduleSettings.interval} min`;
+    }
+}
+
+
+function updateWorkingHoursDisplay() {
+    const element =
+        document.getElementById("workingHoursDisplay");
+
+    if (element) {
+        element.textContent =
+            `${scheduleSettings.openingTime} — ${scheduleSettings.closingTime}`;
+    }
+}
+
+
+function updateScheduleSummary() {
+    updateWorkingHoursDisplay();
+    updateIntervalDisplay();
+    updateActiveDaysCount();
+}
+
+
+function updateScheduleSaveIndicator(
+    isDirty,
+    isError = false
+) {
+    if (!horariosSaveStatus) return;
+
+    horariosSaveStatus.classList.toggle(
+        "is-dirty",
+        Boolean(isDirty)
+    );
+
+    horariosSaveStatus.classList.toggle(
+        "is-error",
+        Boolean(isError)
+    );
+
+    if (horariosSaveStatusText) {
+        horariosSaveStatusText.textContent = isError
+            ? "Erro ao salvar"
+            : isDirty
+                ? "Alterações não salvas"
+                : "Tudo salvo";
+    }
+
+    const icon = horariosSaveStatus.querySelector(
+        ".horarios-save-status-icon"
+    );
+
+    if (icon) {
+        icon.textContent =
+            isError || isDirty ? "!" : "✓";
+    }
+}
+
+
+function markHorariosDirty() {
+    updateScheduleSaveIndicator(true, false);
+}
+
+
+function markHorariosClean() {
+    updateScheduleSaveIndicator(false, false);
+}
+
+
+function previewScheduleSettings() {
+    if (modeDurationInput) {
+        scheduleSettings.considerServiceDuration =
+            Boolean(modeDurationInput.checked);
+    }
+
+    if (openingTimeInput && openingTimeInput.value) {
+        scheduleSettings.openingTime =
+            openingTimeInput.value;
+    }
+
+    if (closingTimeInput && closingTimeInput.value) {
+        scheduleSettings.closingTime =
+            closingTimeInput.value;
+    }
+
+    if (slotIntervalInput && slotIntervalInput.value) {
+        scheduleSettings.interval =
+            Number(slotIntervalInput.value);
+    }
+
+    if (
+        bookingAdvanceDaysInput &&
+        bookingAdvanceDaysInput.value
+    ) {
+        scheduleSettings.diasAntecedencia = Math.min(
+            365,
+            Math.max(
+                1,
+                Number(bookingAdvanceDaysInput.value) || 14
+            )
+        );
+    }
+
+    scheduleSettings.workingDays =
+        getSelectedWorkingDays();
+
+    const toleranceSelect =
+        document.getElementById("smartToleranceSelect");
+
+    if (toleranceSelect) {
+        scheduleSettings.smartToleranceMinutes =
+            ensureSmartToleranceValue(
+                toleranceSelect.value
+            );
+    }
+
+    updateScheduleSummary();
+    renderAvailabilityCalendar();
+
+    markSettingsDirty();
+    markHorariosDirty();
+
+    if (selectedScheduleDateKey) {
+        const [year, month, day] =
+            selectedScheduleDateKey.split("-").map(Number);
+
+        renderScheduleSlots(
+            selectedScheduleDateKey,
+            new Date(year, month - 1, day)
+        );
+    }
+}
+
+
+if (saveScheduleButton) {
+    saveScheduleButton.addEventListener(
+        "click",
+        async () => {
+            const opening = openingTimeInput
+                ? openingTimeInput.value
+                : "";
+
+            const closing = closingTimeInput
+                ? closingTimeInput.value
+                : "";
+
+            const interval = Number(
+                slotIntervalInput
+                    ? slotIntervalInput.value
+                    : 0
+            );
+
+            const advanceDays = Number(
+                bookingAdvanceDaysInput
+                    ? bookingAdvanceDaysInput.value
+                    : 14
+            );
+
+            const workingDays =
+                getSelectedWorkingDays();
+
+            if (!opening || !closing) {
+                alert(
+                    "Informe o horário de abertura e fechamento."
+                );
+                return;
+            }
+
+            if (opening >= closing) {
+                alert(
+                    "O horário de abertura precisa ser antes do fechamento."
+                );
+                return;
+            }
+
+            if (!interval || interval <= 0) {
+                alert("Informe um intervalo válido.");
+                return;
+            }
+
+            if (workingDays.length === 0) {
+                alert(
+                    "Selecione pelo menos um dia de funcionamento."
+                );
+                return;
+            }
+
+            if (
+                !Number.isInteger(advanceDays) ||
+                advanceDays < 1 ||
+                advanceDays > 365
+            ) {
+                alert(
+                    "O prazo máximo de agendamento deve estar entre 1 e 365 dias."
+                );
+                return;
+            }
+
+            scheduleSettings.openingTime = opening;
+            scheduleSettings.closingTime = closing;
+            scheduleSettings.interval = interval;
+            scheduleSettings.workingDays = workingDays;
+            scheduleSettings.diasAntecedencia = advanceDays;
+
+            scheduleSettings.considerServiceDuration =
+                Boolean(
+                    modeDurationInput &&
+                    modeDurationInput.checked
+                );
+
+            const toleranceSelect =
+                document.getElementById("smartToleranceSelect");
+
+            if (toleranceSelect) {
+                scheduleSettings.smartToleranceMinutes =
+                    ensureSmartToleranceValue(
+                        toleranceSelect.value
+                    );
+            }
+
+            updateSchedulingModeUI();
+
+            const saved = await saveScheduleSettings();
+
+            if (!saved) return;
+
+            updateScheduleSummary();
+            renderAvailabilityCalendar();
+
+            markSettingsClean();
+            markHorariosClean();
+
+            alert("Configurações de horários salvas.");
+        }
+    );
+}
+
+
+[
+    openingTimeInput,
+    closingTimeInput,
+    slotIntervalInput,
+    bookingAdvanceDaysInput
+]
+    .filter(Boolean)
+    .forEach(input => {
+        input.addEventListener(
+            "change",
+            previewScheduleSettings
+        );
+    });
+
+
+if (modeIntervalInput) {
+    modeIntervalInput.addEventListener(
+        "change",
+        previewScheduleSettings
+    );
+}
+
+
+if (modeDurationInput) {
+    modeDurationInput.addEventListener(
+        "change",
+        previewScheduleSettings
+    );
+}
+
+
+document.querySelectorAll(".day-option input").forEach(
+    checkbox => {
+        checkbox.addEventListener(
+            "change",
+            previewScheduleSettings
+        );
+    }
+);
+// ==========================================
+// CONFIGURAÇÃO DE WHATSAPP APÓS AGENDAMENTO
+// ==========================================
+
+const barbershopWhatsappInput =
+    document.getElementById("barbershopWhatsapp");
+
+const whatsappAfterBookingInput =
+    document.getElementById("whatsappAfterBooking");
+
+const whatsappAfterBookingSwitch =
+    document.getElementById("whatsappAfterBookingSwitch");
+
+const whatsappAfterBookingSwitchText =
+    document.getElementById("whatsappAfterBookingSwitchText");
+
+const whatsappAfterBookingSwitchKnob =
+    document.getElementById("whatsappAfterBookingSwitchKnob");
+
+const saveSettingsButton =
+    document.getElementById("saveSettings");
+
+const settingsSaveLight =
+    document.getElementById("settingsSaveLight");
+
+const settingsSaveStatusText =
+    document.getElementById("settingsSaveStatusText");
+
+const whatsappDisableConfirmModal =
+    document.getElementById("whatsappDisableConfirmModal");
+
+const cancelWhatsappDisable =
+    document.getElementById("cancelWhatsappDisable");
+
+const confirmWhatsappDisable =
+    document.getElementById("confirmWhatsappDisable");
+
+
+let settingsHaveUnsavedChanges = false;
+let whatsappDisablePending = false;
+let suppressWhatsappChange = false;
+
+
+function updateSettingsSaveIndicator(isDirty) {
+    settingsHaveUnsavedChanges = Boolean(isDirty);
+
+    if (settingsSaveLight) {
+        settingsSaveLight.style.background =
+            settingsHaveUnsavedChanges
+                ? "#d7b56d"
+                : "transparent";
+
+        settingsSaveLight.style.boxShadow =
+            settingsHaveUnsavedChanges
+                ? "0 0 0 3px rgba(215,181,109,.14), 0 0 12px rgba(215,181,109,.35)"
+                : "none";
+    }
+
+    if (settingsSaveStatusText) {
+        settingsSaveStatusText.textContent =
+            settingsHaveUnsavedChanges
+                ? "Alterações não salvas"
+                : "Tudo salvo";
+    }
+}
+
+
+function markSettingsDirty() {
+    updateSettingsSaveIndicator(true);
+}
+
+
+function markSettingsClean() {
+    updateSettingsSaveIndicator(false);
+}
+
+
+function openWhatsappDisableConfirmation() {
+    whatsappDisablePending = true;
+
+    if (whatsappDisableConfirmModal) {
+        whatsappDisableConfirmModal.style.display = "flex";
+    }
+}
+
+
+function closeWhatsappDisableConfirmation() {
+    whatsappDisablePending = false;
+
+    if (whatsappDisableConfirmModal) {
+        whatsappDisableConfirmModal.style.display = "none";
+    }
+}
+
+
+if (cancelWhatsappDisable) {
+    cancelWhatsappDisable.addEventListener("click", () => {
+        suppressWhatsappChange = true;
+
+        if (whatsappAfterBookingInput) {
+            whatsappAfterBookingInput.checked = true;
+        }
+
+        updateWhatsappSwitchUI();
+
+        suppressWhatsappChange = false;
+
+        closeWhatsappDisableConfirmation();
+    });
+}
+
+
+if (confirmWhatsappDisable) {
+    confirmWhatsappDisable.addEventListener("click", () => {
+        if (whatsappAfterBookingInput) {
+            whatsappAfterBookingInput.checked = false;
+        }
+
+        updateWhatsappSwitchUI();
+        closeWhatsappDisableConfirmation();
+        markSettingsDirty();
+    });
+}
+
+
+if (whatsappDisableConfirmModal) {
+    whatsappDisableConfirmModal.addEventListener(
+        "click",
+        event => {
+            if (event.target === whatsappDisableConfirmModal) {
+                suppressWhatsappChange = true;
+
+                if (whatsappAfterBookingInput) {
+                    whatsappAfterBookingInput.checked = true;
+                }
+
+                updateWhatsappSwitchUI();
+
+                suppressWhatsappChange = false;
+
+                closeWhatsappDisableConfirmation();
+            }
+        }
+    );
+}
+
+
+function ensureWhatsappDestinationControl() {
+    if (document.getElementById("whatsappDestinationMode")) {
+        return;
+    }
+
+    if (!barbershopWhatsappInput) {
+        return;
+    }
+
+    const wrapper = document.createElement("div");
+
+    wrapper.id = "whatsappDestinationControl";
+
+    wrapper.style.cssText =
+        "margin-top:14px;padding:14px;border:1px solid rgba(255,255,255,.12);border-radius:12px;background:rgba(255,255,255,.03);";
+
+    wrapper.innerHTML = `
+        <div style="font-weight:700;margin-bottom:6px;">
+            Destino das confirmações pelo WhatsApp
+        </div>
+
+        <div style="font-size:13px;opacity:.72;line-height:1.45;margin-bottom:10px;">
+            Escolha quem recebe a mensagem depois que o cliente confirmar o agendamento.
+        </div>
+
+        <select
+            id="whatsappDestinationMode"
+            style="width:100%;padding:10px 12px;border-radius:9px;border:1px solid rgba(255,255,255,.18);background:#171717;color:#fff;"
+        >
+            <option value="barbearia">
+                WhatsApp da barbearia
+            </option>
+
+            <option value="barbeiro">
+                WhatsApp do barbeiro selecionado
+            </option>
+        </select>
+
+        <div
+            id="whatsappDestinationHelp"
+            style="font-size:12px;opacity:.68;line-height:1.45;margin-top:8px;"
+        ></div>
+    `;
+
+    const parent =
+        barbershopWhatsappInput.closest(".form-group") ||
+        barbershopWhatsappInput.parentElement;
+
+    if (parent && parent.parentElement) {
+        parent.parentElement.insertBefore(
+            wrapper,
+            parent.nextSibling
+        );
+    } else if (barbershopWhatsappInput.parentElement) {
+        barbershopWhatsappInput.parentElement.appendChild(
+            wrapper
+        );
+    }
+
+    const select =
+        document.getElementById("whatsappDestinationMode");
+
+    const help =
+        document.getElementById("whatsappDestinationHelp");
+
+    function updateHelp() {
+        const mode = select
+            ? select.value
+            : "barbearia";
+
+        if (help) {
+            help.textContent =
+                mode === "barbeiro"
+                    ? "A mensagem será enviada para o telefone cadastrado no perfil do barbeiro escolhido pelo cliente."
+                    : "A mensagem será enviada para o número da barbearia informado acima.";
+        }
+    }
+
+    if (select) {
+        select.value =
+            whatsappSettings.mode === "barbeiro"
+                ? "barbeiro"
+                : "barbearia";
+
+        select.addEventListener("change", () => {
+            whatsappSettings.mode =
+                select.value === "barbeiro"
+                    ? "barbeiro"
+                    : "barbearia";
+
+            updateHelp();
+            markSettingsDirty();
+        });
+    }
+
+    updateHelp();
+}
+
+
+function updateWhatsappSwitchUI() {
+    const enabled = Boolean(
+        whatsappAfterBookingInput &&
+        whatsappAfterBookingInput.checked
+    );
+
+    if (whatsappAfterBookingSwitch) {
+        whatsappAfterBookingSwitch.setAttribute(
+            "aria-pressed",
+            enabled ? "true" : "false"
+        );
+
+        whatsappAfterBookingSwitch.style.background =
+            enabled ? "#d7b56d" : "transparent";
+
+        whatsappAfterBookingSwitch.style.color =
+            enabled ? "#111" : "rgba(255,255,255,.72)";
+
+        whatsappAfterBookingSwitch.style.boxShadow =
+            enabled
+                ? "0 0 0 1px rgba(215,181,109,.55), 0 4px 14px rgba(215,181,109,.18)"
+                : "inset 0 0 0 1px rgba(255,255,255,.22)";
+    }
+
+    if (whatsappAfterBookingSwitchText) {
+        whatsappAfterBookingSwitchText.textContent =
+            enabled ? "ON" : "OFF";
+    }
+
+    if (whatsappAfterBookingSwitchKnob) {
+        whatsappAfterBookingSwitchKnob.style.background =
+            enabled ? "#fff" : "rgba(255,255,255,.35)";
+
+        whatsappAfterBookingSwitchKnob.style.transform =
+            "translateX(0)";
+    }
+}
+
+
+function normalizeWhatsappNumber(value) {
+    return String(value || "").replace(/\D/g, "");
+}
+
+
+function loadWhatsappSettingsUI() {
+    ensureWhatsappDestinationControl();
+
+    if (barbershopWhatsappInput) {
+        barbershopWhatsappInput.value =
+            whatsappSettings.phone ||
+            barbershopWhatsappInput.value ||
+            "";
+    }
+
+    if (whatsappAfterBookingInput) {
+        whatsappAfterBookingInput.checked =
+            Boolean(whatsappSettings.enabled);
+    }
+
+    const destinationMode =
+        document.getElementById("whatsappDestinationMode");
+
+    if (destinationMode) {
+        destinationMode.value =
+            whatsappSettings.mode === "barbeiro"
+                ? "barbeiro"
+                : "barbearia";
+
+        const help =
+            document.getElementById("whatsappDestinationHelp");
+
+        if (help) {
+            help.textContent =
+                destinationMode.value === "barbeiro"
+                    ? "A mensagem será enviada para o telefone cadastrado no perfil do barbeiro escolhido pelo cliente."
+                    : "A mensagem será enviada para o número da barbearia informado acima.";
+        }
+    }
+
+    updateWhatsappSwitchUI();
+}
+
+
+async function saveWhatsappSettings() {
+    const phone = barbershopWhatsappInput
+        ? normalizeWhatsappNumber(
+            barbershopWhatsappInput.value
+        )
+        : "";
+
+    const enabled = Boolean(
+        whatsappAfterBookingInput &&
+        whatsappAfterBookingInput.checked
+    );
+
+    const destinationModeInput =
+        document.getElementById("whatsappDestinationMode");
+
+    const mode =
+        destinationModeInput &&
+        destinationModeInput.value === "barbeiro"
+            ? "barbeiro"
+            : "barbearia";
+
+    if (
+        enabled &&
+        mode === "barbearia" &&
+        phone.length < 10
+    ) {
+        alert(
+            "Informe um WhatsApp da barbearia válido antes de ativar o redirecionamento para a barbearia."
+        );
+
+        return false;
+    }
+
+    whatsappSettings = {
+        phone,
+        enabled,
+        mode
+    };
+
+    const saved = await saveScheduleSettings();
+
+    if (!saved) {
+        return false;
+    }
+
+    if (barbershopWhatsappInput) {
+        barbershopWhatsappInput.value = phone;
+    }
+
+    return true;
+}
+
+
+if (whatsappAfterBookingSwitch) {
+    whatsappAfterBookingSwitch.addEventListener("click", () => {
+        if (!whatsappAfterBookingInput) return;
+
+        if (whatsappAfterBookingInput.checked) {
+            openWhatsappDisableConfirmation();
+            return;
+        }
+
+        whatsappAfterBookingInput.checked = true;
+
+        updateWhatsappSwitchUI();
+        markSettingsDirty();
+    });
+}
+
+
+if (whatsappAfterBookingInput) {
+    whatsappAfterBookingInput.addEventListener("change", () => {
+        updateWhatsappSwitchUI();
+
+        if (suppressWhatsappChange) {
+            return;
+        }
+
+        if (!whatsappAfterBookingInput.checked) {
+            openWhatsappDisableConfirmation();
+            return;
+        }
+
+        markSettingsDirty();
+    });
+}
+
+
+if (barbershopWhatsappInput) {
+    barbershopWhatsappInput.addEventListener(
+        "input",
+        markSettingsDirty
+    );
+}
+
+
+if (saveSettingsButton) {
+    saveSettingsButton.addEventListener(
+        "click",
+        async () => {
+            if (saveSettingsButton.disabled) return;
+
+            saveSettingsButton.disabled = true;
+
+            try {
+                // Conteúdo do site (configuracoes_site + imagens).
+                const siteSaved =
+                    typeof window.saveSiteSettings === "function"
+                        ? await window.saveSiteSettings()
+                        : true;
+
+                if (!siteSaved) return;
+
+                // WhatsApp (configuracoes_horarios).
+                const saved = await saveWhatsappSettings();
+
+                if (saved) {
+                    markSettingsClean();
+
+                    alert(
+                        "Configurações salvas com sucesso. O site já mostra as alterações."
+                    );
+                }
+            } finally {
+                saveSettingsButton.disabled = false;
+            }
+        }
+    );
+}
+
+
+loadWhatsappSettingsUI();
+markSettingsClean();
+
+loadScheduleSettings();
+markHorariosClean();
+/* =========================================================
+   DASHBOARD NOVO — INTEGRAÇÃO ISOLADA COM SUPABASE
+   ========================================================= */
+
+(function () {
+    "use strict";
+
+
+    function dashV3NormalizeStatus(value) {
+        return String(value || "agendado")
+            .toLowerCase()
+            .trim()
+            .normalize("NFD")
+            .replace(/[\u0300-\u036f]/g, "")
+            .replace(/\s+/g, "_");
+    }
+
+
+    function dashV3Today() {
+        const now = new Date();
+
+        const year = now.getFullYear();
+
+        const month = String(
+            now.getMonth() + 1
+        ).padStart(2, "0");
+
+        const day = String(
+            now.getDate()
+        ).padStart(2, "0");
+
+        return `${year}-${month}-${day}`;
+    }
+
+
+    function dashV3Money(value) {
+        return Number(value || 0).toLocaleString(
+            "pt-BR",
+            {
+                style: "currency",
+                currency: "BRL"
+            }
+        );
+    }
+
+
+    function dashV3Set(id, value) {
+        const element = document.getElementById(id);
+
+        if (element) {
+            element.textContent = value;
+        }
+    }
+
+
+    function dashV3Initials(name) {
+        return String(name || "Barbeiro")
+            .trim()
+            .split(/\s+/)
+            .slice(0, 2)
+            .map(word => word.charAt(0).toUpperCase())
+            .join("");
+    }
+
+
+    function dashV3PeriodStart(period) {
+        if (period === "all") {
+            return null;
+        }
+
+        if (period === "today") {
+            return dashV3Today();
+        }
+
+        const days = Number(period) || 30;
+
+        const date = new Date();
+
+        date.setHours(0, 0, 0, 0);
+
+        date.setDate(
+            date.getDate() - (days - 1)
+        );
+
+        const year = date.getFullYear();
+
+        const month = String(
+            date.getMonth() + 1
+        ).padStart(2, "0");
+
+        const day = String(
+            date.getDate()
+        ).padStart(2, "0");
+
+        return `${year}-${month}-${day}`;
+    }
+
+
+    async function dashV3Load() {
+        if (!window.supabaseClient) {
+            console.error(
+                "Dashboard: Supabase não foi carregado."
+            );
+
+            return;
+        }
+
+        const dashboard =
+            document.getElementById("dashboard");
+
+        if (!dashboard) {
+            return;
+        }
+
+        const periodSelect =
+            document.getElementById("dashv3Period");
+
+        const period = periodSelect
+            ? periodSelect.value
+            : "30";
+
+        const startDate =
+            dashV3PeriodStart(period);
+
+        const today = dashV3Today();
+
+        try {
+            const [
+                appointmentsResponse,
+                clientsResponse,
+                barbersResponse,
+                servicesResponse
+            ] = await Promise.all([
+                window.supabaseClient
+                    .from("agendamentos")
+                    .select("*")
+                    .order("data", {
+                        ascending: true
+                    })
+                    .order("horario", {
+                        ascending: true
+                    }),
+
+                window.supabaseClient
+                    .from("clientes")
+                    .select("*"),
+
+                window.supabaseClient
+                    .from("BARBEIROS")
+                    .select("*")
+                    .order("nome", {
+                        ascending: true
+                    }),
+
+                window.supabaseClient
+                    .from("SERVIÇOS")
+                    .select("*")
+            ]);
+
+
+            if (appointmentsResponse.error) {
+                console.error(
+                    "Dashboard - erro nos agendamentos:",
+                    appointmentsResponse.error
+                );
+
+                return;
+            }
+
+            if (clientsResponse.error) {
+                console.error(
+                    "Dashboard - erro nos clientes:",
+                    clientsResponse.error
+                );
+            }
+
+            if (barbersResponse.error) {
+                console.error(
+                    "Dashboard - erro nos barbeiros:",
+                    barbersResponse.error
+                );
+            }
+
+            if (servicesResponse.error) {
+                console.error(
+                    "Dashboard - erro nos serviços:",
+                    servicesResponse.error
+                );
+            }
+
+
+            const rawAppointments =
+                appointmentsResponse.data || [];
+
+            const clients =
+                clientsResponse.data || [];
+
+            const barbers =
+                barbersResponse.data || [];
+
+            const services =
+                servicesResponse.data || [];
+
+
+            // MAPA DE CLIENTES
+            const clientMap = new Map(
+                clients.map(client => [
+                    String(client.id),
+                    client
+                ])
+            );
+
+
+            // MAPA DE BARBEIROS
+            const barberMap = new Map(
+                barbers.map(barber => [
+                    String(barber.id),
+                    barber
+                ])
+            );
+
+
+            // MAPA DE SERVIÇOS
+            const serviceMap = new Map(
+                services.map(service => [
+                    String(service.id),
+                    service
+                ])
+            );
+
+
+            // NORMALIZAR OS AGENDAMENTOS
+            const appointments =
+                rawAppointments.map(appointment => {
+                    const date = String(
+                        appointment.data || ""
+                    ).substring(0, 10);
+
+                    const time = String(
+                        appointment.horario || ""
+                    ).substring(0, 5);
+
+                    const client = clientMap.get(
+                        String(appointment.cliente_id)
+                    );
+
+                    const barber = barberMap.get(
+                        String(appointment.barbeiro_id)
+                    );
+
+                    const service = serviceMap.get(
+                        String(appointment.servico_id)
+                    );
+
+                    const price = Number(
+                        appointment.valor ??
+                        appointment.preco ??
+                        service?.["preço"] ??
+                        service?.preco ??
+                        0
+                    );
+
+                    return {
+                        id: appointment.id,
+                        date,
+                        time,
+
+                        status: dashV3NormalizeStatus(
+                            appointment.status
+                        ),
+
+                        client:
+                            client?.nome ??
+                            client?.name ??
+                            "Cliente",
+
+                        barber:
+                            barber?.nome ??
+                            barber?.name ??
+                            "Barbeiro",
+
+                        service:
+                            service?.nome ??
+                            service?.name ??
+                            "Serviço",
+
+                        barberId:
+                            appointment.barbeiro_id,
+
+                        serviceId:
+                            appointment.servico_id,
+
+                        price
+                    };
+                });
+
+
+            // ORDENAR POR DATA E HORÁRIO
+            appointments.sort((first, second) => {
+                const firstDate =
+                    `${first.date}T${first.time}`;
+
+                const secondDate =
+                    `${second.date}T${second.time}`;
+
+                return (
+                    new Date(firstDate) -
+                    new Date(secondDate)
+                );
+            });
+
+
+            // FILTRAR O PERÍODO SELECIONADO
+            const periodAppointments =
+                appointments.filter(appointment => {
+                    if (!startDate) {
+                        return true;
+                    }
+
+                    return appointment.date >= startDate;
+                });
+
+
+            // AGENDA DE HOJE
+            const todayAppointments =
+                appointments.filter(
+                    appointment =>
+                        appointment.date === today
+                );
+
+
+            // ATENDIMENTOS FINALIZADOS
+            const finalized =
+                periodAppointments.filter(
+                    appointment =>
+                        appointment.status === "finalizado"
+                );
+
+
+            // FATURAMENTO DOS ATENDIMENTOS FINALIZADOS
+            const revenue = finalized.reduce(
+                (total, appointment) => {
+                    return total +
+                        Number(appointment.price || 0);
+                },
+                0
+            );
+
+
+            // CONTADORES POR STATUS
+            const pending =
+                periodAppointments.filter(
+                    appointment =>
+                        appointment.status === "pendente" ||
+                        appointment.status === "agendado"
+                ).length;
+
+            const confirmed =
+                periodAppointments.filter(
+                    appointment =>
+                        appointment.status === "confirmado"
+                ).length;
+
+            const canceled =
+                periodAppointments.filter(
+                    appointment =>
+                        appointment.status === "cancelado" ||
+                        appointment.status === "nao_compareceu"
+                ).length;
+
+
+            // ATUALIZAR OS CARDS DO DASHBOARD
+            dashV3Set(
+                "dashv3TodayTotal",
+                todayAppointments.length
+            );
+
+            dashV3Set(
+                "dashv3TodayMeta",
+                todayAppointments.length === 1
+                    ? "1 atendimento hoje"
+                    : `${todayAppointments.length} atendimentos hoje`
+            );
+
+            dashV3Set(
+                "dashv3Finalized",
+                finalized.length
+            );
+
+            dashV3Set(
+                "dashv3FinalizedMeta",
+                startDate
+                    ? "No período selecionado"
+                    : "Todo o período"
+            );
+
+            dashV3Set(
+                "dashv3Clients",
+                clients.length
+            );
+
+            dashV3Set(
+                "dashv3Revenue",
+                dashV3Money(revenue)
+            );
+
+            dashV3Set(
+                "dashv3RevenueMeta",
+                finalized.length === 1
+                    ? "1 atendimento finalizado"
+                    : `${finalized.length} atendimentos finalizados`
+            );
+
+
+            // A continuação atualiza os demais indicadores
+            // e renderiza os próximos agendamentos.
+                        dashV3Set("dashv3Pending", pending);
+            dashV3Set("dashv3Confirmed", confirmed);
+            dashV3Set("dashv3StatusFinalized", finalized.length);
+            dashV3Set("dashv3Canceled", canceled);
+
+            // BARBEIROS ATIVOS
+            const activeBarbers = barbers.filter(
+                barber => barber.ativo !== false
+            );
+
+            dashV3Set(
+                "dashv3ActiveBarbers",
+                `${activeBarbers.length} ativos`
+            );
+
+            // PRÓXIMOS AGENDAMENTOS
+            const upcomingContainer =
+                document.getElementById("dashv3Upcoming");
+
+            if (upcomingContainer) {
+                const currentTime = new Date()
+                    .toTimeString()
+                    .substring(0, 5);
+
+                const futureToday = todayAppointments.filter(
+                    appointment => appointment.time >= currentTime
+                );
+
+                const nextAppointments = (
+                    futureToday.length
+                        ? futureToday
+                        : appointments.filter(
+                            appointment => appointment.date > today
+                        )
+                ).slice(0, 6);
+
+                if (nextAppointments.length === 0) {
+                    upcomingContainer.innerHTML = `
+                        <div class="dashv3-empty">
+                            Nenhum próximo agendamento.
+                        </div>
+                    `;
+                } else {
+                    upcomingContainer.innerHTML =
+                        nextAppointments.map(appointment => `
+                            <div class="dashv3-appointment">
+                                <div class="dashv3-time">
+                                    ${escapeHTML(appointment.time || "--:--")}
+                                </div>
+
+                                <div class="dashv3-person">
+                                    <strong>
+                                        ${escapeHTML(appointment.client)}
+                                    </strong>
+                                    <span>
+                                        ${escapeHTML(appointment.service)}
+                                    </span>
+                                </div>
+
+                                <div class="dashv3-barber">
+                                    ${escapeHTML(appointment.barber)}
+                                </div>
+
+                                <div class="dashv3-badge">
+                                    ${escapeHTML(appointment.status)}
+                                </div>
+                            </div>
+                        `).join("");
+                }
+            }
+
+            // DESEMPENHO DOS BARBEIROS
+            const barberContainer =
+                document.getElementById("dashv3Barbers");
+
+            if (barberContainer) {
+                const barberStats = activeBarbers.map(barber => {
+                    const barberAppointments =
+                        periodAppointments.filter(
+                            appointment =>
+                                String(appointment.barberId) ===
+                                    String(barber.id) &&
+                                appointment.status === "finalizado"
+                        );
+
+                    const barberRevenue =
+                        barberAppointments.reduce(
+                            (total, appointment) =>
+                                total + Number(appointment.price || 0),
+                            0
+                        );
+
+                    return {
+                        name:
+                            barber.nome ??
+                            barber.name ??
+                            "Barbeiro",
+                        appointments: barberAppointments.length,
+                        revenue: barberRevenue
+                    };
+                }).sort(
+                    (first, second) =>
+                        second.appointments - first.appointments
+                );
+
+                const maximum = Math.max(
+                    1,
+                    ...barberStats.map(item => item.appointments)
+                );
+
+                if (barberStats.length === 0) {
+                    barberContainer.innerHTML = `
+                        <div class="dashv3-empty">
+                            Nenhum barbeiro ativo.
+                        </div>
+                    `;
+                } else {
+                    barberContainer.innerHTML =
+                        barberStats.map(item => `
+                            <div class="dashv3-team-row">
+                                <div class="dashv3-avatar">
+                                    ${escapeHTML(dashV3Initials(item.name))}
+                                </div>
+
+                                <div class="dashv3-row-info">
+                                    <strong>
+                                        ${escapeHTML(item.name)}
+                                    </strong>
+
+                                    <span>
+                                        ${item.appointments} atendimentos
+                                        · ${dashV3Money(item.revenue)}
+                                    </span>
+
+                                    <div class="dashv3-bar">
+                                        <i style="width:${Math.round(
+                                            item.appointments / maximum * 100
+                                        )}%;"></i>
+                                    </div>
+                                </div>
+
+                                <span class="dashv3-count">
+                                    ${item.appointments}
+                                </span>
+                            </div>
+                        `).join("");
+                }
+            }
+
+            // SERVIÇOS MAIS PROCURADOS
+            const serviceContainer =
+                document.getElementById("dashv3Services");
+
+            if (serviceContainer) {
+                const serviceStats = services
+                    .map(service => {
+                        const count = periodAppointments.filter(
+                            appointment =>
+                                String(appointment.serviceId) ===
+                                String(service.id)
+                        ).length;
+
+                        return {
+                            name:
+                                service.nome ??
+                                service.name ??
+                                "Serviço",
+                            count
+                        };
+                    })
+                    .filter(item => item.count > 0)
+                    .sort(
+                        (first, second) =>
+                            second.count - first.count
+                    )
+                    .slice(0, 5);
+
+                dashV3Set(
+                    "dashv3ServiceCount",
+                    `${services.filter(
+                        service => service.ativo !== false
+                    ).length} ativos`
+                );
+
+                if (serviceStats.length === 0) {
+                    serviceContainer.innerHTML = `
+                        <div class="dashv3-empty">
+                            Ainda não existem atendimentos no período.
+                        </div>
+                    `;
+                } else {
+                    const maxService = Math.max(
+                        1,
+                        ...serviceStats.map(item => item.count)
+                    );
+
+                    serviceContainer.innerHTML =
+                        serviceStats.map(item => `
+                            <div class="dashv3-service-row">
+                                <div class="dashv3-row-info">
+                                    <strong>
+                                        ${escapeHTML(item.name)}
+                                    </strong>
+
+                                    <span>
+                                        ${item.count}
+                                        ${item.count === 1
+                                            ? "atendimento"
+                                            : "atendimentos"}
+                                    </span>
+                                </div>
+
+                                <div class="dashv3-bar">
+                                    <i style="width:${Math.round(
+                                        item.count / maxService * 100
+                                    )}%;"></i>
+                                </div>
+
+                                <span class="dashv3-count">
+                                    ${item.count}
+                                </span>
+                            </div>
+                        `).join("");
+                }
+            }
+        } catch (error) {
+            console.error("Dashboard V3:", error);
+        }
+    }
+
+    function dashV3Init() {
+        const periodSelect =
+            document.getElementById("dashv3Period");
+
+        if (periodSelect) {
+            periodSelect.addEventListener(
+                "change",
+                dashV3Load
+            );
+        }
+
+        const agendaButton =
+            document.getElementById("dashv3OpenAgenda");
+
+        if (agendaButton) {
+            agendaButton.addEventListener("click", () => {
+                const agendaNav = document.querySelector(
+                    '[data-section="agenda"]'
+                );
+
+                if (agendaNav) {
+                    agendaNav.click();
+                }
+            });
+        }
+
+        dashV3Load();
+    }
+
+    if (document.readyState === "loading") {
+        document.addEventListener(
+            "DOMContentLoaded",
+            dashV3Init
+        );
+    } else {
+        dashV3Init();
+    }
+})();
+/* =========================================================
+   CONFIGURAÇÕES — SWITCHES VISUAIS PREMIUM
+   ========================================================= */
+
+(function initSiteSettingsSwitches() {
+    function syncSwitch(checkbox) {
+        if (!checkbox) return;
+
+        const label = checkbox.closest(".site-settings-check");
+        if (!label) return;
+
+        const state = label.querySelector(
+            ".site-settings-switch-state"
+        );
+
+        if (state) {
+            state.textContent = checkbox.checked ? "ON" : "OFF";
+        }
+
+        label.classList.toggle("is-on", checkbox.checked);
+    }
+
+    const ids = [
+        "siteMostrarServicos",
+        "siteMostrarPortfolio",
+        "siteMostrarEquipe",
+        "siteMostrarAvaliacoes",
+        "siteMostrarInstagram",
+        "siteMostrarLocalizacao",
+        "siteMostrarDireitos"
+    ];
+
+    ids.forEach(id => {
+        const checkbox = document.getElementById(id);
+        if (!checkbox) return;
+
+        syncSwitch(checkbox);
+
+        checkbox.addEventListener("change", () => {
+            syncSwitch(checkbox);
+
+            if (typeof markSettingsDirty === "function") {
+                markSettingsDirty();
+            }
+        });
+    });
+
+    const whatsappSwitch =
+        document.getElementById("whatsappAfterBookingSwitch");
+
+    const whatsappInput =
+        document.getElementById("whatsappAfterBooking");
+
+    if (whatsappSwitch && whatsappInput) {
+        const syncWhatsapp = () => {
+            whatsappSwitch.setAttribute(
+                "aria-pressed",
+                whatsappInput.checked ? "true" : "false"
+            );
+        };
+
+        syncWhatsapp();
+
+        whatsappInput.addEventListener(
+            "change",
+            syncWhatsapp
+        );
+    }
+})();
+
+
+/* =========================================================
+   CONFIGURAÇÕES — SELEÇÃO DE IMAGENS
+   Portfólio (até 4), Banner e Logo.
+   Prévia local; não faz upload para o Supabase.
+   ========================================================= */
+
+(function initSiteImagePickers() {
+    const MAX_FILE_BYTES = 5 * 1024 * 1024;
+
+    const portfolioFiles = new Map();
+    const imageObjectUrls = new Map();
+
+    function getFileSizeLabel(bytes) {
+        return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+    }
+
+    function setupPicker({
+        buttonId,
+        inputId,
+        previewId,
+        emptyId,
+        removeId,
+        statusId,
+        label,
+        maxBytes,
+        allowedTypes
+    }) {
+        const button = document.getElementById(buttonId);
+        const input = document.getElementById(inputId);
+        const preview = document.getElementById(previewId);
+        const empty = document.getElementById(emptyId);
+        const remove = document.getElementById(removeId);
+        const status = document.getElementById(statusId);
+
+        if (!button || !input || !preview || !empty || !remove) {
+            return;
+        }
+
+        const stateKey = inputId;
+
+        function clearObjectUrl() {
+            const current = imageObjectUrls.get(stateKey);
+
+            if (current) {
+                URL.revokeObjectURL(current);
+                imageObjectUrls.delete(stateKey);
+            }
+        }
+
+        function clearPreview(markDirty = true) {
+            clearObjectUrl();
+
+            preview.removeAttribute("src");
+            preview.hidden = true;
+            empty.hidden = false;
+            remove.hidden = true;
+            input.value = "";
+
+            if (status) {
+                status.textContent =
+                    `Escolha ${label.toLowerCase()} nos arquivos do computador ou celular.`;
+            }
+
+            if (
+                markDirty &&
+                typeof markSettingsDirty === "function"
+            ) {
+                markSettingsDirty();
+            }
+        }
+
+        function showFile(file) {
+            if (!file) return;
+
+            if (!allowedTypes.includes(file.type)) {
+                alert(
+                    `Formato inválido. Selecione ${
+                        allowedTypes
+                            .map(type =>
+                                type.replace("image/", "").toUpperCase()
+                            )
+                            .join(" ou ")
+                    }.`
+                );
+
+                input.value = "";
+                return;
+            }
+
+            if (file.size > maxBytes) {
+                alert(
+                    `${label} excede o limite recomendado de ${getFileSizeLabel(maxBytes)}.`
+                );
+
+                input.value = "";
+                return;
+            }
+
+            clearObjectUrl();
+
+            const objectUrl = URL.createObjectURL(file);
+
+            imageObjectUrls.set(stateKey, objectUrl);
+
+            preview.src = objectUrl;
+            preview.hidden = false;
+            empty.hidden = true;
+            remove.hidden = false;
+
+            if (status) {
+                status.textContent =
+                    `${file.name} • ${getFileSizeLabel(file.size)}`;
+            }
+
+            if (typeof markSettingsDirty === "function") {
+                markSettingsDirty();
+            }
+
+            if (inputId.startsWith("sitePortfolioFile")) {
+                portfolioFiles.set(inputId, file);
+                window.__sitePortfolioFiles = portfolioFiles;
+            } else {
+                window.__siteImageFiles =
+                    window.__siteImageFiles || {};
+
+                window.__siteImageFiles[inputId] = file;
+            }
+        }
+
+        button.addEventListener("click", event => {
+            event.preventDefault();
+            input.click();
+        });
+
+        input.addEventListener("change", () => {
+            showFile(input.files && input.files[0]);
+        });
+
+        remove.addEventListener("click", event => {
+            event.preventDefault();
+
+            if (inputId.startsWith("sitePortfolioFile")) {
+                portfolioFiles.delete(inputId);
+            }
+
+            if (window.__siteImageFiles) {
+                delete window.__siteImageFiles[inputId];
+            }
+
+            clearPreview(true);
+        });
+    }
+
+    // Quatro imagens de portfólio.
+    for (let i = 1; i <= 4; i++) {
+        setupPicker({
+            buttonId: `sitePortfolioUploadButton${i}`,
+            inputId: `sitePortfolioFile${i}`,
+            previewId: `sitePortfolioPreview${i}`,
+            emptyId: `sitePortfolioEmpty${i}`,
+            removeId: `sitePortfolioRemoveButton${i}`,
+            label: `a imagem do portfólio ${i}`,
+            maxBytes: MAX_FILE_BYTES,
+            allowedTypes: ["image/jpeg", "image/png"]
+        });
+    }
+
+    // Imagem principal do site.
+    setupPicker({
+        buttonId: "siteBannerUploadButton",
+        inputId: "siteBannerFile",
+        previewId: "siteBannerPreview",
+        emptyId: "siteBannerEmpty",
+        removeId: "siteBannerRemoveButton",
+        statusId: "siteBannerUploadStatus",
+        label: "a imagem principal",
+        maxBytes: MAX_FILE_BYTES,
+        allowedTypes: ["image/jpeg", "image/png"]
+    });
+
+    // Logo da barbearia.
+    setupPicker({
+        buttonId: "siteLogoUploadButton",
+        inputId: "siteLogoFile",
+        previewId: "siteLogoPreview",
+        emptyId: "siteLogoEmpty",
+        removeId: "siteLogoRemoveButton",
+        statusId: "siteLogoUploadStatus",
+        label: "a logo",
+        maxBytes: 2 * 1024 * 1024,
+        allowedTypes: [
+            "image/jpeg",
+            "image/png",
+            "image/svg+xml"
+        ]
+    });
+})();
+
+
+/* =========================================================
+   CONFIGURAÇÕES DO SITE — INTEGRAÇÃO COM SUPABASE
+   Lê e grava a tabela configuracoes_site e envia as
+   imagens (logo, banner, portfólio) para o bucket
+   "site-imagens". O site público (index.html) lê esses
+   dados por site-config.js.
+   ========================================================= */
+
+(function initSiteContentSettings() {
+    "use strict";
+
+    const TABLE = "configuracoes_site";
+    const BUCKET = "site-imagens";
+    const PADRAO = window.SITE_PADRAO || {};
+
+    // id do campo no painel → coluna na tabela
+    const TEXT_FIELDS = {
+        barbershopName: "nome_barbearia",
+        siteTextoIdentificacao: "texto_identificacao",
+        siteTituloPrincipal: "titulo_principal",
+        siteDescricaoPrincipal: "descricao_principal",
+        siteTextoBotaoPrincipal: "texto_botao_principal",
+        siteLinkBotaoPrincipal: "link_botao_principal",
+        siteTextoBotaoSecundario: "texto_botao_secundario",
+        siteLinkBotaoSecundario: "link_botao_secundario",
+        siteTextoBotaoCabecalho: "texto_botao_cabecalho",
+        siteTituloPagina: "titulo_pagina",
+        siteDescricaoSeo: "descricao_curta",
+
+        siteEstatistica1Numero: "estatistica_1_numero",
+        siteEstatistica1Texto: "estatistica_1_texto",
+        siteEstatistica2Numero: "estatistica_2_numero",
+        siteEstatistica2Texto: "estatistica_2_texto",
+        siteEstatistica3Numero: "estatistica_3_numero",
+        siteEstatistica3Texto: "estatistica_3_texto",
+
+        siteServicosTitulo: "servicos_titulo",
+        siteServicosDescricao: "servicos_descricao",
+        sitePortfolioTitulo: "portfolio_titulo",
+        sitePortfolioDescricao: "portfolio_descricao",
+        siteEquipeTitulo: "equipe_titulo",
+        siteEquipeDescricao: "equipe_descricao",
+
+        siteAvaliacaoTitulo: "avaliacoes_titulo",
+        siteAvaliacaoDescricao: "avaliacoes_descricao",
+        siteTextoBotaoAvaliacao: "texto_botao_avaliacao",
+        siteTextoBotaoGoogle: "texto_botao_google",
+        siteLinkAvaliacaoGoogle: "link_avaliacao_google",
+
+        siteCorPrincipal: "cor_principal",
+        siteCorFundo: "cor_fundo",
+        siteCorDestaque: "cor_destaque",
+        siteFonte: "fonte",
+
+        siteEndereco: "endereco",
+        siteCidade: "cidade",
+        siteEstado: "estado",
+        siteCep: "cep",
+        siteTelefone: "telefone",
+        siteGoogleMapsLink: "google_maps_link",
+
+        siteInstagram: "instagram",
+        siteInstagramDescricao: "instagram_descricao",
+        siteInstagramLink: "instagram_link",
+        siteTextoBotaoInstagram: "texto_botao_instagram",
+
+        siteTextoRodape: "texto_rodape",
+        siteTextoDireitosAutorais: "texto_direitos_autorais"
+    };
+
+    const LINK_FIELDS = {
+        siteLinkBotaoPrincipal: "Destino do botão principal",
+        siteLinkBotaoSecundario: "Destino do botão secundário",
+        siteLinkAvaliacaoGoogle: "Link para avaliação no Google",
+        siteGoogleMapsLink: "Link do Google Maps",
+        siteInstagramLink: "Link do Instagram"
+    };
+
+    const COLOR_FIELDS = {
+        siteCorPrincipal: "Cor principal",
+        siteCorFundo: "Cor de fundo",
+        siteCorDestaque: "Cor de destaque"
+    };
+
+    const CHECK_FIELDS = {
+        siteMostrarServicos: "mostrar_servicos",
+        siteMostrarPortfolio: "mostrar_portfolio",
+        siteMostrarEquipe: "mostrar_equipe",
+        siteMostrarAvaliacoes: "mostrar_avaliacoes",
+        siteMostrarInstagram: "mostrar_instagram",
+        siteMostrarLocalizacao: "mostrar_localizacao",
+        siteMostrarDireitos: "mostrar_direitos"
+    };
+
+    // Imagens: id do <input type=file> → configuração do slot
+    const IMAGE_SLOTS = [
+        { inputId: "siteLogoFile", column: "logo_url", folder: "logo", prefix: "siteLogo", label: "Logo" },
+        { inputId: "siteBannerFile", column: "banner_url", folder: "banner", prefix: "siteBanner", label: "Imagem principal" },
+        { inputId: "sitePortfolioFile1", portfolio: 0, folder: "portfolio", prefix: "sitePortfolio", n: 1, label: "Portfólio 1" },
+        { inputId: "sitePortfolioFile2", portfolio: 1, folder: "portfolio", prefix: "sitePortfolio", n: 2, label: "Portfólio 2" },
+        { inputId: "sitePortfolioFile3", portfolio: 2, folder: "portfolio", prefix: "sitePortfolio", n: 3, label: "Portfólio 3" },
+        { inputId: "sitePortfolioFile4", portfolio: 3, folder: "portfolio", prefix: "sitePortfolio", n: 4, label: "Portfólio 4" }
+    ];
+
+    let siteRowId = null;
+
+    // URL salva de cada imagem (null = sem imagem)
+    const savedImageUrls = {};
+
+    function $(id) {
+        return document.getElementById(id);
+    }
+
+    function clean(value) {
+        return String(value ?? "").trim();
+    }
+
+    function markDirty() {
+        if (typeof markSettingsDirty === "function") markSettingsDirty();
+    }
+
+    function markClean() {
+        if (typeof markSettingsClean === "function") markSettingsClean();
+    }
+
+    function isValidLink(value) {
+        if (!value) return true;
+        if (/^#[\w-]*$/.test(value)) return true;
+        if (/^[\w-]+\.html(#[\w-]+)?$/.test(value)) return true;
+
+        try {
+            const url = new URL(value);
+            return url.protocol === "https:" || url.protocol === "http:";
+        } catch {
+            return false;
+        }
+    }
+
+    function parseJSON(value, fallback) {
+        if (value && typeof value === "object") return value;
+        if (typeof value !== "string") return fallback;
+
+        try {
+            return JSON.parse(value);
+        } catch {
+            return fallback;
+        }
+    }
+
+    // ------------------------------------------
+    // PRÉ-VISUALIZAÇÃO DE IMAGEM JÁ SALVA
+    // ------------------------------------------
+
+    function slotIds(slot) {
+        const n = slot.n || "";
+
+        return {
+            preview: $(`${slot.prefix}Preview${n}`),
+            empty: $(`${slot.prefix}Empty${n}`),
+            remove: $(`${slot.prefix}RemoveButton${n}`),
+            status: $(`${slot.prefix}UploadStatus${n}`)
+        };
+    }
+
+    function showSavedImage(slot, url) {
+        const el = slotIds(slot);
+
+        savedImageUrls[slot.inputId] = url || null;
+
+        if (!el.preview || !el.empty || !el.remove) return;
+
+        if (url) {
+            el.preview.src = url;
+            el.preview.hidden = false;
+            el.empty.hidden = true;
+            el.remove.hidden = false;
+
+            if (el.status) el.status.textContent = "Imagem atual do site.";
+        } else {
+            el.preview.removeAttribute("src");
+            el.preview.hidden = true;
+            el.empty.hidden = false;
+            el.remove.hidden = true;
+        }
+    }
+
+    function pendingFile(slot) {
+        if (slot.portfolio !== undefined) {
+            const map = window.__sitePortfolioFiles;
+            return map && typeof map.get === "function" ? map.get(slot.inputId) : null;
+        }
+
+        return window.__siteImageFiles ? window.__siteImageFiles[slot.inputId] : null;
+    }
+
+    function clearPendingFile(slot) {
+        if (slot.portfolio !== undefined) {
+            const map = window.__sitePortfolioFiles;
+            if (map && typeof map.delete === "function") map.delete(slot.inputId);
+        } else if (window.__siteImageFiles) {
+            delete window.__siteImageFiles[slot.inputId];
+        }
+    }
+
+    // ------------------------------------------
+    // PREENCHER O FORMULÁRIO
+    // ------------------------------------------
+
+    function fillForm(row) {
+        row = row || {};
+
+        Object.entries(TEXT_FIELDS).forEach(([id, column]) => {
+            const el = $(id);
+            if (!el) return;
+
+            const value = row[column];
+            el.value = clean(value) || clean(PADRAO[column]);
+        });
+
+        Object.entries(CHECK_FIELDS).forEach(([id, column]) => {
+            const el = $(id);
+            if (!el) return;
+
+            el.checked = typeof row[column] === "boolean"
+                ? row[column]
+                : PADRAO[column] !== false;
+
+            // Atualiza o visual ON/OFF do switch.
+            el.dispatchEvent(new Event("change"));
+        });
+
+        // Portfólio
+        const savedPortfolio = parseJSON(row.portfolio_itens, null);
+        const portfolio = Array.isArray(savedPortfolio)
+            ? savedPortfolio
+            : (PADRAO.portfolio_itens || []);
+
+        for (let i = 0; i < 4; i++) {
+            const item = portfolio[i] || {};
+            const legenda = $(`sitePortfolioLegenda${i + 1}`);
+
+            if (legenda) legenda.value = clean(item.legenda);
+        }
+
+        IMAGE_SLOTS.forEach(slot => {
+            const url = slot.portfolio !== undefined
+                ? (portfolio[slot.portfolio] || {}).url
+                : row[slot.column];
+
+            showSavedImage(slot, clean(url) || null);
+        });
+
+        // Avaliações
+        const savedReviews = parseJSON(row.avaliacoes, null);
+        const reviews = Array.isArray(savedReviews)
+            ? savedReviews
+            : (PADRAO.avaliacoes || []);
+
+        for (let i = 0; i < 5; i++) {
+            const review = reviews[i] || {};
+            const stars = $(`siteAvaliacao${i + 1}Estrelas`);
+            const nome = $(`siteAvaliacao${i + 1}Nome`);
+            const texto = $(`siteAvaliacao${i + 1}Texto`);
+
+            if (stars) {
+                const n = Math.min(5, Math.max(1, Number(review.estrelas) || 5));
+                stars.value = String(n);
+            }
+
+            if (nome) nome.value = clean(review.nome);
+            if (texto) texto.value = clean(review.texto);
+        }
+
+        updateGoogleTestButton();
+        markClean();
+    }
+
+    async function loadSiteSettings() {
+        if (!window.supabaseClient) return;
+
+        const { data, error } = await window.supabaseClient
+            .from(TABLE)
+            .select("*")
+            .order("id", { ascending: true })
+            .limit(1)
+            .maybeSingle();
+
+        if (error) {
+            console.error("Erro ao carregar configurações do site:", error);
+            return;
+        }
+
+        siteRowId = data ? data.id : null;
+        fillForm(data);
+    }
+
+    // ------------------------------------------
+    // VALIDAR E MONTAR OS DADOS
+    // ------------------------------------------
+
+    function validate() {
+        for (const [id, label] of Object.entries(LINK_FIELDS)) {
+            const el = $(id);
+            const value = el ? clean(el.value) : "";
+
+            if (!isValidLink(value)) {
+                alert(`${label}: informe um link válido (https://...), uma página (agendar.html) ou uma seção (#servicos).`);
+                if (el) el.focus();
+                return false;
+            }
+        }
+
+        for (const [id, label] of Object.entries(COLOR_FIELDS)) {
+            const el = $(id);
+            const value = el ? clean(el.value) : "";
+
+            if (value && !/^#([0-9a-f]{3}|[0-9a-f]{6})$/i.test(value)) {
+                alert(`${label}: use o formato hexadecimal, por exemplo #C9A45C.`);
+                if (el) el.focus();
+                return false;
+            }
+        }
+
+        const fonte = $("siteFonte");
+
+        if (fonte && clean(fonte.value) && !/^[A-Za-z0-9 ]{2,40}$/.test(clean(fonte.value))) {
+            alert("Fonte: use apenas o nome da fonte do Google Fonts, por exemplo Inter ou Poppins.");
+            fonte.focus();
+            return false;
+        }
+
+        return true;
+    }
+
+    function buildPayload(imageUrls) {
+        const payload = {};
+
+        Object.entries(TEXT_FIELDS).forEach(([id, column]) => {
+            const el = $(id);
+            if (!el) return;
+
+            payload[column] = clean(el.value) || null;
+        });
+
+        Object.entries(CHECK_FIELDS).forEach(([id, column]) => {
+            const el = $(id);
+            if (el) payload[column] = Boolean(el.checked);
+        });
+
+        IMAGE_SLOTS.forEach(slot => {
+            if (slot.column) payload[slot.column] = imageUrls[slot.inputId] || null;
+        });
+
+        payload.portfolio_itens = [1, 2, 3, 4].map(n => ({
+            url: imageUrls[`sitePortfolioFile${n}`] || null,
+            legenda: clean(($(`sitePortfolioLegenda${n}`) || {}).value) || null
+        }));
+
+        payload.avaliacoes = [1, 2, 3, 4, 5]
+            .map(n => ({
+                estrelas: Number(($(`siteAvaliacao${n}Estrelas`) || {}).value) || 5,
+                nome: clean(($(`siteAvaliacao${n}Nome`) || {}).value),
+                texto: clean(($(`siteAvaliacao${n}Texto`) || {}).value)
+            }))
+            .filter(review => review.nome || review.texto);
+
+        return payload;
+    }
+
+    // ------------------------------------------
+    // UPLOAD DAS IMAGENS
+    // ------------------------------------------
+
+    async function uploadImage(slot, file) {
+        const ext = (file.name.split(".").pop() || "png")
+            .toLowerCase()
+            .replace(/[^a-z0-9]/g, "") || "png";
+
+        const path =
+            `${slot.folder}/${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
+
+        const { error } = await window.supabaseClient
+            .storage
+            .from(BUCKET)
+            .upload(path, file, {
+                cacheControl: "3600",
+                contentType: file.type,
+                upsert: false
+            });
+
+        if (error) throw Object.assign(error, { slotLabel: slot.label });
+
+        const { data } = window.supabaseClient
+            .storage
+            .from(BUCKET)
+            .getPublicUrl(path);
+
+        return data.publicUrl;
+    }
+
+    function explainError(error) {
+        const message = String((error && error.message) || error || "");
+        const lower = message.toLowerCase();
+
+        if (lower.includes("bucket not found")) {
+            return "O armazenamento de imagens ainda não foi criado. Rode o arquivo sql/configuracoes_site.sql no Supabase.";
+        }
+
+        if (lower.includes("column") || (error && error.code === "PGRST204")) {
+            return "A tabela configuracoes_site ainda não tem todas as colunas. Rode o arquivo sql/configuracoes_site.sql no Supabase.";
+        }
+
+        if (lower.includes("row-level security") || lower.includes("unauthorized") || lower.includes("permission")) {
+            return "Sem permissão para salvar. Entre novamente com a conta de administrador.";
+        }
+
+        if (lower.includes("failed to fetch") || lower.includes("network")) {
+            return "Sem conexão com o servidor. Verifique a internet e tente de novo.";
+        }
+
+        return message || "Erro desconhecido.";
+    }
+
+    // ------------------------------------------
+    // SALVAR
+    // ------------------------------------------
+
+    async function saveSiteSettings() {
+        if (!window.supabaseClient) {
+            alert("Supabase não foi carregado. Atualize a página.");
+            return false;
+        }
+
+        if (!validate()) return false;
+
+        // 1) Enviar imagens novas
+        const imageUrls = { ...savedImageUrls };
+        const uploaded = [];
+
+        try {
+            for (const slot of IMAGE_SLOTS) {
+                const file = pendingFile(slot);
+
+                if (file) {
+                    imageUrls[slot.inputId] = await uploadImage(slot, file);
+                    uploaded.push(slot);
+                }
+            }
+        } catch (error) {
+            console.error("Erro ao enviar imagem:", error);
+            alert(`Não foi possível enviar a imagem (${error.slotLabel || "imagem"}): ${explainError(error)}`);
+            return false;
+        }
+
+        // 2) Gravar a linha de configuração
+        const payload = buildPayload(imageUrls);
+
+        const query = siteRowId !== null
+            ? window.supabaseClient.from(TABLE).update(payload).eq("id", siteRowId).select("id")
+            : window.supabaseClient.from(TABLE).insert(payload).select("id");
+
+        const { data, error } = await query;
+
+        if (error) {
+            console.error("Erro ao salvar configurações do site:", error);
+            alert(`Não foi possível salvar as configurações do site: ${explainError(error)}`);
+            return false;
+        }
+
+        // Update bloqueado pelo RLS volta sem linhas, sem erro.
+        if (!data || data.length === 0) {
+            alert("As configurações não foram gravadas: sem permissão. Entre novamente com a conta de administrador.");
+            return false;
+        }
+
+        siteRowId = data[0].id;
+
+        // 3) Sucesso: imagens enviadas viram as "imagens atuais"
+        uploaded.forEach(slot => clearPendingFile(slot));
+
+        IMAGE_SLOTS.forEach(slot => {
+            savedImageUrls[slot.inputId] = imageUrls[slot.inputId] || null;
+        });
+
+        uploaded.forEach(slot => {
+            const el = slotIds(slot);
+            if (el.status) el.status.textContent = "Imagem atual do site.";
+        });
+
+        return true;
+    }
+
+    // ------------------------------------------
+    // LINK DE AVALIAÇÃO — BOTÃO DE TESTE
+    // ------------------------------------------
+
+    function updateGoogleTestButton() {
+        const input = $("siteLinkAvaliacaoGoogle");
+        const button = $("testGoogleReviewLink");
+
+        if (!input || !button) return;
+
+        const value = clean(input.value);
+        button.disabled = !(value && /^https?:/.test(value) && isValidLink(value));
+    }
+
+    // ------------------------------------------
+    // EVENTOS
+    // ------------------------------------------
+
+    function bindEvents() {
+        const ids = [
+            ...Object.keys(TEXT_FIELDS),
+            "sitePortfolioLegenda1",
+            "sitePortfolioLegenda2",
+            "sitePortfolioLegenda3",
+            "sitePortfolioLegenda4"
+        ];
+
+        for (let n = 1; n <= 5; n++) {
+            ids.push(`siteAvaliacao${n}Estrelas`, `siteAvaliacao${n}Nome`, `siteAvaliacao${n}Texto`);
+        }
+
+        ids.forEach(id => {
+            const el = $(id);
+            if (!el) return;
+
+            el.addEventListener("input", markDirty);
+            el.addEventListener("change", markDirty);
+        });
+
+        // Remover imagem: deixa de usar a imagem salva.
+        IMAGE_SLOTS.forEach(slot => {
+            const remove = slotIds(slot).remove;
+
+            if (remove) {
+                remove.addEventListener("click", () => {
+                    savedImageUrls[slot.inputId] = null;
+                });
+            }
+        });
+
+        const googleInput = $("siteLinkAvaliacaoGoogle");
+        const googleButton = $("testGoogleReviewLink");
+
+        if (googleInput) googleInput.addEventListener("input", updateGoogleTestButton);
+
+        if (googleButton) {
+            googleButton.addEventListener("click", () => {
+                const value = clean(googleInput && googleInput.value);
+
+                if (/^https?:/.test(value) && isValidLink(value)) {
+                    window.open(value, "_blank", "noopener");
+                }
+            });
+        }
+    }
+
+    window.saveSiteSettings = saveSiteSettings;
+
+    function init() {
+        bindEvents();
+        loadSiteSettings();
+    }
+
+    if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", init);
+    } else {
+        init();
+    }
+})();

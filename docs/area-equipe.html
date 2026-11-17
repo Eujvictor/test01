@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Área da Equipe | Navalha de Ouro</title>
+
+    <link
+        rel="stylesheet"
+        href="area-equipe.css"
+    >
+</head>
+
+<body>
+
+    <!-- ==========================================
+         ÁREA PRINCIPAL
+         ========================================== -->
+
+    <main class="login-page">
+
+        <section class="login-card">
+
+            <!-- LOGO -->
+
+            <div class="brand">
+
+                <div class="brand-symbol">
+                    NO
+                </div>
+
+                <div class="brand-name">
+                    NAVALHA DE OURO
+                </div>
+
+            </div>
+
+
+            <!-- TÍTULO -->
+
+            <div class="login-header">
+
+                <span class="eyebrow">
+                    ÁREA RESTRITA
+                </span>
+
+                <h1>
+                    Área da equipe
+                </h1>
+
+                <p>
+                    Entre para acessar sua agenda
+                    e as ferramentas da barbearia.
+                </p>
+
+            </div>
+
+
+            <!-- FORMULÁRIO -->
+
+            <form
+                id="loginForm"
+                class="login-form"
+            >
+
+                <!-- EMAIL -->
+
+                <div class="form-group">
+
+                    <label for="email">
+                        E-mail
+                    </label>
+
+                    <input
+                        type="email"
+                        id="email"
+                        name="email"
+                        placeholder="seu@email.com"
+                        autocomplete="email"
+                        required
+                    >
+
+                </div>
+
+
+                <!-- SENHA -->
+
+                <div class="form-group">
+
+                    <div class="password-label">
+
+                        <label for="password">
+                            Senha
+                        </label>
+
+                        <button
+                            type="button"
+                            id="togglePassword"
+                            class="show-password"
+                        >
+                            Mostrar
+                        </button>
+
+                    </div>
+
+                    <div class="password-input">
+
+                        <input
+                            type="password"
+                            id="password"
+                            name="password"
+                            placeholder="Digite sua senha"
+                            autocomplete="current-password"
+                            required
+                        >
+
+                    </div>
+
+                </div>
+
+
+                <!-- MENSAGEM DE ERRO -->
+
+                <div
+                    id="loginMessage"
+                    class="login-message"
+                    aria-live="polite"
+                ></div>
+
+
+                <!-- BOTÃO -->
+
+                <button
+                    type="submit"
+                    class="login-button"
+                >
+                    Entrar
+                </button>
+
+            </form>
+
+
+            <!-- RECUPERAÇÃO -->
+
+            <button
+                type="button"
+                id="forgotPassword"
+                class="forgot-password"
+            >
+                Esqueci minha senha
+            </button>
+
+
+            <!-- INFORMAÇÃO -->
+
+            <div class="security-info">
+
+                <span class="security-icon">
+                    ✓
+                </span>
+
+                <p>
+                    Área exclusiva para
+                    profissionais da equipe.
+                </p>
+
+            </div>
+
+
+            <!-- VOLTAR -->
+
+            <a
+                href="index.html"
+                class="back-link"
+            >
+                ← Voltar para o site
+            </a>
+
+        </section>
+
+    </main>
+
+
+        <!-- ==========================================
+         JAVASCRIPT
+         ========================================== -->
+
+    <!-- SUPABASE -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <!-- CONFIGURAÇÃO DA SUPABASE -->
+    <script src="supabese.js"></script>
+
+    <!-- ÁREA DA EQUIPE -->
+    <script src="area-equipe.js"></script>
+
+</body>
+
+</html>
