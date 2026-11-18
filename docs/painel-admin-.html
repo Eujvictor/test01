@@ -7,7 +7,14 @@
 
     <title>Painel Administrativo | Navalha de Ouro</title>
 
+    <meta name="theme-color" content="#101010">
+
+    <!-- Tema claro/escuro: aplicado antes da pintura para não piscar. -->
+    <script src="painel-tema.js"></script>
+
     <link rel="stylesheet" href="admin-novo.css">
+    <link rel="stylesheet" href="painel-tema-claro.css">
+    <link rel="stylesheet" href="painel-tema.css">
 </head>
 
 <body>
@@ -96,6 +103,17 @@
 
         </div>
 
+        <div class="sidebar-rodape">
+            <button type="button" class="tema-alternar" data-alternar-tema aria-pressed="false" aria-label="Usar modo claro" title="Usar modo claro">
+                <span class="tema-alternar__trilho" aria-hidden="true">
+                    <svg class="tema-icone tema-icone--lua" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.5 14.2A8.5 8.5 0 1 1 9.8 3.5a6.8 6.8 0 0 0 10.7 10.7Z"/></svg>
+                    <svg class="tema-icone tema-icone--sol" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+                    <span class="tema-alternar__botao"></span>
+                </span>
+                <span class="tema-alternar__texto" data-tema-rotulo>Modo escuro</span>
+            </button>
+        </div>
+
         <button class="logout-button" id="logoutButton">
                  ↪ Sair
         </button>
@@ -114,6 +132,14 @@
             </button>
 
             <strong>NAVALHA DE OURO</strong>
+
+            <button type="button" class="tema-alternar tema-alternar--compacto" data-alternar-tema aria-pressed="false" aria-label="Usar modo claro" title="Usar modo claro">
+                <span class="tema-alternar__trilho" aria-hidden="true">
+                    <svg class="tema-icone tema-icone--lua" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.5 14.2A8.5 8.5 0 1 1 9.8 3.5a6.8 6.8 0 0 0 10.7 10.7Z"/></svg>
+                    <svg class="tema-icone tema-icone--sol" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+                    <span class="tema-alternar__botao"></span>
+                </span>
+            </button>
 
             <div class="mobile-avatar">
                 AD
@@ -1012,16 +1038,17 @@
             </p>
         </div>
 
-        <div class="horarios-save-actions" aria-label="Salvar configurações de horários">
-            <div class="horarios-save-status is-saved" id="horariosSaveStatus" role="status" aria-live="polite">
-                <span class="horarios-save-status-dot" aria-hidden="true"></span>
+        <div class="horarios-save-actions painel-salvar" role="group" aria-label="Salvar horários e dias">
+            <div class="horarios-save-status painel-salvar__status is-saved" id="horariosSaveStatus" role="status" aria-live="polite">
+                <span class="horarios-save-status-dot painel-salvar__luz" aria-hidden="true"></span>
                 <span class="horarios-save-status-icon" aria-hidden="true">✓</span>
                 <span id="horariosSaveStatusText">Tudo salvo</span>
             </div>
 
-            <button type="button" class="primary-button horarios-save-button" id="saveScheduleSettings">
-                <span class="horarios-save-button-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4h11l3 3v13H5z"/><path d="M8 4v6h8V4"/><path d="M9 20v-6h6v6"/></svg></span>
-                <span>SALVAR CONFIGURAÇÕES</span>
+            <button type="button" class="primary-button horarios-save-button painel-salvar__botao" id="saveScheduleSettings">
+                <span class="horarios-save-button-icon painel-salvar__icone" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4h11l3 3v13H5z"/><path d="M8 4v6h8V4"/><path d="M9 20v-6h6v6"/></svg></span>
+                <span class="painel-salvar__giro" aria-hidden="true"></span>
+                <span data-salvar-rotulo>Salvar alterações</span>
             </button>
         </div>
 
@@ -1449,14 +1476,18 @@
              ========================= -->
 
         <section id="configuracoes" class="page-section">
-<div class="page-header settings-page-header"><div><span class="eyebrow">GESTÃO DO SITE</span><h1>Configurações da Barbearia</h1><p>Gerencie as informações e o conteúdo do site da barbearia.</p></div><div class="settings-top-actions"></div></div>
+<div class="page-header settings-page-header"><div><span class="eyebrow">GESTÃO DO SITE</span><h1>Configurações da Barbearia</h1><p>Gerencie as informações e o conteúdo do site da barbearia.</p></div>
+<div class="settings-top-actions painel-salvar" role="group" aria-label="Salvar configurações do site">
+  <div id="settingsSaveStatus" class="settings-save-status painel-salvar__status" role="status" aria-live="polite"><span id="settingsSaveLight" class="settings-save-light painel-salvar__luz" aria-hidden="true"></span><span id="settingsSaveStatusText">Tudo salvo</span></div>
+  <button type="button" class="primary-button painel-salvar__botao" id="saveSettings"><span class="painel-salvar__icone" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4h11l3 3v13H5z"/><path d="M8 4v6h8V4"/><path d="M9 20v-6h6v6"/></svg></span><span class="painel-salvar__giro" aria-hidden="true"></span><span data-salvar-rotulo>Salvar alterações</span></button>
+</div>
+</div>
 <div class="settings-whatsapp-top">
 <div class="content-card site-settings-card" id="config-card-whatsapp">
   <div class="card-header"><div class="settings-card-title"><span class="settings-card-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 11.5a8 8 0 0 1-11.8 7L4 20l1.5-4.1A8 8 0 1 1 20 11.5Z"/><path d="M8.5 8.5c.4-.5.7-.5 1-.1l1 1.3c.2.3.2.5 0 .8l-.5.6c.7 1.1 1.5 1.9 2.7 2.5l.6-.5c.3-.2.5-.2.8 0l1.3.9c.3.2.3.6 0 1-.5.6-1.2.8-1.9.6-3.3-1-5.6-3.1-6.4-5.9-.2-.6 0-1.2.4-1.7Z"/></svg></span><div><span class="eyebrow">WhatsApp</span><h2>Agendamentos pelo WhatsApp</h2><p>Configure o número e o comportamento após o agendamento.</p></div></div></div>
-  <div class="form-group"><label for="barbershopWhatsapp">WhatsApp para receber agendamentos</label><input type="text" id="barbershopWhatsapp" placeholder="(62) 99999-9999" ></div><div class="form-group"><label for="whatsappAfterBookingSwitch">Enviar cliente para o WhatsApp após o agendamento</label><div class="settings-switch-row"><span class="settings-help-text">Ativar redirecionamento para o WhatsApp</span><button type="button" id="whatsappAfterBookingSwitch" aria-pressed="false" aria-label="Alternar redirecionamento para o WhatsApp" class="settings-switch"><span id="whatsappAfterBookingSwitchText" class="settings-switch-text">OFF</span><span id="whatsappAfterBookingSwitchKnob" class="settings-switch-knob"></span></button></div><input type="checkbox" id="whatsappAfterBooking" aria-hidden="true" tabindex="-1" style="position:absolute;opacity:0;pointer-events:none;width:1px;height:1px;"></div><div id="settingsSaveStatus" class="settings-save-status"><span id="settingsSaveLight" class="settings-save-light" aria-hidden="true"></span><span id="settingsSaveStatusText">Tudo salvo</span></div>
+  <div class="form-group"><label for="barbershopWhatsapp">WhatsApp para receber agendamentos</label><input type="text" id="barbershopWhatsapp" placeholder="(62) 99999-9999" ></div><div class="form-group"><label for="whatsappAfterBookingSwitch">Enviar cliente para o WhatsApp após o agendamento</label><div class="settings-switch-row"><span class="settings-help-text">Ativar redirecionamento para o WhatsApp</span><button type="button" id="whatsappAfterBookingSwitch" aria-pressed="false" aria-label="Alternar redirecionamento para o WhatsApp" class="settings-switch"><span id="whatsappAfterBookingSwitchText" class="settings-switch-text">OFF</span><span id="whatsappAfterBookingSwitchKnob" class="settings-switch-knob"></span></button></div><input type="checkbox" id="whatsappAfterBooking" aria-hidden="true" tabindex="-1" style="position:absolute;opacity:0;pointer-events:none;width:1px;height:1px;"></div>
 </div>
 </div>
-<div class="settings-top-actions settings-save-after-whatsapp"><button type="button" class="primary-button" id="saveSettings"><span>Salvar alterações</span></button></div>
 <div class="settings-shortcuts-wrap">
   <div class="settings-shortcuts-title"><span class="eyebrow">ATALHOS</span><strong>Acesse uma configuração rapidamente</strong></div>
   <div class="settings-shortcuts">
@@ -1643,7 +1674,74 @@
 </div>
 <div class="content-card site-settings-card" id="config-card-cores-e-fontes">
   <div class="card-header"><div class="settings-card-title"><span class="settings-card-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a9 9 0 0 0 0 18h1.2c1.1 0 1.8-1.2 1.2-2.2-.6-1 .1-2.3 1.3-2.3H17a4 4 0 0 0 4-4C21 7.1 17 3 12 3Z"/><circle cx="7.5" cy="10" r="1"/><circle cx="9" cy="6.5" r="1"/><circle cx="13" cy="6" r="1"/></svg></span><div><span class="eyebrow">Cores e Fontes</span><h2>Identidade visual</h2><p>Defina as cores e a tipografia do site.</p></div></div></div>
-  <div class="form-group"><label for="siteCorPrincipal">Cor principal</label><input type="text" id="siteCorPrincipal" placeholder="#000000" ></div><div class="form-group"><label for="siteCorFundo">Cor de fundo</label><input type="text" id="siteCorFundo" placeholder="#111111" ></div><div class="form-group"><label for="siteCorDestaque">Cor de destaque</label><input type="text" id="siteCorDestaque" placeholder="#D7B56D" ></div><div class="form-group"><label for="siteFonte">Fonte</label><input type="text" id="siteFonte" placeholder="Ex: Inter" ></div>
+  <!-- Valores reais gravados no banco (preenchidos pelo seletor abaixo). Vazio = cor original do site. -->
+  <div hidden>
+    <input type="text" id="siteCorPrincipal" aria-hidden="true" tabindex="-1">
+    <input type="text" id="siteCorDestaque" aria-hidden="true" tabindex="-1">
+    <input type="text" id="siteCorBotoes" aria-hidden="true" tabindex="-1">
+    <input type="text" id="siteCorDetalhes" aria-hidden="true" tabindex="-1">
+    <input type="text" id="siteCorFundo" aria-hidden="true" tabindex="-1">
+    <input type="text" id="siteFonte" aria-hidden="true" tabindex="-1">
+  </div>
+
+  <div class="identidade">
+    <div class="identidade__editor">
+      <div class="identidade__subtitulo"><strong>Cores do site</strong><span>Escolha qual cor editar.</span></div>
+      <div class="cor-alvos" role="radiogroup" aria-label="Cor que está sendo editada" id="corAlvos">
+        <button type="button" class="cor-alvo" role="radio" aria-checked="true" data-cor-alvo="siteCorPrincipal"><span class="cor-alvo__amostra" aria-hidden="true"></span><span class="cor-alvo__texto"><strong>Principal</strong><small>Links e destaques</small></span><code class="cor-alvo__hex"></code></button>
+        <button type="button" class="cor-alvo" role="radio" aria-checked="false" data-cor-alvo="siteCorDestaque"><span class="cor-alvo__amostra" aria-hidden="true"></span><span class="cor-alvo__texto"><strong>Secundária</strong><small>Efeitos ao passar o mouse</small></span><code class="cor-alvo__hex"></code></button>
+        <button type="button" class="cor-alvo" role="radio" aria-checked="false" data-cor-alvo="siteCorBotoes"><span class="cor-alvo__amostra" aria-hidden="true"></span><span class="cor-alvo__texto"><strong>Botões</strong><small>Agendar, confirmar</small></span><code class="cor-alvo__hex"></code></button>
+        <button type="button" class="cor-alvo" role="radio" aria-checked="false" data-cor-alvo="siteCorDetalhes"><span class="cor-alvo__amostra" aria-hidden="true"></span><span class="cor-alvo__texto"><strong>Detalhes</strong><small>Etiquetas e ícones</small></span><code class="cor-alvo__hex"></code></button>
+        <button type="button" class="cor-alvo" role="radio" aria-checked="false" data-cor-alvo="siteCorFundo"><span class="cor-alvo__amostra" aria-hidden="true"></span><span class="cor-alvo__texto"><strong>Fundo</strong><small>Fundo das páginas</small></span><code class="cor-alvo__hex"></code></button>
+      </div>
+
+      <div class="seletor-cor" id="seletorCor">
+        <div class="seletor-cor__area" id="seletorCorArea" tabindex="0" role="slider" aria-label="Saturação e luminosidade. Use as setas para ajustar." aria-valuetext="">
+          <span class="seletor-cor__cursor" id="seletorCorCursor" aria-hidden="true"></span>
+        </div>
+        <div class="seletor-cor__controles">
+          <label class="seletor-cor__faixa"><span>Matiz <output id="seletorCorMatizValor">0°</output></span><input type="range" id="seletorCorMatiz" class="faixa faixa--matiz" min="0" max="360" step="1"></label>
+          <label class="seletor-cor__faixa"><span>Saturação <output id="seletorCorSaturacaoValor">0%</output></span><input type="range" id="seletorCorSaturacao" class="faixa faixa--saturacao" min="0" max="100" step="1"></label>
+          <label class="seletor-cor__faixa"><span>Luminosidade <output id="seletorCorLuzValor">0%</output></span><input type="range" id="seletorCorLuz" class="faixa faixa--luz" min="0" max="100" step="1"></label>
+          <div class="seletor-cor__linha">
+            <label class="seletor-cor__hex" for="seletorCorHex"><span>HEX</span><input type="text" id="seletorCorHex" maxlength="7" spellcheck="false" autocomplete="off" inputmode="text" aria-describedby="seletorCorErro"></label>
+            <label class="seletor-cor__nativo" title="Abrir o seletor de cores do aparelho"><input type="color" id="seletorCorNativo" aria-label="Seletor de cores do aparelho"><span aria-hidden="true">Paleta</span></label>
+          </div>
+          <p class="seletor-cor__erro" id="seletorCorErro" role="alert"></p>
+          <div class="seletor-cor__sugestoes" aria-label="Sugestões de cores" id="seletorCorSugestoes"></div>
+        </div>
+      </div>
+
+      <div class="identidade__acoes">
+        <button type="button" class="secondary-button" id="restaurarCorAtual">Usar a cor original nesta opção</button>
+        <button type="button" class="secondary-button" id="restaurarCoresOriginais">Restaurar todas as cores originais</button>
+      </div>
+    </div>
+
+    <aside class="identidade__previa" aria-label="Pré-visualização do site">
+      <div class="identidade__subtitulo"><strong>Pré-visualização</strong><span>Como o site vai ficar.</span></div>
+      <div class="previa-site" id="previaSite">
+        <div class="previa-site__topo"><span class="previa-site__logo">NO</span><span class="previa-site__nome" id="previaNome">Navalha de Ouro</span><span class="previa-site__menu">Serviços · Equipe</span><span class="previa-site__agendar">Agendar</span></div>
+        <div class="previa-site__hero">
+          <span class="previa-site__etiqueta">BARBEARIA PREMIUM</span>
+          <strong class="previa-site__titulo">Seu estilo começa aqui.</strong>
+          <span class="previa-site__texto">Cortes precisos, barba desenhada e atendimento de qualidade.</span>
+          <span class="previa-site__botoes"><span class="previa-site__botao">Agendar horário</span><span class="previa-site__botao previa-site__botao--contorno">Ver serviços</span></span>
+        </div>
+        <div class="previa-site__cartao">
+          <span class="previa-site__icone" aria-hidden="true">✂</span>
+          <span><strong>Corte + barba</strong><span class="previa-site__link">Ver detalhes →</span></span>
+          <span class="previa-site__preco">R$ 70</span>
+        </div>
+      </div>
+      <p class="settings-field-note">As cores sem alteração usam o padrão original do site.</p>
+    </aside>
+  </div>
+
+  <div class="fontes" role="radiogroup" aria-labelledby="fontesTitulo">
+    <div class="identidade__subtitulo"><strong id="fontesTitulo">Fonte do site</strong><span>Clique para escolher. A prévia usa a própria fonte.</span></div>
+    <div class="fontes__grupos" id="fontesGrupos"></div>
+  </div>
 </div>
 <div class="content-card site-settings-card" id="config-card-logo-da-barbearia">
   <div class="card-header"><div class="settings-card-title"><span class="settings-card-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 19h14"/><path d="M7 19 8.5 9h7L17 19"/><path d="M9 9 12 4l3 5"/><path d="M10 13h4"/></svg></span><div><span class="eyebrow">Logo da Barbearia</span><h2>Identidade da marca</h2><p>Escolha a imagem da logo que será usada no site.</p></div></div></div>
@@ -1852,6 +1950,9 @@
 <script src="proteger-admin.js"></script>
 
 <script src="painel-admin-.js"></script>
+
+<script src="site-tema.js"></script>
+<script src="painel-aparencia.js"></script>
 
 
 </body>

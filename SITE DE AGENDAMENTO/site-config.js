@@ -467,6 +467,13 @@
     }
 
     function aplicarCores(config) {
+        // Cores (principal, secundária, botões, detalhes, fundo) e fonte:
+        // site-tema.js cuida de tudo, inclusive de voltar ao padrão.
+        if (window.SiteTema) {
+            window.SiteTema.aplicar(config);
+            return;
+        }
+
         const root = document.documentElement;
         const principal = corSegura(config.cor_principal);
         const fundo = corSegura(config.cor_fundo);

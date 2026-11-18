@@ -23,7 +23,7 @@ html {
 body {
     background: var(--bg);
     color: var(--text);
-    font-family: Arial, Helvetica, sans-serif;
+    font-family: var(--fonte-site, Arial, Helvetica, sans-serif);
     line-height: 1.5;
 }
 
@@ -448,9 +448,9 @@ button {
 }
 
 .calendar-day.selected {
-    background: var(--gold);
-    color: #111;
-    border-color: var(--gold);
+    background: var(--cor-botoes, var(--gold));
+    color: var(--cor-botoes-texto, #111);
+    border-color: var(--cor-botoes, var(--gold));
     font-weight: 800;
 }
 
@@ -481,9 +481,9 @@ button {
 }
 
 .time-option.selected {
-    background: var(--gold);
-    color: #111;
-    border-color: var(--gold);
+    background: var(--cor-botoes, var(--gold));
+    color: var(--cor-botoes-texto, #111);
+    border-color: var(--cor-botoes, var(--gold));
     font-weight: 800;
 }
 
@@ -526,8 +526,8 @@ button {
 .confirm-button {
     width: 100%;
     border: 0;
-    background: var(--gold);
-    color: #111;
+    background: var(--cor-botoes, var(--gold));
+    color: var(--cor-botoes-texto, #111);
     padding: 17px;
     font-weight: 800;
     transition: 0.2s;

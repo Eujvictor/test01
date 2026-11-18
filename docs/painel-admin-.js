@@ -4816,10 +4816,7 @@ function previewScheduleSettings() {
 }
 
 
-if (saveScheduleButton) {
-    saveScheduleButton.addEventListener(
-        "click",
-        async () => {
+async function runSaveSchedule() {
             const opening = openingTimeInput
                 ? openingTimeInput.value
                 : "";
@@ -4844,29 +4841,23 @@ if (saveScheduleButton) {
                 getSelectedWorkingDays();
 
             if (!opening || !closing) {
-                alert(
-                    "Informe o horário de abertura e fechamento."
-                );
-                return;
+                painelAviso("Informe o horário de abertura e fechamento.", "erro");
+                return false;
             }
 
             if (opening >= closing) {
-                alert(
-                    "O horário de abertura precisa ser antes do fechamento."
-                );
-                return;
+                painelAviso("O horário de abertura precisa ser antes do fechamento.", "erro");
+                return false;
             }
 
             if (!interval || interval <= 0) {
-                alert("Informe um intervalo válido.");
-                return;
+                painelAviso("Informe um intervalo válido.", "erro");
+                return false;
             }
 
             if (workingDays.length === 0) {
-                alert(
-                    "Selecione pelo menos um dia de funcionamento."
-                );
-                return;
+                painelAviso("Selecione pelo menos um dia de funcionamento.", "erro");
+                return false;
             }
 
             if (
@@ -4874,10 +4865,8 @@ if (saveScheduleButton) {
                 advanceDays < 1 ||
                 advanceDays > 365
             ) {
-                alert(
-                    "O prazo máximo de agendamento deve estar entre 1 e 365 dias."
-                );
-                return;
+                painelAviso("O prazo máximo de agendamento deve estar entre 1 e 365 dias.", "erro");
+                return false;
             }
 
             scheduleSettings.openingTime = opening;
@@ -4906,7 +4895,7 @@ if (saveScheduleButton) {
 
             const saved = await saveScheduleSettings();
 
-            if (!saved) return;
+            if (!saved) return false;
 
             updateScheduleSummary();
             renderAvailabilityCalendar();
@@ -4914,9 +4903,27 @@ if (saveScheduleButton) {
             markSettingsClean();
             markHorariosClean();
 
-            alert("Configurações de horários salvas.");
+            flashSaved(horariosSaveStatus, horariosSaveStatusText);
+
+            painelAviso("Horários e dias salvos. O site já mostra as alterações.");
+
+            return true;
+}
+
+
+if (saveScheduleButton) {
+    saveScheduleButton.addEventListener("click", () => {
+        if (window.PainelUI) {
+            window.PainelUI.salvarComBloqueio(saveScheduleButton, runSaveSchedule);
+            return;
         }
-    );
+
+        if (saveScheduleButton.disabled) return;
+        saveScheduleButton.disabled = true;
+        runSaveSchedule().finally(() => {
+            saveScheduleButton.disabled = false;
+        });
+    });
 }
 
 
@@ -5002,24 +5009,58 @@ let whatsappDisablePending = false;
 let suppressWhatsappChange = false;
 
 
-function updateSettingsSaveIndicator(isDirty) {
+const settingsSaveStatus =
+    document.getElementById("settingsSaveStatus");
+
+
+// Aviso flutuante (painel-tema.js). Sem ele, cai no alert antigo.
+function painelAviso(message, type = "sucesso") {
+    if (window.PainelUI) {
+        window.PainelUI.aviso(message, type);
+    } else {
+        alert(message);
+    }
+}
+
+
+// Mostra "Alterações salvas" por alguns segundos depois de salvar.
+function flashSaved(statusElement, textElement) {
+    if (!statusElement) return;
+
+    statusElement.classList.add("is-salvo-agora");
+    if (textElement) textElement.textContent = "Alterações salvas";
+
+    window.clearTimeout(statusElement._flashTimer);
+    statusElement._flashTimer = window.setTimeout(() => {
+        statusElement.classList.remove("is-salvo-agora");
+
+        if (
+            textElement &&
+            !statusElement.classList.contains("is-dirty") &&
+            !statusElement.classList.contains("is-error")
+        ) {
+            textElement.textContent = "Tudo salvo";
+        }
+    }, 2600);
+}
+
+
+function updateSettingsSaveIndicator(isDirty, isError = false) {
     settingsHaveUnsavedChanges = Boolean(isDirty);
 
-    if (settingsSaveLight) {
-        settingsSaveLight.style.background =
-            settingsHaveUnsavedChanges
-                ? "#d7b56d"
-                : "transparent";
+    if (settingsSaveStatus) {
+        settingsSaveStatus.classList.toggle("is-dirty", settingsHaveUnsavedChanges && !isError);
+        settingsSaveStatus.classList.toggle("is-error", Boolean(isError));
 
-        settingsSaveLight.style.boxShadow =
-            settingsHaveUnsavedChanges
-                ? "0 0 0 3px rgba(215,181,109,.14), 0 0 12px rgba(215,181,109,.35)"
-                : "none";
+        if (settingsHaveUnsavedChanges || isError) {
+            settingsSaveStatus.classList.remove("is-salvo-agora");
+        }
     }
 
     if (settingsSaveStatusText) {
-        settingsSaveStatusText.textContent =
-            settingsHaveUnsavedChanges
+        settingsSaveStatusText.textContent = isError
+            ? "Erro ao salvar"
+            : settingsHaveUnsavedChanges
                 ? "Alterações não salvas"
                 : "Tudo salvo";
     }
@@ -5384,39 +5425,70 @@ if (barbershopWhatsappInput) {
 }
 
 
-if (saveSettingsButton) {
-    saveSettingsButton.addEventListener(
-        "click",
-        async () => {
-            if (saveSettingsButton.disabled) return;
+async function runSaveSettings() {
+    // Conteúdo do site (configuracoes_site + imagens).
+    const siteSaved =
+        typeof window.saveSiteSettings === "function"
+            ? await window.saveSiteSettings()
+            : true;
 
-            saveSettingsButton.disabled = true;
+    if (!siteSaved) {
+        updateSettingsSaveIndicator(true, true);
+        return false;
+    }
 
-            try {
-                // Conteúdo do site (configuracoes_site + imagens).
-                const siteSaved =
-                    typeof window.saveSiteSettings === "function"
-                        ? await window.saveSiteSettings()
-                        : true;
+    // WhatsApp (configuracoes_horarios).
+    const saved = await saveWhatsappSettings();
 
-                if (!siteSaved) return;
+    if (!saved) {
+        updateSettingsSaveIndicator(true, true);
+        return false;
+    }
 
-                // WhatsApp (configuracoes_horarios).
-                const saved = await saveWhatsappSettings();
+    markSettingsClean();
+    flashSaved(settingsSaveStatus, settingsSaveStatusText);
 
-                if (saved) {
-                    markSettingsClean();
+    if (siteSaved === "parcial") {
+        painelAviso(
+            "Configurações salvas. As cores de botões e detalhes ainda não: o banco precisa do arquivo sql/configuracoes_site_tema.sql.",
+            "erro"
+        );
+    } else {
+        painelAviso("Configurações salvas. O site já mostra as alterações.");
+    }
 
-                    alert(
-                        "Configurações salvas com sucesso. O site já mostra as alterações."
-                    );
-                }
-            } finally {
-                saveSettingsButton.disabled = false;
-            }
-        }
-    );
+    return true;
 }
+
+
+if (saveSettingsButton) {
+    saveSettingsButton.addEventListener("click", () => {
+        if (window.PainelUI) {
+            window.PainelUI.salvarComBloqueio(saveSettingsButton, runSaveSettings);
+            return;
+        }
+
+        if (saveSettingsButton.disabled) return;
+        saveSettingsButton.disabled = true;
+        runSaveSettings().finally(() => {
+            saveSettingsButton.disabled = false;
+        });
+    });
+}
+
+
+// Ctrl+S / Cmd+S salva a seção aberta (Horários ou Configurações).
+document.addEventListener("keydown", (event) => {
+    if (!(event.ctrlKey || event.metaKey) || event.key.toLowerCase() !== "s") return;
+
+    const active = document.querySelector(".page-section.active");
+    const button = active && active.querySelector(".painel-salvar__botao");
+
+    if (!button) return;
+
+    event.preventDefault();
+    button.click();
+});
 
 
 loadWhatsappSettingsUI();
@@ -6429,7 +6501,9 @@ markHorariosClean();
 
         siteCorPrincipal: "cor_principal",
         siteCorFundo: "cor_fundo",
-        siteCorDestaque: "cor_destaque",
+        siteCorDestaque: "cor_destaque", // exibida como "Secundária"
+        siteCorBotoes: "cor_botoes",
+        siteCorDetalhes: "cor_detalhes",
         siteFonte: "fonte",
 
         siteEndereco: "endereco",
@@ -6459,8 +6533,14 @@ markHorariosClean();
     const COLOR_FIELDS = {
         siteCorPrincipal: "Cor principal",
         siteCorFundo: "Cor de fundo",
-        siteCorDestaque: "Cor de destaque"
+        siteCorDestaque: "Cor secundária",
+        siteCorBotoes: "Cor dos botões",
+        siteCorDetalhes: "Cor dos detalhes"
     };
+
+    // Colunas criadas por sql/configuracoes_site_tema.sql. Enquanto o SQL
+    // não for aplicado, o resto das configurações continua sendo salvo.
+    const COLUNAS_TEMA_NOVAS = ["cor_botoes", "cor_detalhes"];
 
     const CHECK_FIELDS = {
         siteMostrarServicos: "mostrar_servicos",
@@ -6652,6 +6732,10 @@ markHorariosClean();
         }
 
         updateGoogleTestButton();
+
+        // Atualiza o seletor de cores e as fontes com os valores carregados.
+        if (window.PainelAparencia) window.PainelAparencia.sincronizar();
+
         markClean();
     }
 
@@ -6835,11 +6919,20 @@ markHorariosClean();
         // 2) Gravar a linha de configuração
         const payload = buildPayload(imageUrls);
 
-        const query = siteRowId !== null
-            ? window.supabaseClient.from(TABLE).update(payload).eq("id", siteRowId).select("id")
-            : window.supabaseClient.from(TABLE).insert(payload).select("id");
+        const gravarLinha = (dados) => siteRowId !== null
+            ? window.supabaseClient.from(TABLE).update(dados).eq("id", siteRowId).select("id")
+            : window.supabaseClient.from(TABLE).insert(dados).select("id");
 
-        const { data, error } = await query;
+        let { data, error } = await gravarLinha(payload);
+        let parcial = false;
+
+        // Banco ainda sem as colunas novas de cor: grava o resto e avisa.
+        const mensagemErro = String((error && error.message) || "");
+        if (error && COLUNAS_TEMA_NOVAS.some((coluna) => mensagemErro.includes(coluna))) {
+            COLUNAS_TEMA_NOVAS.forEach((coluna) => delete payload[coluna]);
+            ({ data, error } = await gravarLinha(payload));
+            parcial = !error;
+        }
 
         if (error) {
             console.error("Erro ao salvar configurações do site:", error);
@@ -6867,7 +6960,8 @@ markHorariosClean();
             if (el.status) el.status.textContent = "Imagem atual do site.";
         });
 
-        return true;
+        // "parcial": salvo, menos as cores de botões e detalhes.
+        return parcial ? "parcial" : true;
     }
 
     // ------------------------------------------
