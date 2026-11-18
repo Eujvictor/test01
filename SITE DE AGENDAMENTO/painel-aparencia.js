@@ -196,7 +196,8 @@
         previa.style.setProperty("--p-borda", claro ? "rgba(0,0,0,.12)" : "rgba(255,255,255,.12)");
 
         const fonte = ($("siteFonte") || {}).value || "";
-        previa.style.setProperty("--p-fonte", fonte ? `"${fonte}", Arial, sans-serif` : "Arial, Helvetica, sans-serif");
+        const familia = window.SiteTema ? window.SiteTema.familiaDe(fonte) : (fonte ? `"${fonte}", Arial, sans-serif` : "Arial, Helvetica, sans-serif");
+        previa.style.setProperty("--p-fonte", familia);
 
         const nome = (($("barbershopName") || {}).value || "").trim();
         $("previaNome").textContent = nome || "Navalha de Ouro";
@@ -444,7 +445,7 @@
         if (atual && !conhecidas.includes(atual)) {
             const extra = document.createElement("div");
             extra.className = "fonte-grupo fonte-grupo--padrao";
-            extra.append(cartaoFonte(atual, `Atual: ${atual}`, `"${atual}", sans-serif`));
+            extra.append(cartaoFonte(atual, `Atual: ${atual}`, window.SiteTema ? window.SiteTema.familiaDe(atual) : `"${atual}", sans-serif`));
             destino.appendChild(extra);
         }
 

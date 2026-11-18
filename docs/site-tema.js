@@ -31,6 +31,16 @@
 
     const SISTEMA = /^(arial|helvetica|verdana|georgia|tahoma|times new roman)$/i;
 
+    const GENERICAS = {
+        serif: 'Georgia, "Times New Roman", serif',
+        "sans-serif": "Arial, Helvetica, sans-serif",
+        sans: "Arial, Helvetica, sans-serif",
+        monospace: '"Courier New", Consolas, monospace',
+        mono: '"Courier New", Consolas, monospace',
+        cursive: '"Brush Script MT", cursive',
+        script: '"Brush Script MT", cursive'
+    };
+
     function texto(v) {
         return typeof v === "string" ? v.trim() : "";
     }
@@ -85,9 +95,18 @@
         const nome = texto(valor);
         let link = document.getElementById("siteFonteLink");
 
-        if (!/^[A-Za-z0-9 ]{2,40}$/.test(nome)) {
+        if (!/^[A-Za-z0-9 -]{2,40}$/.test(nome)) {
             definir("--fonte-site", "");
             if (link) link.remove();
+            return;
+        }
+
+        // Estilos genéricos digitados no campo antigo ("Serif", "Monospace"...):
+        // usam a fonte do sistema daquele estilo, sem buscar no Google Fonts.
+        const generica = GENERICAS[nome.toLowerCase().replace(/\s+/g, "-")];
+        if (generica) {
+            if (link) link.remove();
+            definir("--fonte-site", generica);
             return;
         }
 
@@ -133,7 +152,16 @@
         aplicarFonte(config.fonte);
     }
 
-    window.SiteTema = { aplicar, FONTES, urlDaFonte };
+    // Pilha de fontes CSS usada para um nome salvo (também usada na prévia do painel).
+    function familiaDe(valor) {
+        const nome = texto(valor);
+        if (!nome) return "Arial, Helvetica, sans-serif";
+        const generica = GENERICAS[nome.toLowerCase().replace(/\s+/g, "-")];
+        if (generica) return generica;
+        return `"${nome}", Arial, Helvetica, ${(FONTES[nome] && FONTES[nome].categoria) || "sans-serif"}`;
+    }
+
+    window.SiteTema = { aplicar, FONTES, urlDaFonte, familiaDe };
 
     // ------------------------------------------
     // Páginas sem site-config.js (agendar.html): busca sozinho.
