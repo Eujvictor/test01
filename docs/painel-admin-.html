@@ -112,6 +112,10 @@
                 </span>
                 <span class="tema-alternar__texto" data-tema-rotulo>Modo escuro</span>
             </button>
+            <button type="button" class="senha-abrir" id="abrirAlterarSenha">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
+                <span>Alterar minha senha</span>
+            </button>
         </div>
 
         <button class="logout-button" id="logoutButton">
@@ -1815,6 +1819,43 @@
      MODAL DETALHES DO AGENDAMENTO
      ========================= -->
 
+<!-- ALTERAR MINHA SENHA -->
+<div class="modal-overlay" id="senhaModal" role="dialog" aria-modal="true" aria-labelledby="senhaModalTitulo">
+    <div class="modal senha-modal">
+        <button type="button" class="modal-close" id="fecharSenhaModal" aria-label="Fechar">×</button>
+        <span class="eyebrow">SEGURANÇA</span>
+        <h2 id="senhaModalTitulo">Alterar minha senha</h2>
+        <p class="senha-ajuda">Confirme a senha atual e escolha uma nova. A nova senha vale para os próximos acessos.</p>
+        <form id="senhaForm" novalidate>
+            <div class="form-group">
+                <label for="senhaAtual">Senha atual</label>
+                <input type="password" id="senhaAtual" autocomplete="current-password" required>
+            </div>
+            <div class="form-group">
+                <label for="senhaNova">Nova senha</label>
+                <input type="password" id="senhaNova" autocomplete="new-password" required aria-describedby="senhaRegras">
+                <ul class="senha-regras" id="senhaRegras">
+                    <li data-regra="tamanho">Pelo menos 10 caracteres</li>
+                    <li data-regra="maiuscula">Uma letra maiúscula</li>
+                    <li data-regra="minuscula">Uma letra minúscula</li>
+                    <li data-regra="numero">Um número</li>
+                    <li data-regra="diferente">Diferente da senha atual</li>
+                </ul>
+            </div>
+            <div class="form-group">
+                <label for="senhaConfirmar">Confirmar nova senha</label>
+                <input type="password" id="senhaConfirmar" autocomplete="new-password" required>
+            </div>
+            <label class="senha-mostrar"><input type="checkbox" id="senhaMostrar"> Mostrar senhas</label>
+            <p class="senha-erro" id="senhaErro" role="alert"></p>
+            <div class="modal-actions">
+                <button type="button" class="secondary-button" id="cancelarSenha">Cancelar</button>
+                <button type="submit" class="primary-button" id="salvarSenha">Salvar nova senha</button>
+            </div>
+        </form>
+    </div>
+</div>
+
 <div class="modal-overlay" id="appointmentDetailsModal">
     <div class="modal appointment-details-modal">
         <button type="button" class="modal-close" id="closeAppointmentDetailsModal">×</button>
@@ -1952,6 +1993,7 @@
 
 <script src="imagem-webp.js"></script>
 <script src="painel-admin-.js"></script>
+<script src="painel-senha.js"></script>
 
 <script src="site-tema.js"></script>
 <script src="painel-aparencia.js"></script>

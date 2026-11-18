@@ -1473,3 +1473,90 @@ body.somente-consulta .image-upload-remove {
     pointer-events: none !important;
     cursor: not-allowed !important;
 }
+
+/* =====================================================================
+   ALTERAR MINHA SENHA
+   ===================================================================== */
+.senha-abrir {
+    width: 100%;
+    min-height: 40px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 8px;
+    padding: 6px 12px;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    background: transparent;
+    color: var(--secondary);
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.senha-abrir:hover {
+    border-color: rgba(214, 179, 106, 0.45);
+    color: var(--text);
+}
+
+.senha-abrir svg {
+    width: 16px;
+    height: 16px;
+    color: var(--gold);
+}
+
+.senha-modal {
+    max-width: 460px;
+}
+
+.senha-ajuda {
+    margin: 6px 0 18px;
+    color: var(--muted);
+    font-size: 13px;
+}
+
+.senha-regras {
+    display: grid;
+    gap: 4px;
+    margin: 10px 0 0;
+    padding: 0;
+    list-style: none;
+    font-size: 12px;
+    color: var(--muted);
+}
+
+.senha-regras li::before {
+    content: "○ ";
+}
+
+.senha-regras li.is-ok {
+    color: var(--painel-ok);
+}
+
+.senha-regras li.is-ok::before {
+    content: "✓ ";
+}
+
+.senha-mostrar {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin: 4px 0 8px;
+    font-size: 12px;
+    color: var(--secondary);
+    cursor: pointer;
+}
+
+.senha-erro {
+    min-height: 18px;
+    margin: 0 0 8px;
+    color: var(--painel-erro);
+    font-size: 13px;
+    font-weight: 700;
+}
+
+body.somente-consulta .senha-modal .primary-button {
+    opacity: 1 !important;
+    pointer-events: auto !important;
+    cursor: pointer !important;
+}
