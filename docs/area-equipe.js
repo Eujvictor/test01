@@ -255,4 +255,10 @@ return;
 
     }
 
+
+    // Voltou do painel sem acesso (conta sem barbearia vinculada).
+    if (new URLSearchParams(window.location.search).get("motivo") === "sem_acesso") {
+        showMessage("Esta conta não está vinculada a nenhuma barbearia ativa. Fale com o suporte do Barber.");
+    }
+
 });

@@ -8,7 +8,9 @@
 (function () {
     "use strict";
 
-    const CACHE_KEY = "navalha_site_config_v1";
+    const CACHE_KEY = window.BarbeariaAtual
+        ? window.BarbeariaAtual.chaveCache("navalha_site_config_v1")
+        : "navalha_site_config_v1";
 
     // Fontes oferecidas no painel. Pesos disponíveis no Google Fonts
     // (pedir um peso inexistente faz o Google recusar a fonte inteira).

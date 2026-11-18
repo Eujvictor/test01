@@ -1495,13 +1495,13 @@
     <a class="settings-shortcut" href="#config-card-aparencia-e-exibicao">Aparência e exibição</a>
     <a class="settings-shortcut" href="#config-card-estatisticas">Estatísticas</a>
     <a class="settings-shortcut" href="#config-card-servicos">Serviços</a>
+    <a class="settings-shortcut" href="#config-card-logo-da-barbearia">Identidade da marca</a>
+    <a class="settings-shortcut" href="#config-card-imagem-principal">Banner principal</a>
     <a class="settings-shortcut" href="#config-card-portfolio">Portfólio</a>
     <a class="settings-shortcut" href="#config-card-equipe">Equipe</a>
     <a class="settings-shortcut" href="#config-card-avaliacao">Avaliações</a>
-    <a class="settings-shortcut" href="#config-card-imagem-principal">Imagem principal</a>
     <a class="settings-shortcut" href="#config-card-cores-e-fontes">Cores e fontes</a>
     <a class="settings-shortcut" href="#config-card-whatsapp">WhatsApp</a>
-    <a class="settings-shortcut" href="#config-card-logo-da-barbearia">Logo / identidade da barbearia</a>
     <a class="settings-shortcut" href="#config-card-localizacao">Localização</a>
     <a class="settings-shortcut" href="#config-card-redes-sociais">Redes sociais</a>
     <a class="settings-shortcut" href="#config-card-rodape">Rodapé</a>
@@ -1537,8 +1537,46 @@
   <div class="form-group"><label for="siteServicosTitulo">Título da seção</label><input type="text" id="siteServicosTitulo" maxlength="40" placeholder="O que fazemos"></div>
   <div class="form-group"><label for="siteServicosDescricao">Descrição da seção</label><textarea id="siteServicosDescricao" rows="4" maxlength="180" placeholder="Preços justos, tempo respeitado e acabamento de barbearia premium."></textarea></div>
 </div>
+<div class="content-card site-settings-card" id="config-card-logo-da-barbearia">
+  <div class="card-header"><div class="settings-card-title"><span class="settings-card-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 19h14"/><path d="M7 19 8.5 9h7L17 19"/><path d="M9 9 12 4l3 5"/><path d="M10 13h4"/></svg></span><div><span class="eyebrow">1 · Identidade da marca</span><h2>Logotipo da barbearia</h2><p>Envie, substitua ou exclua o logotipo usado no site.</p></div></div></div>
+  <div class="image-upload-field image-upload-field-logo">
+    <div class="image-upload-preview image-upload-preview-square" id="siteLogoPreviewWrap">
+      <img id="siteLogoPreview" class="image-upload-preview-img" alt="Pré-visualização da logo da barbearia" hidden>
+      <div class="image-upload-empty" id="siteLogoEmpty">Nenhuma logo selecionada</div>
+      <button type="button" class="image-upload-remove" id="siteLogoRemoveButton" aria-label="Remover logo da barbearia" hidden>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16"/><path d="M9 7V4h6v3"/><path d="M7 7l1 13h8l1-13"/><path d="M10 11v5"/><path d="M14 11v5"/></svg>
+      </button>
+    </div>
+    <input type="file" id="siteLogoFile" class="image-upload-file-input" accept="image/jpeg,image/png,image/webp" hidden>
+    <button type="button" class="image-upload-button" id="siteLogoUploadButton">
+      <span class="image-upload-button-icon" aria-hidden="true">↥</span>
+      <span>Alterar logo</span>
+    </button>
+    <p class="settings-field-note image-format-note"><strong>Recomendado: imagem quadrada (1:1)</strong><br>JPG, PNG ou WebP • convertida para WebP e reduzida para 512 px • até 2 MB após otimizar</p>
+    <p class="image-upload-status" id="siteLogoUploadStatus">Escolha uma logo nos arquivos do computador ou celular.</p>
+  </div>
+</div>
+<div class="content-card site-settings-card" id="config-card-imagem-principal">
+  <div class="card-header"><div class="settings-card-title"><span class="settings-card-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="8" cy="9" r="1.5"/><path d="m5 17 4-4 3 3 3-4 4 5"/></svg></span><div><span class="eyebrow">2 · Banner principal</span><h2>Imagem principal do site</h2><p>Envie, substitua ou exclua a imagem do topo da página inicial.</p></div></div></div>
+  <div class="image-upload-field image-upload-field-banner">
+    <div class="image-upload-preview image-upload-preview-banner" id="siteBannerPreviewWrap">
+      <img id="siteBannerPreview" class="image-upload-preview-img" alt="Pré-visualização da imagem principal" hidden>
+      <div class="image-upload-empty" id="siteBannerEmpty">Nenhuma imagem selecionada</div>
+      <button type="button" class="image-upload-remove" id="siteBannerRemoveButton" aria-label="Remover imagem principal" hidden>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16"/><path d="M9 7V4h6v3"/><path d="M7 7l1 13h8l-1-13"/><path d="M10 11v5"/><path d="M14 11v5"/></svg>
+      </button>
+    </div>
+    <input type="file" id="siteBannerFile" class="image-upload-file-input" accept="image/jpeg,image/png,image/webp" hidden>
+    <button type="button" class="image-upload-button" id="siteBannerUploadButton">
+      <span class="image-upload-button-icon" aria-hidden="true">↥</span>
+      <span>Alterar imagem</span>
+    </button>
+    <p class="settings-field-note image-format-note"><strong>Recomendado: 1920 × 1080 px (16:9)</strong><br>JPG, PNG ou WebP • convertida para WebP e reduzida para 1920 px • até 5 MB após otimizar</p>
+    <p class="image-upload-status" id="siteBannerUploadStatus">Escolha uma imagem nos arquivos do computador ou celular.</p>
+  </div>
+</div>
 <div class="content-card site-settings-card" id="config-card-portfolio">
-  <div class="card-header"><div class="settings-card-title"><span class="settings-card-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="8" cy="9" r="1.5"/><path d="m5 17 5-5 3 3 2-2 4 4"/></svg></span><div><span class="eyebrow">Portfólio</span><h2>Conteúdo do portfólio</h2><p>Configure o título, a descrição e até quatro imagens para o portfólio.</p></div></div></div>
+  <div class="card-header"><div class="settings-card-title"><span class="settings-card-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="8" cy="9" r="1.5"/><path d="m5 17 5-5 3 3 2-2 4 4"/></svg></span><div><span class="eyebrow">3 · Conteúdo do portfólio</span><h2>Conteúdo do portfólio</h2><p>Configure o título, a descrição e até quatro imagens para o portfólio.</p></div></div></div>
   <div class="form-group"><label for="sitePortfolioTitulo">Título da seção</label><input type="text" id="sitePortfolioTitulo" maxlength="40" placeholder="Nossos trabalhos"></div>
   <div class="form-group"><label for="sitePortfolioDescricao">Descrição da seção</label><textarea id="sitePortfolioDescricao" rows="4" maxlength="180" placeholder="Um pouco do que sai das nossas cadeiras toda semana."></textarea><span class="settings-field-note">Máximo de 180 caracteres.</span></div>
   <div class="portfolio-image-grid" id="sitePortfolioImageGrid" aria-label="Imagens do portfólio">
@@ -1551,7 +1589,7 @@
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16"/><path d="M9 7V4h6v3"/><path d="M7 7l1 13h8l1-13"/><path d="M10 11v5"/><path d="M14 11v5"/></svg>
         </button>
       </div>
-      <input type="file" id="sitePortfolioFile1" class="image-upload-file-input" accept="image/jpeg,image/png" hidden>
+      <input type="file" id="sitePortfolioFile1" class="image-upload-file-input" accept="image/jpeg,image/png,image/webp" hidden>
       <button type="button" class="image-upload-button" id="sitePortfolioUploadButton1"><span class="image-upload-button-icon" aria-hidden="true">↥</span><span>Alterar imagem</span></button>
       <div class="form-group"><label for="sitePortfolioLegenda1">Legenda</label><input type="text" id="sitePortfolioLegenda1" maxlength="30" placeholder="Ex: Fade"></div>
     </div>
@@ -1564,7 +1602,7 @@
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16"/><path d="M9 7V4h6v3"/><path d="M7 7l1 13h8l1-13"/><path d="M10 11v5"/><path d="M14 11v5"/></svg>
         </button>
       </div>
-      <input type="file" id="sitePortfolioFile2" class="image-upload-file-input" accept="image/jpeg,image/png" hidden>
+      <input type="file" id="sitePortfolioFile2" class="image-upload-file-input" accept="image/jpeg,image/png,image/webp" hidden>
       <button type="button" class="image-upload-button" id="sitePortfolioUploadButton2"><span class="image-upload-button-icon" aria-hidden="true">↥</span><span>Alterar imagem</span></button>
       <div class="form-group"><label for="sitePortfolioLegenda2">Legenda</label><input type="text" id="sitePortfolioLegenda2" maxlength="30" placeholder="Ex: Fade"></div>
     </div>
@@ -1577,7 +1615,7 @@
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16"/><path d="M9 7V4h6v3"/><path d="M7 7l1 13h8l1-13"/><path d="M10 11v5"/><path d="M14 11v5"/></svg>
         </button>
       </div>
-      <input type="file" id="sitePortfolioFile3" class="image-upload-file-input" accept="image/jpeg,image/png" hidden>
+      <input type="file" id="sitePortfolioFile3" class="image-upload-file-input" accept="image/jpeg,image/png,image/webp" hidden>
       <button type="button" class="image-upload-button" id="sitePortfolioUploadButton3"><span class="image-upload-button-icon" aria-hidden="true">↥</span><span>Alterar imagem</span></button>
       <div class="form-group"><label for="sitePortfolioLegenda3">Legenda</label><input type="text" id="sitePortfolioLegenda3" maxlength="30" placeholder="Ex: Fade"></div>
     </div>
@@ -1590,12 +1628,12 @@
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16"/><path d="M9 7V4h6v3"/><path d="M7 7l1 13h8l1-13"/><path d="M10 11v5"/><path d="M14 11v5"/></svg>
         </button>
       </div>
-      <input type="file" id="sitePortfolioFile4" class="image-upload-file-input" accept="image/jpeg,image/png" hidden>
+      <input type="file" id="sitePortfolioFile4" class="image-upload-file-input" accept="image/jpeg,image/png,image/webp" hidden>
       <button type="button" class="image-upload-button" id="sitePortfolioUploadButton4"><span class="image-upload-button-icon" aria-hidden="true">↥</span><span>Alterar imagem</span></button>
       <div class="form-group"><label for="sitePortfolioLegenda4">Legenda</label><input type="text" id="sitePortfolioLegenda4" maxlength="30" placeholder="Ex: Fade"></div>
     </div>
   </div>
-  <p class="settings-field-note image-format-note portfolio-format-note"><strong>Tamanho recomendado: 1200 × 900 px por imagem</strong><br>Proporção 4:3 • JPG ou PNG • Máximo recomendado: 5 MB por imagem • Limite máximo: 4 imagens</p>
+  <p class="settings-field-note image-format-note portfolio-format-note"><strong>Recomendado: 1200 × 900 px por imagem (4:3)</strong><br>JPG, PNG ou WebP • convertidas para WebP e reduzidas para 1200 px • até 5 MB cada • 4 imagens</p>
 </div>
 <div class="content-card site-settings-card" id="config-card-equipe">
   <div class="card-header"><div class="settings-card-title"><span class="settings-card-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="9" r="3"/><circle cx="17" cy="10" r="2.5"/><path d="M3.5 19c.5-3 2.4-4.5 5.5-4.5s5 1.5 5.5 4.5"/><path d="M14 15c2.8-.3 4.8 1 5.5 4"/></svg></span><div><span class="eyebrow">Equipe</span><h2>Conteúdo da equipe</h2><p>Conteúdo de apresentação da equipe exibido no site.</p></div></div></div>
@@ -1652,25 +1690,6 @@
   <div class="form-group"><label for="siteTextoBotaoGoogle">Texto do botão</label><input type="text" id="siteTextoBotaoGoogle" maxlength="40" placeholder="Ver no Google"></div>
   <div class="form-group"><label for="siteLinkAvaliacaoGoogle">Link para avaliação no Google</label><input type="url" id="siteLinkAvaliacaoGoogle" placeholder="https://g.page/.../review"><span class="settings-field-note">Cole aqui o link direto para o cliente deixar a avaliação.</span></div>
   <div class="settings-review-preview"><strong>Pré-visualização</strong><span>Use o botão abaixo para testar o link cadastrado.</span><button type="button" class="secondary-button settings-review-test" id="testGoogleReviewLink" disabled><span aria-hidden="true">↗</span> Testar link de avaliação</button></div>
-</div>
-<div class="content-card site-settings-card" id="config-card-imagem-principal">
-  <div class="card-header"><div class="settings-card-title"><span class="settings-card-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="8" cy="9" r="1.5"/><path d="m5 17 4-4 3 3 3-4 4 5"/></svg></span><div><span class="eyebrow">Imagem Principal</span><h2>Banner / imagem principal</h2><p>Defina a imagem principal da página inicial.</p></div></div></div>
-  <div class="image-upload-field image-upload-field-banner">
-    <div class="image-upload-preview image-upload-preview-banner" id="siteBannerPreviewWrap">
-      <img id="siteBannerPreview" class="image-upload-preview-img" alt="Pré-visualização da imagem principal" hidden>
-      <div class="image-upload-empty" id="siteBannerEmpty">Nenhuma imagem selecionada</div>
-      <button type="button" class="image-upload-remove" id="siteBannerRemoveButton" aria-label="Remover imagem principal" hidden>
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16"/><path d="M9 7V4h6v3"/><path d="M7 7l1 13h8l-1-13"/><path d="M10 11v5"/><path d="M14 11v5"/></svg>
-      </button>
-    </div>
-    <input type="file" id="siteBannerFile" class="image-upload-file-input" accept="image/jpeg,image/png" hidden>
-    <button type="button" class="image-upload-button" id="siteBannerUploadButton">
-      <span class="image-upload-button-icon" aria-hidden="true">↥</span>
-      <span>Alterar imagem</span>
-    </button>
-    <p class="settings-field-note image-format-note"><strong>Tamanho recomendado: 1920 × 1080 px</strong><br>Proporção 16:9 • JPG ou PNG • Máximo recomendado: 5 MB</p>
-    <p class="image-upload-status" id="siteBannerUploadStatus">Escolha uma imagem nos arquivos do computador ou celular.</p>
-  </div>
 </div>
 <div class="content-card site-settings-card" id="config-card-cores-e-fontes">
   <div class="card-header"><div class="settings-card-title"><span class="settings-card-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a9 9 0 0 0 0 18h1.2c1.1 0 1.8-1.2 1.2-2.2-.6-1 .1-2.3 1.3-2.3H17a4 4 0 0 0 4-4C21 7.1 17 3 12 3Z"/><circle cx="7.5" cy="10" r="1"/><circle cx="9" cy="6.5" r="1"/><circle cx="13" cy="6" r="1"/></svg></span><div><span class="eyebrow">Cores e Fontes</span><h2>Identidade visual</h2><p>Defina as cores e a tipografia do site.</p></div></div></div>
@@ -1741,25 +1760,6 @@
   <div class="fontes" role="radiogroup" aria-labelledby="fontesTitulo">
     <div class="identidade__subtitulo"><strong id="fontesTitulo">Fonte do site</strong><span>Clique para escolher. A prévia usa a própria fonte.</span></div>
     <div class="fontes__grupos" id="fontesGrupos"></div>
-  </div>
-</div>
-<div class="content-card site-settings-card" id="config-card-logo-da-barbearia">
-  <div class="card-header"><div class="settings-card-title"><span class="settings-card-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 19h14"/><path d="M7 19 8.5 9h7L17 19"/><path d="M9 9 12 4l3 5"/><path d="M10 13h4"/></svg></span><div><span class="eyebrow">Logo da Barbearia</span><h2>Identidade da marca</h2><p>Escolha a imagem da logo que será usada no site.</p></div></div></div>
-  <div class="image-upload-field image-upload-field-logo">
-    <div class="image-upload-preview image-upload-preview-square" id="siteLogoPreviewWrap">
-      <img id="siteLogoPreview" class="image-upload-preview-img" alt="Pré-visualização da logo da barbearia" hidden>
-      <div class="image-upload-empty" id="siteLogoEmpty">Nenhuma logo selecionada</div>
-      <button type="button" class="image-upload-remove" id="siteLogoRemoveButton" aria-label="Remover logo da barbearia" hidden>
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16"/><path d="M9 7V4h6v3"/><path d="M7 7l1 13h8l1-13"/><path d="M10 11v5"/><path d="M14 11v5"/></svg>
-      </button>
-    </div>
-    <input type="file" id="siteLogoFile" class="image-upload-file-input" accept="image/jpeg,image/png,image/svg+xml" hidden>
-    <button type="button" class="image-upload-button" id="siteLogoUploadButton">
-      <span class="image-upload-button-icon" aria-hidden="true">↥</span>
-      <span>Alterar logo</span>
-    </button>
-    <p class="settings-field-note image-format-note"><strong>Tamanho recomendado: 1000 × 1000 px</strong><br>Proporção 1:1 • PNG, JPG ou SVG • Máximo recomendado: 2 MB</p>
-    <p class="image-upload-status" id="siteLogoUploadStatus">Escolha uma logo nos arquivos do computador ou celular.</p>
   </div>
 </div>
 <div class="content-card site-settings-card" id="config-card-localizacao">
@@ -1945,10 +1945,12 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <script src="supabese.js"></script>
+<script src="tenant-cliente.js" data-modo="painel"></script>
 <script src="site-padrao.js"></script>
 
 <script src="proteger-admin.js"></script>
 
+<script src="imagem-webp.js"></script>
 <script src="painel-admin-.js"></script>
 
 <script src="site-tema.js"></script>

@@ -1446,3 +1446,30 @@ html body #configuracoes .seletor-cor__hex input {
         width: 100%;
     }
 }
+
+/* =====================================================================
+   BARBEARIA SUSPENSA — MODO CONSULTA
+   (o banco já recusa as alterações; aqui só deixamos isso claro)
+   ===================================================================== */
+.aviso-somente-consulta {
+    position: sticky;
+    top: 0;
+    z-index: 95;
+    margin: 0 0 18px;
+    padding: 12px 16px;
+    border: 1px solid color-mix(in srgb, var(--painel-alerta) 45%, transparent);
+    border-radius: 12px;
+    background: var(--painel-alerta-suave);
+    color: var(--painel-alerta);
+    font-size: 13px;
+    font-weight: 700;
+}
+
+body.somente-consulta .painel-salvar__botao,
+body.somente-consulta .primary-button,
+body.somente-consulta .image-upload-button,
+body.somente-consulta .image-upload-remove {
+    opacity: 0.45 !important;
+    pointer-events: none !important;
+    cursor: not-allowed !important;
+}

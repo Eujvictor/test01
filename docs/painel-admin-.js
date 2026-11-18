@@ -2,34 +2,8 @@
 // VERIFICA SE É O ADMINISTRADOR
 // ==========================================
 
-document.addEventListener("DOMContentLoaded", async function () {
-
-    const {
-        data: { user },
-        error
-    } = await window.supabaseClient.auth.getUser();
-
-    if (error || !user) {
-
-        window.location.href = "area-equipe.html";
-
-        return;
-
-    }
-
-    const adminEmail = "navalhadeouro@gmail.com";
-
-    if (user.email !== adminEmail) {
-
-        await window.supabaseClient.auth.signOut();
-
-        window.location.href = "area-equipe.html";
-
-        return;
-
-    }
-
-});
+// A verificação de acesso fica em proteger-admin.js (multi-tenant:
+// dono de qualquer barbearia vinculada; banco antigo: e-mail de referência).
 
 
 // ==========================================
@@ -6253,12 +6227,15 @@ markHorariosClean();
 
 /* =========================================================
    CONFIGURAÇÕES — SELEÇÃO DE IMAGENS
-   Portfólio (até 4), Banner e Logo.
-   Prévia local; não faz upload para o Supabase.
+   Identidade da marca (logo), Banner e Portfólio (até 4).
+   A imagem escolhida é convertida para WebP e redimensionada
+   no navegador; a prévia mostra exatamente o arquivo que será
+   enviado ao salvar (nenhum arquivo extra é criado).
    ========================================================= */
 
 (function initSiteImagePickers() {
-    const MAX_FILE_BYTES = 5 * 1024 * 1024;
+    const MAX_FILE_BYTES = 5 * 1024 * 1024;      // depois de converter
+    const MAX_ORIGINAL_BYTES = 15 * 1024 * 1024; // arquivo escolhido
 
     const portfolioFiles = new Map();
     const imageObjectUrls = new Map();
@@ -6276,7 +6253,9 @@ markHorariosClean();
         statusId,
         label,
         maxBytes,
-        allowedTypes
+        allowedTypes,
+        maxLado = 1600,
+        nomeArquivo = "imagem"
     }) {
         const button = document.getElementById(buttonId);
         const input = document.getElementById(inputId);
@@ -6322,8 +6301,9 @@ markHorariosClean();
             }
         }
 
-        function showFile(file) {
-            if (!file) return;
+        async function showFile(original) {
+            if (!original) return;
+            let file = original;
 
             if (!allowedTypes.includes(file.type)) {
                 alert(
@@ -6340,9 +6320,26 @@ markHorariosClean();
                 return;
             }
 
+            if (file.size > MAX_ORIGINAL_BYTES) {
+                alert(`${label} é muito grande (máximo ${getFileSizeLabel(MAX_ORIGINAL_BYTES)}).`);
+                input.value = "";
+                return;
+            }
+
+            if (window.ImagemWebp) {
+                if (status) status.textContent = "Otimizando a imagem…";
+                try {
+                    file = await window.ImagemWebp.converter(original, { maxLado, nome: nomeArquivo });
+                } catch (erro) {
+                    alert(erro.message || "Não foi possível processar a imagem.");
+                    input.value = "";
+                    return;
+                }
+            }
+
             if (file.size > maxBytes) {
                 alert(
-                    `${label} excede o limite recomendado de ${getFileSizeLabel(maxBytes)}.`
+                    `${label} excede o limite de ${getFileSizeLabel(maxBytes)} mesmo depois de otimizada.`
                 );
 
                 input.value = "";
@@ -6361,8 +6358,9 @@ markHorariosClean();
             remove.hidden = false;
 
             if (status) {
-                status.textContent =
-                    `${file.name} • ${getFileSizeLabel(file.size)}`;
+                status.textContent = file === original
+                    ? `${file.name} • ${getFileSizeLabel(file.size)}`
+                    : `${original.name} otimizada: ${file.type.replace("image/", "").toUpperCase()} • ${getFileSizeLabel(file.size)} (antes ${getFileSizeLabel(original.size)}). Será enviada ao salvar.`;
             }
 
             if (typeof markSettingsDirty === "function") {
@@ -6414,7 +6412,9 @@ markHorariosClean();
             removeId: `sitePortfolioRemoveButton${i}`,
             label: `a imagem do portfólio ${i}`,
             maxBytes: MAX_FILE_BYTES,
-            allowedTypes: ["image/jpeg", "image/png"]
+            allowedTypes: ["image/jpeg", "image/png", "image/webp"],
+            maxLado: 1200,
+            nomeArquivo: `imagem-${i}`
         });
     }
 
@@ -6428,7 +6428,9 @@ markHorariosClean();
         statusId: "siteBannerUploadStatus",
         label: "a imagem principal",
         maxBytes: MAX_FILE_BYTES,
-        allowedTypes: ["image/jpeg", "image/png"]
+        allowedTypes: ["image/jpeg", "image/png", "image/webp"],
+        maxLado: 1920,
+        nomeArquivo: "banner"
     });
 
     // Logo da barbearia.
@@ -6441,11 +6443,9 @@ markHorariosClean();
         statusId: "siteLogoUploadStatus",
         label: "a logo",
         maxBytes: 2 * 1024 * 1024,
-        allowedTypes: [
-            "image/jpeg",
-            "image/png",
-            "image/svg+xml"
-        ]
+        allowedTypes: ["image/jpeg", "image/png", "image/webp"],
+        maxLado: 512,
+        nomeArquivo: "logo"
     });
 })();
 
@@ -6566,6 +6566,9 @@ markHorariosClean();
 
     // URL salva de cada imagem (null = sem imagem)
     const savedImageUrls = {};
+
+    // URLs que estão gravadas no banco (para apagar arquivos não usados).
+    const urlsGravadas = {};
 
     function $(id) {
         return document.getElementById(id);
@@ -6709,6 +6712,7 @@ markHorariosClean();
 
             showSavedImage(slot, clean(url) || null);
         });
+        Object.assign(urlsGravadas, savedImageUrls);
 
         // Avaliações
         const savedReviews = parseJSON(row.avaliacoes, null);
@@ -6835,13 +6839,38 @@ markHorariosClean();
     // UPLOAD DAS IMAGENS
     // ------------------------------------------
 
-    async function uploadImage(slot, file) {
-        const ext = (file.name.split(".").pop() || "png")
-            .toLowerCase()
-            .replace(/[^a-z0-9]/g, "") || "png";
+    // Barbearia do painel (multi-tenant). Sem as migrações: null.
+    async function barbeariaId() {
+        const atual = window.BarbeariaAtual ? await window.BarbeariaAtual.pronta : null;
+        return atual && atual.modo === "multi" ? atual.id : null;
+    }
 
-        const path =
-            `${slot.folder}/${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
+    // Caminho fixo por barbearia e por uso:
+    // barbearias/<id>/identidade/logo.webp · banner/banner.webp · portfolio/imagem-N.webp
+    function caminhoDaImagem(slot, id, ext) {
+        if (slot.portfolio !== undefined) return `barbearias/${id}/portfolio/imagem-${slot.n}.${ext}`;
+        if (slot.column === "logo_url") return `barbearias/${id}/identidade/logo.${ext}`;
+        return `barbearias/${id}/banner/banner.${ext}`;
+    }
+
+    // URL pública → caminho no bucket (só arquivos da própria barbearia).
+    function caminhoDaUrl(url, id) {
+        if (!url || !id) return null;
+        const marca = `/${BUCKET}/`;
+        const posicao = url.indexOf(marca);
+        if (posicao < 0) return null;
+        const caminho = decodeURIComponent(url.slice(posicao + marca.length).split("?")[0]);
+        return caminho.startsWith(`barbearias/${id}/`) ? caminho : null;
+    }
+
+    async function uploadImage(slot, file) {
+        const ext = file.type === "image/webp" ? "webp" : file.type === "image/png" ? "png" : "jpg";
+        const id = await barbeariaId();
+
+        // Multi-tenant: mesmo caminho a cada troca (substitui o arquivo).
+        const path = id
+            ? caminhoDaImagem(slot, id, ext)
+            : `${slot.folder}/${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
 
         const { error } = await window.supabaseClient
             .storage
@@ -6849,7 +6878,7 @@ markHorariosClean();
             .upload(path, file, {
                 cacheControl: "3600",
                 contentType: file.type,
-                upsert: false
+                upsert: Boolean(id)
             });
 
         if (error) throw Object.assign(error, { slotLabel: slot.label });
@@ -6859,7 +6888,24 @@ markHorariosClean();
             .from(BUCKET)
             .getPublicUrl(path);
 
-        return data.publicUrl;
+        // ?v= faz o navegador buscar a imagem nova após uma substituição.
+        return id ? `${data.publicUrl}?v=${Date.now()}` : data.publicUrl;
+    }
+
+    // Apaga do Storage as imagens que deixaram de ser usadas (excluídas ou
+    // trocadas por outro formato). Falha aqui não desfaz o que foi salvo.
+    async function removerArquivosAntigos(antes, depois) {
+        const id = await barbeariaId();
+        if (!id) return;
+        const remover = [];
+        IMAGE_SLOTS.forEach((slot) => {
+            const anterior = caminhoDaUrl(antes[slot.inputId], id);
+            const atual = caminhoDaUrl(depois[slot.inputId], id);
+            if (anterior && anterior !== atual) remover.push(anterior);
+        });
+        if (!remover.length) return;
+        const { error } = await window.supabaseClient.storage.from(BUCKET).remove(remover);
+        if (error) console.warn("Não foi possível remover imagens antigas:", error);
     }
 
     function explainError(error) {
@@ -6867,7 +6913,11 @@ markHorariosClean();
         const lower = message.toLowerCase();
 
         if (lower.includes("bucket not found")) {
-            return "O armazenamento de imagens ainda não foi criado. Rode o arquivo sql/configuracoes_site.sql no Supabase.";
+            return "O armazenamento de imagens ainda não foi criado no Supabase (migração 20261118000007_tenant_storage.sql).";
+        }
+
+        if (lower.includes("mime") || lower.includes("payload too large") || lower.includes("exceeded the maximum")) {
+            return "Formato ou tamanho não aceito. Use JPG, PNG ou WebP de até 5 MB.";
         }
 
         if (lower.includes("column") || (error && error.code === "PGRST204")) {
@@ -6954,6 +7004,9 @@ markHorariosClean();
         IMAGE_SLOTS.forEach(slot => {
             savedImageUrls[slot.inputId] = imageUrls[slot.inputId] || null;
         });
+
+        await removerArquivosAntigos(urlsGravadas, imageUrls);
+        Object.assign(urlsGravadas, savedImageUrls);
 
         uploaded.forEach(slot => {
             const el = slotIds(slot);

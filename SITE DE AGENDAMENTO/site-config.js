@@ -11,7 +11,10 @@
     "use strict";
 
     const PADRAO = window.SITE_PADRAO || {};
-    const CACHE_KEY = "navalha_site_config_v1";
+    // Cache separado por barbearia (?b=slug), para não misturar conteúdos.
+    const CACHE_KEY = window.BarbeariaAtual
+        ? window.BarbeariaAtual.chaveCache("navalha_site_config_v1")
+        : "navalha_site_config_v1";
 
     const DIAS = [
         { key: "segunda", label: "Segunda" },

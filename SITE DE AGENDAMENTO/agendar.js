@@ -1007,22 +1007,29 @@ document.addEventListener("DOMContentLoaded", function () {
                 // 4. CRIAR AGENDAMENTO
                 //    ATRAVÉS DE FUNÇÃO SEGURA
                 // ==============================
-                const {
-                    data: appointmentId,
-                    error: appointmentError
-                } = await supabaseClient
+                const bookingParams = {
+                    p_nome: name,
+                    p_telefone: normalizedPhone,
+                    p_barbeiro_id: Number(selectedBarberId),
+                    p_servico_id: Number(selectedServiceId),
+                    p_data: selectedDate,
+                    p_horario: selectedTime
+                };
+                // Versão nova: devolve também o WhatsApp de destino (o telefone do
+                // barbeiro não fica público). Sem ela no banco, usa a versão antiga.
+                let serverWhatsapp;
+                let { data: bookingResult, error: appointmentError } = await supabaseClient
                     .schema("api")
-                    .rpc(
-                        "criar_agendamento_publico",
-                        {
-                            p_nome: name,
-                            p_telefone: normalizedPhone,
-                            p_barbeiro_id: Number(selectedBarberId),
-                            p_servico_id: Number(selectedServiceId),
-                            p_data: selectedDate,
-                            p_horario: selectedTime
-                        }
-                    );
+                    .rpc("criar_agendamento_publico_v2", bookingParams);
+                if (appointmentError && /PGRST202|could not find|does not exist/i.test(`${appointmentError.code} ${appointmentError.message}`)) {
+                    ({ data: bookingResult, error: appointmentError } = await supabaseClient
+                        .schema("api")
+                        .rpc("criar_agendamento_publico", bookingParams));
+                } else if (bookingResult && typeof bookingResult === "object") {
+                    serverWhatsapp = bookingResult.whatsapp || "";
+                    bookingResult = bookingResult.id;
+                }
+                const appointmentId = bookingResult;
                 if (appointmentError) {
                     console.error(
                         "Erro ao criar agendamento pela função segura:",
@@ -1054,18 +1061,22 @@ document.addEventListener("DOMContentLoaded", function () {
                     "Agendamento realizado com sucesso!"
                 );
                 confirmButton.disabled = true;
+                const barbeariaAtual = window.BarbeariaAtual ? await window.BarbeariaAtual.pronta : null;
+                const barbershopNameForMessage = (barbeariaAtual && barbeariaAtual.nome) || "Navalha de Ouro";
                 const whatsappConfig = scheduleSettings.whatsapp || {};
                 if (whatsappConfig.enabled) {
                     const configuredMode =
                         whatsappConfig.mode === "barbeiro" ? "barbeiro" : "barbearia";
-                    const targetPhone = configuredMode === "barbeiro"
-                        ? selectedBarberPhone
-                        : whatsappConfig.phone;
+                    const targetPhone = serverWhatsapp !== undefined
+                        ? serverWhatsapp
+                        : configuredMode === "barbeiro"
+                            ? selectedBarberPhone
+                            : whatsappConfig.phone;
                     const normalizedTargetPhone = normalizeWhatsappDestination(targetPhone);
                     if (normalizedTargetPhone) {
                         const formattedDate = formatBookingDateForWhatsapp(selectedDate);
                         const message = [
-                            "Olá! Gostaria de confirmar meu agendamento na Navalha de Ouro.",
+                            `Olá! Gostaria de confirmar meu agendamento na ${barbershopNameForMessage}.`,
                             "",
                             `🙋‍♂️Cliente: ${name}`,
                             `👨Barbeiro: ${selectedBarber}`,
