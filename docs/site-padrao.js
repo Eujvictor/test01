@@ -5,7 +5,7 @@
 // público (site-config.js) e o painel admin.
 // ==========================================
 
-window.SITE_PADRAO = Object.freeze({
+window.SITE_PADRAO_BASE = Object.freeze({
     nome_barbearia: "NAVALHA DE OURO",
     titulo_pagina: "Navalha de Ouro — Barbearia Premium",
     descricao_curta:
@@ -107,3 +107,53 @@ window.SITE_PADRAO = Object.freeze({
     texto_direitos_autorais:
         "© 2026 Navalha de Ouro. Todos os direitos reservados."
 });
+
+// Multi-tenant: os dados de identidade abaixo (nome, Instagram,
+// endereço, telefone, direitos) são da barbearia de referência.
+// Em outra barbearia eles são trocados por valores neutros, para
+// nunca exibir nome ou contato de uma barbearia no site de outra.
+(function () {
+    "use strict";
+
+    function referencia() {
+        const atual = window.BarbeariaAtual;
+        if (!atual) return true;
+        const slugRef = atual.slugReferencia || "navalha-de-ouro";
+        if (atual.atual) return atual.atual.modo !== "multi" || atual.atual.slug === slugRef;
+        if (atual.modo === "site") return !atual.slugPedido || atual.slugPedido === slugRef;
+        return true;
+    }
+
+    function nomeAtual() {
+        const atual = window.BarbeariaAtual && window.BarbeariaAtual.atual;
+        return (atual && atual.nome) || "";
+    }
+
+    const ano = new Date().getFullYear();
+    const NEUTRO = {
+        nome_barbearia: () => nomeAtual(),
+        titulo_pagina: () => (nomeAtual() ? `${nomeAtual()} — Barbearia` : "Barbearia"),
+        texto_identificacao: () => "BARBEARIA",
+        instagram: () => "",
+        endereco: () => "",
+        cidade: () => "",
+        estado: () => "",
+        telefone: () => "",
+        texto_direitos_autorais: () =>
+            `© ${ano}${nomeAtual() ? " " + nomeAtual() : ""}. Todos os direitos reservados.`
+    };
+
+    const base = window.SITE_PADRAO_BASE;
+    const padrao = {};
+    Object.keys(base).forEach((chave) => {
+        if (NEUTRO[chave]) {
+            Object.defineProperty(padrao, chave, {
+                enumerable: true,
+                get: () => (referencia() ? base[chave] : NEUTRO[chave]())
+            });
+        } else {
+            padrao[chave] = base[chave];
+        }
+    });
+    window.SITE_PADRAO = Object.freeze(padrao);
+})();

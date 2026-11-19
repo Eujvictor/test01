@@ -115,6 +115,11 @@
     }
 
     const pronta = identificar();
+    // Guarda a barbearia identificada (usado por site-padrao.js para não
+    // mostrar dados da barbearia de referência em outra barbearia).
+    pronta.then((estado) => {
+        if (window.BarbeariaAtual) window.BarbeariaAtual.atual = estado;
+    });
 
     // ------------------------------------------
     // Consultas: grava as chamadas e só executa depois de identificar
@@ -234,6 +239,8 @@
     window.BarbeariaAtual = {
         modo: MODO,
         slugPedido,
+        slugReferencia: SLUG_PADRAO,
+        atual: null,
         pronta,
         // Chave de cache por barbearia (site-config.js e site-tema.js).
         chaveCache(base) {

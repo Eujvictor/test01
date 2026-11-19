@@ -431,6 +431,11 @@
         setTexto('[data-site="endereco"]', endereco);
         setTexto('[data-site="telefone"]', valor(config, "telefone"));
 
+        // Esconde o bloco (título + valor) quando não há conteúdo.
+        document.querySelectorAll('.info-item [data-site="endereco_completo"], .info-item [data-site="telefone"]').forEach(el => {
+            el.closest(".info-item").hidden = !el.textContent.trim();
+        });
+
         const mapsBusca =
             `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
                 [endereco, cidade, estado, cep].filter(Boolean).join(", ")
