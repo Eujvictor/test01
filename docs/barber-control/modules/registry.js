@@ -36,12 +36,12 @@ export const MODULOS = [
     },
     {
         id: "usuarios", numero: 5, titulo: "Usuários", icone: "users", grupo: "gestao", fase: 2,
-        disponivel: true, demo: true, caminho: "./usuarios/index.js",
+        disponivel: true, demo: true, real: true, caminho: "./usuarios/index.js",
         planejado: ["Proprietários, barbeiros e funcionários", "Clientes", "Empresa vinculada", "Último acesso", "Suspensão e reativação", "Histórico de acesso"]
     },
     {
         id: "atividade", numero: 6, titulo: "Agendamentos e atividade", icone: "calendar-clock", grupo: "operacao", fase: 3,
-        disponivel: true, demo: true, caminho: "./atividade/index.js",
+        disponivel: true, demo: true, real: true, caminho: "./atividade/index.js",
         planejado: ["Agendamentos diários, semanais e mensais", "Cancelamentos", "Serviços mais utilizados", "Empresas mais ativas e inativas", "Horários de pico", "Identificação de falhas"]
     },
     {
@@ -111,7 +111,7 @@ export const MODULOS = [
     },
     {
         id: "auditoria", numero: 20, titulo: "Auditoria e acessos", icone: "scroll-text", grupo: "inteligencia", fase: 6,
-        disponivel: true, demo: true, caminho: "./auditoria/index.js",
+        disponivel: true, demo: true, real: true, caminho: "./auditoria/index.js",
         planejado: ["Histórico de login e sessões", "Operações administrativas", "Acessos suspeitos e IP", "Retenção", "Exportação de auditoria"]
     }
 ];

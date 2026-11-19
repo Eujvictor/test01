@@ -61,6 +61,23 @@ Abra o endereço mostrado e entre em `login.html` (sem `?demo`).
 7. No Master, **Suspender** a Barbearia Teste → o site dela mostra "indisponível" e o painel
    dela fica só para consulta. **Ativar** de novo → volta ao normal.
 
+## 6. Migração 09 — Visão geral, Agendamentos, Usuários e Auditoria com dados reais
+
+`supabase/migrations/20261119000009_master_leitura.sql` (SQL Editor → colar → Run).
+Só cria funções de leitura em `control_api` (exigem Master + duas etapas) e um índice
+em `agendamentos (barbearia_id, data)`. Não altera tabelas nem dados.
+
+- **Visão geral**: totais de todas as barbearias + tabela por barbearia.
+- **Agendamentos e atividade**: período, status, receita estimada, gráficos e lista
+  (sem telefone de clientes), por barbearia ou geral, com exportação CSV.
+- **Usuários**: administradores, donos/gerentes e contas sem vínculo; ativar/desativar
+  o acesso de um dono ao painel (com auditoria).
+- **Auditoria**: eventos da trilha imutável com filtros e detalhes; tentativas de login
+  no Barber Control, com alerta de IP com muitas falhas.
+
+Testes (19/11/2026): banco 106/106 (PostgreSQL 16), telas 37/37 com a API simulada,
+celular sem rolagem lateral, modo demonstração 22/22.
+
 ## Situação dos testes (18/11/2026)
 
 - Funções do Master no banco: testadas em PostgreSQL 16 (76/76).

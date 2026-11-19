@@ -5,6 +5,7 @@
 // operações de todos os módulos. Registros locais e alteráveis: NÃO é
 // uma trilha de auditoria inviolável nem prova de segurança.
 // =====================================================================
+import { MODO_DEMO } from "../../js/demo.js";
 import * as AU from "../../services/demo/auditoria.js";
 import { STATUS_SESSAO } from "../../services/demo/catalogo.js";
 import { html, icone, renderizar, bruto } from "../../js/utilities/dom.js";
@@ -314,7 +315,13 @@ const RENDER = {
     operacoes: (c) => secaoEventos(c, "operacao"), sessoes: secaoSessoes, retencao: secaoRetencao
 };
 
-export function render(view, { parametros = [] }) {
+export async function render(view, contexto) {
+    // Fora do modo demonstração: dados reais do Supabase (Master + MFA).
+    if (!MODO_DEMO) {
+        const real = await import("./real.js");
+        return real.render(view, contexto);
+    }
+    const { parametros = [] } = contexto;
     const ativa = SECOES.some(([r]) => r === parametros[0]) ? parametros[0] : "";
     const recarregar = () => render(view, { parametros });
     const ctx = molduraComAbas(view, {

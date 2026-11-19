@@ -7,13 +7,10 @@ import { carregarVisaoGeral } from "../../js/dashboard.js";
 import { html, renderizar, icone, $, definirCarregando } from "../../js/utilities/dom.js";
 import { numero, dataHora, tempoRelativo, mesAtual } from "../../js/utilities/format.js";
 import { mostrarToast } from "../../js/utilities/feedback.js";
-
-const ROTULOS_ACAO = {
-    login: { texto: "Login realizado", icone: "log-in" },
-    logout: { texto: "Logout", icone: "log-out" },
-    sessao_expirada: { texto: "Sessão expirada por inatividade", icone: "timer-off" },
-    mfa_ativado: { texto: "Verificação em duas etapas ativada", icone: "shield-check" }
-};
+import { criarTabela } from "../../js/components/tabela.js";
+import { badgeStatus } from "../../js/components/ui.js";
+import { STATUS_BARBEARIA } from "../../services/demo/catalogo.js";
+import { rotuloAcao, resumoDetalhes } from "../compartilhado/rotulos-auditoria.js";
 
 function kpi({ rotulo, valor, iconeNome, nota }) {
     const indisponivel = valor === null || valor === undefined;
@@ -71,6 +68,7 @@ function secaoOperacao(resultado, demo = false) {
             ${kpi({ rotulo: "Clientes", valor: b.clientes, iconeNome: "users", nota: notaTabela(b.clientes, "clientes") })}
             ${kpi({ rotulo: "Agendamentos no mês", valor: b.agendamentos_mes, iconeNome: "calendar-check", nota: notaTabela(b.agendamentos_mes, "agendamentos") })}
             ${kpi({ rotulo: "Cancelamentos no mês", valor: b.cancelamentos_mes, iconeNome: "calendar-x", nota: notaTabela(b.cancelamentos_mes, "agendamentos.status") })}
+            ${b.agendamentos_hoje !== undefined ? kpi({ rotulo: "Agendamentos hoje", valor: b.agendamentos_hoje, iconeNome: "calendar-clock", nota: demo ? "Valor fictício" : "Sem os cancelados" }) : ""}
         </div>`;
 }
 
@@ -94,13 +92,14 @@ function cardAtividades(resultado) {
     } else {
         corpo = html`<ul class="lista">
             ${resultado.value.map((item) => {
-                const rotulo = ROTULOS_ACAO[item.acao] ?? { texto: item.acao, icone: "dot" };
+                const rotulo = rotuloAcao(item.acao);
+                const resumo = resumoDetalhes(item);
                 return html`
                     <li class="lista__item">
                         <span class="lista__icone">${icone(rotulo.icone)}</span>
                         <div class="lista__conteudo">
                             <div class="lista__titulo">${rotulo.texto}</div>
-                            <div class="lista__meta">${item.ator_email ?? "sistema"}${item.ip ? ` · IP ${item.ip}` : ""}</div>
+                            <div class="lista__meta">${item.ator_email ?? "sistema"}${resumo ? ` · ${resumo}` : ""}${item.ip ? ` · IP ${item.ip}` : ""}</div>
                         </div>
                         <time class="lista__meta" datetime="${item.ocorrido_em}" title="${dataHora(item.ocorrido_em)}">${tempoRelativo(item.ocorrido_em)}</time>
                     </li>`;
@@ -111,7 +110,7 @@ function cardAtividades(resultado) {
         <section class="card">
             <div class="card__cabecalho">
                 <h2 class="card__titulo">Atividade recente</h2>
-                <span class="badge">Auditoria</span>
+                <a class="badge" href="#/auditoria">Ver auditoria</a>
             </div>
             ${corpo}
         </section>`;
@@ -195,12 +194,16 @@ async function montar(container, contexto) {
                 <h2 class="secao__titulo">Operação · ${mesAtual()}</h2>
                 ${dados.demo
                     ? html`<span class="badge badge--atencao">Dados fictícios</span>`
-                    : html`<span class="badge badge--ouro" title="O Barber ainda é de empresa única. Os números passam a ser por barbearia após a migração multi-tenant.">
-                        Dados reais · Navalha de Ouro (tenant único)
-                    </span>`}
+                    : html`<span class="badge badge--ouro">Dados reais · todas as barbearias</span>`}
             </div>
             ${secaoOperacao(dados.resumo, dados.demo)}
         </section>
+
+        ${dados.resumo.status === "fulfilled" && Array.isArray(dados.resumo.value?.por_barbearia) ? html`
+        <section class="secao">
+            <div class="secao__cabecalho"><h2 class="secao__titulo">Por barbearia · ${mesAtual()}</h2><a class="badge" href="#/atividade">Ver atividade</a></div>
+            <section class="card"><div data-por-barbearia></div></section>
+        </section>` : ""}
 
         <section class="secao">
             <div class="secao__cabecalho"><h2 class="secao__titulo">Financeiro</h2></div>
@@ -212,6 +215,24 @@ async function montar(container, contexto) {
             ${cardIntegracoes(dados)}
         </div>
     `);
+
+    const alvo = container.querySelector("[data-por-barbearia]");
+    if (alvo) {
+        const tabela = criarTabela({
+            colunas: [
+                { chave: "nome", rotulo: "Barbearia", render: (b) => html`<a class="link-forte" href="#/barbearias/${b.id}">${b.nome}</a><span class="celula-sub">?b=${b.slug}</span>` },
+                { chave: "status", rotulo: "Status", valor: (b) => STATUS_BARBEARIA[b.status]?.rotulo, render: (b) => badgeStatus(STATUS_BARBEARIA, b.status) },
+                { chave: "barbeiros", rotulo: "Barbeiros", classe: "col-num", valor: (b) => Number(b.barbeiros), render: (b) => numero(b.barbeiros) },
+                { chave: "clientes", rotulo: "Clientes", classe: "col-num", valor: (b) => Number(b.clientes), render: (b) => numero(b.clientes) },
+                { chave: "agendamentos_mes", rotulo: "Agend. no mês", classe: "col-num", valor: (b) => Number(b.agendamentos_mes), render: (b) => numero(b.agendamentos_mes) },
+                { chave: "cancelamentos_mes", rotulo: "Cancel. no mês", classe: "col-num", valor: (b) => Number(b.cancelamentos_mes), render: (b) => numero(b.cancelamentos_mes) },
+                { chave: "ultimo_agendamento", rotulo: "Último agendamento", valor: (b) => b.ultimo_agendamento ?? "", render: (b) => (b.ultimo_agendamento ? tempoRelativo(b.ultimo_agendamento) : "Nenhum") }
+            ],
+            ordenacao: { chave: "agendamentos_mes", direcao: "desc" }, vazio: "Nenhuma barbearia cadastrada.", rotulo: "Barbearias"
+        });
+        alvo.appendChild(tabela.elemento);
+        tabela.definirLinhas(dados.resumo.value.por_barbearia);
+    }
 
     $("#btnAtualizar", container).addEventListener("click", async (evento) => {
         const botao = evento.currentTarget;

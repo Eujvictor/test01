@@ -4,6 +4,7 @@
 //        #/usuarios/<id>       → perfil
 // Usuários fictícios: nenhuma conta de acesso real é criada ou alterada.
 // =====================================================================
+import { MODO_DEMO } from "../../js/demo.js";
 import * as S from "../../services/demo/saas.js";
 import { STATUS_USUARIO, STATUS_BARBEARIA, TIPOS_USUARIO, opcoes } from "../../services/demo/catalogo.js";
 import { html, icone, renderizar } from "../../js/utilities/dom.js";
@@ -229,7 +230,13 @@ function renderPerfil(view, id) {
     });
 }
 
-export function render(view, { parametros = [] }) {
+export async function render(view, contexto) {
+    // Fora do modo demonstração: dados reais do Supabase (Master + MFA).
+    if (!MODO_DEMO) {
+        const real = await import("./real.js");
+        return real.render(view, contexto);
+    }
+    const { parametros = [] } = contexto;
     if (parametros[0]) renderPerfil(view, parametros[0]);
     else renderLista(view);
 }
