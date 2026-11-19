@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none" role="img" aria-label="Barber Control">
+  <rect x="2" y="2" width="60" height="60" rx="14" fill="#111111" stroke="#C6A568" stroke-opacity="0.55" stroke-width="2"/>
+  <rect x="24" y="12" width="16" height="40" rx="8" stroke="#C6A568" stroke-width="2.4"/>
+  <path d="M25 24 L39 18 M25 33 L39 27 M25 42 L39 36" stroke="#DCC18B" stroke-width="2.4" stroke-linecap="round"/>
+</svg>

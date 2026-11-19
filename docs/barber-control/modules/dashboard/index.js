@@ -1,0 +1,231 @@
+// =====================================================================
+// MÓDULO 01 — VISÃO GERAL (versão inicial da Fase 1)
+// Somente dados reais. Indicadores sem fonte aparecem como
+// "indisponível" com o motivo — nunca com números de exemplo.
+// =====================================================================
+import { carregarVisaoGeral } from "../../js/dashboard.js";
+import { html, renderizar, icone, $, definirCarregando } from "../../js/utilities/dom.js";
+import { numero, dataHora, tempoRelativo, mesAtual } from "../../js/utilities/format.js";
+import { mostrarToast } from "../../js/utilities/feedback.js";
+
+const ROTULOS_ACAO = {
+    login: { texto: "Login realizado", icone: "log-in" },
+    logout: { texto: "Logout", icone: "log-out" },
+    sessao_expirada: { texto: "Sessão expirada por inatividade", icone: "timer-off" },
+    mfa_ativado: { texto: "Verificação em duas etapas ativada", icone: "shield-check" }
+};
+
+function kpi({ rotulo, valor, iconeNome, nota }) {
+    const indisponivel = valor === null || valor === undefined;
+    return html`
+        <article class="card kpi ${indisponivel ? "kpi--indisponivel" : ""}">
+            <div class="kpi__topo">
+                <span>${rotulo}</span>
+                <span class="kpi__icone">${icone(iconeNome)}</span>
+            </div>
+            <div class="kpi__valor num">${indisponivel ? "Indisponível" : numero(valor)}</div>
+            <div class="kpi__nota">${nota}</div>
+        </article>`;
+}
+
+function kpiPendente({ rotulo, iconeNome, motivo }) {
+    return html`
+        <article class="card kpi kpi--indisponivel">
+            <div class="kpi__topo">
+                <span>${rotulo}</span>
+                <span class="kpi__icone">${icone(iconeNome)}</span>
+            </div>
+            <div class="kpi__valor">Aguardando integração</div>
+            <div class="kpi__nota">${motivo}</div>
+        </article>`;
+}
+
+function blocoErro(mensagem) {
+    return html`
+        <div class="alerta alerta--erro">${icone("octagon-alert")}<span>${mensagem}</span></div>`;
+}
+
+function secaoPlataforma(resultado) {
+    if (resultado.status === "rejected") return blocoErro(resultado.reason?.message ?? "Falha ao carregar indicadores.");
+    const p = resultado.value?.plataforma ?? {};
+    return html`
+        <div class="grade grade--kpi">
+            ${kpi({ rotulo: "Barbearias", valor: p.total, iconeNome: "store", nota: "Cadastradas no Barber Control" })}
+            ${kpi({ rotulo: "Ativas", valor: p.ativas, iconeNome: "circle-check", nota: "Status ativa" })}
+            ${kpi({ rotulo: "Em teste", valor: p.teste, iconeNome: "flask-conical", nota: "Período de avaliação" })}
+            ${kpi({ rotulo: "Suspensas", valor: p.suspensas, iconeNome: "circle-pause", nota: "Acesso interrompido" })}
+            ${kpi({ rotulo: "Proprietários", valor: p.proprietarios, iconeNome: "user-round", nota: "E-mails distintos informados" })}
+        </div>`;
+}
+
+function secaoOperacao(resultado, demo = false) {
+    if (resultado.status === "rejected") return blocoErro(resultado.reason?.message ?? "Falha ao carregar indicadores.");
+    const b = resultado.value?.barber ?? {};
+    const notaTabela = (valor, origem) => {
+        if (demo) return "Valor fictício";
+        return valor === null || valor === undefined ? `Tabela ${origem} não pôde ser lida` : `Fonte: ${origem}`;
+    };
+    return html`
+        <div class="grade grade--kpi">
+            ${kpi({ rotulo: "Barbeiros", valor: b.barbeiros, iconeNome: "scissors", nota: notaTabela(b.barbeiros, "BARBEIROS") })}
+            ${kpi({ rotulo: "Clientes", valor: b.clientes, iconeNome: "users", nota: notaTabela(b.clientes, "clientes") })}
+            ${kpi({ rotulo: "Agendamentos no mês", valor: b.agendamentos_mes, iconeNome: "calendar-check", nota: notaTabela(b.agendamentos_mes, "agendamentos") })}
+            ${kpi({ rotulo: "Cancelamentos no mês", valor: b.cancelamentos_mes, iconeNome: "calendar-x", nota: notaTabela(b.cancelamentos_mes, "agendamentos.status") })}
+        </div>`;
+}
+
+function secaoFinanceiro() {
+    const motivo = "Mercado Pago · Fase 2";
+    return html`
+        <div class="grade grade--kpi">
+            ${kpiPendente({ rotulo: "Receita recorrente mensal", iconeNome: "trending-up", motivo })}
+            ${kpiPendente({ rotulo: "Receita recorrente anual", iconeNome: "calendar-range", motivo })}
+            ${kpiPendente({ rotulo: "Pagamentos pendentes", iconeNome: "hourglass", motivo })}
+        </div>`;
+}
+
+function cardAtividades(resultado) {
+    let corpo;
+    if (resultado.status === "rejected") {
+        corpo = html`<div class="card__corpo">${blocoErro(resultado.reason?.message ?? "Falha ao carregar a auditoria.")}</div>`;
+    } else if (!resultado.value?.length) {
+        corpo = html`<div class="estado"><div class="estado__icone">${icone("scroll-text")}</div>
+            <h3>Nenhuma atividade registrada</h3><p>Os eventos de acesso aparecem aqui assim que forem auditados.</p></div>`;
+    } else {
+        corpo = html`<ul class="lista">
+            ${resultado.value.map((item) => {
+                const rotulo = ROTULOS_ACAO[item.acao] ?? { texto: item.acao, icone: "dot" };
+                return html`
+                    <li class="lista__item">
+                        <span class="lista__icone">${icone(rotulo.icone)}</span>
+                        <div class="lista__conteudo">
+                            <div class="lista__titulo">${rotulo.texto}</div>
+                            <div class="lista__meta">${item.ator_email ?? "sistema"}${item.ip ? ` · IP ${item.ip}` : ""}</div>
+                        </div>
+                        <time class="lista__meta" datetime="${item.ocorrido_em}" title="${dataHora(item.ocorrido_em)}">${tempoRelativo(item.ocorrido_em)}</time>
+                    </li>`;
+            })}
+        </ul>`;
+    }
+    return html`
+        <section class="card">
+            <div class="card__cabecalho">
+                <h2 class="card__titulo">Atividade recente</h2>
+                <span class="badge">Auditoria</span>
+            </div>
+            ${corpo}
+        </section>`;
+}
+
+function linhaIntegracao({ nome, descricao, estado }) {
+    const estilos = {
+        ok: { classe: "badge--sucesso", texto: "Operacional" },
+        erro: { classe: "badge--erro", texto: "Falha" },
+        pendente: { classe: "badge--atencao", texto: "Não configurado" }
+    }[estado];
+    return html`
+        <li class="lista__item">
+            <div class="lista__conteudo">
+                <div class="lista__titulo">${nome}</div>
+                <div class="lista__meta">${descricao}</div>
+            </div>
+            <span class="badge ${estilos.classe}"><span class="ponto"></span>${estilos.texto}</span>
+        </li>`;
+}
+
+function cardIntegracoes(dados) {
+    if (dados.demo) {
+        return html`
+            <section class="card">
+                <div class="card__cabecalho">
+                    <h2 class="card__titulo">Integrações</h2>
+                    <span class="badge badge--atencao">Demonstração</span>
+                </div>
+                <div class="estado">
+                    <div class="estado__icone">${icone("plug-zap")}</div>
+                    <h3>Integrações não verificadas</h3>
+                    <p>No modo demonstração o painel não se conecta ao Supabase nem às Edge Functions.</p>
+                </div>
+            </section>`;
+    }
+    const banco = dados.resumo.status === "fulfilled";
+    const funcao = dados.servidor.status === "fulfilled" && dados.servidor.value?.ok;
+    return html`
+        <section class="card">
+            <div class="card__cabecalho">
+                <h2 class="card__titulo">Integrações</h2>
+                <span class="badge num">${dados.latenciaMs} ms</span>
+            </div>
+            <ul class="lista">
+                ${linhaIntegracao({
+                    nome: "Banco de dados (control_api)",
+                    descricao: banco ? "RPCs protegidas por administrador + MFA" : (dados.resumo.reason?.message ?? "Sem resposta"),
+                    estado: banco ? "ok" : "erro"
+                })}
+                ${linhaIntegracao({
+                    nome: "Edge Function control-admin",
+                    descricao: funcao ? `Versão ${dados.servidor.value.versao}` : (dados.servidor.reason?.message ?? "Sem resposta"),
+                    estado: funcao ? "ok" : "erro"
+                })}
+                ${linhaIntegracao({ nome: "Mercado Pago", descricao: "Assinaturas e pagamentos · Fase 2", estado: "pendente" })}
+            </ul>
+        </section>`;
+}
+
+async function montar(container, contexto) {
+    const dados = await carregarVisaoGeral();
+    const geradoEm = dados.resumo.status === "fulfilled" ? dados.resumo.value?.gerado_em : null;
+
+    renderizar(container, html`
+        <header class="pagina-cabecalho">
+            <div>
+                <h1>Visão geral</h1>
+                <p>${geradoEm ? `Atualizado ${tempoRelativo(geradoEm)} · ${dataHora(geradoEm)}` : "Indicadores da plataforma Barber"}</p>
+            </div>
+            <button class="btn" type="button" id="btnAtualizar">${icone("refresh-cw")}<span class="btn__texto-opcional">Atualizar</span></button>
+        </header>
+
+        <section class="secao">
+            <div class="secao__cabecalho"><h2 class="secao__titulo">Plataforma</h2></div>
+            ${secaoPlataforma(dados.resumo)}
+        </section>
+
+        <section class="secao">
+            <div class="secao__cabecalho">
+                <h2 class="secao__titulo">Operação · ${mesAtual()}</h2>
+                ${dados.demo
+                    ? html`<span class="badge badge--atencao">Dados fictícios</span>`
+                    : html`<span class="badge badge--ouro" title="O Barber ainda é de empresa única. Os números passam a ser por barbearia após a migração multi-tenant.">
+                        Dados reais · Navalha de Ouro (tenant único)
+                    </span>`}
+            </div>
+            ${secaoOperacao(dados.resumo, dados.demo)}
+        </section>
+
+        <section class="secao">
+            <div class="secao__cabecalho"><h2 class="secao__titulo">Financeiro</h2></div>
+            ${secaoFinanceiro()}
+        </section>
+
+        <div class="grade grade--2">
+            ${cardAtividades(dados.atividades)}
+            ${cardIntegracoes(dados)}
+        </div>
+    `);
+
+    $("#btnAtualizar", container).addEventListener("click", async (evento) => {
+        const botao = evento.currentTarget;
+        definirCarregando(botao, true, "Atualizando…");
+        try {
+            await montar(container, contexto);
+            mostrarToast("Indicadores atualizados.", "sucesso", 2500);
+        } catch (erro) {
+            definirCarregando(botao, false);
+            mostrarToast(erro.message || "Falha ao atualizar.", "erro");
+        }
+    });
+}
+
+export async function render(container, contexto) {
+    await montar(container, contexto);
+}

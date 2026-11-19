@@ -1,0 +1,305 @@
+/* =====================================================================
+   BARBER CONTROL — EVOLUÇÃO DO SAAS (Fase 5)
+   Versões, funcionalidades, histórico, Kanban e roadmap.
+   ===================================================================== */
+
+.texto-erro {
+    color: #F0A9A6;
+}
+
+.celula-normal {
+    font-size: var(--fs-sm);
+    font-weight: 500;
+    text-transform: none;
+    letter-spacing: 0;
+    color: var(--texto);
+    background: none;
+}
+
+/* ---------- Barra de progresso (distribuição) ---------- */
+.barra-progresso {
+    height: 10px;
+    border-radius: var(--raio-full);
+    background: var(--bg-elevado);
+    overflow: hidden;
+    margin-bottom: var(--e-2);
+}
+
+.barra-progresso__valor {
+    display: block;
+    height: 100%;
+    width: 0;
+    background: var(--c-ouro);
+    border-radius: var(--raio-full);
+    transition: width 400ms cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+/* ---------- Linha do tempo das versões ---------- */
+.timeline__marcador--publicada { border-color: var(--c-sucesso); background: var(--c-sucesso); }
+.timeline__marcador--cancelada { border-color: var(--c-erro); }
+.timeline__marcador--planejada { border-color: var(--texto-terc); }
+.timeline__conteudo p .badge { margin-left: var(--e-2); vertical-align: middle; }
+
+/* ---------- Três conceitos (módulo 14) ---------- */
+.conceitos {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--e-3);
+    margin-bottom: var(--e-4);
+}
+
+.conceito {
+    display: flex;
+    gap: var(--e-3);
+    align-items: flex-start;
+    padding: var(--e-4);
+    border: 1px solid var(--borda);
+    border-radius: var(--raio);
+    background: var(--bg-card);
+}
+
+.conceito .lucide {
+    color: var(--acento);
+    margin-top: 2px;
+}
+
+.conceito strong {
+    display: block;
+    color: var(--c-branco);
+    font-size: var(--fs-sm);
+}
+
+.conceito span {
+    font-size: var(--fs-xs);
+    color: var(--texto-sec);
+}
+
+/* ---------- Matriz de planos ---------- */
+.matriz--planos th[scope="col"] {
+    min-width: 110px;
+}
+
+.matriz__grupo th {
+    padding-top: var(--e-4);
+    font-size: var(--fs-xs);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--acento);
+    background: none;
+    text-align: left;
+}
+
+.celula-plano {
+    width: 34px;
+    height: 34px;
+    display: inline-grid;
+    place-items: center;
+    border: 1px dashed var(--borda-forte);
+    border-radius: var(--raio-sm);
+    background: transparent;
+    color: var(--texto-terc);
+    transition: background var(--t-rapida), border-color var(--t-rapida), color var(--t-rapida);
+}
+
+.celula-plano:hover {
+    border-color: var(--borda-ouro);
+    color: var(--acento);
+}
+
+.celula-plano.is-incluida {
+    border-style: solid;
+    border-color: rgba(54, 168, 121, 0.45);
+    background: var(--sucesso-suave);
+    color: #8FD6B6;
+}
+
+/* ---------- Kanban ---------- */
+.kanban {
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: minmax(250px, 1fr);
+    gap: var(--e-4);
+    overflow-x: auto;
+    padding-bottom: var(--e-3);
+    scroll-snap-type: x proximity;
+}
+
+.kanban__coluna {
+    display: flex;
+    flex-direction: column;
+    min-height: 220px;
+    border: 1px solid var(--borda);
+    border-radius: var(--raio-lg);
+    background: rgba(255, 255, 255, 0.015);
+    scroll-snap-align: start;
+    transition: border-color var(--t-rapida), background var(--t-rapida);
+}
+
+.kanban__coluna.is-alvo {
+    border-color: var(--borda-ouro);
+    background: var(--acento-suave);
+}
+
+.kanban__cabecalho {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--e-3) var(--e-4);
+    border-bottom: 1px solid var(--borda);
+}
+
+.kanban__cabecalho h3 {
+    font-size: var(--fs-sm);
+}
+
+.kanban__lista {
+    display: grid;
+    gap: var(--e-3);
+    padding: var(--e-3);
+    align-content: start;
+}
+
+.kanban__cartao {
+    display: grid;
+    gap: var(--e-2);
+    padding: var(--e-3) var(--e-4);
+    border: 1px solid var(--borda-forte);
+    border-radius: var(--raio);
+    background: var(--bg-card);
+    cursor: grab;
+    transition: border-color var(--t-rapida), transform var(--t-rapida), opacity var(--t-rapida);
+}
+
+.kanban__cartao:hover {
+    border-color: var(--borda-ouro);
+}
+
+.kanban__cartao.is-arrastando {
+    opacity: 0.5;
+    transform: rotate(1deg);
+}
+
+.kanban__topo,
+.kanban__rodape {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--e-2);
+    font-size: var(--fs-xs);
+}
+
+.kanban__titulo {
+    font-size: var(--fs-sm);
+    line-height: 1.35;
+}
+
+.kanban__meta {
+    font-size: var(--fs-xs);
+    color: var(--texto-terc);
+}
+
+.kanban__rodape {
+    color: var(--texto-sec);
+}
+
+.kanban__setas {
+    display: inline-flex;
+    margin-left: auto;
+}
+
+.kanban__vazio {
+    padding: var(--e-4) 0;
+    text-align: center;
+    font-size: var(--fs-xs);
+    color: var(--texto-terc);
+}
+
+/* ---------- Roadmap cronológico ---------- */
+.roadmap {
+    display: grid;
+    gap: var(--e-5);
+}
+
+.roadmap__trimestre {
+    border: 1px solid var(--borda);
+    border-radius: var(--raio-lg);
+    background: var(--bg-card);
+}
+
+.roadmap__trimestre.is-atual {
+    border-color: var(--borda-ouro);
+}
+
+.roadmap__cabecalho {
+    display: flex;
+    align-items: center;
+    gap: var(--e-3);
+    padding: var(--e-4) var(--e-6);
+    border-bottom: 1px solid var(--borda);
+}
+
+.roadmap__cabecalho h3 {
+    font-size: var(--fs-md);
+}
+
+.roadmap__lista {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.roadmap__item {
+    display: grid;
+    grid-template-columns: 96px minmax(0, 1fr);
+    gap: var(--e-4);
+    padding: var(--e-4) var(--e-6);
+    border-bottom: 1px solid var(--borda);
+    border-left: 3px solid transparent;
+}
+
+.roadmap__item:last-child {
+    border-bottom: 0;
+}
+
+.roadmap__item--versao {
+    border-left-color: var(--c-ouro);
+}
+
+.roadmap__item--ideia {
+    border-left-color: var(--texto-terc);
+}
+
+.roadmap__data {
+    font-size: var(--fs-sm);
+    color: var(--texto-sec);
+}
+
+.roadmap__etiquetas {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin: 6px 0;
+}
+
+/* ---------- Responsividade ---------- */
+@media (max-width: 900px) {
+    .conceitos {
+        grid-template-columns: minmax(0, 1fr);
+    }
+}
+
+@media (max-width: 640px) {
+    .roadmap__item {
+        grid-template-columns: minmax(0, 1fr);
+        gap: var(--e-1);
+        padding: var(--e-4);
+    }
+
+    .roadmap__cabecalho {
+        padding: var(--e-4);
+    }
+
+    .kanban {
+        grid-auto-columns: minmax(240px, 85%);
+    }
+}

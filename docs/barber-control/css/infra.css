@@ -1,0 +1,211 @@
+/* =====================================================================
+   BARBER CONTROL — SEGURANÇA, MONITORAMENTO E BACKUPS (Fase 4)
+   ===================================================================== */
+
+.secao-nota {
+    margin-bottom: var(--e-4);
+}
+
+.com-icone {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.com-icone .lucide {
+    width: 15px;
+    height: 15px;
+    color: var(--texto-terc);
+}
+
+.celula-limite {
+    display: block;
+    max-width: 380px;
+    white-space: normal;
+}
+
+.celula-sub--normal {
+    font-size: var(--fs-sm);
+    color: var(--texto-sec);
+}
+
+.acao-recomendada {
+    margin: var(--e-4) 0 0;
+}
+
+.pagina-cabecalho--secao {
+    margin-bottom: var(--e-5);
+}
+
+.pagina-cabecalho--secao h2 {
+    font-size: var(--fs-lg);
+}
+
+/* ---------- Permissões ---------- */
+.segmentos--compacto {
+    margin: 0;
+}
+
+.segmentos--compacto .segmentos__item {
+    height: 30px;
+    font-size: var(--fs-xs);
+}
+
+.chips--linha {
+    display: inline-flex;
+    margin: 0;
+}
+
+.matriz-bloco {
+    padding: var(--e-5);
+    border-bottom: 1px solid var(--borda);
+}
+
+.matriz-bloco:last-child {
+    border-bottom: 0;
+}
+
+.matriz th[scope="row"] {
+    font-size: var(--fs-sm);
+    font-weight: 500;
+    text-transform: none;
+    letter-spacing: 0;
+    color: var(--texto);
+    background: none;
+}
+
+.tabela .col-centro {
+    text-align: center;
+}
+
+.marca-sim .lucide {
+    color: var(--c-sucesso);
+}
+
+.marca-nao .lucide {
+    color: var(--texto-terc);
+}
+
+.matriz tr.is-revogado {
+    opacity: 0.55;
+}
+
+/* ---------- Verificação de segurança ---------- */
+.grade--verificacao {
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: var(--e-4);
+    align-items: start;
+    margin-top: var(--e-5);
+}
+
+.verificacao-card .card__cabecalho {
+    align-items: flex-start;
+}
+
+/* ---------- Serviços ---------- */
+.grade--servicos {
+    grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+    gap: var(--e-4);
+    align-items: start;
+}
+
+.servico-card {
+    border-top: 3px solid var(--borda-forte);
+}
+
+.servico-card--operacional { border-top-color: var(--c-sucesso); }
+.servico-card--atencao,
+.servico-card--degradado { border-top-color: var(--c-atencao); }
+.servico-card--indisponivel { border-top-color: var(--c-erro); }
+.servico-card--nao_monitorado { border-top-color: var(--texto-terc); border-top-style: dashed; }
+
+.servico-card .card__corpo > p {
+    margin-bottom: var(--e-3);
+}
+
+.mini-historico {
+    display: grid;
+    grid-template-columns: repeat(14, minmax(0, 1fr));
+    gap: 3px;
+    margin-top: var(--e-4);
+}
+
+.mini-historico__dia {
+    height: 22px;
+    border-radius: 3px;
+    background: var(--c-sucesso);
+    opacity: 0.85;
+}
+
+.mini-historico__dia.is-atencao { background: var(--c-atencao); }
+.mini-historico__dia.is-falha { background: var(--c-erro); }
+
+/* ---------- Etapas de recuperação ---------- */
+.etapas {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: var(--e-3);
+}
+
+.etapas__item {
+    display: flex;
+    align-items: center;
+    gap: var(--e-3);
+    font-size: var(--fs-sm);
+    color: var(--texto-sec);
+}
+
+.etapas__numero {
+    width: 26px;
+    height: 26px;
+    flex-shrink: 0;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    border: 1px solid var(--borda-forte);
+    font-size: var(--fs-xs);
+    font-weight: 600;
+    color: var(--texto-sec);
+}
+
+.etapas__numero .lucide {
+    width: 14px;
+    height: 14px;
+}
+
+.etapas--progresso {
+    margin: var(--e-4) 0;
+}
+
+.etapas__item.is-feita {
+    color: var(--texto);
+}
+
+.etapas__item.is-feita .etapas__numero {
+    border-color: var(--c-sucesso);
+    background: var(--sucesso-suave);
+    color: #8FD6B6;
+}
+
+.etapas__item.is-atual {
+    color: var(--c-branco);
+    font-weight: 500;
+}
+
+.etapas__item.is-atual .etapas__numero {
+    border-color: var(--c-ouro);
+    background: var(--acento-suave);
+    color: var(--c-ouro-claro);
+}
+
+@media (max-width: 640px) {
+    .celula-limite {
+        max-width: 240px;
+    }
+
+    .matriz-bloco {
+        padding: var(--e-4);
+    }
+}

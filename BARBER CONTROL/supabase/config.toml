@@ -1,0 +1,10 @@
+# Configuração das Edge Functions do Barber Control (Supabase CLI).
+# A validação de JWT é feita dentro de cada função.
+
+project_id = "cjwmzbknarafinftpqsv"
+
+[functions.control-login]
+verify_jwt = false
+
+[functions.control-admin]
+verify_jwt = false

@@ -1,0 +1,89 @@
+/* =====================================================================
+   BARBER CONTROL — TOKENS DE DESIGN
+   Conceito: Premium Black & Champagne Gold
+   ===================================================================== */
+:root {
+    /* Paleta oficial */
+    --c-preto: #111111;
+    --c-grafite: #202020;
+    --c-grafite-2: #292929;
+    --c-ouro: #C6A568;
+    --c-ouro-claro: #DCC18B;
+    --c-branco: #FFFFFF;
+    --c-off: #F5F2EA;
+    --c-cinza: #A1A1AA;
+    --c-sucesso: #36A879;
+    --c-erro: #D9534F;
+    --c-atencao: #D6A64D;
+
+    /* Superfícies */
+    --bg-app: #161616;
+    --bg-sidebar: var(--c-preto);
+    --bg-card: var(--c-grafite);
+    --bg-elevado: var(--c-grafite-2);
+    --bg-input: #1A1A1A;
+    --bg-hover: rgba(255, 255, 255, 0.04);
+
+    /* Bordas */
+    --borda: rgba(255, 255, 255, 0.07);
+    --borda-forte: rgba(255, 255, 255, 0.12);
+    --borda-ouro: rgba(198, 165, 104, 0.35);
+
+    /* Texto */
+    --texto: var(--c-off);
+    --texto-sec: var(--c-cinza);
+    --texto-terc: #6E6E76;
+    --texto-sobre-ouro: #17140E;
+
+    /* Acento (usar com moderação) */
+    --acento: var(--c-ouro);
+    --acento-hover: var(--c-ouro-claro);
+    --acento-suave: rgba(198, 165, 104, 0.10);
+
+    /* Estados */
+    --sucesso-suave: rgba(54, 168, 121, 0.12);
+    --erro-suave: rgba(217, 83, 79, 0.12);
+    --atencao-suave: rgba(214, 166, 77, 0.12);
+
+    /* Tipografia */
+    --fonte: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    --fonte-num: "Inter", system-ui, sans-serif;
+    --fs-xs: 0.75rem;
+    --fs-sm: 0.8125rem;
+    --fs-base: 0.875rem;
+    --fs-md: 1rem;
+    --fs-lg: 1.25rem;
+    --fs-xl: 1.625rem;
+    --fs-2xl: 2rem;
+
+    /* Espaçamento (escala de 4px) */
+    --e-1: 4px;
+    --e-2: 8px;
+    --e-3: 12px;
+    --e-4: 16px;
+    --e-5: 20px;
+    --e-6: 24px;
+    --e-8: 32px;
+    --e-10: 40px;
+    --e-12: 48px;
+
+    /* Forma */
+    --raio-sm: 6px;
+    --raio: 10px;
+    --raio-lg: 14px;
+    --raio-full: 999px;
+
+    --sombra: 0 1px 0 rgba(255, 255, 255, 0.03) inset, 0 8px 24px rgba(0, 0, 0, 0.25);
+    --sombra-modal: 0 24px 64px rgba(0, 0, 0, 0.55);
+
+    /* Movimento */
+    --t-rapida: 120ms ease;
+    --t: 200ms cubic-bezier(0.2, 0.7, 0.2, 1);
+
+    /* Layout */
+    --sidebar-w: 268px;
+    --topbar-h: 64px;
+    --conteudo-max: 1400px;
+
+    color-scheme: dark;
+}

@@ -1,0 +1,110 @@
+/* =====================================================================
+   BARBER CONTROL — RESPONSIVIDADE
+   ===================================================================== */
+
+@media (max-width: 1180px) {
+    .grade--2 {
+        grid-template-columns: minmax(0, 1fr);
+    }
+}
+
+@media (max-width: 1024px) {
+    .app {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .sidebar {
+        position: fixed;
+        inset: 0 auto 0 0;
+        width: min(var(--sidebar-w), 86vw);
+        transform: translateX(-100%);
+        transition: transform var(--t);
+    }
+
+    body.menu-aberto .sidebar {
+        transform: none;
+        box-shadow: var(--sombra-modal);
+    }
+
+    .sobreposicao {
+        position: fixed;
+        inset: 0;
+        z-index: 35;
+        background: rgba(0, 0, 0, 0.55);
+    }
+
+    body.menu-aberto .sobreposicao {
+        display: block;
+    }
+
+    .topbar {
+        padding: 0 var(--e-4);
+    }
+
+    .btn.topbar__menu {
+        display: inline-flex;
+    }
+
+    .view {
+        padding: var(--e-6) var(--e-4);
+    }
+
+    .login {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .login__marca {
+        display: none;
+    }
+
+    .login__marca-movel {
+        display: flex !important;
+        margin-bottom: var(--e-8);
+    }
+}
+
+@media (max-width: 640px) {
+    .usuario__info {
+        display: none;
+    }
+
+    .usuario {
+        border-right: 0;
+        padding-right: 0;
+    }
+
+    .grade--kpi {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: var(--e-3);
+    }
+
+    .kpi {
+        padding: var(--e-4);
+        min-height: 112px;
+    }
+
+    .kpi__valor {
+        font-size: var(--fs-xl);
+    }
+
+    .card__cabecalho,
+    .card__corpo,
+    .lista__item {
+        padding-left: var(--e-4);
+        padding-right: var(--e-4);
+    }
+
+    .pagina-cabecalho h1 {
+        font-size: var(--fs-lg);
+    }
+
+    .btn__texto-opcional {
+        display: none;
+    }
+}
+
+@media (max-width: 380px) {
+    .grade--kpi {
+        grid-template-columns: minmax(0, 1fr);
+    }
+}

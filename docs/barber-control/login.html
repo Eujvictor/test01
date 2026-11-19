@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="noindex, nofollow">
+    <title>Entrar · Barber Control</title>
+    <link rel="icon" href="assets/images/logo.svg" type="image/svg+xml">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+    <link rel="stylesheet" href="css/variables.css">
+    <link rel="stylesheet" href="css/global.css">
+    <link rel="stylesheet" href="css/layout.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/responsive.css">
+</head>
+<body>
+    <main class="login">
+        <section class="login__marca" aria-hidden="true">
+            <div class="marca">
+                <img class="marca__simbolo" src="assets/images/logo.svg" alt="">
+                <div class="marca__nome">
+                    <span class="marca__titulo">BARBER <span>CONTROL</span></span>
+                    <span class="marca__sub">Central administrativa</span>
+                </div>
+            </div>
+
+            <div class="login__chamada">
+                <h1>Toda a operação do Barber em um só lugar.</h1>
+                <p>Barbearias, assinaturas, faturamento, segurança e crescimento, com acesso exclusivo do proprietário.</p>
+                <ul class="login__lista">
+                    <li><i data-lucide="shield-check"></i>Verificação em duas etapas obrigatória</li>
+                    <li><i data-lucide="lock-keyhole"></i>Autorização validada no servidor</li>
+                    <li><i data-lucide="scroll-text"></i>Todos os acessos auditados</li>
+                </ul>
+            </div>
+
+            <p class="login__aviso-legal">Acesso restrito. Tentativas não autorizadas são registradas.</p>
+        </section>
+
+        <section class="login__painel">
+            <div class="login__cartao">
+                <div class="marca login__marca-movel" hidden>
+                    <img class="marca__simbolo" src="assets/images/logo.svg" alt="">
+                    <div class="marca__nome">
+                        <span class="marca__titulo">BARBER <span>CONTROL</span></span>
+                        <span class="marca__sub">Central administrativa</span>
+                    </div>
+                </div>
+
+                <div id="alerta" class="alerta" role="alert" hidden></div>
+
+                <!-- Carregando -->
+                <div data-etapa="carregando">
+                    <div class="estado"><span class="spinner" aria-hidden="true"></span><p>Verificando sessão…</p></div>
+                </div>
+
+                <!-- Etapa 1: credenciais -->
+                <div data-etapa="credenciais" hidden>
+                    <h2>Entrar</h2>
+                    <p class="texto-sec">Use a conta de administrador do Barber.</p>
+                    <form id="formCredenciais" novalidate>
+                        <label class="campo">
+                            <span class="campo__rotulo">E-mail</span>
+                            <input class="entrada" id="email" name="email" type="email" autocomplete="username" required maxlength="254">
+                        </label>
+                        <label class="campo">
+                            <span class="campo__rotulo">Senha</span>
+                            <input class="entrada" id="senha" name="senha" type="password" autocomplete="current-password" required maxlength="128">
+                        </label>
+                        <button class="btn btn--primario btn--bloco" type="submit">Continuar</button>
+                    </form>
+                    <div class="login__demo" id="blocoDemo" hidden>
+                        <p>Ambiente local: visualize a interface com dados fictícios.</p>
+                        <a class="btn btn--bloco login__voltar" href="dashboard.html?demo">Ver demonstração</a>
+                    </div>
+                </div>
+
+                <!-- Etapa 2: primeiro acesso — cadastro do autenticador -->
+                <div data-etapa="mfa-cadastro" hidden>
+                    <h2>Ative a verificação em duas etapas</h2>
+                    <p class="texto-sec">Escaneie o QR code com Google Authenticator, Microsoft Authenticator ou outro app compatível com TOTP.</p>
+                    <div class="login__mfa-qr"><img id="mfaQr" alt="QR code para o aplicativo autenticador" width="168" height="168"></div>
+                    <span class="campo__ajuda">Ou digite a chave manualmente:</span>
+                    <code class="login__segredo" id="mfaSegredo"></code>
+                    <form id="formMfaCadastro" novalidate>
+                        <label class="campo">
+                            <span class="campo__rotulo">Código de 6 dígitos</span>
+                            <input class="entrada entrada--codigo" name="codigo" inputmode="numeric" autocomplete="one-time-code" maxlength="6" pattern="[0-9]{6}" required>
+                        </label>
+                        <button class="btn btn--primario btn--bloco" type="submit">Ativar e entrar</button>
+                    </form>
+                    <button class="btn btn--fantasma login__voltar" type="button" data-acao="voltar">Usar outra conta</button>
+                </div>
+
+                <!-- Etapa 3: código do autenticador -->
+                <div data-etapa="mfa-codigo" hidden>
+                    <h2>Verificação em duas etapas</h2>
+                    <p class="texto-sec">Digite o código exibido no seu aplicativo autenticador.</p>
+                    <form id="formMfaCodigo" novalidate>
+                        <label class="campo">
+                            <span class="campo__rotulo">Código de 6 dígitos</span>
+                            <input class="entrada entrada--codigo" name="codigo" inputmode="numeric" autocomplete="one-time-code" maxlength="6" pattern="[0-9]{6}" required>
+                        </label>
+                        <button class="btn btn--primario btn--bloco" type="submit">Verificar</button>
+                    </form>
+                    <button class="btn btn--fantasma login__voltar" type="button" data-acao="voltar">Usar outra conta</button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script src="https://unpkg.com/lucide@0.460.0/dist/umd/lucide.min.js"></script>
+    <script type="module" src="js/login.js"></script>
+</body>
+</html>

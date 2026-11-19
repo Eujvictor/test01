@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="noindex, nofollow">
+    <title>Barber Control</title>
+    <link rel="icon" href="assets/images/logo.svg" type="image/svg+xml">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+    <link rel="stylesheet" href="css/variables.css">
+    <link rel="stylesheet" href="css/global.css">
+    <link rel="stylesheet" href="css/layout.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/gestao.css">
+    <link rel="stylesheet" href="css/operacao.css">
+    <link rel="stylesheet" href="css/infra.css">
+    <link rel="stylesheet" href="css/evolucao.css">
+    <link rel="stylesheet" href="css/inteligencia.css">
+    <link rel="stylesheet" href="css/responsive.css">
+    <!-- Busca em paralelo os módulos compartilhados (evita o carregamento em cascata). -->
+    <link rel="modulepreload" href="js/app.js">
+    <link rel="modulepreload" href="js/auth.js">
+    <link rel="modulepreload" href="js/navigation.js">
+    <link rel="modulepreload" href="js/demo.js">
+    <link rel="modulepreload" href="js/utilities/dom.js">
+    <link rel="modulepreload" href="js/utilities/format.js">
+    <link rel="modulepreload" href="js/utilities/feedback.js">
+    <link rel="modulepreload" href="js/components/ui.js">
+    <link rel="modulepreload" href="js/components/tabela.js">
+    <link rel="modulepreload" href="js/components/formulario.js">
+    <link rel="modulepreload" href="js/components/abas.js">
+    <link rel="modulepreload" href="js/components/grafico.js">
+    <link rel="modulepreload" href="js/components/painel.js">
+    <link rel="modulepreload" href="services/control-api.js">
+    <link rel="modulepreload" href="services/demo/catalogo.js">
+    <link rel="modulepreload" href="services/demo/seed.js">
+    <link rel="modulepreload" href="services/demo/seed-operacao.js">
+    <link rel="modulepreload" href="services/demo/store.js">
+    <link rel="modulepreload" href="services/demo/saas.js">
+    <link rel="modulepreload" href="services/demo/operacao.js">
+    <link rel="modulepreload" href="services/demo/seed-infra.js">
+    <link rel="modulepreload" href="services/demo/infra.js">
+    <link rel="modulepreload" href="services/demo/seed-evolucao.js">
+    <link rel="modulepreload" href="services/demo/evolucao.js">
+    <link rel="modulepreload" href="services/demo/indicadores.js">
+    <link rel="modulepreload" href="services/demo/configuracoes.js">
+    <link rel="modulepreload" href="modules/registry.js">
+    <link rel="modulepreload" href="config/app.config.js">
+</head>
+<body class="is-booting">
+    <div class="boot" aria-live="polite">
+        <div class="boot__conteudo" id="bootConteudo">
+            <img src="assets/images/logo.svg" alt="" width="48" height="48">
+            <span class="spinner" aria-hidden="true"></span>
+            <p class="texto-sec">Validando acesso administrativo…</p>
+        </div>
+    </div>
+
+    <div class="app">
+        <aside class="sidebar" id="sidebar" aria-label="Navegação principal">
+            <div class="sidebar__topo">
+                <a class="marca" href="#/dashboard">
+                    <img class="marca__simbolo" src="assets/images/logo.svg" alt="">
+                    <span class="marca__nome">
+                        <span class="marca__titulo">BARBER <span>CONTROL</span></span>
+                        <span class="marca__sub">Central administrativa</span>
+                    </span>
+                </a>
+            </div>
+            <nav class="sidebar__nav" id="nav"></nav>
+            <div class="sidebar__rodape">Versão <span id="versao"></span></div>
+        </aside>
+
+        <div class="sobreposicao" id="sobreposicao"></div>
+
+        <div class="principal">
+            <header class="topbar">
+                <button class="btn btn--fantasma btn--icone topbar__menu" id="btnMenu" type="button" aria-label="Abrir menu" aria-controls="sidebar">
+                    <i data-lucide="menu"></i>
+                </button>
+                <h1 class="topbar__titulo" id="tituloPagina">Visão geral</h1>
+                <div class="topbar__acoes">
+                    <div class="usuario">
+                        <span class="usuario__avatar" id="usuarioAvatar" aria-hidden="true"></span>
+                        <span class="usuario__info">
+                            <span class="usuario__email" id="usuarioEmail"></span>
+                            <span class="usuario__papel">Proprietário · MFA ativo</span>
+                        </span>
+                    </div>
+                    <button class="btn btn--fantasma" id="btnSair" type="button">
+                        <i data-lucide="log-out"></i><span class="btn__texto-opcional">Sair</span>
+                    </button>
+                </div>
+            </header>
+
+            <main class="view" id="view" tabindex="-1"></main>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/lucide@0.460.0/dist/umd/lucide.min.js"></script>
+    <script type="module" src="js/app.js"></script>
+</body>
+</html>
