@@ -11,17 +11,19 @@ export async function carregarVisaoGeral() {
     if (MODO_DEMO) return await visaoGeralDemo();
 
     const inicio = performance.now();
-    const [resumo, atividades, servidor, financeiro] = await Promise.allSettled([
+    const [resumo, atividades, servidor, financeiro, suporte] = await Promise.allSettled([
         rpc("painel_resumo"),
         rpc("listar_auditoria", { p_limite: 8 }),
         statusServidor(),
-        rpc("financeiro_resumo", { p_meses: 1 })
+        rpc("financeiro_resumo", { p_meses: 1 }),
+        rpc("suporte_resumo")
     ]);
     return {
         resumo,
         atividades,
         servidor,
         financeiro,
+        suporte,
         latenciaMs: Math.round(performance.now() - inicio)
     };
 }

@@ -78,6 +78,21 @@ em `agendamentos (barbearia_id, data)`. Não altera tabelas nem dados.
 Testes (19/11/2026): banco 106/106 (PostgreSQL 16), telas 37/37 com a API simulada,
 celular sem rolagem lateral, modo demonstração 22/22.
 
+## 7. Migração 11: Suporte e Notificações
+
+Arquivo: `supabase/migrations/20261123000011_suporte_comunicados.sql`.
+
+- **Suporte:** o dono abre chamados pelo painel dele (botão "Suporte") e você responde em **Suporte** no Barber Control. Também é ali que você muda a situação e a prioridade do chamado. A resposta aparece para o dono assinada como "Suporte Barber".
+- **Notificações:** os comunicados vão para todas as barbearias ou só para algumas. Dá para agendar a publicação e marcar uma data para sair do ar. Eles aparecem no topo do painel do dono até ele clicar em "Entendi", e você acompanha quantos já leram.
+- **O que não acontece:** nenhum e-mail ou WhatsApp é enviado. Tudo fica dentro dos painéis.
+
+| Teste (23/11/2026) | Resultado |
+|---|---|
+| Banco, migrações 01 a 11 | 194/194 |
+| Telas do Barber Control | 16/16 |
+| Painel da barbearia | 14/14 |
+| Regressões | todas passando |
+
 ## Situação dos testes (18/11/2026)
 
 - Funções do Master no banco: testadas em PostgreSQL 16 (76/76).

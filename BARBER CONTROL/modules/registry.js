@@ -46,12 +46,12 @@ export const MODULOS = [
     },
     {
         id: "suporte", numero: 7, titulo: "Suporte", icone: "life-buoy", grupo: "operacao", fase: 3,
-        disponivel: true, demo: true, caminho: "./suporte/index.js",
+        disponivel: true, demo: true, real: true, caminho: "./suporte/index.js",
         planejado: ["Central de chamados", "Protocolo, categoria e prioridade", "Anexos e respostas", "Observações internas", "Tempo de resolução", "Suporte assistido com autorização"]
     },
     {
         id: "notificacoes", numero: 8, titulo: "Notificações", icone: "bell", grupo: "operacao", fase: 3,
-        disponivel: true, demo: true, caminho: "./notificacoes/index.js",
+        disponivel: true, demo: true, real: true, caminho: "./notificacoes/index.js",
         planejado: ["Comunicados e avisos", "Segmentação por plano", "Avisos de manutenção", "Modelos de mensagens", "Histórico e status de entrega"]
     },
     {

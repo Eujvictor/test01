@@ -1739,3 +1739,265 @@ body.somente-consulta .assinatura-aviso__botao {
         justify-content: space-between;
     }
 }
+
+/* =====================================================================
+   SUPORTE E COMUNICADOS DO BARBER
+   ===================================================================== */
+.senha-abrir .suporte-contador {
+    margin-left: auto;
+    min-width: 20px;
+    padding: 1px 6px;
+    border-radius: 999px;
+    background: var(--painel-erro);
+    color: #fff;
+    font-size: 11px;
+    font-weight: 800;
+    text-align: center;
+}
+
+.suporte-modal {
+    max-width: 600px;
+}
+
+.suporte-conteudo {
+    margin-top: 14px;
+}
+
+.suporte-topo {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 14px;
+}
+
+.suporte-ajuda,
+.suporte-vazio {
+    margin: 0;
+    color: var(--muted);
+    font-size: 13px;
+}
+
+.suporte-acao {
+    min-height: 38px;
+    padding: 6px 16px;
+}
+
+.suporte-lista {
+    display: grid;
+    gap: 8px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    max-height: 52vh;
+    overflow-y: auto;
+}
+
+.suporte-item {
+    width: 100%;
+    display: grid;
+    gap: 4px;
+    padding: 12px 14px;
+    border: 1px solid var(--border);
+    border-radius: var(--painel-raio-sm, 12px);
+    background: transparent;
+    color: var(--text);
+    text-align: left;
+    cursor: pointer;
+}
+
+.suporte-item:hover {
+    border-color: rgba(214, 179, 106, 0.45);
+}
+
+.suporte-item.is-novo {
+    border-color: color-mix(in srgb, var(--painel-alerta) 55%, transparent);
+    background: var(--painel-alerta-suave);
+}
+
+.suporte-item__linha {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    align-items: center;
+}
+
+.suporte-item__linha strong {
+    font-size: 14px;
+}
+
+.suporte-item__sub,
+.suporte-item__previa {
+    color: var(--muted);
+    font-size: 12px;
+}
+
+.suporte-item__previa {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.suporte-selo {
+    flex-shrink: 0;
+    padding: 3px 9px;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    color: var(--secondary);
+    font-size: 11px;
+    font-weight: 800;
+}
+
+.is-novo .suporte-selo,
+.suporte-selo.is-respondido {
+    color: var(--painel-alerta);
+    border-color: color-mix(in srgb, var(--painel-alerta) 45%, transparent);
+}
+
+.suporte-selo.is-resolvido {
+    color: var(--painel-ok);
+    border-color: color-mix(in srgb, var(--painel-ok) 45%, transparent);
+}
+
+.suporte-chamado__cabecalho {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    align-items: center;
+    margin-bottom: 12px;
+    color: var(--text);
+}
+
+.suporte-conversa {
+    display: grid;
+    gap: 10px;
+    margin: 0 0 12px;
+    padding: 0;
+    list-style: none;
+    max-height: 40vh;
+    overflow-y: auto;
+}
+
+.suporte-msg {
+    max-width: 85%;
+    padding: 10px 12px;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    background: var(--painel-campo);
+}
+
+.suporte-msg.is-suporte {
+    justify-self: end;
+    border-color: rgba(214, 179, 106, 0.45);
+    background: color-mix(in srgb, var(--gold) 10%, transparent);
+}
+
+.suporte-msg__topo {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 4px;
+    font-size: 12px;
+    color: var(--secondary);
+}
+
+.suporte-msg__topo time {
+    color: var(--muted);
+}
+
+.suporte-msg p {
+    margin: 0;
+    color: var(--text);
+    font-size: 13px;
+    white-space: pre-line;
+}
+
+.suporte-form textarea,
+.suporte-form input,
+.suporte-form select {
+    width: 100%;
+}
+
+.suporte-erro {
+    min-height: 18px;
+    margin: 6px 0;
+    color: var(--painel-erro);
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.comunicado-aviso {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 14px;
+    margin: 0 0 14px;
+    padding: 12px 16px;
+    border: 1px solid rgba(214, 179, 106, 0.45);
+    border-radius: 12px;
+    background: color-mix(in srgb, var(--gold) 9%, transparent);
+    color: var(--text);
+}
+
+.comunicado-aviso.is-alta {
+    border-color: color-mix(in srgb, var(--painel-erro) 50%, transparent);
+    background: var(--painel-erro-suave);
+}
+
+.comunicado-aviso__texto strong {
+    display: block;
+    margin-bottom: 2px;
+    font-size: 14px;
+}
+
+.comunicado-aviso__texto p {
+    margin: 0;
+    color: var(--secondary);
+    font-size: 13px;
+    white-space: pre-line;
+}
+
+.comunicado-aviso__botao {
+    flex-shrink: 0;
+    min-height: 34px;
+    padding: 6px 14px;
+    border: 1px solid currentColor;
+    border-radius: 10px;
+    background: transparent;
+    color: var(--gold);
+    font-weight: 800;
+    cursor: pointer;
+}
+
+/* Barbearia suspensa: suporte e comunicados continuam funcionando. */
+body.somente-consulta .suporte-modal .primary-button,
+body.somente-consulta .comunicado-aviso__botao {
+    opacity: 1 !important;
+    pointer-events: auto !important;
+    cursor: pointer !important;
+}
+
+/* Menu lateral: com mais botões no rodapé, rola em telas baixas
+   em vez de espremer o "Sair". */
+@media (min-width: 0px) {
+    .sidebar {
+        overflow-y: auto;
+        overscroll-behavior: contain;
+    }
+
+    .sidebar > * {
+        flex-shrink: 0;
+    }
+}
+
+@media (max-height: 820px) {
+    .sidebar-rodape .senha-abrir {
+        min-height: 36px;
+        margin-top: 6px;
+    }
+
+    .sidebar-rodape .tema-alternar {
+        min-height: 38px;
+    }
+}

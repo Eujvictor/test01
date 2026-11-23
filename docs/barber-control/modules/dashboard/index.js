@@ -232,6 +232,16 @@ async function montar(container, contexto) {
             <section class="card"><div data-por-barbearia></div></section>
         </section>` : ""}
 
+        ${dados.suporte?.status === "fulfilled" && dados.suporte.value ? html`
+        <section class="secao">
+            <div class="secao__cabecalho"><h2 class="secao__titulo">Suporte e comunicados</h2><a class="badge" href="#/suporte">Abrir suporte</a></div>
+            <div class="grade grade--kpi">
+                ${kpi({ rotulo: "Chamados sem resposta", valor: dados.suporte.value.nao_lidos, iconeNome: "mail-warning", nota: "Mensagens novas das barbearias" })}
+                ${kpi({ rotulo: "Chamados em andamento", valor: dados.suporte.value.abertos, iconeNome: "life-buoy", nota: `${numero(dados.suporte.value.criticos)} com prioridade alta` })}
+                ${kpi({ rotulo: "Comunicados no ar", valor: dados.suporte.value.comunicados_no_ar, iconeNome: "megaphone", nota: "Aparecendo nos painéis" })}
+            </div>
+        </section>` : ""}
+
         <section class="secao">
             <div class="secao__cabecalho"><h2 class="secao__titulo">Financeiro</h2></div>
             ${secaoFinanceiro(dados.financeiro)}

@@ -6,6 +6,7 @@
 // ou SMS é enviado. O suporte assistido NÃO dá acesso a contas: apenas
 // registra o pedido e a autorização explícita do cliente.
 // =====================================================================
+import { MODO_DEMO } from "../../js/demo.js";
 import * as S from "../../services/demo/saas.js";
 import * as O from "../../services/demo/operacao.js";
 import {
@@ -429,7 +430,13 @@ function renderDetalhe(view, id) {
     });
 }
 
-export function render(view, { parametros = [] }) {
+export async function render(view, contexto) {
+    // Fora do modo demonstração: dados reais do Supabase (Master + MFA).
+    if (!MODO_DEMO) {
+        const real = await import("./real.js");
+        return real.render(view, contexto);
+    }
+    const { parametros = [] } = contexto;
     if (parametros[0]) renderDetalhe(view, parametros[0]);
     else renderLista(view);
 }

@@ -469,3 +469,22 @@
 
 .grafico__barra--erro { fill: var(--c-erro); }
 .grafico__ponto:hover .grafico__barra--erro { fill: #E06561; }
+
+/* ---------- Suporte (modo real) ---------- */
+.ponto--novo {
+    display: inline-block;
+    vertical-align: middle;
+    color: var(--acento);
+}
+
+.formulario-linha {
+    display: grid;
+    gap: var(--e-3);
+    margin-top: var(--e-5);
+    padding-top: var(--e-4);
+    border-top: 1px solid var(--borda);
+}
+
+.formulario-linha .campo {
+    margin-bottom: 0;
+}
