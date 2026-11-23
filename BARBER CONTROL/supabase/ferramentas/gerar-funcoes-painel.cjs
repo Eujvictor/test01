@@ -13,7 +13,7 @@ fs.mkdirSync(destino, { recursive: true });
 
 const compartilhado = fs.readFileSync(path.join(base, "_shared", "http.ts"), "utf8");
 
-for (const nome of ["control-login", "control-admin"]) {
+for (const nome of ["control-login", "control-admin", "cobranca"]) {
     const fonte = fs.readFileSync(path.join(base, nome, "index.ts"), "utf8");
     const linhaImport = /^import \{[^}]+\} from "\.\.\/_shared\/http\.ts";\r?\n/m;
     if (!linhaImport.test(fonte)) throw new Error(`${nome}: import de _shared/http.ts não encontrado`);

@@ -26,12 +26,12 @@ export const MODULOS = [
     },
     {
         id: "assinaturas", numero: 3, titulo: "Assinaturas e planos", icone: "badge-check", grupo: "gestao", fase: 2,
-        disponivel: true, demo: true, caminho: "./assinaturas/index.js",
+        disponivel: true, demo: true, real: true, caminho: "./assinaturas/index.js",
         planejado: ["Cadastro e arquivamento de planos", "Preços mensais e anuais", "Períodos de teste", "Limites de uso", "Assinaturas via Mercado Pago", "Renovações e cancelamentos", "Cupons e descontos", "Histórico de alterações"]
     },
     {
         id: "financeiro", numero: 4, titulo: "Financeiro", icone: "wallet", grupo: "gestao", fase: 2,
-        disponivel: true, demo: true, caminho: "./financeiro/index.js",
+        disponivel: true, demo: true, real: true, caminho: "./financeiro/index.js",
         planejado: ["Receita bruta e líquida", "MRR e ARR", "Pagamentos Mercado Pago", "Pendências e inadimplência", "Taxas do gateway", "Despesas e fluxo de caixa", "Ticket médio", "Exportação de relatórios"]
     },
     {

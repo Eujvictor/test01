@@ -8,3 +8,6 @@ verify_jwt = false
 
 [functions.control-admin]
 verify_jwt = false
+
+[functions.cobranca]
+verify_jwt = false

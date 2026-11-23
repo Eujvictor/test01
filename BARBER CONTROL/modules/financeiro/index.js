@@ -5,6 +5,7 @@
 // Valores fictícios. Nenhum gateway de pagamento está conectado;
 // as taxas por método são estimativas fixas usadas só na demonstração.
 // =====================================================================
+import { MODO_DEMO } from "../../js/demo.js";
 import * as S from "../../services/demo/saas.js";
 import { STATUS_TRANSACAO, METODOS_PAGAMENTO, PERIODOS, PERIODICIDADES, opcoes } from "../../services/demo/catalogo.js";
 import { html, icone, renderizar } from "../../js/utilities/dom.js";
@@ -218,7 +219,13 @@ function renderTransacao(view, id) {
         </div>`);
 }
 
-export function render(view, { parametros = [] }) {
+export async function render(view, contexto) {
+    // Fora do modo demonstração: dados reais do Supabase (Master + MFA).
+    if (!MODO_DEMO) {
+        const real = await import("./real.js");
+        return real.render(view, contexto);
+    }
+    const { parametros = [] } = contexto;
     if (parametros[0]) renderTransacao(view, parametros[0]);
     else renderPainel(view);
 }

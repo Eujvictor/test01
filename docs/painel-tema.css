@@ -1560,3 +1560,182 @@ body.somente-consulta .senha-modal .primary-button {
     pointer-events: auto !important;
     cursor: pointer !important;
 }
+
+/* =====================================================================
+   MINHA ASSINATURA (mensalidade do Barber)
+   ===================================================================== */
+.assinatura-modal {
+    max-width: 560px;
+}
+
+.assinatura-conteudo {
+    margin: 14px 0 6px;
+}
+
+.assinatura-resumo {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 10px;
+    margin-bottom: 18px;
+}
+
+.assinatura-resumo__item {
+    display: grid;
+    gap: 4px;
+    padding: 12px 14px;
+    border: 1px solid var(--border);
+    border-radius: var(--painel-raio-sm, 12px);
+    background: var(--painel-campo);
+}
+
+.assinatura-resumo__item span {
+    color: var(--muted);
+    font-size: 12px;
+}
+
+.assinatura-resumo__item strong {
+    color: var(--text);
+    font-size: 14px;
+}
+
+.assinatura-subtitulo {
+    margin: 0 0 10px;
+    font-size: 14px;
+    color: var(--text);
+}
+
+.assinatura-faturas {
+    display: grid;
+    gap: 8px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.assinatura-fatura {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 12px 14px;
+    border: 1px solid var(--border);
+    border-radius: var(--painel-raio-sm, 12px);
+}
+
+.assinatura-fatura.is-vencida {
+    border-color: color-mix(in srgb, var(--painel-erro) 50%, transparent);
+    background: var(--painel-erro-suave);
+}
+
+.assinatura-fatura__info {
+    display: grid;
+    gap: 3px;
+    min-width: 0;
+}
+
+.assinatura-fatura__info strong {
+    color: var(--text);
+    font-size: 14px;
+}
+
+.assinatura-fatura__info span {
+    color: var(--muted);
+    font-size: 12px;
+}
+
+.assinatura-fatura__lado {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-shrink: 0;
+}
+
+.assinatura-selo {
+    padding: 3px 9px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 800;
+    color: var(--secondary);
+    border: 1px solid var(--border);
+}
+
+.assinatura-selo.is-paga {
+    color: var(--painel-ok);
+    border-color: color-mix(in srgb, var(--painel-ok) 45%, transparent);
+    background: var(--painel-ok-suave);
+}
+
+.assinatura-selo.is-aberta {
+    color: var(--painel-alerta);
+    border-color: color-mix(in srgb, var(--painel-alerta) 45%, transparent);
+    background: var(--painel-alerta-suave);
+}
+
+.assinatura-selo.is-vencida {
+    color: var(--painel-erro);
+    border-color: color-mix(in srgb, var(--painel-erro) 45%, transparent);
+}
+
+.assinatura-pagar {
+    min-height: 36px;
+    padding: 6px 16px;
+}
+
+.assinatura-vazio,
+.assinatura-nota {
+    margin: 10px 0 0;
+    color: var(--muted);
+    font-size: 12px;
+}
+
+.assinatura-aviso {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin: 0 0 18px;
+    padding: 12px 16px;
+    border: 1px solid color-mix(in srgb, var(--painel-alerta) 45%, transparent);
+    border-radius: 12px;
+    background: var(--painel-alerta-suave);
+    color: var(--painel-alerta);
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.assinatura-aviso.is-grave {
+    border-color: color-mix(in srgb, var(--painel-erro) 50%, transparent);
+    background: var(--painel-erro-suave);
+    color: var(--painel-erro);
+}
+
+.assinatura-aviso__botao {
+    min-height: 34px;
+    padding: 6px 14px;
+    border: 1px solid currentColor;
+    border-radius: 10px;
+    background: transparent;
+    color: inherit;
+    font-weight: 800;
+    cursor: pointer;
+}
+
+/* Barbearia suspensa: pagar continua liberado (é o que reativa o site). */
+body.somente-consulta .assinatura-modal .primary-button,
+body.somente-consulta .assinatura-aviso__botao {
+    opacity: 1 !important;
+    pointer-events: auto !important;
+    cursor: pointer !important;
+}
+
+@media (max-width: 520px) {
+    .assinatura-fatura {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .assinatura-fatura__lado {
+        justify-content: space-between;
+    }
+}

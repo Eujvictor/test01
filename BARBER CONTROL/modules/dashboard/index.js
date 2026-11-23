@@ -5,7 +5,7 @@
 // =====================================================================
 import { carregarVisaoGeral } from "../../js/dashboard.js";
 import { html, renderizar, icone, $, definirCarregando } from "../../js/utilities/dom.js";
-import { numero, dataHora, tempoRelativo, mesAtual } from "../../js/utilities/format.js";
+import { numero, moeda, dataHora, tempoRelativo, mesAtual } from "../../js/utilities/format.js";
 import { mostrarToast } from "../../js/utilities/feedback.js";
 import { criarTabela } from "../../js/components/tabela.js";
 import { badgeStatus } from "../../js/components/ui.js";
@@ -72,8 +72,27 @@ function secaoOperacao(resultado, demo = false) {
         </div>`;
 }
 
-function secaoFinanceiro() {
-    const motivo = "Mercado Pago · Fase 2";
+function kpiMoeda({ rotulo, valor, iconeNome, nota }) {
+    return html`
+        <article class="card kpi">
+            <div class="kpi__topo"><span>${rotulo}</span><span class="kpi__icone">${icone(iconeNome)}</span></div>
+            <div class="kpi__valor num">${moeda(valor)}</div>
+            <div class="kpi__nota">${nota}</div>
+        </article>`;
+}
+
+function secaoFinanceiro(resultado) {
+    if (resultado?.status === "fulfilled" && resultado.value) {
+        const f = resultado.value;
+        return html`
+        <div class="grade grade--kpi">
+            ${kpiMoeda({ rotulo: "Receita recorrente mensal", valor: f.mrr, iconeNome: "trending-up", nota: `Anual: ${moeda(Number(f.mrr) * 12)}` })}
+            ${kpiMoeda({ rotulo: "Recebido no mês", valor: f.recebido_mes, iconeNome: "wallet", nota: `Taxas: ${moeda(f.taxas_mes)}` })}
+            ${kpiMoeda({ rotulo: "A vencer", valor: f.em_aberto, iconeNome: "hourglass", nota: "Faturas em aberto no prazo" })}
+            ${kpiMoeda({ rotulo: "Vencido", valor: f.vencido, iconeNome: "alarm-clock", nota: `${numero(f.faturas_vencidas)} fatura(s) · ver Financeiro` })}
+        </div>`;
+    }
+    const motivo = resultado?.status === "rejected" ? "Aplique a migração 10 (cobrança)" : "Mercado Pago";
     return html`
         <div class="grade grade--kpi">
             ${kpiPendente({ rotulo: "Receita recorrente mensal", iconeNome: "trending-up", motivo })}
@@ -166,7 +185,15 @@ function cardIntegracoes(dados) {
                     descricao: funcao ? `Versão ${dados.servidor.value.versao}` : (dados.servidor.reason?.message ?? "Sem resposta"),
                     estado: funcao ? "ok" : "erro"
                 })}
-                ${linhaIntegracao({ nome: "Mercado Pago", descricao: "Assinaturas e pagamentos · Fase 2", estado: "pendente" })}
+                ${(() => {
+                    const metodos = dados.financeiro?.status === "fulfilled" ? (dados.financeiro.value?.por_metodo ?? {}) : {};
+                    const viaMp = ["pix", "cartao", "boleto"].some((m) => Number(metodos[m]) > 0);
+                    return linhaIntegracao({
+                        nome: "Mercado Pago",
+                        descricao: viaMp ? "Pagamentos confirmados pelo webhook" : "Aguardando o primeiro pagamento online (função cobranca + Secrets)",
+                        estado: viaMp ? "ok" : "pendente"
+                    });
+                })()}
             </ul>
         </section>`;
 }
@@ -207,7 +234,7 @@ async function montar(container, contexto) {
 
         <section class="secao">
             <div class="secao__cabecalho"><h2 class="secao__titulo">Financeiro</h2></div>
-            ${secaoFinanceiro()}
+            ${secaoFinanceiro(dados.financeiro)}
         </section>
 
         <div class="grade grade--2">
