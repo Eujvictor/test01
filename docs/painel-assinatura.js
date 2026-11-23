@@ -47,7 +47,132 @@
     }
 
     // ------------------------------------------
-    // Pagamento
+    // Pix direto: BR Code ("Pix copia e cola") no padrão do Banco Central
+    // ------------------------------------------
+    const ascii = (t) => String(t ?? "").normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/[^\x20-\x7E]/g, "").trim();
+    const campoPix = (id, valor) => `${id}${String(valor.length).padStart(2, "0")}${valor}`;
+
+    function crc16(texto) {
+        let crc = 0xFFFF;
+        for (let i = 0; i < texto.length; i++) {
+            crc ^= texto.charCodeAt(i) << 8;
+            for (let b = 0; b < 8; b++) crc = crc & 0x8000 ? ((crc << 1) ^ 0x1021) & 0xFFFF : (crc << 1) & 0xFFFF;
+        }
+        return crc.toString(16).toUpperCase().padStart(4, "0");
+    }
+
+    function normalizarChave(chave) {
+        const c = String(chave ?? "").trim();
+        const digitos = c.replace(/\D/g, "");
+        // CPF/CNPJ digitados com pontuação viram só números; e-mail, telefone (+55…) e chave aleatória ficam como estão.
+        if (/^[\d.\-/\s]+$/.test(c) && (digitos.length === 11 || digitos.length === 14)) return digitos;
+        return c;
+    }
+
+    function codigoPix(pix, fatura) {
+        const txid = ("BARBER" + String(fatura.id).replace(/[^0-9a-z]/gi, "")).slice(0, 25);
+        const conta = campoPix("00", "br.gov.bcb.pix") + campoPix("01", normalizarChave(pix.chave));
+        const corpo = campoPix("00", "01") + campoPix("26", conta) + campoPix("52", "0000") + campoPix("53", "986") +
+            campoPix("54", Number(fatura.valor).toFixed(2)) + campoPix("58", "BR") +
+            campoPix("59", ascii(pix.nome).slice(0, 25) || "BARBER") + campoPix("60", ascii(pix.cidade).slice(0, 15) || "BRASIL") +
+            campoPix("62", campoPix("05", txid)) + "6304";
+        return corpo + crc16(corpo);
+    }
+
+    // QR Code desenhado por biblioteca pública (carregada só quando precisa).
+    let carregandoQr = null;
+    function carregarQr() {
+        if (window.qrcode) return Promise.resolve(window.qrcode);
+        if (!carregandoQr) {
+            carregandoQr = new Promise((resolve, reject) => {
+                const s = document.createElement("script");
+                s.src = "https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js";
+                s.onload = () => (window.qrcode ? resolve(window.qrcode) : reject(new Error("QR indisponível")));
+                s.onerror = () => { carregandoQr = null; reject(new Error("QR indisponível")); };
+                document.head.appendChild(s);
+            });
+        }
+        return carregandoQr;
+    }
+
+    async function copiar(texto, botao) {
+        try {
+            await navigator.clipboard.writeText(texto);
+            const original = botao.textContent;
+            botao.textContent = "Copiado!";
+            setTimeout(() => { botao.textContent = original; }, 2000);
+        } catch {
+            avisar("Não foi possível copiar. Selecione o código e copie manualmente.", "erro");
+        }
+    }
+
+    async function informarPagamento(fatura, botao) {
+        if (botao.disabled) return;
+        botao.disabled = true;
+        botao.textContent = "Enviando…";
+        try {
+            const { error } = await window.supabaseClient.schema("api").rpc("informar_pagamento", { p_fatura: fatura.id, p_observacao: null });
+            if (error) throw error;
+            avisar("Aviso enviado. Assim que o pagamento for conferido, a fatura muda para paga.", "sucesso");
+            await carregar();
+            desenhar();
+            mostrarAviso();
+        } catch (erro) {
+            console.error("Aviso de pagamento:", erro);
+            avisar(String(erro && erro.message).includes("fatura_nao_aberta") ? "Esta fatura já foi paga ou cancelada." : "Não foi possível enviar o aviso. Tente de novo.", "erro");
+            botao.disabled = false;
+            botao.textContent = "Já paguei";
+        }
+    }
+
+    function painelPix(fatura) {
+        const caixa = elemento("div", "assinatura-pix");
+        const codigo = codigoPix(dados.pix, fatura);
+        const qr = elemento("div", "assinatura-pix__qr");
+        qr.appendChild(elemento("span", "assinatura-nota", "Carregando QR Code…"));
+        carregarQr().then((gerador) => {
+            const q = gerador(0, "M");
+            q.addData(codigo);
+            q.make();
+            const img = document.createElement("img");
+            img.src = q.createDataURL(5, 2);
+            img.alt = `QR Code Pix de ${moeda(fatura.valor)}`;
+            img.width = 200;
+            img.height = 200;
+            qr.replaceChildren(img);
+        }).catch(() => qr.replaceChildren(elemento("span", "assinatura-nota", "QR Code indisponível. Use o Pix copia e cola.")));
+
+        const info = elemento("div", "assinatura-pix__info");
+        info.append(
+            elemento("strong", "", `Pix de ${moeda(fatura.valor)}`),
+            elemento("span", "", `Para: ${dados.pix.nome || "Barber"} · Chave: ${dados.pix.chave}`)
+        );
+        const campo = elemento("textarea", "assinatura-pix__codigo");
+        campo.readOnly = true;
+        campo.rows = 3;
+        campo.value = codigo;
+        campo.setAttribute("aria-label", "Pix copia e cola");
+        campo.addEventListener("focus", () => campo.select());
+        const botoes = elemento("div", "assinatura-pix__botoes");
+        const btnCopiar = elemento("button", "secondary-button", "Copiar código Pix");
+        btnCopiar.type = "button";
+        btnCopiar.addEventListener("click", () => copiar(codigo, btnCopiar));
+        botoes.appendChild(btnCopiar);
+        if (fatura.informado_em) {
+            info.appendChild(elemento("span", "assinatura-pix__aviso", `Você avisou o pagamento em ${dia(fatura.informado_em)}. Aguardando a confirmação.`));
+        } else {
+            const btnPaguei = elemento("button", "primary-button assinatura-pagar", "Já paguei");
+            btnPaguei.type = "button";
+            btnPaguei.addEventListener("click", () => informarPagamento(fatura, btnPaguei));
+            botoes.appendChild(btnPaguei);
+        }
+        info.append(campo, botoes, elemento("span", "assinatura-nota", "Abra o app do seu banco, escolha Pix → Ler QR Code ou Pix copia e cola. Depois de pagar, toque em “Já paguei”."));
+        caixa.append(qr, info);
+        return caixa;
+    }
+
+    // ------------------------------------------
+    // Pagamento pelo Mercado Pago (usado quando o Pix direto não está ativo)
     // ------------------------------------------
     async function pagar(faturaId, botao) {
         if (botao.disabled) return;
@@ -125,18 +250,33 @@
                     : `Vence em ${dia(f.vencimento)}${f.dias_atraso ? ` · ${f.dias_atraso} dia(s) de atraso` : ""}`)
             );
             const lado = elemento("div", "assinatura-fatura__lado");
-            lado.appendChild(elemento("span", `assinatura-selo ${sit.classe}`, sit.texto));
-            if (f.status === "aberta") {
+            const informado = f.status === "aberta" && f.informado_em;
+            lado.appendChild(elemento("span", `assinatura-selo ${informado ? "is-informado" : sit.classe}`, informado ? "Aguardando confirmação" : sit.texto));
+            if (f.status === "aberta" && dados.pix) {
+                const botao = elemento("button", "primary-button assinatura-pagar", informado ? "Ver Pix" : "Pagar com Pix");
+                botao.type = "button";
+                botao.setAttribute("aria-expanded", "false");
+                botao.addEventListener("click", () => {
+                    const aberto = item.querySelector(".assinatura-pix");
+                    if (aberto) { aberto.remove(); botao.setAttribute("aria-expanded", "false"); return; }
+                    item.appendChild(painelPix(f));
+                    botao.setAttribute("aria-expanded", "true");
+                });
+                lado.appendChild(botao);
+            } else if (f.status === "aberta") {
                 const botao = elemento("button", "primary-button assinatura-pagar", "Pagar");
                 botao.type = "button";
                 botao.addEventListener("click", () => pagar(f.id, botao));
                 lado.appendChild(botao);
             }
             item.append(info, lado);
+            if (f.status === "aberta" && f.recusa) item.appendChild(elemento("p", "assinatura-recusa", `Pagamento não localizado: ${f.recusa}. Confira e avise de novo depois de pagar.`));
             lista.appendChild(item);
         });
         corpo.appendChild(lista);
-        corpo.appendChild(elemento("p", "assinatura-nota", "Pagamento seguro pelo Mercado Pago: Pix, cartão de crédito ou boleto. A confirmação chega aqui automaticamente."));
+        corpo.appendChild(elemento("p", "assinatura-nota", dados.pix
+            ? "Pague por Pix e toque em “Já paguei”. A confirmação aparece aqui depois da conferência."
+            : "Pagamento seguro pelo Mercado Pago: Pix, cartão de crédito ou boleto. A confirmação chega aqui automaticamente."));
     }
 
     function abrir() {
@@ -169,6 +309,8 @@
             grave = true;
             const consulta = document.querySelector(".aviso-somente-consulta");
             if (consulta) consulta.textContent = "Painel em modo consulta até a confirmação do pagamento. Use “Minha assinatura” para pagar.";
+        } else if (vencida && vencida.informado_em) {
+            texto = `Pagamento de ${moeda(vencida.valor)} informado. Aguardando a confirmação do Barber.`;
         } else if (vencida) {
             const restam = Math.max(0, Number(dados.dias_tolerancia || 7) - Number(vencida.dias_atraso || 0));
             texto = `Sua mensalidade de ${moeda(vencida.valor)} venceu em ${dia(vencida.vencimento)}. ` +

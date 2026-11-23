@@ -488,3 +488,12 @@
 .formulario-linha .campo {
     margin-bottom: 0;
 }
+
+/* ---------- Financeiro: Pix informados ---------- */
+.card--destaque-pix {
+    border-color: var(--borda-ouro);
+}
+
+.card--destaque-pix .lista__item {
+    flex-wrap: wrap;
+}

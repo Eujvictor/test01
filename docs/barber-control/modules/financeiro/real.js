@@ -8,7 +8,7 @@
 import { rpc } from "../../services/control-api.js";
 import { html, icone, renderizar } from "../../js/utilities/dom.js";
 import { numero, moeda, dataHora, mesReferencia } from "../../js/utilities/format.js";
-import { mostrarToast } from "../../js/utilities/feedback.js";
+import { mostrarToast, confirmar } from "../../js/utilities/feedback.js";
 import { baixarCsv } from "../../js/utilities/csv.js";
 import { criarTabela } from "../../js/components/tabela.js";
 import { abrirFormulario } from "../../js/components/formulario.js";
@@ -39,12 +39,14 @@ async function renderizarTela(view, barbeariaId) {
     const raiz = novaRaiz(view);
     const voltar = barbeariaId ? { href: "#/financeiro", rotulo: "Todas as barbearias" } : null;
     renderizar(raiz, html`${cabecalho({ titulo: "Financeiro", subtitulo: "Carregando do Supabase…", voltar })}`);
-    let resumo, faturas;
+    let resumo, faturas, informados;
     try {
-        [resumo, faturas] = await Promise.all([
+        [resumo, faturas, informados] = await Promise.all([
             rpc("financeiro_resumo", { p_meses: 12 }),
-            rpc("listar_faturas", { p_barbearia: barbeariaId ?? null, p_situacao: null, p_desde: null, p_ate: null, p_limite: 2000 })
+            rpc("listar_faturas", { p_barbearia: barbeariaId ?? null, p_situacao: null, p_desde: null, p_ate: null, p_limite: 2000 }),
+            rpc("pagamentos_informados").catch(() => [])
         ]);
+        if (barbeariaId) informados = informados.filter((i) => i.barbearia_id === barbeariaId);
     } catch (erro) {
         return erroNaTela(raiz, erro, voltar);
     }
@@ -56,13 +58,32 @@ async function renderizarTela(view, barbeariaId) {
     renderizar(raiz, html`
         ${cabecalho({
             titulo: nomeBarbearia ? `Faturas · ${nomeBarbearia}` : "Financeiro",
-            subtitulo: nomeBarbearia ? "Histórico de cobrança da barbearia" : "Receita do Barber · Mercado Pago e baixas manuais",
+            subtitulo: nomeBarbearia ? "Histórico de cobrança da barbearia" : "Receita do Barber · Pix e baixas manuais",
             voltar,
             acoes: html`
                 <a class="btn" href="#/assinaturas">${icone("badge-check")}<span>Assinaturas</span></a>
                 <button class="btn" type="button" data-acao="exportar">${icone("download")}<span>Exportar CSV</span></button>
                 <button class="btn" type="button" data-acao="atualizar">${icone("refresh-cw")}<span class="btn__texto-opcional">Atualizar</span></button>`
         })}
+        ${informados.length ? html`
+        <section class="card secao card--destaque-pix">
+            <div class="card__cabecalho"><h2 class="card__titulo">Pix informados para conferir</h2><span class="badge badge--atencao">${numero(informados.length)}</span></div>
+            <p class="card__corpo texto-sec texto-pequeno">O dono tocou em “Já paguei”. Confira no extrato do seu banco e confirme. Enquanto você não confere, a suspensão automática espera até 3 dias.</p>
+            <ul class="lista">
+                ${informados.map((i) => html`
+                    <li class="lista__item">
+                        <span class="lista__icone">${icone("qr-code")}</span>
+                        <div class="lista__conteudo">
+                            <div class="lista__titulo">${i.barbearia} · ${moeda(i.valor)}</div>
+                            <div class="lista__meta">Vencimento ${dia(i.vencimento)} · avisado ${dataHora(i.informado_em)}${i.informado_por ? ` por ${i.informado_por}` : ""}${i.observacao ? ` · “${i.observacao}”` : ""}</div>
+                        </div>
+                        <div class="acoes-linha">
+                            <button class="btn btn--primario btn--pequeno" type="button" data-acao="confirmar-pix" data-id="${i.fatura_id}">${icone("check")}<span>Confirmar</span></button>
+                            <button class="btn btn--pequeno" type="button" data-acao="recusar-pix" data-id="${i.fatura_id}">${icone("x")}<span>Não encontrei</span></button>
+                        </div>
+                    </li>`)}
+            </ul>
+        </section>` : ""}
         ${barbeariaId ? "" : html`
         <section class="grade grade--kpi secao">
             ${kpi({ rotulo: "Receita recorrente mensal", valor: moeda(resumo.mrr), iconeNome: "trending-up", nota: `Anual: ${moeda(Number(resumo.mrr) * 12)}`, destaque: true })}
@@ -139,6 +160,31 @@ async function renderizarTela(view, barbeariaId) {
                     { rotulo: "Observação", valor: (x) => x.observacao ?? "" }
                 ], linhas);
                 return mostrarToast("Planilha CSV gerada.", "sucesso");
+            }
+            if (acao === "confirmar-pix") {
+                const i = informados.find((x) => x.fatura_id === botao.dataset.id);
+                const ok = await confirmar({
+                    titulo: "Confirmar o recebimento?",
+                    mensagem: `Você encontrou no seu banco o Pix de ${moeda(i.valor)} da ${i.barbearia}? A fatura fica paga e, se a barbearia estava suspensa por atraso, ela volta ao ar.`,
+                    textoConfirmar: "Confirmar recebimento"
+                });
+                if (!ok) return;
+                const r = await rpc("marcar_fatura_paga", { p_fatura: i.fatura_id, p_metodo: "pix", p_observacao: "Pix direto conferido no extrato" });
+                mostrarToast(r === "paga" ? "Pagamento confirmado." : "A fatura já estava paga ou cancelada.", r === "paga" ? "sucesso" : "atencao");
+                return renderizarTela(view, barbeariaId);
+            }
+            if (acao === "recusar-pix") {
+                const i = informados.find((x) => x.fatura_id === botao.dataset.id);
+                const salvo = await abrirFormulario({
+                    titulo: `Pix não encontrado · ${i.barbearia}`,
+                    descricao: "O dono verá este motivo em “Minha assinatura” e poderá avisar de novo depois de pagar.",
+                    campos: [{ nome: "motivo", rotulo: "Motivo", tipo: "textarea", obrigatorio: true, maxlength: 300, validar: (v) => (v.trim().length >= 3 ? null : "Descreva o motivo.") }],
+                    valores: { motivo: "Não encontrei o Pix no extrato." },
+                    textoSalvar: "Enviar ao dono",
+                    aoSalvar: (v) => rpc("recusar_pagamento_informado", { p_fatura: i.fatura_id, p_motivo: v.motivo }).then(() => true)
+                });
+                if (salvo) { mostrarToast("Aviso devolvido ao dono.", "sucesso"); renderizarTela(view, barbeariaId); }
+                return;
             }
             if (acao === "baixar") {
                 const salvo = await abrirFormulario({

@@ -40,11 +40,10 @@ function badge(ok, textoOk, textoNao, tomNao = "atencao") {
 export async function render(view) {
     const raiz = novaRaiz(view);
     renderizar(raiz, html`${cabecalho({ titulo: "Configurações", subtitulo: "Carregando…" })}`);
-    const [financeiro, servidor] = await Promise.allSettled([rpc("financeiro_resumo", { p_meses: 1 }), statusServidor()]);
+    const [financeiro, servidor, configPix] = await Promise.allSettled([rpc("financeiro_resumo", { p_meses: 1 }), statusServidor(), rpc("config_pix")]);
+    const pix = configPix.status === "fulfilled" ? configPix.value : null;
     const fin = financeiro.status === "fulfilled" ? financeiro.value : null;
     const cfg = fin?.config ?? {};
-    const metodos = fin?.por_metodo ?? {};
-    const mpAtivo = ["pix", "cartao", "boleto"].some((m) => Number(metodos[m]) > 0);
     const funcaoOk = servidor.status === "fulfilled" && servidor.value?.ok;
     const ap = lerAparencia();
 
@@ -68,7 +67,8 @@ export async function render(view) {
                 <ul class="lista">
                     <li class="lista__item"><div class="lista__conteudo"><div class="lista__titulo">Supabase (banco e login)</div><div class="lista__meta">${APP_CONFIG.supabaseUrl.replace("https://", "")}</div></div>${badge(Boolean(fin), "Operacional", "Sem resposta", "erro")}</li>
                     <li class="lista__item"><div class="lista__conteudo"><div class="lista__titulo">Edge Function control-admin</div><div class="lista__meta">${funcaoOk ? `Versão ${servidor.value.versao}` : "Criação de acessos dos donos"}</div></div>${badge(funcaoOk, "Operacional", "Sem resposta", "erro")}</li>
-                    <li class="lista__item"><div class="lista__conteudo"><div class="lista__titulo">Mercado Pago (pagamento online)</div><div class="lista__meta">${mpAtivo ? "Pagamentos confirmados pelo webhook" : "Falta publicar a função cobranca e configurar os Secrets (guia ATIVAR-MERCADO-PAGO.md)"}</div></div>${badge(mpAtivo, "Ativo", "Pendente")}</li>
+                    <li class="lista__item"><div class="lista__conteudo"><div class="lista__titulo">Recebimento por Pix direto</div><div class="lista__meta">${pix?.ativo ? `Chave ${pix.chave} · você confirma em Financeiro` : "Configure em Assinaturas → Planos e regras"}</div></div>${badge(Boolean(pix?.ativo), "Ativo", "Desligado")}</li>
+                    <li class="lista__item"><div class="lista__conteudo"><div class="lista__titulo">Mercado Pago (opcional)</div><div class="lista__meta">Não usado: o Pix direto substitui. O código continua pronto, se um dia quiser ativar.</div></div><span class="badge"><span class="ponto"></span>Não usado</span></li>
                     <li class="lista__item"><div class="lista__conteudo"><div class="lista__titulo">Rotina diária de cobrança</div><div class="lista__meta">Gera faturas, marca atrasos e suspende quem passou do prazo</div></div>${badge(Boolean(fin?.rotina_agendada), "Agendada · 6h", "Não agendada")}</li>
                 </ul>
             </section>
@@ -80,7 +80,7 @@ export async function render(view) {
                     ["Fatura gerada antes do vencimento", fin ? `${numero(cfg.dias_antecedencia)} dia(s)` : "—"],
                     ["Suspensão automática por atraso", fin ? `${numero(cfg.dias_tolerancia)} dia(s)` : "—"],
                     ["Barbearia de referência", "Isenta e nunca suspensa"],
-                    ["Pagamento", "Fatura mensal: Pix, cartão ou boleto (Mercado Pago)"]
+                    ["Pagamento", pix?.ativo ? "Fatura mensal por Pix direto, confirmada por você em Financeiro" : "Fatura mensal (Pix direto ainda não configurado)"]
                 ])}</div>
             </section>
             <section class="card">

@@ -186,12 +186,11 @@ function cardIntegracoes(dados) {
                     estado: funcao ? "ok" : "erro"
                 })}
                 ${(() => {
-                    const metodos = dados.financeiro?.status === "fulfilled" ? (dados.financeiro.value?.por_metodo ?? {}) : {};
-                    const viaMp = ["pix", "cartao", "boleto"].some((m) => Number(metodos[m]) > 0);
+                    const pix = dados.pix?.status === "fulfilled" ? dados.pix.value : null;
                     return linhaIntegracao({
-                        nome: "Mercado Pago",
-                        descricao: viaMp ? "Pagamentos confirmados pelo webhook" : "Aguardando o primeiro pagamento online (função cobranca + Secrets)",
-                        estado: viaMp ? "ok" : "pendente"
+                        nome: "Recebimento por Pix",
+                        descricao: pix?.ativo ? "Pix direto ativo · confirme os pagamentos em Financeiro" : "Cadastre a chave em Assinaturas → Planos e regras",
+                        estado: pix?.ativo ? "ok" : "pendente"
                     });
                 })()}
             </ul>

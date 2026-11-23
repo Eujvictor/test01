@@ -2001,3 +2001,128 @@ body.somente-consulta .comunicado-aviso__botao {
         min-height: 38px;
     }
 }
+
+/* =====================================================================
+   PIX DIRETO (Minha assinatura)
+   ===================================================================== */
+.assinatura-fatura {
+    flex-wrap: wrap;
+}
+
+.assinatura-pix {
+    flex-basis: 100%;
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    gap: 16px;
+    align-items: start;
+    margin-top: 10px;
+    padding-top: 12px;
+    border-top: 1px solid var(--border);
+}
+
+.assinatura-pix__qr {
+    display: grid;
+    place-items: center;
+    min-height: 200px;
+    padding: 6px;
+    border-radius: 12px;
+    background: #fff;
+}
+
+.assinatura-pix__qr img {
+    width: 100%;
+    max-width: 200px;
+    height: auto;
+    image-rendering: pixelated;
+}
+
+.assinatura-pix__qr .assinatura-nota {
+    color: #444;
+    text-align: center;
+}
+
+.assinatura-pix__info {
+    display: grid;
+    gap: 8px;
+    min-width: 0;
+}
+
+.assinatura-pix__info strong {
+    color: var(--text);
+    font-size: 15px;
+}
+
+.assinatura-pix__info > span {
+    color: var(--secondary);
+    font-size: 12px;
+    overflow-wrap: anywhere;
+}
+
+.assinatura-pix__codigo {
+    width: 100%;
+    resize: none;
+    font-family: ui-monospace, Consolas, monospace;
+    font-size: 11px;
+    word-break: break-all;
+}
+
+.assinatura-pix__botoes {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.assinatura-pix__aviso {
+    color: var(--painel-alerta) !important;
+    font-weight: 700;
+}
+
+.assinatura-selo.is-informado {
+    color: var(--painel-alerta);
+    border-color: color-mix(in srgb, var(--painel-alerta) 45%, transparent);
+    background: var(--painel-alerta-suave);
+}
+
+.assinatura-recusa {
+    flex-basis: 100%;
+    margin: 8px 0 0;
+    color: var(--painel-erro);
+    font-size: 12px;
+    font-weight: 700;
+}
+
+body.somente-consulta .assinatura-pix .secondary-button,
+body.somente-consulta .assinatura-pix .primary-button {
+    opacity: 1 !important;
+    pointer-events: auto !important;
+    cursor: pointer !important;
+}
+
+@media (max-width: 560px) {
+    .assinatura-pix {
+        grid-template-columns: 1fr;
+    }
+
+    .assinatura-pix__qr {
+        justify-self: center;
+        width: 200px;
+    }
+}
+
+/* Pix no celular: a fatura vira coluna; o bloco do Pix ocupa a largura toda. */
+.assinatura-pix {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+@media (max-width: 560px) {
+    .assinatura-pix {
+        flex-basis: auto;
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .assinatura-pix__qr {
+        justify-self: center;
+        width: min(200px, 100%);
+    }
+}

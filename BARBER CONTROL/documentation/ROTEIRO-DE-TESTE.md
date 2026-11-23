@@ -27,7 +27,7 @@ Use **Ctrl+F5** ao abrir cada página, para carregar a versão nova.
 11. [ ] **Segurança:** mostra "Duas etapas nos administradores: 1 de 1" e a lista de proteções ativas.
 12. [ ] **Relatórios:** abra "Barbearias" e baixe em **CSV**, **Excel** e **PDF**. Os arquivos não devem ter "DEMO" no nome.
 13. [ ] **Inteligência:** mostra o risco de cada barbearia e explica as regras do cálculo.
-14. [ ] **Configurações:** mostra o Supabase e o control-admin como "Operacional" e o Mercado Pago como "Pendente".
+14. [ ] **Configurações:** mostra o Supabase e o control-admin como "Operacional", o Pix com a situação certa e o Mercado Pago como "Não usado".
 15. [ ] **Atualizações, Funcionalidades, Histórico e Roadmap:** em cada um, crie um registro, edite e exclua.
 16. [ ] **Auditoria:** as ações dos itens 10 e 15 aparecem na lista.
 
@@ -50,6 +50,10 @@ Use **Ctrl+F5** ao abrir cada página, para carregar a versão nova.
 1. [ ] No Barber Control, **suspenda** a big bigode. O site mostra "indisponível" e o painel do dono fica só para consulta, mas o Suporte e "Minha assinatura" continuam funcionando.
 2. [ ] **Ative** de novo e tudo volta ao normal.
 
-## Por último: Mercado Pago
+## E. Pagamento por Pix
 
-Siga `ATIVAR-MERCADO-PAGO.md`. Para testar a cobrança sem esperar o fim do teste, use os passos 1 e 2 da seção "Teste ponta a ponta" desse guia: deixe a big bigode "Em teste" com a data de hoje e clique em "Executar rotina agora". Isso gera uma fatura na hora.
+1. [ ] Rode a migração 13 e cadastre a chave em **Assinaturas → Planos e regras → Recebimento por Pix** (guia `ATIVAR-PIX.md`).
+2. [ ] No Barber Control, em **Assinaturas**, deixe a big bigode "Em teste" com a data de **hoje**. Depois, em **Planos e regras**, clique em **Executar rotina agora**. Isso gera uma fatura.
+3. [ ] No painel da big bigode, abra **Minha assinatura → Pagar com Pix**. O QR Code e o código aparecem, e o app do seu banco mostra o **seu nome** e o **valor certo**.
+4. [ ] Toque em **Já paguei**. No Barber Control, em **Financeiro**, o aviso aparece em "Pix informados para conferir".
+5. [ ] Clique em **Confirmar**. A fatura fica paga e aparece assim no painel do dono.

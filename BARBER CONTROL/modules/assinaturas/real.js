@@ -158,9 +158,9 @@ async function editarPlano(plano = null) {
 }
 
 async function secaoPlanos(view) {
-    let planos, fin;
+    let planos, fin, pix;
     try {
-        [planos, fin] = await Promise.all([rpc("listar_planos"), rpc("financeiro_resumo", { p_meses: 1 })]);
+        [planos, fin, pix] = await Promise.all([rpc("listar_planos"), rpc("financeiro_resumo", { p_meses: 1 }), rpc("config_pix").catch(() => null)]);
     } catch (erro) {
         return erroNaTela(view, erro);
     }
@@ -187,7 +187,16 @@ async function secaoPlanos(view) {
                     <button class="btn" type="button" data-acao="rotina">${icone("play")}<span>Executar rotina agora</span></button>
                 </div>
             </section>
-        </div>`);
+        </div>
+        <section class="card secao">
+            <div class="card__cabecalho"><h2 class="card__titulo">Recebimento por Pix</h2>
+                ${pix?.ativo ? html`<span class="badge badge--sucesso"><span class="ponto"></span>Ativo</span>` : html`<span class="badge badge--atencao"><span class="ponto"></span>Desligado</span>`}
+                <button class="btn btn--pequeno" type="button" data-acao="pix">${icone("qr-code")}<span>${pix?.chave ? "Alterar" : "Configurar"}</span></button></div>
+            <div class="card__corpo">
+                <p class="texto-sec texto-pequeno">O dono vê o QR Code e o Pix copia e cola com o valor da fatura, paga na sua chave e toca em “Já paguei”. Você confere no seu banco e confirma em <a class="link-forte" href="#/financeiro">Financeiro</a>. Sem taxas e sem empresa intermediária.</p>
+                ${pix?.chave ? html`<p class="texto-pequeno">Chave: <strong>${pix.chave}</strong> · Recebedor: <strong>${pix.nome ?? "—"}</strong> · ${pix.cidade ?? "—"}</p>` : ""}
+            </div>
+        </section>`);
 
     const tabela = criarTabela({
         colunas: [
@@ -210,6 +219,33 @@ async function secaoPlanos(view) {
         try {
             if (acao === "novo-plano" && await editarPlano()) { mostrarToast("Plano criado.", "sucesso"); secaoPlanos(view); }
             if (acao === "editar-plano" && await editarPlano(planos.find((p) => p.id === botao.dataset.id))) { mostrarToast("Plano atualizado.", "sucesso"); secaoPlanos(view); }
+            if (acao === "pix") {
+                const salvo = await abrirFormulario({
+                    titulo: "Recebimento por Pix",
+                    descricao: "Estes dados aparecem para os donos das barbearias na hora de pagar. Use a chave da conta onde você quer receber as mensalidades.",
+                    campos: [
+                        { nome: "chave", rotulo: "Chave Pix", tipo: "texto", maxlength: 77, ajuda: "CPF, CNPJ, e-mail, telefone no formato +5562999990000 ou chave aleatória." },
+                        { nome: "nome", rotulo: "Nome do recebedor", tipo: "texto", maxlength: 25, largura: "meia", ajuda: "Como aparece no seu banco (até 25 letras)." },
+                        { nome: "cidade", rotulo: "Cidade", tipo: "texto", maxlength: 15, largura: "meia" },
+                        { nome: "ativo", rotulo: "Mostrar o Pix para as barbearias", tipo: "select", opcoes: [["true", "Sim: pagar por Pix direto"], ["false", "Não"]] }
+                    ],
+                    valores: { chave: pix?.chave ?? "", nome: pix?.nome ?? "", cidade: pix?.cidade ?? "", ativo: String(pix?.ativo ?? true) },
+                    textoSalvar: "Salvar Pix",
+                    aoSalvar: async (v) => {
+                        try {
+                            await rpc("salvar_config_pix", { p_chave: v.chave, p_nome: v.nome, p_cidade: v.cidade, p_ativo: v.ativo === "true" });
+                            return true;
+                        } catch (erro) {
+                            const t = `${erro.message} ${erro.original?.message ?? ""}`;
+                            if (t.includes("chave_obrigatoria") || t.includes("chave_invalida")) throw Object.assign(new Error("Informe uma chave Pix válida."), { campo: "chave" });
+                            if (t.includes("nome_obrigatorio")) throw Object.assign(new Error("Informe o nome do recebedor."), { campo: "nome" });
+                            if (t.includes("cidade_obrigatoria")) throw Object.assign(new Error("Informe a cidade."), { campo: "cidade" });
+                            throw erro;
+                        }
+                    }
+                });
+                if (salvo) { mostrarToast("Pix salvo.", "sucesso"); secaoPlanos(view); }
+            }
             if (acao === "regras") {
                 const salvo = await abrirFormulario({
                     titulo: "Regras de cobrança",

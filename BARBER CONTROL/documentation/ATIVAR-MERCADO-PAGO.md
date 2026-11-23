@@ -1,4 +1,7 @@
-# Ativar a cobrança pelo Mercado Pago
+# Ativar a cobrança pelo Mercado Pago (OPCIONAL)
+
+> Desde 23/11/2026, as mensalidades são recebidas por **Pix direto** (veja `ATIVAR-PIX.md`).
+> Este guia só é necessário se um dia você quiser a confirmação automática pelo Mercado Pago.
 
 Regras aprovadas em 19/11/2026:
 - **Cobrança:** fatura mensal, paga por Pix, cartão ou boleto.
