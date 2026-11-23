@@ -8,7 +8,7 @@
 // =====================================================================
 export const APP_CONFIG = Object.freeze({
     nome: "BARBER CONTROL",
-    versao: "0.6.0 · Fase 6 (demonstrativa)",
+    versao: "1.0.0",
 
     supabaseUrl: "https://cjwmzbknarafinftpqsv.supabase.co",
     supabasePublishableKey: "sb_publishable_k1KkMm2f4-xRDy07B7f46w_0WddyoUj",

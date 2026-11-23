@@ -56,57 +56,57 @@ export const MODULOS = [
     },
     {
         id: "marketing", numero: 9, titulo: "Marketing e relacionamento", icone: "megaphone", grupo: "operacao", fase: 3,
-        disponivel: true, demo: true, caminho: "./marketing/index.js",
+        disponivel: true, demo: true, somenteDemo: true, caminho: "./marketing/index.js",
         planejado: ["Campanhas e promoções", "Programa de indicação", "Pesquisas de satisfação", "Campanhas de reativação", "Indicadores de conversão"]
     },
     {
         id: "seguranca", numero: 10, titulo: "Segurança", icone: "shield", grupo: "infra", fase: 4,
-        disponivel: true, demo: true, caminho: "./seguranca/index.js",
+        disponivel: true, demo: true, real: true, caminho: "./seguranca/index.js",
         planejado: ["Monitoramento de logins", "Tentativas suspeitas", "Histórico de autenticação", "Verificação de políticas RLS", "Incidentes e alertas", "Operações críticas"]
     },
     {
         id: "monitoramento", numero: 11, titulo: "Monitoramento técnico", icone: "activity", grupo: "infra", fase: 4,
-        disponivel: true, demo: true, caminho: "./monitoramento/index.js",
+        disponivel: true, demo: true, somenteDemo: true, caminho: "./monitoramento/index.js",
         planejado: ["Disponibilidade e latência", "Erros e requisições", "Consumo de banco e armazenamento", "Integrações e APIs", "Alertas de infraestrutura"]
     },
     {
         id: "backups", numero: 12, titulo: "Backups e recuperação", icone: "database-backup", grupo: "infra", fase: 4,
-        disponivel: true, demo: true, caminho: "./backups/index.js",
+        disponivel: true, demo: true, somenteDemo: true, caminho: "./backups/index.js",
         planejado: ["Histórico de backups", "Retenção e armazenamento externo", "Verificação de integridade", "Testes de restauração", "Indicadores de RPO e RTO"]
     },
     {
         id: "atualizacoes", numero: 13, titulo: "Atualizações e versões", icone: "git-branch", grupo: "desenvolvimento", fase: 5,
-        disponivel: true, demo: true, caminho: "./atualizacoes/index.js",
+        disponivel: true, demo: true, real: true, caminho: "./atualizacoes/index.js",
         planejado: ["Cadastro de versões", "Distribuição gradual", "Seleção de empresas", "Interrupção e rollback", "Integração com GitHub"]
     },
     {
         id: "funcionalidades", numero: 14, titulo: "Funcionalidades", icone: "toggle-right", grupo: "desenvolvimento", fase: 5,
-        disponivel: true, demo: true, caminho: "./funcionalidades/index.js",
+        disponivel: true, demo: true, real: true, caminho: "./funcionalidades/index.js",
         planejado: ["Catálogo de módulos", "Associação com planos", "Liberação e bloqueio individual", "Acesso temporário", "Feature flags e dependências"]
     },
     {
         id: "historico", numero: 15, titulo: "Histórico de alterações", icone: "history", grupo: "desenvolvimento", fase: 5,
-        disponivel: true, demo: true, caminho: "./historico/index.js",
+        disponivel: true, demo: true, real: true, caminho: "./historico/index.js",
         planejado: ["Mudanças no banco", "Funcionalidades e correções", "Referências de commits", "Empresas afetadas", "Filtros e exportação"]
     },
     {
         id: "roadmap", numero: 16, titulo: "Roadmap e solicitações", icone: "map", grupo: "desenvolvimento", fase: 5,
-        disponivel: true, demo: true, caminho: "./roadmap/index.js",
+        disponivel: true, demo: true, real: true, caminho: "./roadmap/index.js",
         planejado: ["Ideias e sugestões", "Priorização e votação", "Estimativas", "Histórico de decisões"]
     },
     {
         id: "relatorios", numero: 17, titulo: "Relatórios e métricas", icone: "file-chart-column", grupo: "inteligencia", fase: 6,
-        disponivel: true, demo: true, caminho: "./relatorios/index.js",
+        disponivel: true, demo: true, real: true, caminho: "./relatorios/index.js",
         planejado: ["Relatórios empresariais e financeiros", "Retenção e cancelamentos", "Comparativos", "Exportação PDF, Excel e CSV"]
     },
     {
         id: "inteligencia", numero: 18, titulo: "Inteligência de negócio", icone: "sparkles", grupo: "inteligencia", fase: 6,
-        disponivel: true, demo: true, caminho: "./inteligencia/index.js",
+        disponivel: true, demo: true, real: true, caminho: "./inteligencia/index.js",
         planejado: ["Crescimento e churn", "Rentabilidade", "Uso dos módulos", "Previsões com base no histórico", "Assistente inteligente"]
     },
     {
         id: "configuracoes", numero: 19, titulo: "Configurações gerais", icone: "settings", grupo: "inteligencia", fase: 6,
-        disponivel: true, demo: true, caminho: "./configuracoes/index.js",
+        disponivel: true, demo: true, real: true, caminho: "./configuracoes/index.js",
         planejado: ["Identidade da plataforma", "Regras de cobrança", "Integrações (Mercado Pago)", "Comunicação", "Histórico de alterações"]
     },
     {

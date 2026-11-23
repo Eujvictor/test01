@@ -34,7 +34,7 @@ function traduzirErroBanco(erro) {
     }
     if (codigo === "PGRST202" || /Could not find the function/i.test(msg)) {
         return new ErroControl(
-            "Função do banco não encontrada. Execute a migração da Fase 1 no SQL Editor.",
+            "Função do banco não encontrada. Rode no SQL Editor do Supabase a migração mais recente (pasta supabase/migrations).",
             { codigo: "funcao_ausente", original: erro }
         );
     }

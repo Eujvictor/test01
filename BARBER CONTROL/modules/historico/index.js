@@ -4,6 +4,7 @@
 // Referências técnicas (commit, branch, arquivo) são campos para uso
 // futuro: o GitHub NÃO está conectado e nenhum commit real é inventado.
 // =====================================================================
+import { MODO_DEMO } from "../../js/demo.js";
 import * as S from "../../services/demo/saas.js";
 import * as E from "../../services/demo/evolucao.js";
 import { CATEGORIAS_MUDANCA, NATUREZAS_MUDANCA, STATUS_MUDANCA, STATUS_VERSAO, opcoes } from "../../services/demo/catalogo.js";
@@ -294,7 +295,13 @@ function renderMudanca(view, id) {
 
 const RENDER = { "": secaoAlteracoes, versoes: secaoPorVersao, categorias: secaoPorCategoria, auditoria: secaoAuditoria };
 
-export function render(view, { parametros = [] }) {
+export async function render(view, contexto) {
+    // Fora do modo demonstração: dados reais do Supabase (Master + MFA).
+    if (!MODO_DEMO) {
+        const real = await import("./real.js");
+        return real.render(view, contexto);
+    }
+    const { parametros = [] } = contexto;
     const [primeiro, segundo] = parametros;
     if (primeiro === "mudanca" && segundo) return renderMudanca(view, segundo);
     const ativa = SECOES.some(([r]) => r === primeiro) ? primeiro : "";

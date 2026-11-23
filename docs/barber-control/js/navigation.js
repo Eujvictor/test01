@@ -8,7 +8,10 @@ import { MODO_DEMO } from "./demo.js";
 
 export function montarSidebar(nav) {
     renderizar(nav, GRUPOS.map((grupo) => {
-        const itens = MODULOS.filter((m) => m.grupo === grupo.id);
+        // Fora do modo demonstração, módulos que dependem de serviços externos
+        // ainda não contratados (somenteDemo) não aparecem no menu.
+        const itens = MODULOS.filter((m) => m.grupo === grupo.id && (MODO_DEMO || !m.somenteDemo));
+        if (!itens.length) return "";
         return html`
             <div class="nav-grupo">
                 <div class="nav-grupo__titulo">${grupo.titulo}</div>
@@ -52,6 +55,18 @@ export function iniciarRoteador({ view, titulo, contexto, aoNavegar }) {
         titulo.textContent = modulo.titulo;
         document.title = `${modulo.titulo} · Barber Control`;
         renderizar(view, esqueleto());
+
+        if (!MODO_DEMO && modulo.somenteDemo) {
+            renderizar(view, html`
+                <div class="card"><div class="estado">
+                    <div class="estado__icone">${icone(modulo.icone)}</div>
+                    <h3>${modulo.titulo}: disponível só na demonstração</h3>
+                    <p>Este módulo depende de serviços externos ainda não contratados (envio de e-mail/WhatsApp, monitoramento ou armazenamento de cópias). O Supabase já faz os backups do banco. Para ver como ficaria, abra o painel em modo demonstração.</p>
+                    <a class="btn" href="dashboard.html?demo#/${modulo.id}">${icone("flask-conical")}<span>Ver na demonstração</span></a>
+                </div></div>`);
+            aoNavegar?.(modulo);
+            return;
+        }
 
         try {
             const implementacao = modulo.disponivel

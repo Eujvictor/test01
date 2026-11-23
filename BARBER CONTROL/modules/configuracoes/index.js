@@ -5,6 +5,7 @@
 // Toda alteração é registrada (anterior → novo, data, responsável) e
 // aparece também na auditoria (módulo 20). Valores no localStorage.
 // =====================================================================
+import { MODO_DEMO } from "../../js/demo.js";
 import * as C from "../../services/demo/configuracoes.js";
 import { APP_CONFIG } from "../../config/app.config.js";
 import { html, icone, renderizar, bruto } from "../../js/utilities/dom.js";
@@ -338,7 +339,13 @@ function valorTexto(h, lado) {
     return campo ? C.descreverValor(campo, d[lado]) : String(d[lado] ?? "—");
 }
 
-export function render(view, { parametros = [] }) {
+export async function render(view, contexto) {
+    // Fora do modo demonstração: dados reais do Supabase (Master + MFA).
+    if (!MODO_DEMO) {
+        const real = await import("./real.js");
+        return real.render(view, contexto);
+    }
+    const { parametros = [] } = contexto;
     const rota = SECOES.some(([r]) => r === parametros[0]) ? parametros[0] : "";
     const recarregar = () => render(view, { parametros });
     const ctx = molduraComAbas(view, {

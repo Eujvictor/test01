@@ -6,6 +6,7 @@
 // Todos os números vêm de services/demo/indicadores.js, calculados a partir
 // dos registros dos módulos 02–16. Exportações usam os dados exibidos.
 // =====================================================================
+import { MODO_DEMO } from "../../js/demo.js";
 import * as K from "../../services/demo/indicadores.js";
 import * as S from "../../services/demo/saas.js";
 import { STATUS_BARBEARIA, opcoes } from "../../services/demo/catalogo.js";
@@ -371,7 +372,13 @@ function renderRelatorio(view, id) {
     });
 }
 
-export function render(view, { parametros = [] }) {
+export async function render(view, contexto) {
+    // Fora do modo demonstração: dados reais do Supabase (Master + MFA).
+    if (!MODO_DEMO) {
+        const real = await import("./real.js");
+        return real.render(view, contexto);
+    }
+    const { parametros = [] } = contexto;
     if (parametros[0]) renderRelatorio(view, parametros[0]);
     else renderPainel(view);
 }

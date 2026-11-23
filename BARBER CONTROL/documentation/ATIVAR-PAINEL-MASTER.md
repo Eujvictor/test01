@@ -93,6 +93,32 @@ Arquivo: `supabase/migrations/20261123000011_suporte_comunicados.sql`.
 | Painel da barbearia | 14/14 |
 | Regressões | todas passando |
 
+## 8. Migração 12 e os módulos finais
+
+Arquivo: `supabase/migrations/20261123000012_produto.sql`. Ela cria a tabela de registros do produto, usada por Atualizações, Funcionalidades, Histórico e Roadmap.
+
+**Situação de cada módulo no modo real (versão 1.0.0):**
+
+| Módulo | Situação |
+|---|---|
+| 01 Visão geral | Dados reais |
+| 02 Barbearias | Dados reais |
+| 03 Assinaturas e planos | Dados reais |
+| 04 Financeiro | Dados reais |
+| 05 Usuários | Dados reais |
+| 06 Agendamentos e atividade | Dados reais |
+| 07 Suporte | Dados reais |
+| 08 Notificações | Dados reais |
+| 10 Segurança | Dados reais: duas etapas, tentativas de login, IPs suspeitos e proteções ativas |
+| 13 Atualizações, 14 Funcionalidades, 15 Histórico, 16 Roadmap | Cadastros reais (migração 12). O Roadmap mostra os pedidos de melhoria que chegam pelo Suporte |
+| 17 Relatórios | 7 relatórios reais, exportados em CSV, Excel ou PDF (sem a marca DEMO) |
+| 18 Inteligência | Risco de cancelamento por regras explícitas, recomendações e movimento das barbearias |
+| 19 Configurações | Aparência deste navegador e situação real de cobrança, segurança e integrações |
+| 20 Auditoria | Dados reais |
+| 09 Marketing, 11 Monitoramento, 12 Backups | Fora do menu no modo real, porque dependem de serviços externos. Continuam disponíveis em `?demo` |
+
+**Pendente:** a ativação do Mercado Pago (guia `ATIVAR-MERCADO-PAGO.md`).
+
 ## Situação dos testes (18/11/2026)
 
 - Funções do Master no banco: testadas em PostgreSQL 16 (76/76).

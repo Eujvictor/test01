@@ -5,6 +5,7 @@
 // sobre os dados demonstrativos (indicadores.js). Não há IA externa:
 // projeções são estimativas, não resultados garantidos.
 // =====================================================================
+import { MODO_DEMO } from "../../js/demo.js";
 import * as K from "../../services/demo/indicadores.js";
 import * as IN from "../../services/demo/inteligencia.js";
 import * as A from "../../services/demo/assistente.js";
@@ -362,7 +363,13 @@ function secaoAssistente({ secao }) {
 
 const RENDER = { "": secaoPainel, analises: secaoAnalises, previsoes: secaoPrevisoes, recomendacoes: secaoRecomendacoes, risco: secaoRisco, assistente: secaoAssistente };
 
-export function render(view, { parametros = [] }) {
+export async function render(view, contexto) {
+    // Fora do modo demonstração: dados reais do Supabase (Master + MFA).
+    if (!MODO_DEMO) {
+        const real = await import("./real.js");
+        return real.render(view, contexto);
+    }
+    const { parametros = [] } = contexto;
     const ativa = SECOES.some(([r]) => r === parametros[0]) ? parametros[0] : "";
     const recarregar = () => render(view, { parametros });
     const ctx = molduraComAbas(view, {

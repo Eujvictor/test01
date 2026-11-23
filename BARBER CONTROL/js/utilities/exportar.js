@@ -31,7 +31,8 @@ export function baixarArquivo(nome, blob) {
     setTimeout(() => URL.revokeObjectURL(url), 1500);
 }
 
-const AVISO = "Dados demonstrativos: valores fictícios gerados no navegador. Não representam resultados reais nem integrações ativas.";
+const AVISO_DEMO = "Dados demonstrativos: valores fictícios gerados no navegador. Não representam resultados reais nem integrações ativas.";
+const AVISO_REAL = "Dados reais do Barber Control (Supabase), gerados pelo administrador com verificação em duas etapas. Documento interno: contém dados de barbearias.";
 
 // Valor "cru" para planilhas: números como números (percentual em pontos, ex.: 12,5).
 function valorPlanilha(valor, formato) {
@@ -48,9 +49,11 @@ const rotuloPlanilha = (c) => (c.formato === "percentual" ? `${c.rotulo} (%)` : 
  *              colunas, linhas, observacoes?: [texto] }
  */
 export function exportarRelatorio(formato, relatorio) {
-    const { arquivo, titulo, subtitulo = "", metadados = [], kpis = [], colunas, linhas, observacoes = [] } = relatorio;
+    const { arquivo, titulo, subtitulo = "", metadados = [], kpis = [], colunas, linhas, observacoes = [], real = false } = relatorio;
     const data = new Date().toISOString().slice(0, 10);
-    const base = `${arquivo}-DEMO-${data}`;
+    // Relatórios com dados reais (modo real) não levam a marca de demonstração.
+    const base = real ? `${arquivo}-${data}` : `${arquivo}-DEMO-${data}`;
+    const AVISO = real ? AVISO_REAL : AVISO_DEMO;
 
     if (formato === "csv") {
         const conteudo = "﻿" + gerarCsv(

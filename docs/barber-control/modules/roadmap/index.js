@@ -5,6 +5,7 @@
 // Votos são fictícios e nenhuma solicitação é enviada às barbearias.
 // A priorização usa critérios e pesos explícitos (sem aleatoriedade).
 // =====================================================================
+import { MODO_DEMO } from "../../js/demo.js";
 import * as S from "../../services/demo/saas.js";
 import * as E from "../../services/demo/evolucao.js";
 import {
@@ -446,7 +447,13 @@ function renderIdeia(view, id) {
 
 const RENDER = { "": secaoKanban, "linha-do-tempo": secaoLinhaDoTempo, solicitacoes: secaoSolicitacoes, priorizacao: secaoPriorizacao, votacao: secaoVotacao };
 
-export function render(view, { parametros = [] }) {
+export async function render(view, contexto) {
+    // Fora do modo demonstração: dados reais do Supabase (Master + MFA).
+    if (!MODO_DEMO) {
+        const real = await import("./real.js");
+        return real.render(view, contexto);
+    }
+    const { parametros = [] } = contexto;
     const [primeiro, segundo] = parametros;
     if (primeiro === "ideia" && segundo) return renderIdeia(view, segundo);
     const ativa = SECOES.some(([r]) => r === primeiro) ? primeiro : "";

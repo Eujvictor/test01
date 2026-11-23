@@ -4,6 +4,7 @@
 // Nenhuma versão é publicada, distribuída ou revertida de verdade.
 // Preparado para integração futura com GitHub e pipeline de implantação.
 // =====================================================================
+import { MODO_DEMO } from "../../js/demo.js";
 import * as S from "../../services/demo/saas.js";
 import * as E from "../../services/demo/evolucao.js";
 import {
@@ -517,7 +518,13 @@ function renderVersao(view, id) {
 
 const RENDER = { "": secaoVisao, versoes: secaoVersoes, distribuicao: secaoDistribuicao, rollback: secaoRollback };
 
-export function render(view, { parametros = [] }) {
+export async function render(view, contexto) {
+    // Fora do modo demonstração: dados reais do Supabase (Master + MFA).
+    if (!MODO_DEMO) {
+        const real = await import("./real.js");
+        return real.render(view, contexto);
+    }
+    const { parametros = [] } = contexto;
     const [primeiro, segundo] = parametros;
     if (primeiro === "versao" && segundo) return renderVersao(view, segundo);
     const ativa = SECOES.some(([r]) => r === primeiro) ? primeiro : "";

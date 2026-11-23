@@ -8,6 +8,7 @@
 //   3. Liberação individual → exceção administrativa para uma empresa
 // Nenhum deles substitui a autorização no backend.
 // =====================================================================
+import { MODO_DEMO } from "../../js/demo.js";
 import * as S from "../../services/demo/saas.js";
 import * as E from "../../services/demo/evolucao.js";
 import { CATEGORIAS_FUNCIONALIDADE, STATUS_FUNCIONALIDADE, TIPOS_LIBERACAO, STATUS_BARBEARIA, opcoes } from "../../services/demo/catalogo.js";
@@ -444,7 +445,13 @@ function renderFuncionalidade(view, chave) {
 
 const RENDER = { "": secaoCatalogo, planos: secaoPlanos, flags: secaoFlags, liberacoes: secaoLiberacoes, alertas: secaoAlertas };
 
-export function render(view, { parametros = [] }) {
+export async function render(view, contexto) {
+    // Fora do modo demonstração: dados reais do Supabase (Master + MFA).
+    if (!MODO_DEMO) {
+        const real = await import("./real.js");
+        return real.render(view, contexto);
+    }
+    const { parametros = [] } = contexto;
     const [primeiro, segundo] = parametros;
     if (primeiro === "funcionalidade" && segundo) return renderFuncionalidade(view, segundo);
     const ativa = SECOES.some(([r]) => r === primeiro) ? primeiro : "";

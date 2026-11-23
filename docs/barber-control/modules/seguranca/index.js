@@ -6,6 +6,7 @@
 // permissões são fictícios. A verificação de segurança mostra a
 // situação REAL do projeto (nada verificado em produção ainda).
 // =====================================================================
+import { MODO_DEMO } from "../../js/demo.js";
 import * as S from "../../services/demo/saas.js";
 import * as I from "../../services/demo/infra.js";
 import {
@@ -350,7 +351,13 @@ function secaoVerificacao({ secao, atualizarIndicadores }) {
 
 const RENDER = { "": secaoVisao, autenticacao: secaoAutenticacao, acessos: secaoAcessos, incidentes: (ctx) => Inc.renderLista(ctx.secao, "seguranca", ctx.atualizarIndicadores), permissoes: secaoPermissoes, verificacao: secaoVerificacao, alertas: (ctx) => Al.renderCentral(ctx.secao, ctx.atualizarIndicadores) };
 
-export function render(view, { parametros = [] }) {
+export async function render(view, contexto) {
+    // Fora do modo demonstração: dados reais do Supabase (Master + MFA).
+    if (!MODO_DEMO) {
+        const real = await import("./real.js");
+        return real.render(view, contexto);
+    }
+    const { parametros = [] } = contexto;
     const [primeiro, segundo] = parametros;
     if (primeiro === "incidente" && segundo) return Inc.renderDetalhe(view, "seguranca", segundo);
     if (primeiro === "alerta" && segundo) return Al.renderDetalhe(view, segundo);
