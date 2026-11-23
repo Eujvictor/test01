@@ -52,7 +52,7 @@ Use **Ctrl+F5** ao abrir cada página, para carregar a versão nova.
 
 ## E. Pagamento por Pix
 
-1. [ ] Rode a migração 13 e cadastre a chave em **Assinaturas → Planos e regras → Recebimento por Pix** (guia `ATIVAR-PIX.md`).
+1. [ ] Migração 13 rodada e chave Pix cadastrada (já feitos em 23/11/2026). Confira em **Assinaturas → Planos e regras**: o card "Recebimento por Pix" mostra **Ativo** com a sua chave, o seu nome e a sua cidade.
 2. [ ] No Barber Control, em **Assinaturas**, deixe a big bigode "Em teste" com a data de **hoje**. Depois, em **Planos e regras**, clique em **Executar rotina agora**. Isso gera uma fatura.
 3. [ ] No painel da big bigode, abra **Minha assinatura → Pagar com Pix**. O QR Code e o código aparecem, e o app do seu banco mostra o **seu nome** e o **valor certo**.
 4. [ ] Toque em **Já paguei**. No Barber Control, em **Financeiro**, o aviso aparece em "Pix informados para conferir".
