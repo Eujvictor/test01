@@ -636,3 +636,50 @@ body {
     }
 
 }
+
+/* ==========================================
+   CRIAR NOVA SENHA
+   ========================================== */
+
+.regras-senha {
+    display: grid;
+    gap: 4px;
+    margin: 10px 0 0;
+    padding: 0;
+    list-style: none;
+    font-size: 12px;
+    color: var(--muted, #9a9a9a);
+}
+
+.regras-senha li::before {
+    content: "○ ";
+}
+
+.regras-senha li.is-ok {
+    color: var(--success);
+}
+
+.regras-senha li.is-ok::before {
+    content: "✓ ";
+}
+
+.forgot-password:disabled {
+    opacity: 0.6;
+    cursor: wait;
+}
+
+
+/* Links dos Termos de uso e da Política de privacidade */
+.links-legais {
+    margin: 12px 0 0;
+    font-size: 12px;
+    line-height: 1.5;
+    color: inherit;
+    opacity: 0.7;
+    text-align: center;
+}
+
+.links-legais a {
+    color: inherit;
+    text-decoration: underline;
+}

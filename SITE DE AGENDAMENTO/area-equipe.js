@@ -212,13 +212,45 @@ return;
     // ESQUECI MINHA SENHA
     // ==========================================
 
+    // Envia o link de redefinição pelo Supabase Auth. A resposta é sempre a
+    // mesma, exista ou não a conta (não revela quais e-mails estão cadastrados).
+    let ultimoEnvio = 0;
+
     forgotPassword.addEventListener(
         "click",
-        function () {
+        async function () {
 
-            showMessage(
-                "A recuperação de senha será ativada quando conectarmos a autenticação real."
-            );
+            const email = emailInput.value.trim().toLowerCase();
+
+            if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) {
+                showMessage("Digite seu e-mail no campo acima e toque de novo em “Esqueci minha senha”.");
+                emailInput.focus();
+                return;
+            }
+
+            if (Date.now() - ultimoEnvio < 60000) {
+                showMessage("Aguarde um minuto antes de pedir um novo link.");
+                return;
+            }
+
+            forgotPassword.disabled = true;
+            ultimoEnvio = Date.now();
+
+            try {
+                const destino = new URL("redefinir-senha.html", window.location.href).href;
+                const { error } = await window.supabaseClient.auth.resetPasswordForEmail(email, { redirectTo: destino });
+                if (error && /rate|too many|seconds/i.test(error.message || "")) {
+                    showMessage("Muitos pedidos seguidos. Aguarde alguns minutos e tente de novo.");
+                    return;
+                }
+                if (error) console.error("Recuperação de senha:", error);
+                showSuccess("Se este e-mail estiver cadastrado, você vai receber um link para criar uma nova senha. Confira também a caixa de spam.");
+            } catch (erro) {
+                console.error("Recuperação de senha:", erro);
+                showMessage("Sem conexão com o servidor. Tente de novo.");
+            } finally {
+                setTimeout(() => { forgotPassword.disabled = false; }, 3000);
+            }
 
         }
     );
