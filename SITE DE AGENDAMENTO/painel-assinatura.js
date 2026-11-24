@@ -211,6 +211,7 @@
 
         const resumo = elemento("div", "assinatura-resumo");
         const itens = [
+            ["Barbearia", dados.barbearia || "—"],
             ["Plano", `${dados.plano} · ${moeda(dados.preco_mensal)}/mês`],
             ["Situação", STATUS[dados.status] || dados.status],
             dados.status === "teste"
@@ -225,8 +226,14 @@
         corpo.appendChild(resumo);
 
         if (dados.status === "isenta") {
-            corpo.appendChild(elemento("p", "assinatura-nota", "Esta barbearia é isenta: não há mensalidade."));
+            corpo.appendChild(elemento("p", "assinatura-nota", `${dados.barbearia || "Esta barbearia"} é isenta: não há mensalidade.`));
             return;
+        }
+        const temAberta = (dados.faturas || []).some((f) => f.status === "aberta");
+        if (!temAberta && (dados.faturas || []).length && dados.status !== "cancelada") {
+            corpo.appendChild(elemento("p", "assinatura-nota", dados.status === "teste"
+                ? `Nada para pagar agora: a primeira fatura aparece aqui perto do fim do teste (${dia(dados.teste_ate)}).`
+                : `Nada para pagar agora. A próxima fatura vence em ${dia(dados.proximo_vencimento)} e aparece aqui alguns dias antes.`));
         }
 
         const titulo = elemento("h3", "assinatura-subtitulo", "Faturas");

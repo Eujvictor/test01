@@ -61,10 +61,10 @@ function erroNaTela(view, erro) {
 async function gerenciar(a, planos) {
     return abrirFormulario({
         titulo: `Assinatura · ${a.barbearia}`,
-        descricao: "A troca de plano vale a partir da próxima fatura. Isenta ou cancelada: as faturas em aberto são canceladas.",
+        descricao: `Situação atual: ${STATUS_ASSINATURA_REAL[a.status]?.rotulo ?? a.status}. “Ativa (cobrar)” gera a fatura na hora, e o dono já pode pagar em “Minha assinatura”. A troca de plano vale a partir da próxima fatura. Isenta ou cancelada: as faturas em aberto são canceladas.`,
         campos: [
             { nome: "plano_id", rotulo: "Plano", tipo: "select", largura: "meia", opcoes: planos.filter((p) => p.ativo || p.id === a.plano_id).map((p) => [p.id, `${p.nome} · ${moeda(p.preco_mensal)}/mês`]) },
-            { nome: "status", rotulo: "Situação", tipo: "select", largura: "meia", opcoes: [["", `Manter (${STATUS_ASSINATURA_REAL[a.status]?.rotulo ?? a.status})`], ["teste", "Em teste"], ["ativa", "Ativa (cobrar)"], ["isenta", "Isenta (não cobrar)"], ["cancelada", "Cancelada"]] },
+            { nome: "status", rotulo: "Mudar a situação para", tipo: "select", largura: "meia", opcoes: [["", `Não mudar (continua ${STATUS_ASSINATURA_REAL[a.status]?.rotulo ?? a.status})`], ["teste", "Em teste"], ["ativa", "Ativa: cobrar a partir de hoje"], ["isenta", "Isenta (não cobrar)"], ["cancelada", "Cancelada"]] },
             { nome: "teste_ate", rotulo: "Teste até", tipo: "data", largura: "meia", ajuda: "Obrigatório para “Em teste”. A primeira fatura vence nesta data." },
             { nome: "motivo", rotulo: "Motivo (fica na auditoria)", tipo: "textarea", maxlength: 300 }
         ],
@@ -73,7 +73,7 @@ async function gerenciar(a, planos) {
         aoSalvar: async (v) => {
             try {
                 await rpc("alterar_assinatura", { p_barbearia: a.barbearia_id, p_dados: { plano_id: v.plano_id === a.plano_id ? null : v.plano_id, status: v.status || null, teste_ate: v.teste_ate || null, motivo: v.motivo || null } });
-                return true;
+                return v.status === "ativa" && a.status !== "ativa" && a.status !== "atrasada" ? "cobranca" : true;
             } catch (erro) { throw traduzir(erro); }
         }
     });
@@ -131,7 +131,11 @@ async function secaoAssinaturas(view) {
         const botao = e.target.closest("[data-acao=gerenciar]");
         if (!botao) return;
         const a = lista.find((x) => x.barbearia_id === botao.dataset.id);
-        if (await gerenciar(a, planos)) { mostrarToast("Assinatura atualizada.", "sucesso"); secaoAssinaturas(view); }
+        const resultado = await gerenciar(a, planos);
+        if (resultado) {
+            mostrarToast(resultado === "cobranca" ? "Cobrança ativada: a fatura de hoje já aparece em “Minha assinatura” do dono." : "Assinatura atualizada.", "sucesso", 6000);
+            secaoAssinaturas(view);
+        }
     });
 }
 
