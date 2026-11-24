@@ -53,9 +53,19 @@ export async function rpc(nome, parametros = {}) {
     return data;
 }
 
-export async function invocarFuncao(nome, corpo = {}) {
+// Chama a Edge Function. Se o login venceu (401), renova a sessão e tenta
+// uma única vez de novo; sem renovação possível, pede para entrar de novo.
+export async function invocarFuncao(nome, corpo = {}, jaRenovou = false) {
     const { data, error } = await supabase.functions.invoke(nome, { body: corpo });
     if (!error) return data;
+
+    if (error.context?.status === 401 && !jaRenovou) {
+        const { data: renovada, error: erroRenovar } = await supabase.auth.refreshSession();
+        if (!erroRenovar && renovada?.session) return invocarFuncao(nome, corpo, true);
+        throw new ErroControl("Sua sessão expirou. Clique em Sair e entre de novo (com o código do autenticador).", {
+            codigo: "sessao_expirada", original: error
+        });
+    }
 
     let mensagem = null;
     let status = null;
