@@ -31,6 +31,8 @@
     const dataHora = (iso) => (iso ? new Date(iso).toLocaleString("pt-BR", { dateStyle: "short", timeStyle: "short" }) : "");
     let ultimoFoco = null;
     let chamados = [];
+    // Barbearia aberta no painel (o dono pode administrar mais de uma).
+    const barbeariaAberta = () => (window.BarbeariaAtual && window.BarbeariaAtual.atual && window.BarbeariaAtual.atual.id) || null;
 
     function avisar(mensagem, tipo) {
         if (window.PainelUI) window.PainelUI.aviso(mensagem, tipo);
@@ -69,7 +71,7 @@
     }
 
     async function carregarChamados() {
-        const { data, error } = await api().rpc("meus_chamados");
+        const { data, error } = await api().rpc("meus_chamados", { p_barbearia: barbeariaAberta() });
         if (error) throw error;
         chamados = Array.isArray(data) ? data : [];
         atualizarContador();
@@ -139,7 +141,7 @@
             enviar.textContent = "Enviando…";
             erro.textContent = "";
             try {
-                const { data, error } = await api().rpc("abrir_chamado", { p_assunto: assunto.value.trim(), p_categoria: categoria.value, p_mensagem: mensagem.value.trim() });
+                const { data, error } = await api().rpc("abrir_chamado", { p_assunto: assunto.value.trim(), p_categoria: categoria.value, p_mensagem: mensagem.value.trim(), p_barbearia: barbeariaAberta() });
                 if (error) throw error;
                 avisar("Chamado enviado. Você verá a resposta aqui em Suporte.", "sucesso");
                 await carregarChamados();
@@ -248,7 +250,7 @@
     async function mostrarComunicados() {
         let lista = [];
         try {
-            const { data, error } = await api().rpc("meus_comunicados");
+            const { data, error } = await api().rpc("meus_comunicados", { p_barbearia: barbeariaAberta() });
             if (error) throw error;
             lista = (Array.isArray(data) ? data : []).filter((c) => !c.lido).slice(0, 3);
         } catch (falha) {
@@ -264,7 +266,7 @@
             caixa.append(texto, botao("Entendi", "comunicado-aviso__botao", async (e) => {
                 e.currentTarget.disabled = true;
                 try {
-                    const { error } = await api().rpc("marcar_comunicado_lido", { p_comunicado: c.id });
+                    const { error } = await api().rpc("marcar_comunicado_lido", { p_comunicado: c.id, p_barbearia: barbeariaAberta() });
                     if (error) throw error;
                     caixa.remove();
                 } catch (falha) {

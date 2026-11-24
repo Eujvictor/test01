@@ -32,6 +32,8 @@
     const moeda = (v) => Number(v || 0).toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
     const dia = (s) => (s ? String(s).slice(0, 10).split("-").reverse().join("/") : "—");
     let dados = null;
+    // Barbearia aberta no painel (o dono pode administrar mais de uma).
+    const barbeariaAberta = () => (window.BarbeariaAtual && window.BarbeariaAtual.atual && window.BarbeariaAtual.atual.id) || null;
     let ultimoFoco = null;
 
     function avisar(mensagem, tipo) {
@@ -341,7 +343,7 @@
 
     async function carregar() {
         try {
-            const { data, error } = await window.supabaseClient.schema("api").rpc("minha_assinatura");
+            const { data, error } = await window.supabaseClient.schema("api").rpc("minha_assinatura", { p_barbearia: barbeariaAberta() });
             if (error) throw error;
             dados = data;
         } catch (erro) {
