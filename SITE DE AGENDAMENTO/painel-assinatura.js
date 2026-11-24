@@ -220,6 +220,9 @@
                 ? ["Teste grátis até", dia(dados.teste_ate)]
                 : ["Próximo vencimento", ["isenta", "cancelada"].includes(dados.status) ? "—" : dia(dados.proximo_vencimento)]
         ];
+        // Fatura em aberto aparece primeiro no resumo (é o que dá para pagar agora).
+        const emAberto = (dados.faturas || []).filter((f) => f.status === "aberta").sort((x, y) => String(x.vencimento).localeCompare(String(y.vencimento)))[0];
+        if (emAberto) itens.splice(1, 0, ["Fatura em aberto", `${moeda(emAberto.valor)} · vence ${dia(emAberto.vencimento)}`]);
         itens.forEach(([rotulo, valor]) => {
             const bloco = elemento("div", "assinatura-resumo__item");
             bloco.append(elemento("span", "", rotulo), elemento("strong", "", valor));
