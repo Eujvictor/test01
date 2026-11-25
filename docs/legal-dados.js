@@ -4,11 +4,11 @@
 // páginas mostram o campo destacado em amarelo.
 // =====================================================================
 window.BARBER_LEGAL = Object.freeze({
-    empresa: "(a preencher: nome da empresa ou do responsável)",
-    documento: "(a preencher: CNPJ ou CPF)",
-    email: "(a preencher: e-mail de contato e privacidade)",
-    cidade: "(a preencher: cidade/UF do foro)",
-    atualizado: "24/11/2026"
+    empresa: "João Victor Pereira da Silva",
+    documento: "pessoa física",
+    email: "barbercontato2@gmail.com",
+    cidade: "Anápolis/GO",
+    atualizado: "25/11/2026"
 });
 
 document.addEventListener("DOMContentLoaded", () => {
