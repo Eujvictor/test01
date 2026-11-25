@@ -13,10 +13,12 @@ export const ACOES_AUDITORIA = {
     barbearia_status: { texto: "Status de barbearia alterado", icone: "toggle-right", grupo: "operacao" },
     membro_vinculado: { texto: "Acesso ao painel vinculado", icone: "user-plus", grupo: "operacao" },
     membro_reativado: { texto: "Acesso ao painel reativado", icone: "user-check", grupo: "operacao" },
-    membro_desativado: { texto: "Acesso ao painel desativado", icone: "user-x", grupo: "operacao" }
+    membro_desativado: { texto: "Acesso ao painel desativado", icone: "user-x", grupo: "operacao" },
+    funcionalidade_liberacao: { texto: "Liberação de funcionalidade alterada", icone: "rocket", grupo: "operacao" },
+    funcionalidade_piloto: { texto: "Barbearias piloto definidas", icone: "users", grupo: "operacao" }
 };
 
-const STATUS = { teste: "Em teste", ativa: "Ativa", suspensa: "Suspensa", cancelada: "Cancelada" };
+const STATUS = { teste: "Em teste", ativa: "Ativa", suspensa: "Suspensa", cancelada: "Cancelada", beta: "Em teste", planejada: "Planejada", desativada: "Desligada" };
 const PAPEIS = { proprietario: "Proprietário", gerente: "Gerente" };
 
 export function rotuloAcao(acao) {

@@ -236,12 +236,49 @@
         });
     }
 
+    // ------------------------------------------
+    // Funcionalidades liberadas pelo Barber Control (migração 15)
+    //   if (await BarbeariaAtual.tem("fidelidade")) { ...mostra a novidade... }
+    // "Em teste" só aparece na barbearia de referência e nas pilotos;
+    // "Liberada" aparece em todas. Qualquer falha = desligada.
+    // ------------------------------------------
+    const funcionalidades = pronta.then(async (estado) => {
+        if (estado.modo !== "multi" || !estado.id) return [];
+        try {
+            const { data, error } = await client.schema("api").rpc("funcionalidades_ligadas", { p_barbearia: estado.id });
+            return !error && Array.isArray(data) ? data : [];
+        } catch {
+            return [];
+        }
+    });
+
+    // Atalho no HTML: <div data-funcionalidade="fidelidade">…</div> fica
+    // escondido e só aparece quando a funcionalidade está ligada.
+    const estilo = document.createElement("style");
+    estilo.textContent = "[data-funcionalidade]:not(.funcionalidade-ligada){display:none !important}";
+    document.head.appendChild(estilo);
+    const mostrarLigadas = (lista) => document.querySelectorAll("[data-funcionalidade]").forEach((el) => {
+        el.classList.toggle("funcionalidade-ligada", lista.includes(el.dataset.funcionalidade));
+    });
+    funcionalidades.then((lista) => {
+        if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", () => mostrarLigadas(lista));
+        else mostrarLigadas(lista);
+    });
+
     window.BarbeariaAtual = {
         modo: MODO,
         slugPedido,
         slugReferencia: SLUG_PADRAO,
         atual: null,
         pronta,
+        funcionalidades,
+        // Reaplica o atalho data-funcionalidade em conteúdo criado depois.
+        mostrarFuncionalidades() {
+            return funcionalidades.then(mostrarLigadas);
+        },
+        tem(codigo) {
+            return funcionalidades.then((lista) => lista.includes(String(codigo || "").trim().toLowerCase()));
+        },
         // Chave de cache por barbearia (site-config.js e site-tema.js).
         chaveCache(base) {
             return slugPedido && slugPedido !== SLUG_PADRAO ? `${base}:${slugPedido}` : base;
