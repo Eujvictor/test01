@@ -1273,19 +1273,25 @@ html body:not(#_) #servicos .services-grid {
 
 /* Celular: cabeçalho quebra em duas linhas e as abas da Agenda rolam */
 @media (max-width: 640px) {
-    /* Resumo compacto em 3 colunas: sem o ícone, número menor */
-    html body:not(#_) :is(#barbeiros, #servicos) .team-summary {
+    /* Resumo compacto em 3 colunas: sem o ícone, número menor.
+       ".team-summary.team-summary" dá prioridade a estas regras sobre as do
+       computador, que vêm depois no arquivo (senão o número sai do cartão). */
+    html body:not(#_) :is(#barbeiros, #servicos) .team-summary.team-summary {
         gap: 8px !important;
     }
 
-    html body:not(#_) :is(#barbeiros, #servicos) .team-summary > div {
+    html body:not(#_) :is(#barbeiros, #servicos) .team-summary.team-summary > div {
         grid-template-columns: minmax(0, 1fr) !important;
         grid-template-areas: "rotulo" "valor" !important;
+        align-content: start !important;
+        height: auto !important;
+        min-height: 0 !important;
+        overflow: visible !important;
         padding: 12px !important;
     }
 
-    html body:not(#_) :is(#barbeiros, #servicos) .team-summary > div:nth-child(n)::before,
-    html body:not(#_) :is(#barbeiros, #servicos) .team-summary > div:nth-child(n)::after {
+    html body:not(#_) :is(#barbeiros, #servicos) .team-summary.team-summary > div:nth-child(n)::before,
+    html body:not(#_) :is(#barbeiros, #servicos) .team-summary.team-summary > div:nth-child(n)::after {
         display: none !important;
     }
 
@@ -1394,12 +1400,12 @@ html body:not(#_) #servicos .services-grid {
         font-size: 10.5px !important;
     }
 
-    html body:not(#_) :is(#barbeiros, #servicos) .team-summary > div > span {
+    html body:not(#_) :is(#barbeiros, #servicos) .team-summary.team-summary > div > span {
         font-size: 11.5px !important;
         line-height: 1.25 !important;
     }
 
-    html body:not(#_) :is(#barbeiros, #servicos) .team-summary > div > strong {
+    html body:not(#_) :is(#barbeiros, #servicos) .team-summary.team-summary > div > strong {
         font-size: 22px !important;
     }
 

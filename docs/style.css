@@ -138,12 +138,30 @@ img {
     color: #07140b;
 }
 
+/* Ícone ☰ do menu no celular (antes um vermelho fixo).
+   O traço usa a cor do texto do cabeçalho (sempre legível sobre o fundo).
+   Ao passar o dedo/mouse ou com o menu aberto, ganha um fundo suave na
+   cor principal da barbearia (configuracoes_site → site-tema.js). */
 .menu-button {
     display: none;
     background: none;
     border: 0;
-    color: rgb(231, 8, 8);
+    border-radius: 8px;
+    color: var(--text);
     font-size: 25px;
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.menu-button:hover,
+.menu-button[aria-expanded="true"] {
+    background: color-mix(in srgb, var(--gold) 22%, transparent);
+    color: var(--white);
+}
+
+.menu-button:focus-visible {
+    outline: 2px solid var(--gold);
+    outline-offset: 3px;
+    border-radius: 6px;
 }
 
 /* HERO */
