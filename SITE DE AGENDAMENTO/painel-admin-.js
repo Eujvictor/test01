@@ -6153,6 +6153,12 @@ markHorariosClean();
     }
 
     function dashV3Init() {
+        // O dashboard novo (painel-dashboard.js) substituiu esta versão.
+        // Sem os elementos dela na página, não busca dados à toa.
+        if (!document.getElementById("dashv3Upcoming")) {
+            return;
+        }
+
         const periodSelect =
             document.getElementById("dashv3Period");
 

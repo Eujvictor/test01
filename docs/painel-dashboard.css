@@ -1,0 +1,864 @@
+/* =====================================================================
+   DASHBOARD — VISÃO GERAL (painel-dashboard.js)
+   Um só padrão para todo o dashboard: cores, raio, espaçamento, sombra.
+   Tema escuro é o padrão; o claro vem de html[data-tema="claro"]
+   (botão "Modo escuro/claro" de painel-tema.js, salvo no aparelho).
+   ===================================================================== */
+
+#dashboard {
+    /* Superfícies e texto */
+    --dsh-fundo-card: #17181b;
+    --dsh-fundo-elevado: #1d1f23;
+    --dsh-fundo-sutil: rgba(255, 255, 255, .035);
+    --dsh-borda: rgba(255, 255, 255, .075);
+    --dsh-borda-forte: rgba(255, 255, 255, .13);
+    --dsh-texto: #f3f1ec;
+    --dsh-texto-2: #b3afa7;
+    --dsh-texto-3: #7f7b74;
+
+    /* Destaque dourado */
+    --dsh-ouro: #d9b260;
+    --dsh-ouro-forte: #e8c57a;
+    --dsh-ouro-fundo: rgba(217, 178, 96, .12);
+    --dsh-ouro-borda: rgba(217, 178, 96, .35);
+    --dsh-barra: #d1a64f;
+
+    /* Status (validados para daltonismo na ordem usada) */
+    --dsh-finalizado: #2fb985;
+    --dsh-confirmado: #4f8fea;
+    --dsh-pendente: #e3a23b;
+    --dsh-cancelado: #e2606a;
+    --dsh-sobe: #4cc995;
+    --dsh-desce: #f07a82;
+
+    /* Padrões */
+    --dsh-raio: 16px;
+    --dsh-raio-interno: 12px;
+    --dsh-raio-pequeno: 8px;
+    --dsh-espaco: 16px;
+    --dsh-sombra: 0 1px 0 rgba(255, 255, 255, .03) inset, 0 8px 24px rgba(0, 0, 0, .22);
+    --dsh-transicao: 160ms ease;
+}
+
+html[data-tema="claro"] #dashboard {
+    --dsh-fundo-card: #ffffff;
+    --dsh-fundo-elevado: #faf8f4;
+    --dsh-fundo-sutil: rgba(30, 28, 24, .035);
+    --dsh-borda: #e8e3d9;
+    --dsh-borda-forte: #d9d2c4;
+    --dsh-texto: #1d1e21;
+    --dsh-texto-2: #5d5b56;
+    --dsh-texto-3: #8b877f;
+
+    --dsh-ouro: #9c7120;
+    --dsh-ouro-forte: #87601a;
+    --dsh-ouro-fundo: rgba(201, 152, 58, .12);
+    --dsh-ouro-borda: rgba(176, 130, 44, .35);
+    --dsh-barra: #c79a3c;
+
+    --dsh-finalizado: #17905f;
+    --dsh-confirmado: #3a76d6;
+    --dsh-pendente: #c98512;
+    --dsh-cancelado: #d24b56;
+    --dsh-sobe: #12804f;
+    --dsh-desce: #c43c47;
+
+    --dsh-sombra: 0 1px 2px rgba(40, 32, 18, .05), 0 6px 20px rgba(40, 32, 18, .06);
+}
+
+#dashboard .dsh {
+    display: flex;
+    flex-direction: column;
+    gap: var(--dsh-espaco);
+    color: var(--dsh-texto);
+    font-variant-numeric: tabular-nums;
+}
+
+#dashboard .dsh svg {
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+#dashboard .dsh--atualizando .dsh-kpi__valor,
+#dashboard .dsh--atualizando .dsh-card__numero {
+    opacity: .55;
+    transition: opacity var(--dsh-transicao);
+}
+
+/* ---------------- Cabeçalho ---------------- */
+#dashboard .dsh-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 14px 20px;
+    margin-bottom: 4px;
+}
+
+#dashboard .dsh-eyebrow {
+    display: block;
+    margin: 0 0 6px;
+    color: var(--dsh-ouro);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+}
+
+#dashboard .dsh-head h1 {
+    margin: 0;
+    color: var(--dsh-texto);
+    font-size: clamp(26px, 3vw, 34px);
+    font-weight: 750;
+    letter-spacing: -.02em;
+    line-height: 1.1;
+}
+
+#dashboard .dsh-head__data {
+    margin: 6px 0 0;
+    color: var(--dsh-texto-2);
+    font-size: 14px;
+}
+
+#dashboard .dsh-head__acoes {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+}
+
+#dashboard .dsh-live {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    height: 34px;
+    padding: 0 12px;
+    border: 1px solid var(--dsh-borda);
+    border-radius: 999px;
+    background: var(--dsh-fundo-card);
+    color: var(--dsh-texto-2);
+    font-size: 12px;
+    font-weight: 600;
+}
+
+#dashboard .dsh-live i {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--dsh-finalizado);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--dsh-finalizado) 22%, transparent);
+}
+
+#dashboard .dsh-periodo {
+    display: inline-flex;
+    gap: 2px;
+    padding: 3px;
+    border: 1px solid var(--dsh-borda);
+    border-radius: 999px;
+    background: var(--dsh-fundo-card);
+}
+
+#dashboard .dsh-periodo button {
+    height: 30px;
+    padding: 0 14px;
+    border: 0;
+    border-radius: 999px;
+    background: transparent;
+    color: var(--dsh-texto-2);
+    font: inherit;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background var(--dsh-transicao), color var(--dsh-transicao);
+}
+
+#dashboard .dsh-periodo button:hover {
+    color: var(--dsh-texto);
+}
+
+#dashboard .dsh-periodo button.ativo {
+    background: var(--dsh-ouro-fundo);
+    color: var(--dsh-ouro-forte);
+    box-shadow: inset 0 0 0 1px var(--dsh-ouro-borda);
+}
+
+#dashboard .dsh-periodo button:focus-visible,
+#dashboard .dsh-botao:focus-visible {
+    outline: 2px solid var(--dsh-ouro);
+    outline-offset: 2px;
+}
+
+/* ---------------- Cards (padrão) ---------------- */
+#dashboard .dsh-kpi,
+#dashboard .dsh-card {
+    min-width: 0;
+    border: 1px solid var(--dsh-borda);
+    border-radius: var(--dsh-raio);
+    background: var(--dsh-fundo-card);
+    box-shadow: var(--dsh-sombra);
+}
+
+#dashboard .dsh-card {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    padding: 18px 20px 20px;
+}
+
+#dashboard .dsh-card__cabeca {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+#dashboard .dsh-card h2 {
+    margin: 0;
+    color: var(--dsh-texto);
+    font-size: 16px;
+    font-weight: 700;
+    letter-spacing: -.01em;
+}
+
+#dashboard .dsh-card__cabeca p {
+    margin: 3px 0 0;
+    color: var(--dsh-texto-3);
+    font-size: 12.5px;
+}
+
+#dashboard .dsh-card__numero {
+    color: var(--dsh-texto);
+    font-size: 26px;
+    font-weight: 750;
+    line-height: 1;
+}
+
+#dashboard .dsh-etiqueta {
+    flex: 0 0 auto;
+    padding: 4px 10px;
+    border: 1px solid var(--dsh-borda);
+    border-radius: 999px;
+    color: var(--dsh-texto-2);
+    font-size: 12px;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+#dashboard .dsh-botao {
+    display: inline-flex;
+    flex: 0 0 auto;
+    align-items: center;
+    gap: 6px;
+    height: 32px;
+    padding: 0 12px;
+    border: 1px solid var(--dsh-borda-forte);
+    border-radius: 999px;
+    background: transparent;
+    color: var(--dsh-texto);
+    font: inherit;
+    font-size: 12.5px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: border-color var(--dsh-transicao), color var(--dsh-transicao), background var(--dsh-transicao);
+}
+
+#dashboard .dsh-botao svg {
+    width: 15px;
+    height: 15px;
+}
+
+#dashboard .dsh-botao:hover {
+    border-color: var(--dsh-ouro-borda);
+    background: var(--dsh-ouro-fundo);
+    color: var(--dsh-ouro-forte);
+}
+
+/* ---------------- Indicadores ---------------- */
+#dashboard .dsh-kpis {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: var(--dsh-espaco);
+}
+
+#dashboard .dsh-kpi {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 18px 20px;
+    transition: border-color var(--dsh-transicao), transform var(--dsh-transicao);
+}
+
+#dashboard .dsh-kpi:hover {
+    border-color: var(--dsh-borda-forte);
+    transform: translateY(-1px);
+}
+
+#dashboard .dsh-kpi__topo {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+#dashboard .dsh-kpi__rotulo {
+    color: var(--dsh-texto-2);
+    font-size: 13px;
+    font-weight: 600;
+}
+
+#dashboard .dsh-kpi__icone {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    border-radius: 10px;
+    background: var(--dsh-fundo-sutil);
+    color: var(--dsh-texto-2);
+}
+
+#dashboard .dsh-kpi__icone svg {
+    width: 18px;
+    height: 18px;
+}
+
+#dashboard .dsh-kpi__valor {
+    color: var(--dsh-texto);
+    font-size: clamp(28px, 2.6vw, 36px);
+    font-weight: 750;
+    letter-spacing: -.02em;
+    line-height: 1.05;
+    white-space: nowrap;
+}
+
+#dashboard .dsh-kpi__meta {
+    color: var(--dsh-texto-3);
+    font-size: 12.5px;
+    line-height: 1.4;
+}
+
+#dashboard .dsh-kpi__progresso {
+    height: 6px;
+    overflow: hidden;
+    border-radius: 999px;
+    background: var(--dsh-fundo-sutil);
+}
+
+#dashboard .dsh-kpi__progresso i {
+    display: block;
+    width: 0;
+    height: 100%;
+    border-radius: inherit;
+    background: var(--dsh-finalizado);
+    transition: width 400ms ease;
+}
+
+#dashboard .dsh-kpi--destaque {
+    border-color: var(--dsh-ouro-borda);
+    background:
+        radial-gradient(120% 140% at 100% 0%, var(--dsh-ouro-fundo), transparent 60%),
+        var(--dsh-fundo-card);
+}
+
+#dashboard .dsh-kpi--destaque .dsh-kpi__icone {
+    background: var(--dsh-ouro-fundo);
+    color: var(--dsh-ouro);
+}
+
+#dashboard .dsh-kpi--destaque .dsh-kpi__valor {
+    color: var(--dsh-ouro-forte);
+}
+
+#dashboard .dsh-variacao {
+    display: inline-flex;
+    align-items: center;
+    padding: 1px 7px;
+    border-radius: 999px;
+    font-weight: 700;
+}
+
+#dashboard .dsh-variacao--sobe { background: color-mix(in srgb, var(--dsh-sobe) 14%, transparent); color: var(--dsh-sobe); }
+#dashboard .dsh-variacao--desce { background: color-mix(in srgb, var(--dsh-desce) 14%, transparent); color: var(--dsh-desce); }
+#dashboard .dsh-variacao--igual { background: var(--dsh-fundo-sutil); color: var(--dsh-texto-2); }
+
+/* ---------------- Grades ---------------- */
+#dashboard .dsh-grade {
+    display: grid;
+    gap: var(--dsh-espaco);
+}
+
+#dashboard .dsh-grade--operacao { grid-template-columns: minmax(0, 1.55fr) minmax(0, 1fr); align-items: start; }
+#dashboard .dsh-grade--equipe { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+
+/* ---------------- Próximos agendamentos ---------------- */
+#dashboard .dsh-agenda {
+    display: flex;
+    flex-direction: column;
+}
+
+#dashboard .dsh-agenda__linha {
+    display: grid;
+    grid-template-columns: 74px minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 14px;
+    padding: 11px 10px;
+    border-radius: var(--dsh-raio-interno);
+    transition: background var(--dsh-transicao);
+}
+
+#dashboard .dsh-agenda__linha + .dsh-agenda__linha {
+    box-shadow: 0 -1px 0 var(--dsh-borda);
+}
+
+#dashboard .dsh-agenda__linha:hover {
+    background: var(--dsh-fundo-sutil);
+    box-shadow: none;
+}
+
+#dashboard .dsh-agenda__linha:hover + .dsh-agenda__linha {
+    box-shadow: none;
+}
+
+#dashboard .dsh-agenda__hora {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+#dashboard .dsh-agenda__hora strong {
+    color: var(--dsh-texto);
+    font-size: 16px;
+    font-weight: 700;
+}
+
+#dashboard .dsh-agenda__hora span {
+    color: var(--dsh-texto-3);
+    font-size: 11.5px;
+    text-transform: capitalize;
+}
+
+#dashboard .dsh-agenda__info {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    min-width: 0;
+}
+
+#dashboard .dsh-agenda__info strong,
+#dashboard .dsh-agenda__info span {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+#dashboard .dsh-agenda__info strong {
+    color: var(--dsh-texto);
+    font-size: 14px;
+    font-weight: 650;
+}
+
+#dashboard .dsh-agenda__info span {
+    color: var(--dsh-texto-2);
+    font-size: 12.5px;
+}
+
+#dashboard .dsh-pilula {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px;
+    border-radius: 999px;
+    background: var(--dsh-fundo-sutil);
+    color: var(--dsh-texto);
+    font-size: 12px;
+    font-weight: 650;
+    white-space: nowrap;
+}
+
+#dashboard .dsh-pilula::before {
+    content: "";
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: currentColor;
+}
+
+#dashboard .dsh-pilula--pendente::before { background: var(--dsh-pendente); }
+#dashboard .dsh-pilula--confirmado::before { background: var(--dsh-confirmado); }
+#dashboard .dsh-pilula--finalizado::before { background: var(--dsh-finalizado); }
+#dashboard .dsh-pilula--cancelado::before { background: var(--dsh-cancelado); }
+
+/* ---------------- Status dos atendimentos ---------------- */
+#dashboard .dsh-status-barra {
+    display: flex;
+    gap: 2px; /* espaço entre os segmentos */
+    height: 12px;
+    overflow: hidden;
+    border-radius: 999px;
+}
+
+#dashboard .dsh-status-barra i {
+    display: block;
+    flex-basis: 0;
+    min-width: 6px;
+    height: 100%;
+}
+
+#dashboard .dsh-status-barra i:first-child { border-radius: 999px 0 0 999px; }
+#dashboard .dsh-status-barra i:last-child { border-radius: 0 999px 999px 0; }
+#dashboard .dsh-status-barra i:only-child { border-radius: 999px; }
+#dashboard .dsh-status-barra__vazia { flex-grow: 1; background: var(--dsh-fundo-sutil); }
+
+#dashboard .dsh-cor--finalizado { background: var(--dsh-finalizado); }
+#dashboard .dsh-cor--confirmado { background: var(--dsh-confirmado); }
+#dashboard .dsh-cor--pendente { background: var(--dsh-pendente); }
+#dashboard .dsh-cor--cancelado { background: var(--dsh-cancelado); }
+
+#dashboard .dsh-status {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+#dashboard .dsh-status li {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-areas: "nome nome" "valor pct";
+    align-items: end;
+    gap: 6px 8px;
+    padding: 12px 14px;
+    border: 1px solid var(--dsh-borda);
+    border-radius: var(--dsh-raio-interno);
+    background: var(--dsh-fundo-elevado);
+}
+
+#dashboard .dsh-status__nome {
+    display: flex;
+    grid-area: nome;
+    align-items: center;
+    gap: 8px;
+    color: var(--dsh-texto-2);
+    font-size: 12.5px;
+    font-weight: 600;
+}
+
+#dashboard .dsh-ponto {
+    flex: 0 0 auto;
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+}
+
+#dashboard .dsh-status li strong {
+    grid-area: valor;
+    color: var(--dsh-texto);
+    font-size: 24px;
+    font-weight: 750;
+    line-height: 1;
+}
+
+#dashboard .dsh-status__pct {
+    grid-area: pct;
+    color: var(--dsh-texto-3);
+    font-size: 12px;
+    font-weight: 600;
+}
+
+/* ---------------- Rankings (barbeiros e serviços) ---------------- */
+#dashboard .dsh-ranking {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+#dashboard .dsh-ranking__linha {
+    display: grid;
+    grid-template-columns: 28px 38px minmax(0, 1fr);
+    align-items: center;
+    gap: 12px;
+    padding: 10px;
+    border-radius: var(--dsh-raio-interno);
+    transition: background var(--dsh-transicao);
+}
+
+#dashboard .dsh-ranking__linha--servico { grid-template-columns: minmax(0, 1fr); }
+
+#dashboard .dsh-ranking__linha:hover { background: var(--dsh-fundo-sutil); }
+
+#dashboard .dsh-ranking__pos {
+    color: var(--dsh-texto-3);
+    font-size: 13px;
+    font-weight: 700;
+    text-align: center;
+}
+
+#dashboard .dsh-ranking__pos--primeiro { color: var(--dsh-ouro); }
+
+#dashboard .dsh-avatar {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 38px;
+    height: 38px;
+    border: 1px solid var(--dsh-ouro-borda);
+    border-radius: 50%;
+    background: var(--dsh-ouro-fundo);
+    color: var(--dsh-ouro-forte);
+    font-size: 13px;
+    font-weight: 750;
+}
+
+#dashboard .dsh-ranking__info {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    min-width: 0;
+}
+
+#dashboard .dsh-ranking__titulo {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+#dashboard .dsh-ranking__titulo strong {
+    overflow: hidden;
+    color: var(--dsh-texto);
+    font-size: 14px;
+    font-weight: 650;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+#dashboard .dsh-ranking__titulo span {
+    flex: 0 0 auto;
+    color: var(--dsh-texto);
+    font-size: 13.5px;
+    font-weight: 700;
+}
+
+#dashboard .dsh-ranking__meta {
+    color: var(--dsh-texto-3);
+    font-size: 12px;
+}
+
+#dashboard .dsh-trilho {
+    height: 6px;
+    overflow: hidden;
+    border-radius: 999px;
+    background: var(--dsh-fundo-sutil);
+}
+
+#dashboard .dsh-trilho i {
+    display: block;
+    height: 100%;
+    border-radius: inherit;
+    background: var(--dsh-barra);
+    transition: width 400ms ease;
+}
+
+/* ---------------- Visão financeira ---------------- */
+#dashboard .dsh-financeiro__corpo {
+    display: grid;
+    grid-template-columns: minmax(200px, 260px) minmax(0, 1fr);
+    gap: 20px;
+    align-items: stretch;
+}
+
+#dashboard .dsh-fin-metricas {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+#dashboard .dsh-fin-metrica {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 14px 16px;
+    border: 1px solid var(--dsh-borda);
+    border-radius: var(--dsh-raio-interno);
+    background: var(--dsh-fundo-elevado);
+}
+
+#dashboard .dsh-fin-metrica > span {
+    color: var(--dsh-texto-2);
+    font-size: 12.5px;
+    font-weight: 600;
+}
+
+#dashboard .dsh-fin-metrica strong {
+    color: var(--dsh-texto);
+    font-size: 22px;
+    font-weight: 750;
+    letter-spacing: -.01em;
+}
+
+#dashboard .dsh-fin-metrica:first-child strong { color: var(--dsh-ouro-forte); }
+
+#dashboard .dsh-fin-metrica small {
+    color: var(--dsh-texto-3);
+    font-size: 12px;
+    line-height: 1.4;
+}
+
+#dashboard .dsh-grafico {
+    position: relative;
+    min-width: 0;
+    padding: 6px 4px 0;
+}
+
+#dashboard .dsh-grafico__area {
+    width: 100%;
+    min-height: 220px;
+}
+
+#dashboard .dsh-g {
+    display: block;
+    width: 100%;
+    height: auto;
+    overflow: visible;
+}
+
+#dashboard .dsh-g .dsh-g-grade { stroke: var(--dsh-borda); stroke-width: 1; }
+#dashboard .dsh-g .dsh-g-base { stroke: var(--dsh-borda-forte); stroke-width: 1; }
+#dashboard .dsh-g .dsh-g-eixo { fill: var(--dsh-texto-3); stroke: none; font-size: 11px; font-weight: 500; }
+#dashboard .dsh-g .dsh-g-barra { fill: var(--dsh-barra); stroke: none; transition: opacity var(--dsh-transicao); }
+#dashboard .dsh-g .dsh-g-alvo { fill: transparent; stroke: none; cursor: pointer; }
+#dashboard .dsh-g:hover .dsh-g-barra { opacity: .45; }
+#dashboard .dsh-g .dsh-g-coluna.ativa .dsh-g-barra { opacity: 1; fill: var(--dsh-ouro-forte); }
+#dashboard .dsh-g .dsh-g-coluna.ativa .dsh-g-alvo { fill: var(--dsh-fundo-sutil); }
+
+#dashboard .dsh-grafico__dica {
+    position: absolute;
+    top: -6px;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: 8px 12px;
+    border: 1px solid var(--dsh-borda-forte);
+    border-radius: var(--dsh-raio-pequeno);
+    background: var(--dsh-fundo-elevado);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, .25);
+    color: var(--dsh-texto);
+    font-size: 12px;
+    white-space: nowrap;
+    pointer-events: none;
+    transform: translateX(-50%);
+}
+
+#dashboard .dsh-grafico__dica[hidden] { display: none; }
+#dashboard .dsh-grafico__dica strong { font-size: 14px; }
+#dashboard .dsh-grafico__dica span { color: var(--dsh-texto-2); }
+
+#dashboard .dsh-nota {
+    margin: 0;
+    color: var(--dsh-texto-3);
+    font-size: 12px;
+}
+
+/* Tabela só para leitores de tela (o mesmo dado do gráfico) */
+#dashboard .dsh-sr {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+}
+
+/* ---------------- Vazio e carregando ---------------- */
+#dashboard .dsh-vazio {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    min-height: 160px;
+    padding: 20px;
+    border: 1px dashed var(--dsh-borda-forte);
+    border-radius: var(--dsh-raio-interno);
+    color: var(--dsh-texto-3);
+    font-size: 12.5px;
+    text-align: center;
+}
+
+#dashboard .dsh-vazio strong {
+    color: var(--dsh-texto);
+    font-size: 14px;
+    font-weight: 650;
+}
+
+#dashboard .dsh-vazio__icone {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    margin-bottom: 4px;
+    border-radius: 12px;
+    background: var(--dsh-fundo-sutil);
+    color: var(--dsh-texto-2);
+}
+
+#dashboard .dsh-vazio__icone svg { width: 20px; height: 20px; }
+
+#dashboard .dsh-carregando {
+    height: 150px;
+    border-radius: var(--dsh-raio-interno);
+    background: linear-gradient(90deg, var(--dsh-fundo-sutil) 25%, var(--dsh-fundo-elevado) 50%, var(--dsh-fundo-sutil) 75%);
+    background-size: 200% 100%;
+    animation: dsh-brilho 1.4s ease-in-out infinite;
+}
+
+@keyframes dsh-brilho {
+    from { background-position: 100% 0; }
+    to { background-position: -100% 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    #dashboard .dsh-carregando { animation: none; }
+    #dashboard .dsh-kpi:hover { transform: none; }
+}
+
+/* ---------------- Telas menores ---------------- */
+@media (max-width: 1280px) {
+    #dashboard .dsh-kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (max-width: 1080px) {
+    #dashboard .dsh-grade--operacao,
+    #dashboard .dsh-grade--equipe { grid-template-columns: minmax(0, 1fr); }
+    #dashboard .dsh-financeiro__corpo { grid-template-columns: minmax(0, 1fr); }
+    #dashboard .dsh-fin-metricas { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+
+@media (max-width: 640px) {
+    #dashboard { --dsh-espaco: 12px; --dsh-raio: 14px; }
+    #dashboard .dsh-head { align-items: stretch; }
+    #dashboard .dsh-head__acoes { width: 100%; justify-content: space-between; }
+    #dashboard .dsh-periodo { flex: 1 1 auto; }
+    #dashboard .dsh-periodo button { flex: 1 1 0; padding: 0 8px; }
+    #dashboard .dsh-live { display: none; }
+    #dashboard .dsh-kpi { padding: 14px 16px; }
+    #dashboard .dsh-kpi__icone { width: 30px; height: 30px; }
+    #dashboard .dsh-card { padding: 16px; }
+    #dashboard .dsh-agenda__linha { grid-template-columns: 58px minmax(0, 1fr); gap: 4px 12px; padding: 10px 6px; }
+    #dashboard .dsh-agenda__linha .dsh-pilula { grid-column: 2; justify-self: start; }
+    #dashboard .dsh-fin-metricas { grid-template-columns: minmax(0, 1fr); }
+    #dashboard .dsh-ranking__linha { grid-template-columns: 22px 34px minmax(0, 1fr); gap: 10px; padding: 8px 4px; }
+    #dashboard .dsh-ranking__linha--servico { grid-template-columns: minmax(0, 1fr); }
+    #dashboard .dsh-avatar { width: 34px; height: 34px; }
+}
+
+@media (max-width: 400px) {
+    #dashboard .dsh-kpis { grid-template-columns: minmax(0, 1fr); }
+}
