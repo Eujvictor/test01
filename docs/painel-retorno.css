@@ -1,0 +1,324 @@
+/* =====================================================================
+   CHAMAR DE VOLTA (painel-retorno.js) — mesmo visual do módulo Clientes
+   (fundo azul escuro, detalhes dourados). Só aparece com a
+   funcionalidade "chamar_de_volta" ligada pelo Barber Control.
+   ===================================================================== */
+
+/* Resumo: Total de clientes + Para chamar de volta + Excluir todos */
+#clientes.retorno-ligado .client-summary {
+    grid-template-columns: minmax(190px, 240px) minmax(190px, 240px) 150px !important;
+}
+
+#clientes .retorno-summary-card {
+    border-color: rgba(239, 198, 109, .32) !important;
+}
+
+#clientes .retorno-summary-card strong {
+    color: #efc66d !important;
+}
+
+/* Filtros + botão "Chamar todos os inativos" */
+.retorno-barra {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    margin: 0 0 13px;
+}
+
+.retorno-filtros {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.retorno-filtro {
+    height: 32px;
+    padding: 0 12px;
+    border: 1px solid var(--client-border, rgba(112, 151, 194, .22));
+    border-radius: 999px;
+    background: rgba(13, 23, 37, .9);
+    color: var(--client-muted, #9fb2c8);
+    font-size: 11px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: border-color .18s ease, color .18s ease, background .18s ease;
+}
+
+.retorno-filtro:hover {
+    border-color: rgba(239, 198, 109, .5);
+    color: #efc66d;
+}
+
+.retorno-filtro.ativo {
+    border-color: #efc66d;
+    background: rgba(239, 198, 109, .14);
+    color: #efc66d;
+}
+
+.retorno-todos-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    height: 36px;
+    padding: 0 14px;
+    border: 1px solid rgba(53, 214, 160, .45);
+    border-radius: 10px;
+    background: rgba(53, 214, 160, .08);
+    color: var(--client-green, #35d6a0);
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: .2px;
+    cursor: pointer;
+    transition: background .18s ease, transform .18s ease;
+}
+
+.retorno-todos-button:hover {
+    background: rgba(53, 214, 160, .16);
+    transform: translateY(-1px);
+}
+
+/* Filtro: cartões fora do filtro ficam escondidos */
+#clientes .client-card.retorno-oculto {
+    display: none !important;
+}
+
+#clientes .retorno-vazio {
+    grid-column: 1 / -1;
+}
+
+/* Selos no cartão */
+#clientes .client-card-header p.retorno-status {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    gap: 4px !important;
+    white-space: normal !important;
+}
+
+.retorno-selo {
+    display: inline-block;
+    padding: 2px 7px;
+    border-radius: 999px;
+    font-size: 9px;
+    font-weight: 800;
+    line-height: 1.4;
+    white-space: nowrap;
+}
+
+.retorno-selo--inativo {
+    border: 1px solid rgba(240, 160, 70, .5);
+    background: rgba(240, 160, 70, .13);
+    color: #f3ad5b;
+}
+
+.retorno-selo--agendado {
+    border: 1px solid rgba(117, 169, 223, .45);
+    background: rgba(117, 169, 223, .12);
+    color: #8dbbe8;
+}
+
+.retorno-selo--contato {
+    border: 1px solid rgba(239, 198, 109, .4);
+    background: rgba(239, 198, 109, .1);
+    color: #efc66d;
+}
+
+/* Botão WhatsApp ao lado da lixeira */
+#clientes .client-retorno-button {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    flex: 0 0 31px !important;
+    width: 31px !important;
+    height: 31px !important;
+    padding: 0 !important;
+    border: 1px solid rgba(53, 214, 160, .42) !important;
+    border-radius: 9px !important;
+    background: rgba(53, 214, 160, .06) !important;
+    color: var(--client-green, #35d6a0) !important;
+    cursor: pointer !important;
+    transition: background .18s ease, border-color .18s ease, transform .18s ease !important;
+}
+
+#clientes .client-retorno-button:hover {
+    background: rgba(53, 214, 160, .16) !important;
+    border-color: rgba(53, 214, 160, .75) !important;
+    transform: translateY(-1px) !important;
+}
+
+#clientes .client-retorno-button.destaque {
+    border-color: rgba(239, 198, 109, .7) !important;
+    background: rgba(239, 198, 109, .12) !important;
+    color: #efc66d !important;
+}
+
+#clientes .client-retorno-button:focus-visible {
+    outline: 2px solid rgba(117, 169, 223, .8) !important;
+    outline-offset: 3px !important;
+}
+
+/* Modal do envio em sequência */
+.retorno-modal {
+    max-width: 520px;
+}
+
+.retorno-modal-texto {
+    margin: 10px 0;
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+.retorno-marcar-todos {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 8px 0;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.retorno-lista {
+    max-height: 320px;
+    margin: 0;
+    padding: 0;
+    overflow-y: auto;
+    list-style: none;
+    border: 1px solid rgba(127, 157, 190, .18);
+    border-radius: 10px;
+}
+
+.retorno-lista li + li {
+    border-top: 1px solid rgba(127, 157, 190, .14);
+}
+
+.retorno-lista label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 9px 12px;
+    cursor: pointer;
+}
+
+.retorno-lista label span {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.retorno-lista small {
+    opacity: .7;
+    font-size: 11px;
+}
+
+.retorno-progresso {
+    height: 8px;
+    margin: 12px 0 4px;
+    overflow: hidden;
+    border-radius: 999px;
+    background: rgba(127, 157, 190, .18);
+}
+
+.retorno-progresso span {
+    display: block;
+    height: 100%;
+    border-radius: inherit;
+    background: linear-gradient(90deg, #d9a947, #efc66d);
+    transition: width .25s ease;
+}
+
+/* Configurações → Mensagem de retorno */
+.retorno-config-card {
+    margin-top: 16px;
+}
+
+.retorno-config-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+    gap: 18px;
+    align-items: start;
+}
+
+.retorno-previa {
+    position: sticky;
+    top: 12px;
+}
+
+.retorno-previa-balao {
+    margin: 8px 0 6px;
+    padding: 12px 14px;
+    border-radius: 12px 12px 12px 3px;
+    background: #0d3b2e;
+    color: #e8f5ef;
+    font-size: 13px;
+    line-height: 1.5;
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+
+.retorno-previa small {
+    opacity: .7;
+    font-size: 11px;
+}
+
+/* Tema claro */
+html[data-tema="claro"] .retorno-filtro {
+    background: #fff;
+    color: #5b6575;
+}
+
+html[data-tema="claro"] .retorno-filtro.ativo,
+html[data-tema="claro"] .retorno-filtro:hover {
+    color: #a87a1c;
+    border-color: #c9962f;
+}
+
+html[data-tema="claro"] .retorno-previa-balao {
+    background: #dcf8c6;
+    color: #1d2a22;
+}
+
+/* Celular e tablet */
+@media (max-width: 900px) {
+    .retorno-config-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .retorno-previa {
+        position: static;
+    }
+}
+
+@media (max-width: 640px) {
+    #clientes.retorno-ligado .client-summary {
+        grid-template-columns: 1fr 1fr !important;
+    }
+
+    #clientes.retorno-ligado .client-summary > .delete-all-clients-button {
+        grid-column: 1 / -1 !important;
+        width: 100% !important;
+        max-width: none !important;
+        height: 44px !important;
+        min-height: 44px !important;
+    }
+
+    .retorno-barra {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .retorno-filtros {
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        padding-bottom: 2px;
+    }
+
+    .retorno-filtro {
+        flex: 0 0 auto;
+    }
+
+    .retorno-todos-button {
+        justify-content: center;
+    }
+}

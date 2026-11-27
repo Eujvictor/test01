@@ -255,7 +255,9 @@
     // Atalho no HTML: <div data-funcionalidade="fidelidade">…</div> fica
     // escondido e só aparece quando a funcionalidade está ligada.
     const estilo = document.createElement("style");
-    estilo.textContent = "[data-funcionalidade]:not(.funcionalidade-ligada){display:none !important}";
+    // Os :not(#...) só aumentam a prioridade da regra, para vencer estilos
+    // de seção com id (ex.: #clientes .client-summary-card).
+    estilo.textContent = "[data-funcionalidade]:not(.funcionalidade-ligada):not(#fl-a):not(#fl-b){display:none !important}";
     document.head.appendChild(estilo);
     const mostrarLigadas = (lista) => document.querySelectorAll("[data-funcionalidade]").forEach((el) => {
         el.classList.toggle("funcionalidade-ligada", lista.includes(el.dataset.funcionalidade));

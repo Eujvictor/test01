@@ -15,6 +15,7 @@
     <link rel="stylesheet" href="admin-novo.css">
     <link rel="stylesheet" href="painel-tema-claro.css">
     <link rel="stylesheet" href="painel-tema.css">
+    <link rel="stylesheet" href="painel-retorno.css">
 </head>
 
 <body>
@@ -850,6 +851,21 @@
             </strong>
         </div>
 
+        <!-- Chamar de volta (funcionalidade liberada pelo Barber Control) -->
+        <div class="client-summary-card retorno-summary-card" data-funcionalidade="chamar_de_volta">
+            <span class="client-total-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="22" height="22" fill="none"
+                     stroke="currentColor" stroke-width="1.8"
+                     stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M3 12a9 9 0 1 0 3-6.7"></path>
+                    <path d="M3 4v4h4"></path>
+                    <path d="M12 8v4l3 2"></path>
+                </svg>
+            </span>
+            <span>Para chamar de volta</span>
+            <strong id="retornoTotal">0</strong>
+        </div>
+
         <button
             type="button"
             class="delete-all-clients-button"
@@ -889,6 +905,18 @@
     </div>
 
 
+    <!-- CHAMAR DE VOLTA: filtros e envio em sequência -->
+    <div class="retorno-barra" data-funcionalidade="chamar_de_volta">
+        <div class="retorno-filtros" role="group" aria-label="Filtrar clientes">
+            <button type="button" class="retorno-filtro ativo" data-retorno-filtro="todos" aria-pressed="true">Todos</button>
+            <button type="button" class="retorno-filtro" data-retorno-filtro="inativos" aria-pressed="false">Sem vir há <span data-retorno-dias>15</span>+ dias</button>
+            <button type="button" class="retorno-filtro" data-retorno-filtro="contatados" aria-pressed="false">Já contatados</button>
+            <button type="button" class="retorno-filtro" data-retorno-filtro="agendados" aria-pressed="false">Com agendamento futuro</button>
+        </div>
+        <button type="button" class="retorno-todos-button" id="retornoTodosButton"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 11.5a8.4 8.4 0 0 1-12.4 7.4L3 20l1.2-5.3A8.4 8.4 0 1 1 21 11.5Z"/><path d="M8.5 8.5c.3-.6.6-.6 1-.6l.7 1.6c.1.2 0 .4-.2.6l-.5.5c.5 1 1.3 1.8 2.3 2.3l.5-.5c.2-.2.4-.3.6-.2l1.6.7c0 .4 0 .7-.6 1-1 .5-2.7-.2-4.2-1.7s-2.2-3.2-1.2-4.2Z"/></svg><span>Chamar todos os inativos</span></button>
+    </div>
+
+
     <!-- LISTA -->
 
     <div
@@ -897,6 +925,21 @@
     </div>
 
 </section>
+
+
+<!-- =========================
+     MODAL CHAMAR DE VOLTA (envio em sequência)
+     ========================= -->
+
+<div class="modal-overlay" id="retornoModal">
+    <div class="modal retorno-modal">
+        <button class="modal-close" id="closeRetornoModal" type="button" aria-label="Fechar">×</button>
+        <span class="eyebrow">CHAMAR DE VOLTA</span>
+        <h2 id="retornoModalTitulo">Chamar todos os inativos</h2>
+        <div id="retornoModalCorpo"></div>
+        <div class="modal-actions" id="retornoModalAcoes"></div>
+    </div>
+</div>
 
 
 <!-- =========================
@@ -1501,6 +1544,18 @@
   <div class="form-group"><label for="barbershopWhatsapp">WhatsApp para receber agendamentos</label><input type="text" id="barbershopWhatsapp" placeholder="(62) 99999-9999" ></div><div class="form-group"><label for="whatsappAfterBookingSwitch">Enviar cliente para o WhatsApp após o agendamento</label><div class="settings-switch-row"><span class="settings-help-text">Ativar redirecionamento para o WhatsApp</span><button type="button" id="whatsappAfterBookingSwitch" aria-pressed="false" aria-label="Alternar redirecionamento para o WhatsApp" class="settings-switch"><span id="whatsappAfterBookingSwitchText" class="settings-switch-text">OFF</span><span id="whatsappAfterBookingSwitchKnob" class="settings-switch-knob"></span></button></div><input type="checkbox" id="whatsappAfterBooking" aria-hidden="true" tabindex="-1" style="position:absolute;opacity:0;pointer-events:none;width:1px;height:1px;"></div>
 </div>
 </div>
+<div class="content-card site-settings-card retorno-config-card" id="config-card-retorno" data-funcionalidade="chamar_de_volta">
+  <div class="card-header"><div class="settings-card-title"><span class="settings-card-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 11.5a8.4 8.4 0 0 1-12.4 7.4L3 20l1.2-5.3A8.4 8.4 0 1 1 21 11.5Z"/><path d="M8.5 8.5c.3-.6.6-.6 1-.6l.7 1.6c.1.2 0 .4-.2.6l-.5.5c.5 1 1.3 1.8 2.3 2.3l.5-.5c.2-.2.4-.3.6-.2l1.6.7c0 .4 0 .7-.6 1-1 .5-2.7-.2-4.2-1.7s-2.2-3.2-1.2-4.2Z"/></svg></span><div><span class="eyebrow">Chamar de volta</span><h2>Mensagem de retorno</h2><p>Mensagem enviada pelo WhatsApp aos clientes que não aparecem há algum tempo.</p></div></div></div>
+  <div class="retorno-config-grid">
+    <div class="retorno-config-campos">
+      <div class="form-group"><label for="retornoDias">Dias sem vir para considerar inativo</label><input type="number" id="retornoDias" min="1" max="365" step="1" value="15"></div>
+      <div class="form-group"><label for="retornoMensagem">Mensagem</label><textarea id="retornoMensagem" rows="6" maxlength="1000"></textarea><span class="settings-field-note">Use {nome}, {dias}, {barbearia} e {link_agendamento}. {nome} usa só o primeiro nome do cliente.</span></div>
+      <div class="form-group"><label for="retornoLink">Link de agendamento</label><input type="url" id="retornoLink" maxlength="300" placeholder="https://..."><span class="settings-field-note">Página onde o cliente agenda. Em branco: a página de agendamento desta barbearia.</span></div>
+      <button type="button" class="secondary-button" id="retornoRestaurar">Restaurar mensagem padrão</button>
+    </div>
+    <div class="retorno-previa"><span class="eyebrow">Prévia</span><div class="retorno-previa-balao" id="retornoPrevia"></div><small>Exemplo com o cliente “Carlos Silva”.</small></div>
+  </div>
+</div>
 <div class="settings-shortcuts-wrap">
   <div class="settings-shortcuts-title"><span class="eyebrow">ATALHOS</span><strong>Acesse uma configuração rapidamente</strong></div>
   <div class="settings-shortcuts">
@@ -1515,6 +1570,7 @@
     <a class="settings-shortcut" href="#config-card-avaliacao">Avaliações</a>
     <a class="settings-shortcut" href="#config-card-cores-e-fontes">Cores e fontes</a>
     <a class="settings-shortcut" href="#config-card-whatsapp">WhatsApp</a>
+    <a class="settings-shortcut" href="#config-card-retorno" data-funcionalidade="chamar_de_volta">Mensagem de retorno</a>
     <a class="settings-shortcut" href="#config-card-localizacao">Localização</a>
     <a class="settings-shortcut" href="#config-card-redes-sociais">Redes sociais</a>
     <a class="settings-shortcut" href="#config-card-rodape">Rodapé</a>
@@ -2026,6 +2082,7 @@
 <script src="painel-senha.js"></script>
 <script src="painel-assinatura.js"></script>
 <script src="painel-suporte.js"></script>
+<script src="painel-retorno.js"></script>
 
 <script src="site-tema.js"></script>
 <script src="painel-aparencia.js"></script>

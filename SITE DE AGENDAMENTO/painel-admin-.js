@@ -2093,7 +2093,17 @@ async function loadAdminClients() {
                 lastAppointment:
                     clientAppointments.length > 0
                         ? clientAppointments[0].data
-                        : null
+                        : null,
+
+                // Usados pelo "Chamar de volta" (painel-retorno.js).
+                historico:
+                    clientAppointments.map(appointment => ({
+                        data: appointment.data,
+                        horario: appointment.horario
+                    })),
+
+                ultimoContato:
+                    client.ultimo_contato ?? null
 
             };
 
@@ -2332,6 +2342,11 @@ function renderAdminClients(
             }
         ).join("");
 
+    // Avisa as extensões do módulo (ex.: painel-retorno.js).
+    document.dispatchEvent(
+        new CustomEvent("painel:clientes-renderizados")
+    );
+
 }
 
 
@@ -2549,6 +2564,18 @@ if (clientSearch) {
     );
 
 }
+
+
+// Ponte para extensões do módulo Clientes (ex.: painel-retorno.js).
+// Só leitura da lista e um jeito de redesenhar; nada aqui muda o módulo.
+window.PainelClientes = {
+    lista: () => adminClients,
+    renderizar: () => {
+        updateAdminClientsSummary();
+        renderAdminClients(clientSearch ? clientSearch.value : "");
+    }
+};
+document.dispatchEvent(new CustomEvent("painel:clientes-pronto"));
 
 
 loadAdminClients();
@@ -5415,6 +5442,15 @@ async function runSaveSettings() {
     const saved = await saveWhatsappSettings();
 
     if (!saved) {
+        updateSettingsSaveIndicator(true, true);
+        return false;
+    }
+
+    // Mensagem de retorno ("Chamar de volta", painel-retorno.js).
+    if (
+        typeof window.salvarConfigRetorno === "function" &&
+        !(await window.salvarConfigRetorno())
+    ) {
         updateSettingsSaveIndicator(true, true);
         return false;
     }
