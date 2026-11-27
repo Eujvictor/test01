@@ -8,6 +8,9 @@
 (function () {
     "use strict";
 
+    // agendar.html carrega este arquivo com data-buscar.
+    const MODO_AGENDAMENTO = Boolean(document.currentScript && document.currentScript.hasAttribute("data-buscar"));
+
     const CACHE_KEY = window.BarbeariaAtual
         ? window.BarbeariaAtual.chaveCache("navalha_site_config_v1")
         : "navalha_site_config_v1";
@@ -131,6 +134,49 @@
         definir("--fonte-site", `"${nome}", Arial, Helvetica, ${reserva}`);
     }
 
+    // Contraste (WCAG) entre duas cores.
+    function contraste(a, b) {
+        const [x, y] = [luminancia(a), luminancia(b)].sort((m, n) => n - m);
+        return (x + 0.05) / (y + 0.05);
+    }
+
+    // Escurece a cor aos poucos até ter contraste suficiente sobre o fundo
+    // claro (mantém o tom da barbearia; só ajusta a leitura).
+    function legivelNoClaro(hex, fundo = "#ffffff", alvo = 3) {
+        let atual = hex;
+        for (let i = 0; i < 20 && contraste(atual, fundo) < alvo; i++) {
+            atual = "#" + rgb(atual).map((v) => Math.round(v * 0.9).toString(16).padStart(2, "0")).join("");
+        }
+        return atual;
+    }
+
+    // Página de agendamento: a identidade vai para variáveis próprias
+    // (--marca-*), e o tema claro/escuro escolhido pelo cliente decide
+    // fundo, cartões e textos sem apagar as cores da barbearia.
+    function aplicarNoAgendamento(principal, secundaria, fundo, detalhes) {
+        definir("--marca-principal", principal);
+        definir("--marca-principal-texto", principal ? textoSobre(principal) : "");
+        const principalClaro = principal ? legivelNoClaro(principal) : "";
+        definir("--marca-principal-claro", principalClaro !== principal ? principalClaro : "");
+        definir("--marca-principal-claro-texto", principalClaro && principalClaro !== principal ? textoSobre(principalClaro) : "");
+
+        definir("--marca-secundaria", secundaria);
+        const secundariaClaro = secundaria ? legivelNoClaro(secundaria) : "";
+        definir("--marca-secundaria-claro", secundariaClaro !== secundaria ? secundariaClaro : "");
+
+        const detalhesClaro = detalhes ? legivelNoClaro(detalhes) : "";
+        definir("--cor-detalhes-claro", detalhesClaro !== detalhes ? detalhesClaro : "");
+
+        // O fundo escolhido vale para o tema que combina com ele.
+        const fundoClaro = Boolean(fundo) && luminancia(fundo) > 0.45;
+        definir("--marca-fundo-escuro", fundo && !fundoClaro ? fundo : "");
+        definir("--marca-fundo-claro", fundo && fundoClaro ? fundo : "");
+
+        document.dispatchEvent(new CustomEvent("site-tema:aplicado", {
+            detail: { fundoClaro, temFundo: Boolean(fundo) }
+        }));
+    }
+
     function aplicar(config) {
         config = config || {};
 
@@ -140,10 +186,14 @@
         const botoes = corSegura(config.cor_botoes);
         const detalhes = corSegura(config.cor_detalhes);
 
-        // Campo vazio = volta para a cor original do site (remove a troca).
-        definir("--gold", principal);
-        definir("--gold-light", secundaria);
-        definir("--bg", fundo);
+        if (MODO_AGENDAMENTO) {
+            aplicarNoAgendamento(principal, secundaria, fundo, detalhes);
+        } else {
+            // Campo vazio = volta para a cor original do site (remove a troca).
+            definir("--gold", principal);
+            definir("--gold-light", secundaria);
+            definir("--bg", fundo);
+        }
 
         definir("--cor-botoes", botoes);
         definir("--cor-botoes-hover", botoes ? variacao(botoes) : "");

@@ -4,16 +4,59 @@
     box-sizing: border-box;
 }
 
+/* =====================================================================
+   CORES DA PÁGINA DE AGENDAMENTO
+   Identidade da barbearia: vem de configuracoes_site (a mesma do site),
+   aplicada por site-tema.js em variáveis --marca-* (cada barbearia a sua).
+   Tema claro/escuro: escolhido pelo cliente (agendar-tema.js), guardado
+   só no aparelho dele. O tema troca fundo, cartões e textos; as cores da
+   barbearia continuam as mesmas (no claro, ficam um pouco mais escuras
+   quando necessário para manter a leitura).
+   ===================================================================== */
 :root {
-    --bg: #090909;
-    --card: #141414;
-    --card-hover: #1b1b1b;
-    --border: #292929;
+    --gold: var(--marca-principal, #c9a45c);
+    --gold-light: var(--marca-secundaria, #dfc078);
+    --texto-sobre-ouro: var(--marca-principal-texto, #111111);
+    --detalhe: var(--cor-detalhes, var(--gold));
+    --bg: var(--marca-fundo-escuro, #090909);
+    --card: color-mix(in srgb, var(--bg), #ffffff 5%);
+    --card-hover: color-mix(in srgb, var(--bg), #ffffff 9%);
+    --campo: color-mix(in srgb, var(--bg), #ffffff 3%);
+    --border: color-mix(in srgb, var(--bg), #ffffff 13%);
+    --border-forte: color-mix(in srgb, var(--bg), #ffffff 30%);
     --text: #f5f5f5;
-    --muted: #999999;
-    --gold: #c9a45c;
-    --gold-light: #dfc078;
+    --muted: #b0aca5;
+    --muted-2: #8c8881;
+    --desabilitado: #4d4b47;
     --danger: #e57373;
+    color-scheme: dark;
+}
+
+html[data-tema-agendar="claro"] {
+    --gold: var(--marca-principal-claro, var(--marca-principal, #9c7120));
+    --gold-light: var(--marca-secundaria-claro, var(--marca-secundaria, #87601a));
+    --texto-sobre-ouro: var(--marca-principal-claro-texto, var(--marca-principal-texto, #ffffff));
+    --detalhe: var(--cor-detalhes-claro, var(--cor-detalhes, var(--gold)));
+    --bg: var(--marca-fundo-claro, #f5f3ee);
+    --card: #ffffff;
+    --card-hover: color-mix(in srgb, var(--bg), #000000 4%);
+    --campo: color-mix(in srgb, var(--bg), #ffffff 55%);
+    --border: color-mix(in srgb, var(--bg), #000000 11%);
+    --border-forte: color-mix(in srgb, var(--bg), #000000 26%);
+    --text: #1c1c1e;
+    --muted: #55524c;
+    --muted-2: #6c6861;
+    --desabilitado: #bdb8ae;
+    --danger: #c0392b;
+    color-scheme: light;
+}
+
+/* Troca de tema suave (só durante a troca, para não pesar no resto) */
+html.agendar-tema-trocando,
+html.agendar-tema-trocando *,
+html.agendar-tema-trocando *::before,
+html.agendar-tema-trocando *::after {
+    transition: background-color 280ms ease, color 280ms ease, border-color 280ms ease, box-shadow 280ms ease !important;
 }
 
 html {
@@ -47,7 +90,7 @@ button {
 .header {
     height: 76px;
     border-bottom: 1px solid var(--border);
-    background: rgba(9, 9, 9, 0.95);
+    background: color-mix(in srgb, var(--bg) 92%, transparent);
 }
 
 .header-content {
@@ -58,22 +101,107 @@ button {
 }
 
 .logo {
-    color: white;
+    color: var(--text);
     text-decoration: none;
     font-size: 14px;
     font-weight: 800;
     letter-spacing: 3px;
 }
 
+.header-acoes {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+/* Botão sol/lua do cliente */
+.agendar-tema {
+    display: inline-flex;
+    align-items: center;
+    padding: 0;
+    border: 0;
+    background: none;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.agendar-tema__trilho {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 62px;
+    height: 32px;
+    padding: 0 8px;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    background: var(--card);
+    transition: background-color 280ms ease, border-color 280ms ease;
+}
+
+.agendar-tema__icone {
+    position: relative;
+    z-index: 1;
+    width: 15px;
+    height: 15px;
+    fill: none;
+    stroke: var(--muted-2);
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    transition: stroke 280ms ease;
+}
+
+.agendar-tema__botao {
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: var(--gold);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+    transition: transform 280ms cubic-bezier(.4, 0, .2, 1), background-color 280ms ease;
+}
+
+/* Escuro: botão sobre a lua · Claro: botão desliza para o sol */
+html:not([data-tema-agendar="claro"]) .agendar-tema__icone--lua,
+html[data-tema-agendar="claro"] .agendar-tema__icone--sol {
+    stroke: var(--texto-sobre-ouro);
+}
+
+html[data-tema-agendar="claro"] .agendar-tema__botao {
+    transform: translateX(30px);
+}
+
+.agendar-tema:hover .agendar-tema__trilho {
+    border-color: var(--gold);
+}
+
+.agendar-tema:focus-visible {
+    outline: none;
+}
+
+.agendar-tema:focus-visible .agendar-tema__trilho {
+    outline: 2px solid var(--gold);
+    outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .agendar-tema__botao {
+        transition: none;
+    }
+}
+
 .back-link {
-    color: #aaa;
+    color: var(--muted);
     text-decoration: none;
     font-size: 14px;
     transition: 0.2s;
 }
 
 .back-link:hover {
-    color: white;
+    color: var(--text);
 }
 
 
@@ -89,7 +217,7 @@ button {
 }
 
 .eyebrow {
-    color: var(--gold);
+    color: var(--detalhe);
     font-size: 11px;
     font-weight: 800;
     letter-spacing: 2px;
@@ -134,7 +262,7 @@ button {
     align-items: center;
     justify-content: center;
     background: var(--gold);
-    color: #111;
+    color: var(--texto-sobre-ouro);
     font-weight: 900;
     margin-bottom: 20px;
 }
@@ -161,7 +289,7 @@ button {
 
 .summary-item span {
     display: block;
-    color: #777;
+    color: var(--muted-2);
     font-size: 11px;
     text-transform: uppercase;
     letter-spacing: 1px;
@@ -211,7 +339,7 @@ button {
     display: flex;
     align-items: center;
     justify-content: center;
-    background: #252525;
+    background: var(--card-hover);
     color: var(--gold);
     font-size: 13px;
     font-weight: 800;
@@ -238,8 +366,8 @@ button {
 
 .option {
     border: 1px solid var(--border);
-    background: #101010;
-    color: white;
+    background: var(--campo);
+    color: var(--text);
     padding: 18px;
     text-align: left;
     display: flex;
@@ -251,12 +379,12 @@ button {
 
 .option:hover {
     background: var(--card-hover);
-    border-color: #555;
+    border-color: var(--border-forte);
 }
 
 .option.selected {
     border-color: var(--gold);
-    background: rgba(201, 164, 92, 0.08);
+    background: color-mix(in srgb, var(--gold) 8%, transparent);
 }
 
 .option strong {
@@ -266,7 +394,7 @@ button {
 
 .option small {
     display: block;
-    color: #777;
+    color: var(--muted-2);
     margin-top: 4px;
 }
 
@@ -286,8 +414,8 @@ button {
 }
 
 .barber-option {
-    background: #101010;
-    color: white;
+    background: var(--campo);
+    color: var(--text);
     border: 1px solid var(--border);
     padding: 18px;
     display: flex;
@@ -298,12 +426,12 @@ button {
 }
 
 .barber-option:hover {
-    border-color: #555;
+    border-color: var(--border-forte);
 }
 
 .barber-option.selected {
     border-color: var(--gold);
-    background: rgba(201, 164, 92, 0.08);
+    background: color-mix(in srgb, var(--gold) 8%, transparent);
 }
 
 .barber-avatar {
@@ -311,7 +439,7 @@ button {
     height: 45px;
     min-width: 45px;
     border-radius: 50%;
-    background: #292929;
+    background: var(--border);
     color: var(--gold);
     display: flex;
     align-items: center;
@@ -326,7 +454,7 @@ button {
 
 .barber-option small {
     display: block;
-    color: #777;
+    color: var(--muted-2);
     font-size: 11px;
     margin-top: 3px;
 }
@@ -340,7 +468,7 @@ button {
     width: 100%;
     max-width: 520px;
     margin: 0 auto;
-    background: #101010;
+    background: var(--campo);
     border: 1px solid var(--border);
     padding: 22px;
 }
@@ -367,8 +495,8 @@ button {
     width: 42px;
     height: 42px;
     border: 1px solid var(--border);
-    background: #151515;
-    color: white;
+    background: var(--card);
+    color: var(--text);
     font-size: 28px;
     line-height: 1;
     display: flex;
@@ -380,7 +508,7 @@ button {
 .calendar-nav:hover:not(:disabled) {
     background: var(--gold);
     border-color: var(--gold);
-    color: #111;
+    color: var(--texto-sobre-ouro);
 }
 
 .calendar-nav:disabled {
@@ -400,7 +528,7 @@ button {
 
 .calendar-weekdays span {
     text-align: center;
-    color: #777;
+    color: var(--muted-2);
     font-size: 10px;
     font-weight: 800;
     letter-spacing: 0.5px;
@@ -421,7 +549,7 @@ button {
     min-height: 42px;
     border: 1px solid transparent;
     background: transparent;
-    color: white;
+    color: var(--text);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -431,7 +559,7 @@ button {
 
 .calendar-day:not(.empty):not(.disabled):hover {
     border-color: var(--gold);
-    background: rgba(201, 164, 92, 0.08);
+    background: color-mix(in srgb, var(--gold) 8%, transparent);
 }
 
 .calendar-day.empty {
@@ -439,24 +567,24 @@ button {
 }
 
 .calendar-day.disabled {
-    color: #3d3d3d;
+    color: var(--desabilitado);
     cursor: not-allowed;
 }
 
 .calendar-day.today {
-    border-color: #555;
+    border-color: var(--border-forte);
 }
 
 .calendar-day.selected {
     background: var(--cor-botoes, var(--gold));
-    color: var(--cor-botoes-texto, #111);
+    color: var(--cor-botoes-texto, var(--texto-sobre-ouro));
     border-color: var(--cor-botoes, var(--gold));
     font-weight: 800;
 }
 
 .calendar-day.selected:hover {
-    background: var(--gold-light);
-    border-color: var(--gold-light);
+    background: var(--cor-botoes-hover, var(--gold-light));
+    border-color: var(--cor-botoes-hover, var(--gold-light));
 }
 
 
@@ -469,20 +597,20 @@ button {
 }
 
 .time-option {
-    background: #101010;
+    background: var(--campo);
     border: 1px solid var(--border);
-    color: white;
+    color: var(--text);
     padding: 13px 8px;
     transition: 0.2s;
 }
 
 .time-option:hover {
-    border-color: #777;
+    border-color: var(--muted-2);
 }
 
 .time-option.selected {
     background: var(--cor-botoes, var(--gold));
-    color: var(--cor-botoes-texto, #111);
+    color: var(--cor-botoes-texto, var(--texto-sobre-ouro));
     border-color: var(--cor-botoes, var(--gold));
     font-weight: 800;
 }
@@ -500,14 +628,14 @@ button {
     display: block;
     font-size: 12px;
     margin-bottom: 7px;
-    color: #bbb;
+    color: var(--muted);
 }
 
 .form-group input {
     width: 100%;
-    background: #101010;
+    background: var(--campo);
     border: 1px solid var(--border);
-    color: white;
+    color: var(--text);
     padding: 15px;
     outline: none;
 }
@@ -527,14 +655,14 @@ button {
     width: 100%;
     border: 0;
     background: var(--cor-botoes, var(--gold));
-    color: var(--cor-botoes-texto, #111);
+    color: var(--cor-botoes-texto, var(--texto-sobre-ouro));
     padding: 17px;
     font-weight: 800;
     transition: 0.2s;
 }
 
 .confirm-button:hover {
-    background: var(--gold-light);
+    background: var(--cor-botoes-hover, var(--gold-light));
 }
 
 .confirm-button:disabled {
@@ -562,7 +690,7 @@ button {
 }
 
 .footer p {
-    color: #666;
+    color: var(--muted-2);
     font-size: 13px;
     margin-top: 5px;
 }
@@ -621,7 +749,7 @@ button {
 
     .back-link {
         font-size: 11px;
-        color: #aaa;
+        color: var(--muted);
     }
 
     /* CABEÇALHO DO AGENDAMENTO */
@@ -664,7 +792,7 @@ button {
         width: 100%;
         padding: 18px;
         border-radius: 8px;
-        background: #111;
+        background: var(--campo);
     }
 
     .summary-logo {
@@ -734,7 +862,7 @@ button {
         min-width: 28px;
         border-radius: 50%;
         background: var(--gold);
-        color: #111;
+        color: var(--texto-sobre-ouro);
         font-size: 12px;
     }
 
@@ -782,8 +910,8 @@ button {
 
     .option.selected {
         border-color: var(--gold);
-        background: rgba(201, 164, 92, 0.10);
-        box-shadow: inset 0 0 0 1px rgba(201, 164, 92, 0.12);
+        background: color-mix(in srgb, var(--gold) 10%, transparent);
+        box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--gold) 12%, transparent);
     }
 
     /* BARBEIROS
@@ -992,13 +1120,13 @@ button {
     background:
         radial-gradient(
             circle at center,
-            rgba(201, 164, 92, 0.07) 0%,
-            rgba(201, 164, 92, 0.025) 35%,
+            color-mix(in srgb, var(--gold) 7%, transparent) 0%,
+            color-mix(in srgb, var(--gold) 2.5%, transparent) 35%,
             transparent 72%
         ),
-        #101010;
+        var(--campo);
 
-    border: 1px solid rgba(201, 164, 92, 0.20);
+    border: 1px solid color-mix(in srgb, var(--gold) 20%, transparent);
     border-radius: 10px;
 
     text-align: left;
@@ -1020,15 +1148,15 @@ button {
     align-items: center;
     justify-content: center;
 
-    background: rgba(201, 164, 92, 0.10);
+    background: color-mix(in srgb, var(--gold) 10%, transparent);
 
-    border: 1px solid rgba(201, 164, 92, 0.28);
+    border: 1px solid color-mix(in srgb, var(--gold) 28%, transparent);
     border-radius: 50%;
 
     font-size: 20px;
 
     box-shadow:
-        0 0 0 5px rgba(201, 164, 92, 0.025);
+        0 0 0 5px color-mix(in srgb, var(--gold) 2.5%, transparent);
 }
 
 
@@ -1037,7 +1165,7 @@ button {
 .time-step-locked strong {
     display: block;
 
-    color: #f5f5f5;
+    color: var(--text);
 
     font-size: 15px;
     font-weight: 700;
@@ -1053,7 +1181,7 @@ button {
 .time-step-locked p {
     margin: 0;
 
-    color: #888;
+    color: var(--muted-2);
 
     font-size: 12px;
     line-height: 1.6;

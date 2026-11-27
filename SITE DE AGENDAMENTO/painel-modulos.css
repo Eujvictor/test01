@@ -1430,18 +1430,103 @@ html body:not(#_) #servicos .services-grid {
     }
 }
 
-/* Horários no celular: cartões de resumo e campos um embaixo do outro */
+/* Horários: Funcionamento, Dias ativos e Intervalo sempre lado a lado.
+   Funcionamento ganha mais espaço; os horários quebram entre si (nunca no meio). */
+html body:not(#_) #horarios .schedule-summary {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr) minmax(0, 1fr) !important;
+    gap: 16px !important;
+}
+
+html body:not(#_) #horarios .schedule-summary-card {
+    min-width: 0 !important;
+}
+
 @media (max-width: 640px) {
     html body:not(#_) #horarios .schedule-summary {
-        grid-template-columns: minmax(0, 1fr) !important;
+        grid-template-columns: minmax(0, 1.55fr) minmax(0, 1fr) minmax(0, 1fr) !important;
+        gap: 8px !important;
+    }
+
+    html body:not(#_) #horarios .schedule-summary-card {
+        min-height: 0 !important;
+        padding: 12px !important;
+    }
+
+    html body:not(#_) #horarios .schedule-summary-card > span {
+        font-size: 10px !important;
+        letter-spacing: .04em !important;
+        line-height: 1.25 !important;
+        overflow-wrap: anywhere !important;
+    }
+
+    html body:not(#_) #horarios .schedule-summary-card strong {
+        font-size: 18px !important;
+        margin-top: 6px !important;
     }
 
     html body:not(#_) #horarios .schedule-settings-grid {
         grid-template-columns: minmax(0, 1fr) !important;
     }
+}
 
-    html body:not(#_) #horarios .schedule-summary-card {
-        min-height: 0 !important;
+/* Botão de tema no topo da barra lateral, ao lado do nome (computador).
+   No celular fica só o do cabeçalho superior. */
+html body:not(#_) .sidebar .brand {
+    display: flex !important;
+    align-items: center !important;
+    gap: 12px !important;
+}
+
+html body:not(#_) .sidebar .brand-text {
+    flex: 1 1 auto !important;
+    min-width: 0 !important;
+}
+
+html body:not(#_) .sidebar .brand-tema {
+    flex: 0 0 auto !important;
+    margin-left: auto !important;
+}
+
+@media (max-width: 850px) {
+    html body:not(#_) .sidebar .brand-tema {
+        display: none !important;
+    }
+
+    /* Cabeçalho do celular: espaço entre o botão do menu e o nome */
+    html body:not(#_) .mobile-header {
+        display: grid !important;
+        grid-template-columns: auto minmax(0, 1fr) auto auto !important;
+        align-items: center !important;
+        gap: 14px !important;
+        padding: 0 16px !important;
+        border-bottom: 1px solid var(--dsh-borda) !important;
+        background: var(--dsh-fundo-card) !important;
+    }
+
+    html body:not(#_) .mobile-header .menu-button {
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        width: 40px !important;
+        height: 40px !important;
+        margin: 0 !important;
+        border: 1px solid var(--dsh-borda) !important;
+        border-radius: var(--dsh-raio-interno) !important;
+        background: var(--dsh-fundo-elevado) !important;
+        color: var(--dsh-texto) !important;
+    }
+
+    html body:not(#_) .mobile-header strong {
+        min-width: 0 !important;
+        margin: 0 !important;
+        padding-left: 2px !important;
+        overflow: hidden !important;
+        color: var(--dsh-ouro-forte) !important;
+        font-size: 11px !important;
+        letter-spacing: .14em !important;
+        text-overflow: ellipsis !important;
+        white-space: nowrap !important;
     }
 }
 
