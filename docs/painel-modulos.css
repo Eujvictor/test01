@@ -1,0 +1,1651 @@
+/* =====================================================================
+   PADRÃO VISUAL DOS MÓDULOS DO PAINEL (referência: Dashboard)
+   Agenda · Barbeiros · Serviços · Clientes · Horários · Configurações
+   · Barra lateral · Janelas (modais)
+
+   Só aparência. Usa as mesmas variáveis do Dashboard (--dsh-*), então
+   os dois temas acompanham o botão "Modo escuro/claro".
+   O Dashboard tem o próprio arquivo (painel-dashboard.css) e não é
+   afetado por este.
+
+   O prefixo "html body:not(#_)" só aumenta a prioridade das regras,
+   para vencer os estilos antigos (que usam !important).
+   ===================================================================== */
+
+body {
+    --dsh-fundo-card: #17181b;
+    --dsh-fundo-elevado: #1d1f23;
+    --dsh-fundo-sutil: rgba(255, 255, 255, .035);
+    --dsh-borda: rgba(255, 255, 255, .075);
+    --dsh-borda-forte: rgba(255, 255, 255, .13);
+    --dsh-texto: #f3f1ec;
+    --dsh-texto-2: #b3afa7;
+    --dsh-texto-3: #8a867f;
+    --dsh-ouro: #d9b260;
+    --dsh-ouro-forte: #e8c57a;
+    --dsh-ouro-fundo: rgba(217, 178, 96, .12);
+    --dsh-ouro-borda: rgba(217, 178, 96, .35);
+    --dsh-ouro-botao: #d9b260;
+    --dsh-ouro-botao-texto: #17140d;
+    --dsh-finalizado: #2fb985;
+    --dsh-confirmado: #4f8fea;
+    --dsh-pendente: #e3a23b;
+    --dsh-cancelado: #e2606a;
+    --dsh-perigo: #f07a82;
+    --dsh-perigo-fundo: rgba(240, 122, 130, .1);
+    --dsh-perigo-borda: rgba(240, 122, 130, .4);
+    --dsh-sucesso: #4cc995;
+    --dsh-sucesso-fundo: rgba(76, 201, 149, .1);
+    --dsh-sucesso-borda: rgba(76, 201, 149, .4);
+    --dsh-whatsapp: #25d366;
+    --dsh-raio: 16px;
+    --dsh-raio-interno: 12px;
+    --dsh-raio-campo: 10px;
+    --dsh-sombra: 0 1px 0 rgba(255, 255, 255, .03) inset, 0 8px 24px rgba(0, 0, 0, .22);
+    --dsh-transicao: 160ms ease;
+
+    --ic-editar: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22black%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22M4%2020h4L19%209a2.8%202.8%200%200%200-4-4L4%2016v4Z%22%2F%3E%3Cpath%20d%3D%22m13.5%206.5%204%204%22%2F%3E%3C%2Fsvg%3E");
+    --ic-lixeira: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22black%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22M4%207h16%22%2F%3E%3Cpath%20d%3D%22M9%207V4.5h6V7%22%2F%3E%3Cpath%20d%3D%22M6.5%207l1%2013h9l1-13%22%2F%3E%3Cpath%20d%3D%22M10%2011v5M14%2011v5%22%2F%3E%3C%2Fsvg%3E");
+    --ic-power: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22black%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22M12%203v8%22%2F%3E%3Cpath%20d%3D%22M6.4%206.6a8%208%200%201%200%2011.2%200%22%2F%3E%3C%2Fsvg%3E");
+    --ic-mais: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22black%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22M12%205v14M5%2012h14%22%2F%3E%3C%2Fsvg%3E");
+    --ic-olho: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22black%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22M2.5%2012S6%205%2012%205s9.5%207%209.5%207-3.5%207-9.5%207-9.5-7-9.5-7Z%22%2F%3E%3Ccircle%20cx%3D%2212%22%20cy%3D%2212%22%20r%3D%223%22%2F%3E%3C%2Fsvg%3E");
+    --ic-whatsapp: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%3E%3Cpath%20fill%3D%22black%22%20d%3D%22M17.472%2014.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94%201.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198%200-.52.074-.792.372-.272.297-1.04%201.016-1.04%202.479%200%201.462%201.065%202.875%201.213%203.074.149.198%202.096%203.2%205.077%204.487.709.306%201.262.489%201.694.625.712.227%201.36.195%201.871.118.571-.085%201.758-.719%202.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421%207.403h-.004a9.87%209.87%200%2001-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86%209.86%200%2001-1.51-5.26c.001-5.45%204.436-9.884%209.888-9.884%202.64%200%205.122%201.03%206.988%202.898a9.825%209.825%200%20012.893%206.994c-.003%205.45-4.437%209.884-9.885%209.884m8.413-18.297A11.815%2011.815%200%200012.05%200C5.495%200%20.16%205.335.157%2011.892c0%202.096.547%204.142%201.588%205.945L.057%2024l6.305-1.654a11.882%2011.882%200%20005.683%201.448h.005c6.554%200%2011.89-5.335%2011.893-11.893a11.821%2011.821%200%2000-3.48-8.413Z%22%2F%3E%3C%2Fsvg%3E");
+    --ic-relogio: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22black%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Ccircle%20cx%3D%2212%22%20cy%3D%2212%22%20r%3D%229%22%2F%3E%3Cpath%20d%3D%22M12%207v5l3.2%202%22%2F%3E%3C%2Fsvg%3E");
+    --ic-tesoura: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22black%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Ccircle%20cx%3D%226%22%20cy%3D%227%22%20r%3D%222.6%22%2F%3E%3Ccircle%20cx%3D%226%22%20cy%3D%2217%22%20r%3D%222.6%22%2F%3E%3Cpath%20d%3D%22M8.2%208.6%2020%2018M8.2%2015.4%2020%206%22%2F%3E%3C%2Fsvg%3E");
+}
+
+html[data-tema="claro"] body {
+    --dsh-fundo-card: #ffffff;
+    --dsh-fundo-elevado: #faf8f4;
+    --dsh-fundo-sutil: rgba(30, 28, 24, .04);
+    --dsh-borda: #e8e3d9;
+    --dsh-borda-forte: #d9d2c4;
+    --dsh-texto: #1d1e21;
+    --dsh-texto-2: #55534e;
+    --dsh-texto-3: #7a766e;
+    --dsh-ouro: #9c7120;
+    --dsh-ouro-forte: #87601a;
+    --dsh-ouro-fundo: rgba(201, 152, 58, .12);
+    --dsh-ouro-borda: rgba(176, 130, 44, .38);
+    --dsh-ouro-botao: #b8892f;
+    --dsh-ouro-botao-texto: #ffffff;
+    --dsh-finalizado: #17905f;
+    --dsh-confirmado: #3a76d6;
+    --dsh-pendente: #c98512;
+    --dsh-cancelado: #d24b56;
+    --dsh-perigo: #c43c47;
+    --dsh-perigo-fundo: #fdf0f1;
+    --dsh-perigo-borda: #efc0c4;
+    --dsh-sucesso: #12804f;
+    --dsh-sucesso-fundo: #edf8f2;
+    --dsh-sucesso-borda: #b6e2cb;
+    --dsh-whatsapp: #1aa851;
+    --dsh-sombra: 0 1px 2px rgba(40, 32, 18, .05), 0 6px 20px rgba(40, 32, 18, .06);
+}
+
+/* =====================================================================
+   1. CABEÇALHO DAS PÁGINAS (igual ao "Visão geral")
+   ===================================================================== */
+html body:not(#_) :is(#agenda, #barbeiros, #servicos, #clientes, #horarios, #configuracoes) > .page-header {
+    margin-bottom: 18px !important;
+    gap: 14px 20px !important;
+    align-items: flex-end !important;
+}
+
+html body:not(#_) :is(#agenda, #barbeiros, #servicos, #clientes, #horarios, #configuracoes) > .page-header .eyebrow {
+    margin: 0 0 6px !important;
+    color: var(--dsh-ouro) !important;
+    font-size: 11px !important;
+    font-weight: 700 !important;
+    letter-spacing: .14em !important;
+}
+
+html body:not(#_) :is(#agenda, #barbeiros, #servicos, #clientes, #horarios, #configuracoes) > .page-header h1 {
+    margin: 0 !important;
+    color: var(--dsh-texto) !important;
+    font-size: clamp(26px, 3vw, 34px) !important;
+    font-weight: 750 !important;
+    letter-spacing: -.02em !important;
+    line-height: 1.1 !important;
+}
+
+html body:not(#_) :is(#agenda, #barbeiros, #servicos, #clientes, #horarios, #configuracoes) > .page-header p {
+    margin: 6px 0 0 !important;
+    color: var(--dsh-texto-2) !important;
+    font-size: 14px !important;
+}
+
+/* =====================================================================
+   2. CARTÕES (mesma superfície, borda, raio e sombra do Dashboard)
+   ===================================================================== */
+html body:not(#_) :is(#agenda, #barbeiros, #servicos, #clientes, #horarios, #configuracoes) :is(
+    .content-card, .agenda-toolbar-card, .agenda-list-card, .barber-card, .service-card, .client-card,
+    .schedule-summary-card, .client-summary-card, .site-settings-card, .settings-shortcuts-wrap
+) {
+    border: 1px solid var(--dsh-borda) !important;
+    border-radius: var(--dsh-raio) !important;
+    background: var(--dsh-fundo-card) !important;
+    box-shadow: var(--dsh-sombra) !important;
+    color: var(--dsh-texto) !important;
+}
+
+html body:not(#_) :is(#barbeiros, #servicos) .team-summary > * {
+    border: 1px solid var(--dsh-borda) !important;
+    border-radius: var(--dsh-raio) !important;
+    background: var(--dsh-fundo-card) !important;
+    box-shadow: var(--dsh-sombra) !important;
+}
+
+html body:not(#_) :is(#agenda, #barbeiros, #servicos, #clientes, #horarios) :is(.barber-card, .service-card, .client-card):hover {
+    border-color: var(--dsh-borda-forte) !important;
+    transform: translateY(-1px);
+}
+
+/* Títulos dentro dos cartões */
+html body:not(#_) :is(#agenda, #horarios, #configuracoes) .content-card .card-header .eyebrow,
+html body:not(#_) #agenda .agenda-results-header .eyebrow {
+    color: var(--dsh-ouro) !important;
+    font-size: 10.5px !important;
+    letter-spacing: .14em !important;
+}
+
+html body:not(#_) :is(#agenda, #horarios) .content-card h2,
+html body:not(#_) #agenda .agenda-results-header h2 {
+    color: var(--dsh-texto) !important;
+    font-size: 16px !important;
+    font-weight: 700 !important;
+    letter-spacing: -.01em !important;
+}
+
+/* =====================================================================
+   3. BOTÕES
+   ===================================================================== */
+/* Ação principal (Novo agendamento, Adicionar barbeiro/serviço) */
+html body:not(#_) :is(#agenda, #barbeiros, #servicos) > .page-header .primary-button {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 8px !important;
+    height: 40px !important;
+    min-height: 40px !important;
+    padding: 0 18px !important;
+    border: 0 !important;
+    border-radius: 999px !important;
+    background: var(--dsh-ouro-botao) !important;
+    color: var(--dsh-ouro-botao-texto) !important;
+    font-size: 13px !important;
+    font-weight: 700 !important;
+    letter-spacing: .02em !important;
+    box-shadow: 0 6px 18px rgba(217, 178, 96, .18) !important;
+    transition: filter var(--dsh-transicao), transform var(--dsh-transicao) !important;
+}
+
+html body:not(#_) :is(#agenda, #barbeiros, #servicos) > .page-header .primary-button:hover {
+    filter: brightness(1.07);
+    transform: translateY(-1px);
+}
+
+/* Botões de ação dos cartões: base comum */
+html body:not(#_) #barbeiros .barber-actions :is(.edit-button, .delete-button, .toggle-button),
+html body:not(#_) #servicos .service-actions :is(.service-edit-button, .service-delete-button, .service-toggle-button),
+html body:not(#_) #agenda .agenda-details-button {
+    position: relative !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 7px !important;
+    height: 36px !important;
+    min-height: 36px !important;
+    padding: 0 14px !important;
+    border: 1px solid var(--dsh-borda-forte) !important;
+    border-radius: 999px !important;
+    background: transparent !important;
+    background-image: none !important;
+    color: var(--dsh-texto) !important;
+    font-size: 11.5px !important;
+    font-weight: 700 !important;
+    letter-spacing: .04em !important;
+    line-height: 1 !important;
+    box-shadow: none !important;
+    cursor: pointer !important;
+    transition: background var(--dsh-transicao), border-color var(--dsh-transicao), color var(--dsh-transicao) !important;
+}
+
+/* Ícone de cada botão (desenhado com máscara, herda a cor do texto) */
+html body:not(#_) #barbeiros .barber-actions :is(.edit-button, .delete-button, .toggle-button)::before,
+html body:not(#_) #servicos .service-actions :is(.service-edit-button, .service-delete-button, .service-toggle-button)::before,
+html body:not(#_) #agenda .agenda-details-button::before {
+    content: "" !important;
+    position: static !important;
+    display: inline-block !important;
+    flex: 0 0 15px !important;
+    width: 15px !important;
+    height: 15px !important;
+    margin: 0 !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    background: currentColor !important;
+    box-shadow: none !important;
+    transform: none !important;
+    -webkit-mask: var(--ic-editar) center / contain no-repeat !important;
+    mask: var(--ic-editar) center / contain no-repeat !important;
+}
+
+html body:not(#_) #barbeiros .barber-actions :is(.edit-button, .delete-button, .toggle-button)::after,
+html body:not(#_) #servicos .service-actions :is(.service-edit-button, .service-delete-button, .service-toggle-button)::after {
+    content: none !important;
+    display: none !important;
+}
+
+/* Editar: neutro, destaca em dourado */
+html body:not(#_) #barbeiros .barber-actions .edit-button:hover,
+html body:not(#_) #servicos .service-actions .service-edit-button:hover,
+html body:not(#_) #agenda .agenda-details-button:hover {
+    border-color: var(--dsh-ouro-borda) !important;
+    background: var(--dsh-ouro-fundo) !important;
+    color: var(--dsh-ouro-forte) !important;
+}
+
+/* Excluir: vermelho, com lixeira */
+html body:not(#_) #barbeiros .barber-actions .delete-button,
+html body:not(#_) #servicos .service-actions .service-delete-button {
+    border-color: var(--dsh-perigo-borda) !important;
+    background: var(--dsh-perigo-fundo) !important;
+    color: var(--dsh-perigo) !important;
+}
+
+html body:not(#_) #barbeiros .barber-actions .delete-button:hover,
+html body:not(#_) #servicos .service-actions .service-delete-button:hover {
+    border-color: var(--dsh-perigo) !important;
+    background: var(--dsh-perigo) !important;
+    color: #fff !important;
+}
+
+html body:not(#_) #barbeiros .barber-actions .delete-button::before,
+html body:not(#_) #servicos .service-actions .service-delete-button::before {
+    -webkit-mask-image: var(--ic-lixeira) !important;
+    mask-image: var(--ic-lixeira) !important;
+}
+
+/* Desativar: neutro com ícone de energia · Ativar: verde */
+html body:not(#_) #barbeiros .barber-actions .toggle-button::before,
+html body:not(#_) #servicos .service-actions .service-toggle-button::before {
+    -webkit-mask-image: var(--ic-power) !important;
+    mask-image: var(--ic-power) !important;
+}
+
+html body:not(#_) #barbeiros .barber-actions .toggle-button:hover,
+html body:not(#_) #servicos .service-actions .service-toggle-button:hover {
+    border-color: color-mix(in srgb, var(--dsh-pendente) 55%, transparent) !important;
+    background: color-mix(in srgb, var(--dsh-pendente) 12%, transparent) !important;
+    color: var(--dsh-pendente) !important;
+}
+
+html body:not(#_) #barbeiros .barber-actions .toggle-button.activate,
+html body:not(#_) #servicos .service-actions .service-toggle-button.activate {
+    border-color: var(--dsh-sucesso-borda) !important;
+    background: var(--dsh-sucesso-fundo) !important;
+    color: var(--dsh-sucesso) !important;
+}
+
+html body:not(#_) #barbeiros .barber-actions .toggle-button.activate:hover,
+html body:not(#_) #servicos .service-actions .service-toggle-button.activate:hover {
+    border-color: var(--dsh-sucesso) !important;
+    background: var(--dsh-sucesso) !important;
+    color: #fff !important;
+}
+
+html body:not(#_) #agenda .agenda-details-button::before {
+    -webkit-mask-image: var(--ic-olho) !important;
+    mask-image: var(--ic-olho) !important;
+}
+
+/* Foco visível em todos os botões dos módulos */
+html body:not(#_) :is(#agenda, #barbeiros, #servicos, #clientes, #horarios) button:focus-visible {
+    outline: 2px solid var(--dsh-ouro) !important;
+    outline-offset: 2px !important;
+}
+
+/* =====================================================================
+   4. CAMPOS (inputs, selects) — Agenda, Horários e janelas
+   ===================================================================== */
+html body:not(#_) :is(#agenda, #horarios, .modal) :is(input[type="text"], input[type="search"], input[type="date"], input[type="time"], input[type="tel"], input[type="email"], input[type="number"], input[type="url"], input:not([type]), select, textarea) {
+    min-height: 40px !important;
+    border: 1px solid var(--dsh-borda-forte) !important;
+    border-radius: var(--dsh-raio-campo) !important;
+    background-color: var(--dsh-fundo-elevado) !important;
+    color: var(--dsh-texto) !important;
+    font-size: 13.5px !important;
+    font-weight: 500 !important;
+    box-shadow: none !important;
+    transition: border-color var(--dsh-transicao), box-shadow var(--dsh-transicao) !important;
+}
+
+html body:not(#_) :is(#agenda, #horarios, .modal) :is(input, select, textarea):focus {
+    border-color: var(--dsh-ouro-borda) !important;
+    box-shadow: 0 0 0 3px var(--dsh-ouro-fundo) !important;
+    outline: none !important;
+}
+
+html body:not(#_) :is(#agenda, #horarios, .modal) :is(input, textarea)::placeholder {
+    color: var(--dsh-texto-3) !important;
+    opacity: 1 !important;
+}
+
+html body:not(#_) :is(#agenda, #horarios, .modal) label,
+html body:not(#_) #agenda .agenda-filter-group > span {
+    color: var(--dsh-texto-2) !important;
+    font-size: 12px !important;
+    font-weight: 600 !important;
+    letter-spacing: .02em !important;
+}
+
+/* =====================================================================
+   5. AGENDA (só visual)
+   ===================================================================== */
+html body:not(#_) #agenda .agenda-toolbar-card {
+    padding: 16px 18px !important;
+}
+
+/* Abas Todos / Hoje / Amanhã / Esta semana = filtro de período do Dashboard */
+html body:not(#_) #agenda .agenda-period-tabs {
+    display: inline-flex !important;
+    gap: 2px !important;
+    padding: 3px !important;
+    border: 1px solid var(--dsh-borda) !important;
+    border-radius: 999px !important;
+    background: var(--dsh-fundo-elevado) !important;
+}
+
+html body:not(#_) #agenda .agenda-period-button {
+    height: 32px !important;
+    min-height: 32px !important;
+    padding: 0 14px !important;
+    border: 0 !important;
+    border-radius: 999px !important;
+    background: transparent !important;
+    color: var(--dsh-texto-2) !important;
+    font-size: 13px !important;
+    font-weight: 600 !important;
+    box-shadow: none !important;
+}
+
+html body:not(#_) #agenda .agenda-period-button:hover {
+    color: var(--dsh-texto) !important;
+}
+
+html body:not(#_) #agenda .agenda-period-button.active {
+    background: var(--dsh-ouro-fundo) !important;
+    color: var(--dsh-ouro-forte) !important;
+    box-shadow: inset 0 0 0 1px var(--dsh-ouro-borda) !important;
+}
+
+html body:not(#_) #agenda .agenda-results-header .agenda-count {
+    color: var(--dsh-texto-3) !important;
+    font-size: 12.5px !important;
+}
+
+html body:not(#_) #agenda .agenda-list-card {
+    overflow: hidden !important;
+    padding: 0 !important;
+}
+
+html body:not(#_) #agenda .agenda-day-group + .agenda-day-group {
+    border-top: 1px solid var(--dsh-borda) !important;
+}
+
+html body:not(#_) #agenda .agenda-day-header {
+    padding: 14px 20px !important;
+    border: 0 !important;
+    background: var(--dsh-fundo-elevado) !important;
+    color: var(--dsh-texto) !important;
+}
+
+html body:not(#_) #agenda .agenda-day-header strong,
+html body:not(#_) #agenda .agenda-day-header h3 {
+    color: var(--dsh-ouro-forte) !important;
+    font-size: 13.5px !important;
+    font-weight: 700 !important;
+    text-transform: none !important;
+}
+
+html body:not(#_) #agenda .agenda-day-header span {
+    color: var(--dsh-texto-3) !important;
+    font-size: 12px !important;
+}
+
+html body:not(#_) #agenda .agenda-table-header {
+    border-bottom: 1px solid var(--dsh-borda) !important;
+    background: transparent !important;
+}
+
+html body:not(#_) #agenda .agenda-table-header span {
+    color: var(--dsh-texto-3) !important;
+    font-size: 10.5px !important;
+    font-weight: 700 !important;
+    letter-spacing: .12em !important;
+}
+
+html body:not(#_) #agenda .agenda-row {
+    border-bottom: 1px solid var(--dsh-borda) !important;
+    background: transparent !important;
+    transition: background var(--dsh-transicao) !important;
+}
+
+html body:not(#_) #agenda .agenda-rows .agenda-row:last-child {
+    border-bottom: 0 !important;
+}
+
+html body:not(#_) #agenda .agenda-row:hover {
+    background: var(--dsh-fundo-sutil) !important;
+}
+
+html body:not(#_) #agenda .agenda-time-cell,
+html body:not(#_) #agenda .agenda-time-cell strong {
+    color: var(--dsh-texto) !important;
+    font-size: 16px !important;
+    font-weight: 750 !important;
+    font-variant-numeric: tabular-nums !important;
+}
+
+html body:not(#_) #agenda .agenda-client-avatar {
+    border: 1px solid var(--dsh-ouro-borda) !important;
+    background: var(--dsh-ouro-fundo) !important;
+    color: var(--dsh-ouro-forte) !important;
+    font-weight: 750 !important;
+}
+
+html body:not(#_) #agenda :is(.agenda-client-cell, .agenda-service-cell, .agenda-barber-cell) strong {
+    color: var(--dsh-texto) !important;
+    font-size: 13.5px !important;
+    font-weight: 650 !important;
+}
+
+html body:not(#_) #agenda :is(.agenda-client-cell, .agenda-service-cell, .agenda-barber-cell) :is(small, span) {
+    color: var(--dsh-texto-3) !important;
+    font-size: 12px !important;
+}
+
+html body:not(#_) #agenda .agenda-barber-cell {
+    color: var(--dsh-texto-2) !important;
+    font-size: 13px !important;
+}
+
+/* Status = pílulas do Dashboard */
+html body:not(#_) #agenda .agenda-status-badge {
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 6px !important;
+    height: auto !important;
+    padding: 4px 10px !important;
+    border: 0 !important;
+    border-radius: 999px !important;
+    background: var(--dsh-fundo-sutil) !important;
+    color: var(--dsh-texto) !important;
+    font-size: 11.5px !important;
+    font-weight: 700 !important;
+    letter-spacing: .02em !important;
+}
+
+html body:not(#_) #agenda .agenda-status-badge::before {
+    content: "" !important;
+    width: 7px !important;
+    height: 7px !important;
+    border-radius: 50% !important;
+    background: var(--dsh-pendente) !important;
+}
+
+html body:not(#_) #agenda .agenda-status-badge.confirmado::before { background: var(--dsh-confirmado) !important; }
+html body:not(#_) #agenda .agenda-status-badge.finalizado::before { background: var(--dsh-finalizado) !important; }
+html body:not(#_) #agenda .agenda-status-badge:is(.cancelado, .nao_compareceu)::before { background: var(--dsh-cancelado) !important; }
+
+html body:not(#_) #agenda .agenda-status-select {
+    min-height: 36px !important;
+    height: 36px !important;
+    border-radius: 999px !important;
+    padding: 0 30px 0 14px !important;
+    font-size: 12px !important;
+    font-weight: 600 !important;
+}
+
+/* =====================================================================
+   6. BARBEIROS
+   ===================================================================== */
+html body:not(#_) #barbeiros .team-summary > * :is(span, small) {
+    color: var(--dsh-texto-2) !important;
+}
+
+html body:not(#_) #barbeiros .team-summary > * strong,
+html body:not(#_) #servicos .team-summary > * strong {
+    color: var(--dsh-texto) !important;
+    font-weight: 750 !important;
+}
+
+html body:not(#_) #barbeiros .barber-card {
+    padding: 18px 20px !important;
+}
+
+html body:not(#_) #barbeiros .barber-avatar {
+    border: 1px solid var(--dsh-ouro-borda) !important;
+    background: var(--dsh-ouro-fundo) !important;
+    color: var(--dsh-ouro-forte) !important;
+    font-weight: 750 !important;
+    box-shadow: none !important;
+}
+
+html body:not(#_) #barbeiros .barber-card-header h3 {
+    color: var(--dsh-texto) !important;
+    font-size: 16px !important;
+    font-weight: 700 !important;
+}
+
+html body:not(#_) #barbeiros .barber-card-header p {
+    color: var(--dsh-texto-2) !important;
+    font-size: 12.5px !important;
+}
+
+html body:not(#_) #barbeiros .barber-phone-number {
+    color: var(--dsh-texto-2) !important;
+    font-size: 13px !important;
+    font-weight: 600 !important;
+}
+
+html body:not(#_) #barbeiros .barber-data span {
+    color: var(--dsh-texto-3) !important;
+    font-size: 12px !important;
+}
+
+html body:not(#_) #barbeiros .barber-data strong {
+    color: var(--dsh-texto) !important;
+    font-size: 16px !important;
+    font-weight: 750 !important;
+}
+
+/* Situação: ponto verde (ativo) / cinza (inativo), com contorno */
+html body:not(#_) #barbeiros .barber-status {
+    width: 10px !important;
+    height: 10px !important;
+    border-radius: 50% !important;
+    background: var(--dsh-texto-3) !important;
+    box-shadow: 0 0 0 3px var(--dsh-fundo-sutil) !important;
+}
+
+html body:not(#_) #barbeiros .barber-status.active {
+    background: var(--dsh-finalizado) !important;
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--dsh-finalizado) 22%, transparent) !important;
+}
+
+html body:not(#_) #barbeiros .barber-card.inactive {
+    opacity: .7 !important;
+}
+
+/* =====================================================================
+   7. SERVIÇOS
+   ===================================================================== */
+html body:not(#_) #servicos .service-card {
+    padding: 18px 20px !important;
+}
+
+html body:not(#_) #servicos .service-card-header h3 {
+    color: var(--dsh-texto) !important;
+    font-size: 16px !important;
+    font-weight: 700 !important;
+}
+
+html body:not(#_) #servicos .service-description {
+    color: var(--dsh-texto-3) !important;
+    font-size: 12.5px !important;
+}
+
+/* Ícone do serviço: tesoura desenhada (no lugar do caractere) */
+html body:not(#_) #servicos .service-icon {
+    position: relative !important;
+    width: 40px !important;
+    height: 40px !important;
+    border: 1px solid var(--dsh-ouro-borda) !important;
+    border-radius: 12px !important;
+    background: var(--dsh-ouro-fundo) !important;
+    color: transparent !important;
+    font-size: 0 !important;
+}
+
+html body:not(#_) #servicos .service-icon::after {
+    content: "" !important;
+    position: absolute !important;
+    inset: 0 !important;
+    margin: auto !important;
+    width: 19px !important;
+    height: 19px !important;
+    background: var(--dsh-ouro-forte) !important;
+    -webkit-mask: var(--ic-tesoura) center / contain no-repeat !important;
+    mask: var(--ic-tesoura) center / contain no-repeat !important;
+}
+
+html body:not(#_) #servicos .service-price {
+    color: var(--dsh-ouro-forte) !important;
+    font-size: 24px !important;
+    font-weight: 750 !important;
+    letter-spacing: -.01em !important;
+}
+
+html body:not(#_) #servicos .service-duration {
+    color: var(--dsh-texto-2) !important;
+    font-size: 12.5px !important;
+    font-weight: 600 !important;
+}
+
+html body:not(#_) #servicos .service-status {
+    display: inline-flex !important;
+    align-items: center !important;
+    padding: 4px 10px !important;
+    border: 0 !important;
+    border-radius: 999px !important;
+    background: var(--dsh-sucesso-fundo) !important;
+    color: var(--dsh-sucesso) !important;
+    font-size: 11px !important;
+    font-weight: 700 !important;
+    letter-spacing: .04em !important;
+}
+
+html body:not(#_) #servicos .service-status.inactive {
+    background: var(--dsh-fundo-sutil) !important;
+    color: var(--dsh-texto-3) !important;
+}
+
+html body:not(#_) #servicos .service-actions {
+    gap: 8px !important;
+    border-top-color: var(--dsh-borda) !important;
+}
+
+html body:not(#_) #servicos .service-card.inactive {
+    opacity: .72 !important;
+}
+
+/* =====================================================================
+   8. CLIENTES
+   ===================================================================== */
+html body:not(#_) #clientes .client-summary > .client-summary-card {
+    border-color: var(--dsh-borda) !important;
+}
+
+html body:not(#_) #clientes .client-summary > .client-summary-card > .client-total-icon {
+    border-color: var(--dsh-ouro-borda) !important;
+    background: var(--dsh-ouro-fundo) !important;
+    color: var(--dsh-ouro-forte) !important;
+}
+
+html body:not(#_) #clientes .client-summary > .client-summary-card > span:not(.client-total-icon) {
+    color: var(--dsh-texto-2) !important;
+    opacity: 1 !important;
+}
+
+/* Números dos indicadores: sempre legíveis, inclusive quando são zero */
+html body:not(#_) #clientes .client-summary > .client-summary-card strong {
+    color: var(--dsh-texto) !important;
+    opacity: 1 !important;
+    filter: none !important;
+}
+
+html body:not(#_) #clientes .client-summary > .retorno-summary-card strong {
+    color: var(--dsh-ouro-forte) !important;
+}
+
+/* Excluir todos: vermelho legível nos dois temas */
+html body:not(#_) #clientes .delete-all-clients-button {
+    border: 1px solid var(--dsh-perigo-borda) !important;
+    border-radius: var(--dsh-raio) !important;
+    background: var(--dsh-perigo-fundo) !important;
+    background-image: none !important;
+    color: var(--dsh-perigo) !important;
+    box-shadow: none !important;
+}
+
+html body:not(#_) #clientes .delete-all-clients-button:hover {
+    border-color: var(--dsh-perigo) !important;
+    background: var(--dsh-perigo) !important;
+    color: #fff !important;
+}
+
+html body:not(#_) #clientes .client-search-card {
+    border: 1px solid var(--dsh-borda) !important;
+    border-radius: var(--dsh-raio) !important;
+    background: var(--dsh-fundo-card) !important;
+}
+
+html body:not(#_) #clientes .client-search-input {
+    height: 42px !important;
+    border: 1px solid var(--dsh-borda-forte) !important;
+    border-radius: var(--dsh-raio-campo) !important;
+    background: var(--dsh-fundo-elevado) !important;
+    color: var(--dsh-texto) !important;
+    font-size: 13.5px !important;
+}
+
+html body:not(#_) #clientes .client-search-input::placeholder {
+    color: var(--dsh-texto-3) !important;
+}
+
+html body:not(#_) #clientes .client-search-input:focus {
+    border-color: var(--dsh-ouro-borda) !important;
+    box-shadow: 0 0 0 3px var(--dsh-ouro-fundo) !important;
+}
+
+html body:not(#_) #clientes .client-card {
+    padding: 16px 18px !important;
+}
+
+html body:not(#_) #clientes .client-avatar {
+    border: 1px solid var(--dsh-ouro-borda) !important;
+    background: var(--dsh-ouro-fundo) !important;
+    color: var(--dsh-ouro-forte) !important;
+    font-size: 13px !important;
+    box-shadow: none !important;
+}
+
+html body:not(#_) #clientes .client-card-header h3 {
+    color: var(--dsh-texto) !important;
+    font-size: 14.5px !important;
+}
+
+html body:not(#_) #clientes .client-card-header p {
+    color: var(--dsh-texto-3) !important;
+    font-size: 12px !important;
+}
+
+html body:not(#_) #clientes .client-phone-row {
+    border-bottom-color: var(--dsh-borda) !important;
+}
+
+html body:not(#_) #clientes .client-phone {
+    color: var(--dsh-texto-2) !important;
+    font-size: 13px !important;
+}
+
+html body:not(#_) #clientes .client-phone-status {
+    display: none !important;
+}
+
+/* Ícone do WhatsApp (oficial) ao lado do número */
+html body:not(#_) #clientes .client-phone-icon {
+    position: relative !important;
+    flex: 0 0 22px !important;
+    width: 22px !important;
+    height: 22px !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    background: transparent !important;
+}
+
+html body:not(#_) #clientes .client-phone-icon svg {
+    display: none !important;
+}
+
+html body:not(#_) #clientes .client-phone-icon::before {
+    content: "" !important;
+    position: absolute !important;
+    inset: 0 !important;
+    margin: auto !important;
+    width: 18px !important;
+    height: 18px !important;
+    background: var(--dsh-whatsapp) !important;
+    -webkit-mask: var(--ic-whatsapp) center / contain no-repeat !important;
+    mask: var(--ic-whatsapp) center / contain no-repeat !important;
+}
+
+/* Botões redondos do cartão: WhatsApp (Chamar de volta) e Excluir */
+html body:not(#_) #clientes :is(.client-retorno-button, .client-delete-button) {
+    position: relative !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    flex: 0 0 36px !important;
+    width: 36px !important;
+    min-width: 36px !important;
+    max-width: 36px !important;
+    height: 36px !important;
+    min-height: 36px !important;
+    max-height: 36px !important;
+    padding: 0 !important;
+    border-radius: 50% !important;
+    box-shadow: none !important;
+    background-image: none !important;
+    transition: background var(--dsh-transicao), border-color var(--dsh-transicao), color var(--dsh-transicao), transform var(--dsh-transicao) !important;
+}
+
+html body:not(#_) #clientes .client-retorno-button {
+    border: 1px solid color-mix(in srgb, var(--dsh-whatsapp) 45%, transparent) !important;
+    background: color-mix(in srgb, var(--dsh-whatsapp) 10%, transparent) !important;
+    color: var(--dsh-whatsapp) !important;
+}
+
+html body:not(#_) #clientes .client-retorno-button svg {
+    width: 17px !important;
+    height: 17px !important;
+}
+
+html body:not(#_) #clientes .client-retorno-button:hover {
+    border-color: var(--dsh-whatsapp) !important;
+    background: var(--dsh-whatsapp) !important;
+    color: #fff !important;
+}
+
+/* Cliente para chamar de volta: botão em dourado chama a atenção */
+html body:not(#_) #clientes .client-retorno-button.destaque {
+    border-color: var(--dsh-ouro-borda) !important;
+    background: var(--dsh-ouro-fundo) !important;
+    color: var(--dsh-ouro-forte) !important;
+}
+
+html body:not(#_) #clientes .client-delete-button {
+    border: 1px solid var(--dsh-perigo-borda) !important;
+    background: var(--dsh-perigo-fundo) !important;
+    color: var(--dsh-perigo) !important;
+}
+
+html body:not(#_) #clientes .client-delete-button:hover {
+    border-color: var(--dsh-perigo) !important;
+    background: var(--dsh-perigo) !important;
+    color: #fff !important;
+    transform: translateY(-1px) !important;
+}
+
+html body:not(#_) #clientes .client-delete-button svg {
+    display: none !important;
+}
+
+html body:not(#_) #clientes .client-delete-button::after {
+    content: none !important;
+    display: none !important;
+}
+
+html body:not(#_) #clientes .client-delete-button::before {
+    content: "" !important;
+    position: static !important;
+    display: block !important;
+    width: 16px !important;
+    height: 16px !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    background: currentColor !important;
+    box-shadow: none !important;
+    -webkit-mask: var(--ic-lixeira) center / contain no-repeat !important;
+    mask: var(--ic-lixeira) center / contain no-repeat !important;
+}
+
+html body:not(#_) #clientes .client-data {
+    border-top-color: var(--dsh-borda) !important;
+}
+
+html body:not(#_) #clientes .client-data span {
+    color: var(--dsh-texto-3) !important;
+    font-size: 11.5px !important;
+}
+
+html body:not(#_) #clientes .client-data strong {
+    color: var(--dsh-texto) !important;
+    font-size: 14px !important;
+    font-weight: 700 !important;
+}
+
+/* "Chamar de volta": filtros e botões no mesmo padrão */
+html body:not(#_) #clientes .retorno-filtro {
+    border-color: var(--dsh-borda) !important;
+    background: var(--dsh-fundo-card) !important;
+    color: var(--dsh-texto-2) !important;
+}
+
+html body:not(#_) #clientes .retorno-filtro:hover {
+    border-color: var(--dsh-ouro-borda) !important;
+    color: var(--dsh-ouro-forte) !important;
+}
+
+html body:not(#_) #clientes .retorno-filtro.ativo {
+    border-color: var(--dsh-ouro-borda) !important;
+    background: var(--dsh-ouro-fundo) !important;
+    color: var(--dsh-ouro-forte) !important;
+}
+
+html body:not(#_) #clientes .retorno-todos-button {
+    height: 38px !important;
+    border-radius: 999px !important;
+    border-color: color-mix(in srgb, var(--dsh-whatsapp) 45%, transparent) !important;
+    background: color-mix(in srgb, var(--dsh-whatsapp) 10%, transparent) !important;
+    color: var(--dsh-whatsapp) !important;
+}
+
+html body:not(#_) #clientes .retorno-todos-button:hover {
+    background: var(--dsh-whatsapp) !important;
+    color: #fff !important;
+}
+
+/* =====================================================================
+   9. HORÁRIOS
+   ===================================================================== */
+html body:not(#_) #horarios .schedule-summary-card span {
+    color: var(--dsh-texto-2) !important;
+    font-size: 12px !important;
+    font-weight: 600 !important;
+    letter-spacing: .08em !important;
+}
+
+/* Horário completo (HH:mm) sem cortar: quebra entre os dois horários se faltar espaço */
+html body:not(#_) #horarios .schedule-summary-card strong {
+    display: block !important;
+    overflow: visible !important;
+    color: var(--dsh-ouro-forte) !important;
+    font-size: clamp(22px, 2.4vw, 30px) !important;
+    font-weight: 750 !important;
+    line-height: 1.2 !important;
+    white-space: normal !important;
+    text-overflow: clip !important;
+    font-variant-numeric: tabular-nums !important;
+}
+
+html body:not(#_) #horarios .schedule-summary-card strong .hora-completa {
+    white-space: nowrap !important;
+}
+
+html body:not(#_) #horarios .schedule-summary-card strong .hora-separador {
+    color: var(--dsh-texto-3) !important;
+    font-weight: 500 !important;
+}
+
+html body:not(#_) #horarios :is(.content-card p, .booking-advance-help, .schedule-description, .scheduling-mode-copy span) {
+    color: var(--dsh-texto-3) !important;
+}
+
+html body:not(#_) #horarios .scheduling-mode-copy strong {
+    color: var(--dsh-texto) !important;
+}
+
+/* Dias da semana */
+html body:not(#_) #horarios .day-option {
+    min-height: 44px !important;
+    border: 1px solid var(--dsh-borda-forte) !important;
+    border-radius: var(--dsh-raio-interno) !important;
+    background: var(--dsh-fundo-elevado) !important;
+    color: var(--dsh-texto-2) !important;
+    font-size: 13.5px !important;
+    font-weight: 650 !important;
+    box-shadow: none !important;
+}
+
+html body:not(#_) #horarios .day-option:is(.active, .selected, .checked, [aria-pressed="true"]),
+html body:not(#_) #horarios .day-option:has(input:checked) {
+    border-color: var(--dsh-ouro-borda) !important;
+    background: var(--dsh-ouro-fundo) !important;
+    color: var(--dsh-ouro-forte) !important;
+}
+
+/* Próximos 14 dias */
+html body:not(#_) #horarios .availability-day {
+    border: 1px solid var(--dsh-borda) !important;
+    border-radius: var(--dsh-raio-interno) !important;
+    background: var(--dsh-fundo-elevado) !important;
+    box-shadow: none !important;
+    transition: border-color var(--dsh-transicao), background var(--dsh-transicao) !important;
+}
+
+html body:not(#_) #horarios .availability-day:hover {
+    border-color: var(--dsh-borda-forte) !important;
+}
+
+html body:not(#_) #horarios .availability-day:is(.selected, .active) {
+    border-color: var(--dsh-ouro-borda) !important;
+    background: var(--dsh-ouro-fundo) !important;
+}
+
+html body:not(#_) #horarios .availability-day .day-name {
+    color: var(--dsh-texto-3) !important;
+    font-size: 10.5px !important;
+    font-weight: 700 !important;
+    letter-spacing: .08em !important;
+}
+
+html body:not(#_) #horarios .availability-day .day-number {
+    color: var(--dsh-texto) !important;
+    font-size: 20px !important;
+    font-weight: 750 !important;
+}
+
+html body:not(#_) #horarios .availability-day .day-status {
+    color: var(--dsh-sucesso) !important;
+    font-size: 10.5px !important;
+    font-weight: 700 !important;
+}
+
+html body:not(#_) #horarios .availability-day.closed {
+    opacity: .6 !important;
+}
+
+html body:not(#_) #horarios .availability-day.closed .day-status {
+    color: var(--dsh-perigo) !important;
+}
+
+/* Horários do dia: texto completo, sem reticências */
+html body:not(#_) #horarios .schedule-slot {
+    min-height: 42px !important;
+    height: auto !important;
+    padding: 8px 10px !important;
+    overflow: visible !important;
+    border: 1px solid var(--dsh-sucesso-borda) !important;
+    border-radius: var(--dsh-raio-campo) !important;
+    background: var(--dsh-sucesso-fundo) !important;
+    color: var(--dsh-sucesso) !important;
+    font-size: 12.5px !important;
+    font-weight: 700 !important;
+    line-height: 1.3 !important;
+    white-space: normal !important;
+    text-overflow: clip !important;
+    font-variant-numeric: tabular-nums !important;
+    box-shadow: none !important;
+}
+
+html body:not(#_) #horarios .schedule-slot.blocked {
+    border-color: var(--dsh-perigo-borda) !important;
+    background: var(--dsh-perigo-fundo) !important;
+    color: var(--dsh-perigo) !important;
+}
+
+html body:not(#_) #horarios .schedule-day-action {
+    min-height: 42px !important;
+    border: 0 !important;
+    border-radius: 999px !important;
+    background: var(--dsh-ouro-botao) !important;
+    color: var(--dsh-ouro-botao-texto) !important;
+    font-size: 12.5px !important;
+    font-weight: 700 !important;
+    box-shadow: none !important;
+}
+
+/* =====================================================================
+   10. CONFIGURAÇÕES — só as superfícies dos cartões (estrutura intacta)
+   ===================================================================== */
+html body:not(#_) #configuracoes .site-settings-card h2 {
+    color: var(--dsh-texto) !important;
+}
+
+html body:not(#_) #configuracoes .site-settings-card .settings-card-icon {
+    border-radius: 10px !important;
+    background: var(--dsh-ouro-fundo) !important;
+    color: var(--dsh-ouro-forte) !important;
+}
+
+/* =====================================================================
+   11. BARRA LATERAL
+   ===================================================================== */
+html body:not(#_) .sidebar {
+    border-right: 1px solid var(--dsh-borda) !important;
+    background: var(--dsh-fundo-card) !important;
+}
+
+html body:not(#_) .sidebar .brand {
+    margin-bottom: 26px !important;
+}
+
+html body:not(#_) .sidebar .navigation {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 4px !important;
+}
+
+html body:not(#_) .sidebar .nav-item {
+    display: flex !important;
+    align-items: center !important;
+    gap: 12px !important;
+    min-height: 42px !important;
+    height: 42px !important;
+    padding: 0 12px !important;
+    border: 0 !important;
+    border-radius: var(--dsh-raio-interno) !important;
+    background: transparent !important;
+    color: var(--dsh-texto-2) !important;
+    font-size: 13.5px !important;
+    font-weight: 600 !important;
+    box-shadow: none !important;
+    transition: background var(--dsh-transicao), color var(--dsh-transicao) !important;
+}
+
+html body:not(#_) .sidebar .nav-item::before,
+html body:not(#_) .sidebar .nav-item::after {
+    content: none !important;
+    display: none !important;
+}
+
+html body:not(#_) .sidebar .nav-item:hover {
+    background: var(--dsh-fundo-sutil) !important;
+    color: var(--dsh-texto) !important;
+}
+
+html body:not(#_) .sidebar .nav-item.active {
+    background: var(--dsh-ouro-fundo) !important;
+    color: var(--dsh-ouro-forte) !important;
+    box-shadow: inset 0 0 0 1px var(--dsh-ouro-borda) !important;
+}
+
+html body:not(#_) .sidebar .nav-item .nav-icone {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    flex: 0 0 20px !important;
+    width: 20px !important;
+    height: 20px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: 0 !important;
+    background: none !important;
+    color: inherit !important;
+    font-size: 0 !important;
+    opacity: .9 !important;
+}
+
+html body:not(#_) .sidebar .nav-item .nav-icone svg {
+    width: 19px !important;
+    height: 19px !important;
+}
+
+html body:not(#_) .sidebar .nav-item.active .nav-icone {
+    opacity: 1 !important;
+}
+
+html body:not(#_) .sidebar .sidebar-rodape :is(.tema-alternar, .senha-abrir),
+html body:not(#_) .sidebar .logout-button {
+    border: 1px solid var(--dsh-borda) !important;
+    border-radius: var(--dsh-raio-interno) !important;
+    background: var(--dsh-fundo-elevado) !important;
+    color: var(--dsh-texto-2) !important;
+    box-shadow: none !important;
+}
+
+html body:not(#_) .sidebar .sidebar-rodape :is(.tema-alternar, .senha-abrir):hover,
+html body:not(#_) .sidebar .logout-button:hover {
+    border-color: var(--dsh-borda-forte) !important;
+    color: var(--dsh-texto) !important;
+}
+
+/* =====================================================================
+   12. JANELAS (modais) dos módulos
+   ===================================================================== */
+html body:not(#_) .modal-overlay > .modal {
+    border: 1px solid var(--dsh-borda) !important;
+    border-radius: var(--dsh-raio) !important;
+    background: var(--dsh-fundo-card) !important;
+    color: var(--dsh-texto) !important;
+    box-shadow: 0 24px 60px rgba(0, 0, 0, .35) !important;
+}
+
+html body:not(#_) .modal-overlay > .modal h2 {
+    color: var(--dsh-texto) !important;
+}
+
+html body:not(#_) .modal-overlay > .modal .eyebrow {
+    color: var(--dsh-ouro) !important;
+}
+
+html body:not(#_) .modal-overlay > .modal .modal-close {
+    border-radius: 999px !important;
+}
+
+html body:not(#_) .modal-overlay > .modal :is(.primary-button, .secondary-button) {
+    min-height: 40px !important;
+    border-radius: 999px !important;
+    font-weight: 700 !important;
+}
+
+html body:not(#_) .modal-overlay > .modal .primary-button {
+    border: 0 !important;
+    background: var(--dsh-ouro-botao) !important;
+    color: var(--dsh-ouro-botao-texto) !important;
+}
+
+html body:not(#_) .modal-overlay > .modal .secondary-button {
+    border: 1px solid var(--dsh-borda-forte) !important;
+    background: transparent !important;
+    color: var(--dsh-texto) !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    html body:not(#_) :is(#barbeiros, #servicos, #clientes) :is(.barber-card, .service-card, .client-card):hover {
+        transform: none;
+    }
+}
+
+/* =====================================================================
+   13. AJUSTES FINOS
+   ===================================================================== */
+body {
+    --ic-usuarios: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22black%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Ccircle%20cx%3D%229%22%20cy%3D%228%22%20r%3D%223.2%22%2F%3E%3Cpath%20d%3D%22M3.5%2019c.6-3.2%202.6-4.8%205.5-4.8s4.9%201.6%205.5%204.8%22%2F%3E%3Cpath%20d%3D%22M16%2011.2a2.6%202.6%200%201%200-.9-5%22%2F%3E%3Cpath%20d%3D%22M16.5%2014.4c2.2.3%203.6%201.8%204%204.6%22%2F%3E%3C%2Fsvg%3E");
+    --ic-check: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22black%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Ccircle%20cx%3D%2212%22%20cy%3D%2212%22%20r%3D%229%22%2F%3E%3Cpath%20d%3D%22m8%2012.5%202.6%202.6L16%209.6%22%2F%3E%3C%2Fsvg%3E");
+    --ic-bloqueio: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22black%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Ccircle%20cx%3D%2212%22%20cy%3D%2212%22%20r%3D%229%22%2F%3E%3Cpath%20d%3D%22m5.7%205.7%2012.6%2012.6%22%2F%3E%3C%2Fsvg%3E");
+    --ic-calendario: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22black%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Crect%20x%3D%223%22%20y%3D%225%22%20width%3D%2218%22%20height%3D%2216%22%20rx%3D%223%22%2F%3E%3Cpath%20d%3D%22M8%203v4M16%203v4M3%2010h18%22%2F%3E%3C%2Fsvg%3E");
+    --ic-dinheiro: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22black%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22M12%203v18%22%2F%3E%3Cpath%20d%3D%22M16.5%207.5c-.6-1.6-2.3-2.5-4.5-2.5-2.6%200-4.5%201.3-4.5%203.3%200%204.7%209.3%202.4%209.3%207.3%200%202-1.9%203.4-4.8%203.4-2.4%200-4.2-1-4.8-2.8%22%2F%3E%3C%2Fsvg%3E");
+}
+
+/* Botão principal no cabeçalho: sem deslocamentos herdados */
+html body:not(#_) :is(#agenda, #barbeiros, #servicos) > .page-header {
+    align-items: center !important;
+}
+
+html body:not(#_) :is(#agenda, #barbeiros, #servicos) > .page-header .primary-button {
+    position: relative !important;
+    top: auto !important;
+    margin: 0 !important;
+    transform: none !important;
+    white-space: nowrap !important;
+}
+
+html body:not(#_) :is(#barbeiros, #servicos) .team-summary > div > :is(span, strong) {
+    justify-self: start !important;
+    text-align: left !important;
+}
+
+/* Agenda: "Ver detalhes" vira botão redondo só com o ícone do olho
+   (o texto continua lá para leitores de tela e na dica do mouse) */
+html body:not(#_) #agenda .agenda-details-button {
+    flex: 0 0 36px !important;
+    width: 36px !important;
+    min-width: 36px !important;
+    padding: 0 !important;
+    border-radius: 50% !important;
+    font-size: 0 !important;
+    letter-spacing: 0 !important;
+}
+
+html body:not(#_) #agenda .agenda-details-button::before {
+    flex-basis: 16px !important;
+    width: 16px !important;
+    height: 16px !important;
+}
+
+/* O resumo de Barbeiros tinha um deslocamento antigo para cima */
+html body:not(#_) :is(#barbeiros, #servicos) .team-summary {
+    position: relative !important;
+    top: auto !important;
+    transform: none !important;
+}
+
+html body:not(#_) #barbeiros .barbers-grid,
+html body:not(#_) #servicos .services-grid {
+    position: relative !important;
+    top: auto !important;
+    transform: none !important;
+}
+
+/* Celular: cabeçalho quebra em duas linhas e as abas da Agenda rolam */
+@media (max-width: 640px) {
+    /* Resumo compacto em 3 colunas: sem o ícone, número menor */
+    html body:not(#_) :is(#barbeiros, #servicos) .team-summary {
+        gap: 8px !important;
+    }
+
+    html body:not(#_) :is(#barbeiros, #servicos) .team-summary > div {
+        grid-template-columns: minmax(0, 1fr) !important;
+        grid-template-areas: "rotulo" "valor" !important;
+        padding: 12px !important;
+    }
+
+    html body:not(#_) :is(#barbeiros, #servicos) .team-summary > div:nth-child(n)::before,
+    html body:not(#_) :is(#barbeiros, #servicos) .team-summary > div:nth-child(n)::after {
+        display: none !important;
+    }
+
+    html body:not(#_) :is(#agenda, #barbeiros, #servicos) > .page-header .primary-button {
+        flex: 1 1 100% !important;
+        max-width: none !important;
+    }
+
+    /* Cartão do barbeiro empilhado: cabeçalho, telefone, dados e botões */
+    html body:not(#_) #barbeiros .barber-card {
+        position: relative !important;
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: stretch !important;
+        gap: 12px !important;
+        padding: 16px !important;
+    }
+
+    html body:not(#_) #barbeiros .barber-card > * {
+        grid-area: auto !important;
+        width: auto !important;
+        max-width: none !important;
+        margin: 0 !important;
+        border-left: 0 !important;
+        border-right: 0 !important;
+    }
+
+    html body:not(#_) #barbeiros .barber-card > .barber-status {
+        position: absolute !important;
+        top: 22px !important;
+        right: 20px !important;
+    }
+
+    html body:not(#_) #barbeiros .barber-card-header {
+        padding-right: 24px !important;
+    }
+
+    html body:not(#_) #barbeiros .barber-phone {
+        display: flex !important;
+        align-items: center !important;
+        gap: 8px !important;
+        padding: 0 !important;
+        border: 0 !important;
+    }
+
+    html body:not(#_) #barbeiros .barber-phone-number {
+        white-space: nowrap !important;
+        word-break: normal !important;
+    }
+
+    html body:not(#_) #barbeiros .barber-data {
+        display: grid !important;
+        grid-template-columns: 1fr 1fr !important;
+        gap: 10px !important;
+        padding: 12px 0 !important;
+        border-top: 1px solid var(--dsh-borda) !important;
+        border-bottom: 1px solid var(--dsh-borda) !important;
+    }
+
+    html body:not(#_) #barbeiros .barber-data > div {
+        position: static !important;
+        grid-area: auto !important;
+        display: grid !important;
+        grid-template-columns: 16px minmax(0, 1fr) !important;
+        grid-template-areas: "icone rotulo" "icone valor" !important;
+        align-items: center !important;
+        gap: 2px 10px !important;
+        width: auto !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        border: 0 !important;
+        transform: none !important;
+    }
+
+    html body:not(#_) #barbeiros .barber-data > div::before {
+        grid-area: icone !important;
+        position: static !important;
+        margin: 0 !important;
+        transform: none !important;
+    }
+
+    html body:not(#_) #barbeiros .barber-data > div > span {
+        grid-area: rotulo !important;
+    }
+
+    html body:not(#_) #barbeiros .barber-data > div > strong {
+        grid-area: valor !important;
+    }
+
+    html body:not(#_) #barbeiros .barber-actions {
+        display: grid !important;
+        grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+        gap: 8px !important;
+        padding: 0 !important;
+        border: 0 !important;
+    }
+
+    html body:not(#_) #barbeiros .barber-toggle-group {
+        display: contents !important;
+    }
+
+    html body:not(#_) #barbeiros .barber-actions :is(.edit-button, .delete-button, .toggle-button) {
+        width: 100% !important;
+        padding: 0 6px !important;
+        gap: 5px !important;
+        font-size: 10.5px !important;
+    }
+
+    html body:not(#_) :is(#barbeiros, #servicos) .team-summary > div > span {
+        font-size: 11.5px !important;
+        line-height: 1.25 !important;
+    }
+
+    html body:not(#_) :is(#barbeiros, #servicos) .team-summary > div > strong {
+        font-size: 22px !important;
+    }
+
+    /* Clientes: um cartão por linha, para o número caber inteiro */
+    html body:not(#_) #clientes .clients-grid {
+        grid-template-columns: minmax(0, 1fr) !important;
+    }
+
+    html body:not(#_) :is(#agenda, #barbeiros, #servicos) > .page-header {
+        flex-wrap: wrap !important;
+        align-items: flex-start !important;
+    }
+
+    html body:not(#_) :is(#agenda, #barbeiros, #servicos) > .page-header .primary-button {
+        width: 100% !important;
+    }
+
+    html body:not(#_) #agenda .agenda-period-tabs {
+        display: flex !important;
+        width: 100% !important;
+        overflow-x: auto !important;
+        scrollbar-width: none !important;
+    }
+
+    html body:not(#_) #agenda .agenda-period-button {
+        flex: 1 0 auto !important;
+        padding: 0 12px !important;
+    }
+}
+
+/* Horários no celular: cartões de resumo e campos um embaixo do outro */
+@media (max-width: 640px) {
+    html body:not(#_) #horarios .schedule-summary {
+        grid-template-columns: minmax(0, 1fr) !important;
+    }
+
+    html body:not(#_) #horarios .schedule-settings-grid {
+        grid-template-columns: minmax(0, 1fr) !important;
+    }
+
+    html body:not(#_) #horarios .schedule-summary-card {
+        min-height: 0 !important;
+    }
+}
+
+/* Resumo de Barbeiros e Serviços no formato dos indicadores do Dashboard */
+html body:not(#_) :is(#barbeiros, #servicos) .team-summary {
+    gap: 16px !important;
+    margin-bottom: 16px !important;
+}
+
+html body:not(#_) :is(#barbeiros, #servicos) .team-summary > div {
+    position: relative !important;
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) 36px !important;
+    grid-template-areas: "rotulo icone" "valor icone" !important;
+    align-items: center !important;
+    gap: 6px 12px !important;
+    min-height: 0 !important;
+    padding: 16px 20px !important;
+    text-align: left !important;
+}
+
+html body:not(#_) :is(#barbeiros, #servicos) .team-summary > div > span {
+    grid-area: rotulo !important;
+    margin: 0 !important;
+    color: var(--dsh-texto-2) !important;
+    font-size: 13px !important;
+    font-weight: 600 !important;
+    letter-spacing: 0 !important;
+    text-transform: none !important;
+}
+
+html body:not(#_) :is(#barbeiros, #servicos) .team-summary > div > strong {
+    grid-area: valor !important;
+    margin: 0 !important;
+    color: var(--dsh-texto) !important;
+    font-size: 30px !important;
+    font-weight: 750 !important;
+    line-height: 1.05 !important;
+}
+
+/* Quadrado do ícone */
+html body:not(#_) :is(#barbeiros, #servicos) .team-summary > div::before {
+    content: "" !important;
+    grid-area: icone !important;
+    position: static !important;
+    display: block !important;
+    width: 36px !important;
+    height: 36px !important;
+    margin: 0 !important;
+    border: 0 !important;
+    border-radius: 10px !important;
+    background: var(--dsh-fundo-sutil) !important;
+    color: transparent !important;
+    font-size: 0 !important;
+    transform: none !important;
+    -webkit-mask: none !important;
+    mask: none !important;
+}
+
+/* Desenho do ícone, por cima do quadrado (herda as cores do tema) */
+html body:not(#_) :is(#barbeiros, #servicos) .team-summary > div::after {
+    content: "" !important;
+    position: absolute !important;
+    top: 50% !important;
+    right: 29px !important;
+    left: auto !important;
+    display: block !important;
+    width: 18px !important;
+    height: 18px !important;
+    margin-top: -9px !important;
+    border: 0 !important;
+    background: var(--dsh-texto-2) !important;
+    transform: none !important;
+    -webkit-mask: var(--ic-usuarios) center / contain no-repeat !important;
+    mask: var(--ic-usuarios) center / contain no-repeat !important;
+}
+
+html body:not(#_) #servicos .team-summary > div:nth-child(1)::after {
+    -webkit-mask-image: var(--ic-tesoura) !important;
+    mask-image: var(--ic-tesoura) !important;
+}
+
+html body:not(#_) :is(#barbeiros, #servicos) .team-summary > div:nth-child(2)::after {
+    background: var(--dsh-sucesso) !important;
+    -webkit-mask-image: var(--ic-check) !important;
+    mask-image: var(--ic-check) !important;
+}
+
+html body:not(#_) :is(#barbeiros, #servicos) .team-summary > div:nth-child(3)::after {
+    background: var(--dsh-texto-3) !important;
+    -webkit-mask-image: var(--ic-bloqueio) !important;
+    mask-image: var(--ic-bloqueio) !important;
+}
+
+/* Agenda: seletor de status legível */
+html body:not(#_) #agenda .agenda-status-select {
+    padding: 0 24px 0 12px !important;
+    font-size: 11.5px !important;
+    text-overflow: clip !important;
+}
+
+/* Clientes: ícone do WhatsApp visível ao lado do número */
+html body:not(#_) #clientes .client-phone-icon::before {
+    display: block !important;
+}
+
+/* Selos do "Chamar de volta" com contraste nos dois temas */
+html body:not(#_) #clientes .retorno-selo {
+    padding: 2px 8px !important;
+    font-size: 10.5px !important;
+}
+
+html body:not(#_) #clientes .retorno-selo--agendado {
+    border-color: color-mix(in srgb, var(--dsh-confirmado) 45%, transparent) !important;
+    background: color-mix(in srgb, var(--dsh-confirmado) 12%, transparent) !important;
+    color: var(--dsh-confirmado) !important;
+}
+
+html body:not(#_) #clientes .retorno-selo--inativo {
+    border-color: color-mix(in srgb, var(--dsh-pendente) 50%, transparent) !important;
+    background: color-mix(in srgb, var(--dsh-pendente) 13%, transparent) !important;
+    color: var(--dsh-pendente) !important;
+}
+
+html body:not(#_) #clientes .retorno-selo--contato {
+    border-color: var(--dsh-ouro-borda) !important;
+    background: var(--dsh-ouro-fundo) !important;
+    color: var(--dsh-ouro-forte) !important;
+}
+
+/* Ícones dos dados (atendimentos, último atendimento, faturamento) */
+html body:not(#_) #clientes .client-data > div::before,
+html body:not(#_) #barbeiros .barber-data > div::before {
+    content: "" !important;
+    display: inline-block !important;
+    width: 16px !important;
+    height: 16px !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    background: var(--dsh-texto-3) !important;
+    box-shadow: none !important;
+    color: transparent !important;
+    font-size: 0 !important;
+    -webkit-mask: var(--ic-calendario) center / contain no-repeat !important;
+    mask: var(--ic-calendario) center / contain no-repeat !important;
+}
+
+html body:not(#_) #clientes .client-data > div:nth-child(2)::before {
+    -webkit-mask-image: var(--ic-relogio) !important;
+    mask-image: var(--ic-relogio) !important;
+}
+
+html body:not(#_) #barbeiros .barber-data > div:nth-child(2)::before {
+    background: var(--dsh-ouro) !important;
+    -webkit-mask-image: var(--ic-dinheiro) !important;
+    mask-image: var(--ic-dinheiro) !important;
+}
+
+html body:not(#_) #clientes .client-data > div::after,
+html body:not(#_) #barbeiros .barber-data > div::after {
+    content: none !important;
+    display: none !important;
+}
+
+/* Excluir todos: lixeira desenhada igual aos outros botões */
+html body:not(#_) #clientes .delete-all-icon {
+    flex: 0 0 16px !important;
+    width: 16px !important;
+    height: 16px !important;
+}
+
+html body:not(#_) #clientes .delete-all-icon svg {
+    display: none !important;
+}
+
+html body:not(#_) #clientes .delete-all-icon::after {
+    content: none !important;
+    display: none !important;
+}
+
+html body:not(#_) #clientes .delete-all-icon::before {
+    content: "" !important;
+    position: static !important;
+    display: block !important;
+    width: 16px !important;
+    height: 16px !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    background: currentColor !important;
+    box-shadow: none !important;
+    -webkit-mask: var(--ic-lixeira) center / contain no-repeat !important;
+    mask: var(--ic-lixeira) center / contain no-repeat !important;
+}
+
+/* Horários: só o rótulo é o span direto; os horários herdam o tamanho grande */
+html body:not(#_) #horarios .schedule-summary-card strong span {
+    color: inherit !important;
+    font-size: inherit !important;
+    font-weight: inherit !important;
+    letter-spacing: 0 !important;
+    text-transform: none !important;
+}
+
+html body:not(#_) #horarios .schedule-summary-card strong .hora-separador {
+    color: var(--dsh-texto-3) !important;
+    font-weight: 500 !important;
+}

@@ -4694,8 +4694,14 @@ function updateWorkingHoursDisplay() {
         document.getElementById("workingHoursDisplay");
 
     if (element) {
-        element.textContent =
-            `${scheduleSettings.openingTime} — ${scheduleSettings.closingTime}`;
+        // Só a exibição: mostra sempre HH:mm (ex.: "09:00:00" → "09:00").
+        const horaCurta = value =>
+            String(value || "").trim().slice(0, 5);
+
+        element.innerHTML =
+            `<span class="hora-completa">${escapeHTML(horaCurta(scheduleSettings.openingTime))}</span>` +
+            ` <span class="hora-separador">—</span> ` +
+            `<span class="hora-completa">${escapeHTML(horaCurta(scheduleSettings.closingTime))}</span>`;
     }
 }
 

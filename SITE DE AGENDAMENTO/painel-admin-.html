@@ -17,6 +17,7 @@
     <link rel="stylesheet" href="painel-tema.css">
     <link rel="stylesheet" href="painel-retorno.css">
     <link rel="stylesheet" href="painel-dashboard.css">
+    <link rel="stylesheet" href="painel-modulos.css">
 </head>
 
 <body>
@@ -37,67 +38,54 @@
                 </div>
             </div>
 
-            <div class="admin-profile">
-
-                <div class="admin-avatar">AD</div>
-
-                <div class="admin-info">
-                    <strong>Administrador</strong>
-                    <span>Proprietário</span>
-                </div>
-
-                <span class="online-dot"></span>
-
-            </div>
-
             <nav class="navigation">
 
                 <a href="#dashboard"
                    class="nav-item active"
                    data-section="dashboard">
-                    <span>▦</span>
+                    <span class="nav-icone" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9" rx="2"/><rect x="14" y="3" width="7" height="5" rx="2"/><rect x="14" y="12" width="7" height="9" rx="2"/><rect x="3" y="16" width="7" height="5" rx="2"/></svg></span>
                     Dashboard
                 </a>
 
                 <a href="#agenda"
                    class="nav-item"
                    data-section="agenda">
-                    <span>◫</span>
+                    <span class="nav-icone" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M8 3v4M16 3v4M3 10h18"/><path d="M8 14h2M14 14h2M8 17.5h2"/></svg></span>
                     Agenda
                 </a>
 
                 <a href="#barbeiros"
                    class="nav-item"
                    data-section="barbeiros">
-                    <span>◎</span>
+                    <span class="nav-icone" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.2"/><path d="M3.5 19c.6-3.2 2.6-4.8 5.5-4.8s4.9 1.6 5.5 4.8"/><path d="M16 11.2a2.6 2.6 0 1 0-.9-5"/><path d="M16.5 14.4c2.2.3 3.6 1.8 4 4.6"/></svg></span>
                     Barbeiros
                 </a>
 
                 <a href="#servicos"
                    class="nav-item"
                    data-section="servicos">
-                    <span>✂</span>
+                    <span class="nav-icone" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="7" r="2.6"/><circle cx="6" cy="17" r="2.6"/><path d="M8.2 8.6 20 18M8.2 15.4 20 6"/></svg></span>
                     Serviços
                 </a>
 
                 <a href="#clientes"
                    class="nav-item"
                    data-section="clientes">
-                    <span>◉</span>
+                    <span class="nav-icone" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3.6"/><path d="M5 20c.8-3.6 3.4-5.6 7-5.6s6.2 2 7 5.6"/></svg></span>
                     Clientes
                 </a>
 
                 <a href="#horarios"
                    class="nav-item"
                    data-section="horarios">
-                    <span>◷</span>
+                    <span class="nav-icone" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.2 2"/></svg></span>
                     Horários/Dias
                 </a>
 
                 <a href="#configuracoes"
                    class="nav-item"
                    data-section="configuracoes">
-                    <span>⚙</span>
+                    <span class="nav-icone" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h10M18 7h2M4 17h4M12 17h8"/><circle cx="16" cy="7" r="2.2"/><circle cx="10" cy="17" r="2.2"/></svg></span>
                     Configurações
                 </a>
 
@@ -806,7 +794,7 @@
             <button type="button" class="retorno-filtro" data-retorno-filtro="contatados" aria-pressed="false">Já contatados</button>
             <button type="button" class="retorno-filtro" data-retorno-filtro="agendados" aria-pressed="false">Com agendamento futuro</button>
         </div>
-        <button type="button" class="retorno-todos-button" id="retornoTodosButton"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 11.5a8.4 8.4 0 0 1-12.4 7.4L3 20l1.2-5.3A8.4 8.4 0 1 1 21 11.5Z"/><path d="M8.5 8.5c.3-.6.6-.6 1-.6l.7 1.6c.1.2 0 .4-.2.6l-.5.5c.5 1 1.3 1.8 2.3 2.3l.5-.5c.2-.2.4-.3.6-.2l1.6.7c0 .4 0 .7-.6 1-1 .5-2.7-.2-4.2-1.7s-2.2-3.2-1.2-4.2Z"/></svg><span>Chamar todos os inativos</span></button>
+        <button type="button" class="retorno-todos-button" id="retornoTodosButton"><svg class="icone-whatsapp" viewBox="0 0 24 24" width="16" height="16" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg><span>Chamar todos os inativos</span></button>
     </div>
 
 
@@ -1438,7 +1426,7 @@
 </div>
 </div>
 <div class="content-card site-settings-card retorno-config-card" id="config-card-retorno" data-funcionalidade="chamar_de_volta">
-  <div class="card-header"><div class="settings-card-title"><span class="settings-card-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 11.5a8.4 8.4 0 0 1-12.4 7.4L3 20l1.2-5.3A8.4 8.4 0 1 1 21 11.5Z"/><path d="M8.5 8.5c.3-.6.6-.6 1-.6l.7 1.6c.1.2 0 .4-.2.6l-.5.5c.5 1 1.3 1.8 2.3 2.3l.5-.5c.2-.2.4-.3.6-.2l1.6.7c0 .4 0 .7-.6 1-1 .5-2.7-.2-4.2-1.7s-2.2-3.2-1.2-4.2Z"/></svg></span><div><span class="eyebrow">Chamar de volta</span><h2>Mensagem de retorno</h2><p>Mensagem enviada pelo WhatsApp aos clientes que não aparecem há algum tempo.</p></div></div></div>
+  <div class="card-header"><div class="settings-card-title"><span class="settings-card-icon" aria-hidden="true"><svg class="icone-whatsapp" viewBox="0 0 24 24" width="16" height="16" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg></span><div><span class="eyebrow">Chamar de volta</span><h2>Mensagem de retorno</h2><p>Mensagem enviada pelo WhatsApp aos clientes que não aparecem há algum tempo.</p></div></div></div>
   <div class="retorno-config-grid">
     <div class="retorno-config-campos">
       <div class="form-group"><label for="retornoDias">Dias sem vir para considerar inativo</label><input type="number" id="retornoDias" min="1" max="365" step="1" value="15"></div>
