@@ -138,24 +138,34 @@ img {
     color: #07140b;
 }
 
-/* Ícone ☰ do menu no celular (antes um vermelho fixo).
-   O traço usa a cor do texto do cabeçalho (sempre legível sobre o fundo).
-   Ao passar o dedo/mouse ou com o menu aberto, ganha um fundo suave na
-   cor principal da barbearia (configuracoes_site → site-tema.js). */
+/* Menu do celular: três traços cinza desenhados em CSS (antes era o
+   caractere ☰ em vermelho fixo; o caractere muda de aparência em cada
+   aparelho). Ao passar o dedo/mouse ou com o menu aberto, o cinza fica
+   mais claro e ganha um fundo suave na cor principal da barbearia. */
 .menu-button {
     display: none;
     background: none;
     border: 0;
     border-radius: 8px;
-    color: var(--text);
+    color: #a3a3a3;
     font-size: 25px;
     transition: background-color 0.2s ease, color 0.2s ease;
 }
 
+.menu-button__traco {
+    display: block;
+    width: 22px;
+    height: 2px;
+    margin: 5px auto;
+    border-radius: 2px;
+    background: currentColor;
+    pointer-events: none;
+}
+
 .menu-button:hover,
 .menu-button[aria-expanded="true"] {
-    background: color-mix(in srgb, var(--gold) 22%, transparent);
-    color: var(--white);
+    background: color-mix(in srgb, var(--gold) 18%, transparent);
+    color: #d4d4d4;
 }
 
 .menu-button:focus-visible {

@@ -1549,6 +1549,11 @@ html body:not(#_) :is(#barbeiros, #servicos) .team-summary > div {
     grid-template-areas: "rotulo icone" "valor icone" !important;
     align-items: center !important;
     gap: 6px 12px !important;
+    /* Sem altura fixa e sem cortar: o número nunca some, mesmo se o
+       título quebrar em mais linhas (o CSS antigo fixava 68px). */
+    height: auto !important;
+    max-height: none !important;
+    overflow: visible !important;
     min-height: 0 !important;
     padding: 16px 20px !important;
     text-align: left !important;
